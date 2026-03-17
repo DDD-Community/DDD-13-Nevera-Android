@@ -1,0 +1,60 @@
+# ======================
+# Android
+# ======================
+*.iml
+*.apk
+*.aab
+*.ap_
+*.dex
+
+/local.properties
+local.properties
+
+# ======================
+# Gradle
+# ======================
+.gradle/
+**/build/
+gradle-app.setting
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# ======================
+# IntelliJ / Android Studio
+# ======================
+.idea/
+*.iws
+
+# ======================
+# Native Build
+# ======================
+.externalNativeBuild/
+.cxx/
+
+# ======================
+# Signing / Keystore (보안 중요!)
+# ======================
+*.jks
+*.keystore
+keystore/
+/app/release/
+/app/debug/
+/app/qa/
+
+# ======================
+# Secrets (보안 중요!)
+# ======================
+secrets.properties
+google-services.json
+GoogleService-Info.plist
+
+# ======================
+# OS
+# ======================
+.DS_Store
+Thumbs.db
+
+# ======================
+# Captures / Profiling
+# ======================
+/captures
