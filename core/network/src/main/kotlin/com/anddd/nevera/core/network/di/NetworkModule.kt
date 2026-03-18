@@ -16,7 +16,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "https://api.example.com/"
+    private const val BASE_URL = "https://api.nevera.com/"
     private const val TIMEOUT_SECONDS = 30L
 
     private val loggingInterceptor: HttpLoggingInterceptor =
