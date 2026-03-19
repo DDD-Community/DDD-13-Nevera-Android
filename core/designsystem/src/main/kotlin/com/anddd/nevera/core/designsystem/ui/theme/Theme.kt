@@ -11,6 +11,7 @@ import com.anddd.nevera.core.designsystem.ui.theme.color.LocalNeveraColors
 import com.anddd.nevera.core.designsystem.ui.theme.color.NeveraColor
 import com.anddd.nevera.core.designsystem.ui.theme.shape.NeveraRadius
 import com.anddd.nevera.core.designsystem.ui.theme.spacing.NeveraSpacing
+import com.anddd.nevera.core.designsystem.ui.theme.typography.NeveraTypography
 
 @Composable
 fun NeveraTheme(
@@ -26,7 +27,6 @@ fun NeveraTheme(
         LocalNeveraColors provides neveraColors
     ) {
         MaterialTheme(
-            typography = Typography,
             content = content
         )
     }
@@ -43,4 +43,7 @@ object NeveraTheme {
 
     val radius: NeveraRadius
         get() = NeveraRadius
+
+    val typography: NeveraTypography
+        get() = NeveraTypography
 }
