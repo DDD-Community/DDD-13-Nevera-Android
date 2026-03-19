@@ -9,7 +9,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.anddd.nevera.core.designsystem.ui.theme.NeveraAppTheme
+import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.main.home.navigation.homeRoute
 import com.anddd.nevera.feature.main.home.navigation.homeScreen
 import com.anddd.nevera.feature.login.main.navigation.LOGIN_ROUTE
@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            NeveraAppTheme {
+            NeveraTheme {
                 val navController = rememberNavController()
                 Scaffold(modifier = Modifier.fillMaxSize()) { _ ->
                     NavHost(
