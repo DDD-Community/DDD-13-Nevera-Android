@@ -9,6 +9,7 @@ import com.anddd.nevera.core.designsystem.ui.theme.color.DarkNeveraColors
 import com.anddd.nevera.core.designsystem.ui.theme.color.LightNeveraColors
 import com.anddd.nevera.core.designsystem.ui.theme.color.LocalNeveraColors
 import com.anddd.nevera.core.designsystem.ui.theme.color.NeveraColor
+import com.anddd.nevera.core.designsystem.ui.theme.shape.NeveraRadius
 import com.anddd.nevera.core.designsystem.ui.theme.spacing.NeveraSpacing
 
 @Composable
@@ -39,4 +40,7 @@ object NeveraTheme {
 
     val spacing: NeveraSpacing
         get() = NeveraSpacing
+
+    val radius: NeveraRadius
+        get() = NeveraRadius
 }
