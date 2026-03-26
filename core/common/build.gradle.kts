@@ -5,3 +5,13 @@ plugins {
 kotlin {
     jvmToolchain(17)
 }
+
+tasks.test {
+    useJUnitPlatform()
+}
+
+dependencies {
+    testImplementation(libs.junit.jupiter)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+    testRuntimeOnly(libs.junit.platform.launcher)
+}
