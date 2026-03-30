@@ -14,6 +14,11 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        // AGP 8.0부터는 BuildConfig가 기본 비활성화 상태
+        buildConfig = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -36,6 +41,9 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.coroutines.android)
     implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
     implementation(libs.datastore.preferences)
 
     testImplementation(libs.junit.jupiter)

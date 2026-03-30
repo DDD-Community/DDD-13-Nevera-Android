@@ -15,7 +15,11 @@ class SnsLoginUseCase @Inject constructor(
     suspend operator fun invoke(provider: SnsProvider, token: String): ApiResult<LoginResult> {
         val result = userRepository.snsLogin(provider, token)
         if (result is ApiResult.Success) {
-            tokenRepository.saveSession(result.data.token, result.data.user.id)
+            tokenRepository.saveSession(
+                result.data.token,
+                result.data.refreshToken,
+                result.data.user.id
+            )
         }
         return result
     }

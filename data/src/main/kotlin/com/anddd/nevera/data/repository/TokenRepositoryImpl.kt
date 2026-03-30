@@ -22,20 +22,24 @@ internal class TokenRepositoryImpl @Inject constructor(
      */
     private val dataStore = context.sessionDataStore
 
-    override suspend fun saveSession(token: String, userId: String) {
+    override suspend fun saveSession(accessToken: String, refreshToken: String, userId: String) {
         dataStore.edit { prefs ->
-            prefs[KEY_TOKEN] = token
+            prefs[KEY_TOKEN] = accessToken
+            prefs[KEY_REFRESH_TOKEN] = refreshToken
             prefs[KEY_USER_ID] = userId
         }
     }
 
-    override suspend fun getSession(): Pair<String?, String?> {
+    override suspend fun getSession(): Triple<String?, String?, String?> {
         val prefs = dataStore.data.first()
-        return prefs[KEY_TOKEN] to prefs[KEY_USER_ID]
+        return Triple(prefs[KEY_TOKEN], prefs[KEY_REFRESH_TOKEN], prefs[KEY_USER_ID])
     }
 
     override suspend fun getToken(): String? =
         dataStore.data.first()[KEY_TOKEN]
+
+    override suspend fun getRefreshToken(): String? =
+        dataStore.data.first()[KEY_REFRESH_TOKEN]
 
     override suspend fun getUserId(): String? =
         dataStore.data.first()[KEY_USER_ID]
@@ -46,6 +50,7 @@ internal class TokenRepositoryImpl @Inject constructor(
 
     companion object {
         private val KEY_TOKEN = stringPreferencesKey("auth_token")
+        private val KEY_REFRESH_TOKEN = stringPreferencesKey("refresh_token")
         private val KEY_USER_ID = stringPreferencesKey("user_id")
     }
 }
