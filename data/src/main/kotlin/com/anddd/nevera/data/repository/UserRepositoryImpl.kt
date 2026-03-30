@@ -20,18 +20,27 @@ internal class UserRepositoryImpl @Inject constructor(
     override suspend fun login(
         email: String,
         password: String
-    ): ApiResult<LoginResult> = apiCall {
-        userDataSource.login(email, password).toDomain(LoginType.EMAIL)
+    ): ApiResult<LoginResult> {
+        return when (val result = apiCall { userDataSource.login(email, password) }) {
+            is ApiResult.Success -> ApiResult.Success(result.data.toDomain(LoginType.EMAIL))
+            is ApiResult.Error -> result
+        }
     }
 
     override suspend fun snsLogin(
         provider: SnsProvider,
         token: String
-    ): ApiResult<LoginResult> = apiCall {
-        userDataSource.snsLogin(provider.apiValue, token).toDomain(LoginType.SNS)
+    ): ApiResult<LoginResult> {
+        return when (val result = apiCall { userDataSource.snsLogin(provider.apiValue, token) }) {
+            is ApiResult.Success -> ApiResult.Success(result.data.toDomain(LoginType.SNS))
+            is ApiResult.Error -> result
+        }
     }
 
-    override suspend fun getUser(userId: String): ApiResult<User> = apiCall {
-        userDataSource.getUser(userId).toDomain()
+    override suspend fun getUser(userId: String): ApiResult<User> {
+        return when (val result = apiCall { userDataSource.getUser(userId) }) {
+            is ApiResult.Success -> ApiResult.Success(result.data.toDomain())
+            is ApiResult.Error -> result
+        }
     }
 }

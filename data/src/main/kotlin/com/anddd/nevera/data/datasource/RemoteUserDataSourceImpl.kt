@@ -1,5 +1,6 @@
 package com.anddd.nevera.data.datasource
 
+import com.anddd.nevera.core.common.ApiResponse
 import com.anddd.nevera.data.api.UserApi
 import com.anddd.nevera.data.model.LoginRequest
 import com.anddd.nevera.data.model.LoginResponse
@@ -11,15 +12,12 @@ internal class RemoteUserDataSourceImpl @Inject constructor(
     private val userApi: UserApi
 ) : UserDataSource {
 
-    override suspend fun login(email: String, password: String): LoginResponse {
-        return userApi.login(LoginRequest(email, password))
-    }
+    override suspend fun login(email: String, password: String): ApiResponse<LoginResponse> =
+        userApi.login(LoginRequest(email, password))
 
-    override suspend fun snsLogin(provider: String, token: String): LoginResponse {
-        return userApi.snsLogin(SnsLoginRequest(provider, token))
-    }
+    override suspend fun snsLogin(provider: String, token: String): ApiResponse<LoginResponse> =
+        userApi.snsLogin(SnsLoginRequest(provider, token))
 
-    override suspend fun getUser(userId: String): UserResponse {
-        return userApi.getUser(userId)
-    }
+    override suspend fun getUser(userId: String): ApiResponse<UserResponse> =
+        userApi.getUser(userId)
 }

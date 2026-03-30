@@ -1,5 +1,6 @@
 package com.anddd.nevera.data.api
 
+import com.anddd.nevera.core.common.ApiResponse
 import com.anddd.nevera.data.model.LoginRequest
 import com.anddd.nevera.data.model.LoginResponse
 import com.anddd.nevera.data.model.SnsLoginRequest
@@ -12,11 +13,11 @@ import retrofit2.http.Path
 internal interface UserApi {
 
     @POST("auth/login")
-    suspend fun login(@Body request: LoginRequest): LoginResponse
+    suspend fun login(@Body request: LoginRequest): ApiResponse<LoginResponse>
 
     @POST("auth/sns-login")
-    suspend fun snsLogin(@Body request: SnsLoginRequest): LoginResponse
+    suspend fun snsLogin(@Body request: SnsLoginRequest): ApiResponse<LoginResponse>
 
     @GET("users/{userId}")
-    suspend fun getUser(@Path("userId") userId: String): UserResponse
+    suspend fun getUser(@Path("userId") userId: String): ApiResponse<UserResponse>
 }
