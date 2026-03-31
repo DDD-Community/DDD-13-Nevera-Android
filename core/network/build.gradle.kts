@@ -15,6 +15,16 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildTypes {
+        debug {
+            // 테스트 서버 분리 시, 도메인 변경 필요
+            buildConfigField("String", "BASE_URL", "\"https://api.nevera.n-e.kr/\"")
+        }
+        release {
+            buildConfigField("String", "BASE_URL", "\"https://api.nevera.n-e.kr/\"")
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
