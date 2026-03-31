@@ -9,3 +9,9 @@ sealed interface ApiResult<out T> {
         val error: NetworkError
     ) : ApiResult<Nothing>
 }
+
+inline fun <T, R> ApiResult<T>.mapSuccess(transform: (T) -> R): ApiResult<R> =
+    when (this) {
+        is ApiResult.Success -> ApiResult.Success(transform(data))
+        is ApiResult.Error -> this
+    }

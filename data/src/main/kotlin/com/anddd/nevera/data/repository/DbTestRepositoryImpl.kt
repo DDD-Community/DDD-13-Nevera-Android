@@ -1,6 +1,7 @@
 package com.anddd.nevera.data.repository
 
 import com.anddd.nevera.core.common.ApiResult
+import com.anddd.nevera.core.common.mapSuccess
 import com.anddd.nevera.core.network.auth.ApiCallExecutor
 import com.anddd.nevera.data.datasource.DbTestDataSource
 import com.anddd.nevera.data.datasource.RemoteDbTestDataSource
@@ -15,9 +16,7 @@ internal class DbTestRepositoryImpl @Inject constructor(
 ) : DbTestRepository {
 
     override suspend fun getDbTest(): ApiResult<DbTest> {
-        return when (val result = apiCall { dbTestDataSource.getDbTest() }) {
-            is ApiResult.Success -> ApiResult.Success(result.data.toDomain())
-            is ApiResult.Error -> result
-        }
+        return apiCall { dbTestDataSource.getDbTest() }
+            .mapSuccess { it.toDomain() }
     }
 }

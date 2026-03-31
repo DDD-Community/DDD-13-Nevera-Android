@@ -1,6 +1,7 @@
 package com.anddd.nevera.data.repository
 
 import com.anddd.nevera.core.common.ApiResult
+import com.anddd.nevera.core.common.mapSuccess
 import com.anddd.nevera.core.network.auth.ApiCallExecutor
 import com.anddd.nevera.data.datasource.LocalUserDataSource
 import com.anddd.nevera.data.datasource.UserDataSource
@@ -22,26 +23,20 @@ internal class UserRepositoryImpl @Inject constructor(
         email: String,
         password: String
     ): ApiResult<LoginResult> {
-        return when (val result = apiCall { userDataSource.login(email, password) }) {
-            is ApiResult.Success -> ApiResult.Success(result.data.toDomain(LoginType.EMAIL))
-            is ApiResult.Error -> result
-        }
+        return apiCall { userDataSource.login(email, password) }
+            .mapSuccess { it.toDomain(LoginType.EMAIL) }
     }
 
     override suspend fun snsLogin(
         provider: SnsProvider,
         token: String
     ): ApiResult<LoginResult> {
-        return when (val result = apiCall { userDataSource.snsLogin(provider.apiValue, token) }) {
-            is ApiResult.Success -> ApiResult.Success(result.data.toDomain(LoginType.SNS))
-            is ApiResult.Error -> result
-        }
+        return apiCall { userDataSource.snsLogin(provider.apiValue, token) }
+            .mapSuccess { it.toDomain(LoginType.SNS) }
     }
 
-    override suspend fun getUser(userId: String): ApiResult<User> {
-        return when (val result = apiCall { userDataSource.getUser(userId) }) {
-            is ApiResult.Success -> ApiResult.Success(result.data.toDomain())
-            is ApiResult.Error -> result
-        }
+    override suspend fun getUser(userId: String): ApiResult<User>  {
+        return apiCall { userDataSource.getUser(userId) }
+            .mapSuccess { it.toDomain() }
     }
 }
