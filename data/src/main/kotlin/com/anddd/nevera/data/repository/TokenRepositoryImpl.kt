@@ -14,7 +14,7 @@ import javax.inject.Inject
 private val Context.sessionDataStore: DataStore<Preferences> by preferencesDataStore(name = "session")
 
 internal class TokenRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) : TokenRepository {
 
     /**
