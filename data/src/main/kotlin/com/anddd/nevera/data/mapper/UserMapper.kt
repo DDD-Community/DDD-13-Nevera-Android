@@ -14,7 +14,7 @@ internal fun UserResponse.toDomain(): User = User(
 
 internal fun LoginResponse.toDomain(loginType: LoginType): LoginResult = LoginResult(
     user = user.toDomain(),
-    token = token,
+    token = accessToken,
     refreshToken = refreshToken,
     loginType = loginType
 )

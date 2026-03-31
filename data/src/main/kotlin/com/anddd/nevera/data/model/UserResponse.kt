@@ -18,6 +18,6 @@ internal data class SnsLoginRequest(
 
 internal data class LoginResponse(
     val user: UserResponse,
-    val token: String,
+    val accessToken: String,
     val refreshToken: String
 )

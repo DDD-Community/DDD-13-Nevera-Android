@@ -15,13 +15,13 @@ internal class FakeUserDataSourceImpl @Inject constructor() : UserDataSource {
             return ApiResponse(result = null, error = ApiError(code = 400, message = "이메일 또는 비밀번호가 올바르지 않습니다."))
         }
         val user = UserResponse(id = "user_001", name = "홍길동", email = email)
-        return ApiResponse(result = LoginResponse(user = user, token = "fake_token_abc123", refreshToken = "fake_refresh_abc123"), error = null)
+        return ApiResponse(result = LoginResponse(user = user, accessToken = "fake_token_abc123", refreshToken = "fake_refresh_abc123"), error = null)
     }
 
     override suspend fun snsLogin(provider: String, token: String): ApiResponse<LoginResponse> {
         delay(500)
         val user = UserResponse(id = "user_sns_001", name = "홍길동(SNS)", email = "sns_user@example.com")
-        return ApiResponse(result = LoginResponse(user = user, token = "fake_sns_token_xyz789", refreshToken = "fake_sns_refresh_xyz789"), error = null)
+        return ApiResponse(result = LoginResponse(user = user, accessToken = "fake_sns_token_xyz789", refreshToken = "fake_sns_refresh_xyz789"), error = null)
     }
 
     override suspend fun getUser(userId: String): ApiResponse<UserResponse> {
