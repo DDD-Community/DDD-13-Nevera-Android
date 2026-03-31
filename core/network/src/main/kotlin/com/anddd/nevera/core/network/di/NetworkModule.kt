@@ -21,15 +21,15 @@ object NetworkModule {
     private const val BASE_URL = "https://api.nevera.n-e.kr/"
     private const val TIMEOUT_SECONDS = 30L
 
-    @Provides
-    @Singleton
-    fun provideGson(): Gson = Gson()
-
     private val loggingInterceptor: HttpLoggingInterceptor =
         HttpLoggingInterceptor().apply {
             level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
                     else HttpLoggingInterceptor.Level.NONE
         }
+
+    @Provides
+    @Singleton
+    fun provideGson(): Gson = Gson()
 
     @Provides
     @Singleton
