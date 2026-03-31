@@ -8,6 +8,7 @@ import com.anddd.nevera.data.api.AuthApi
 import com.anddd.nevera.data.api.DbTestApi
 import com.anddd.nevera.data.api.UserApi
 import com.anddd.nevera.data.auth.AuthInterceptor
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -59,11 +60,11 @@ internal object NetworkModule {
     @Provides
     @Singleton
     @AuthRetrofit
-    fun provideAuthRetrofit(@AuthOkHttpClient client: OkHttpClient): Retrofit =
+    fun provideAuthRetrofit(@AuthOkHttpClient client: OkHttpClient, gson: Gson): Retrofit =
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 
     @Provides

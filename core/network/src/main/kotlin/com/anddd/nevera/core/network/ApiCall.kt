@@ -3,12 +3,14 @@ package com.anddd.nevera.core.network
 import com.anddd.nevera.core.common.ApiResponse
 import com.anddd.nevera.core.common.ApiResult
 import com.anddd.nevera.core.common.NetworkError
+import com.google.gson.Gson
 import kotlinx.coroutines.CancellationException
 import retrofit2.HttpException
 import java.io.IOException
 import java.net.SocketTimeoutException
 
 suspend inline fun <T> apiCall(
+    gson: Gson,
     crossinline block: suspend () -> ApiResponse<T>?
 ): ApiResult<T> {
     return try {
@@ -41,10 +43,15 @@ suspend inline fun <T> apiCall(
             NetworkError.TimeoutError()
         )
     } catch (e: HttpException) {
+        // 200 상태 코드 이외에 모든 응답 상황에서도 json error 응답을 내려주는 상태.
+        val errorBody = e.response()?.errorBody()?.string()
+        val apiError = errorBody?.let {
+            runCatching { gson.fromJson(it, ApiResponse::class.java)?.error }.getOrNull()
+        }
         ApiResult.Error(
             NetworkError.HttpError(
-                code = e.code(),
-                message = e.message()
+                code = apiError?.code ?: e.code(),
+                message = apiError?.message ?: e.message()
             )
         )
     } catch (e: IOException) {

@@ -1,6 +1,7 @@
 package com.anddd.nevera.core.network.di
 
 import com.anddd.nevera.core.network.BuildConfig
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,6 +20,10 @@ object NetworkModule {
 
     private const val BASE_URL = "https://api.nevera.n-e.kr/"
     private const val TIMEOUT_SECONDS = 30L
+
+    @Provides
+    @Singleton
+    fun provideGson(): Gson = Gson()
 
     private val loggingInterceptor: HttpLoggingInterceptor =
         HttpLoggingInterceptor().apply {
@@ -41,10 +46,10 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit =
+    fun provideRetrofit(okHttpClient: OkHttpClient, gson: Gson): Retrofit =
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 }
