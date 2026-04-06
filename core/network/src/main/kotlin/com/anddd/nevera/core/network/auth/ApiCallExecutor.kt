@@ -60,11 +60,11 @@ class ApiCallExecutor @Inject constructor(private val gson: Gson) {
         } catch (e: HttpException) {
             // 200 외 상태코드에서도 서버가 JSON 에러 바디를 내려주므로 파싱 시도.
             // 파싱 실패 시 HTTP 상태코드/메시지로 fallback.
-            val errorBody = e.response()?.errorBody()?.string()
-            val apiError = errorBody?.let {
-                runCatching { gson.fromJson(it, ApiResponse::class.java)?.error }
-                    .getOrNull()
-            }
+            val apiError = runCatching {
+                e.response()?.errorBody()?.charStream()?.use { reader ->
+                    gson.fromJson(reader, ApiResponse::class.java)?.error
+                }
+            }.getOrNull()
             ApiResult.Error(
                 NetworkError.HttpError(
                     code = apiError?.code ?: e.code(),
