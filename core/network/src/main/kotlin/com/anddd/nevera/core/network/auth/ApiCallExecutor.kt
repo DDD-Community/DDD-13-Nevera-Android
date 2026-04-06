@@ -79,14 +79,14 @@ class ApiCallExecutor @Inject constructor(private val gson: Gson) {
             ApiResult.Error(
                 NetworkError.NetworkConnectionError(throwable = e)
             )
-        } catch (t: Throwable) {
+        } catch (e: Exception) {
             if (BuildConfig.DEBUG) {
-                t.printStackTrace()
+                e.printStackTrace()
             }
             ApiResult.Error(
                 NetworkError.UnknownError(
-                    message = t.message,
-                    throwable = t
+                    message = e.message,
+                    throwable = e
                 )
             )
         }
