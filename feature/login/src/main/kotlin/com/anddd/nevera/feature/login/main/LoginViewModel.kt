@@ -1,10 +1,12 @@
 package com.anddd.nevera.feature.login.main
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anddd.nevera.core.common.ApiResult
 import com.anddd.nevera.domain.model.SnsProvider
 import com.anddd.nevera.domain.usecase.EmailLoginUseCase
+import com.anddd.nevera.domain.usecase.GoogleLoginUseCase
 import com.anddd.nevera.domain.usecase.SnsLoginUseCase
 import com.anddd.nevera.domain.usecase.validator.EmailValidationResult
 import com.anddd.nevera.domain.usecase.validator.PasswordValidationResult
@@ -23,7 +25,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val emailLoginUseCase: EmailLoginUseCase,
-    private val snsLoginUseCase: SnsLoginUseCase
+    private val snsLoginUseCase: SnsLoginUseCase,
+    private val googleLogin: GoogleLoginUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -48,6 +51,7 @@ class LoginViewModel @Inject constructor(
             when (val result = emailLoginUseCase(email, password)) {
                 is ApiResult.Success ->
                     _uiState.update { it.copy(status = LoginStatus.Success(result.data.user.id)) }
+
                 is ApiResult.Error -> {
                     _uiState.update { it.copy(status = LoginStatus.Idle) }
                     _sideEffect.send(LoginSideEffect.ShowErrorToast(result.error.message ?: "로그인에 실패했습니다."))
@@ -69,11 +73,24 @@ class LoginViewModel @Inject constructor(
             when (val result = snsLoginUseCase(provider, token)) {
                 is ApiResult.Success ->
                     _uiState.update { it.copy(status = LoginStatus.Success(result.data.user.id)) }
+
                 is ApiResult.Error -> {
                     _uiState.update { it.copy(status = LoginStatus.Idle) }
                     _sideEffect.send(LoginSideEffect.ShowErrorToast(result.error.message ?: "SNS 로그인에 실패했습니다."))
                 }
             }
+        }
+    }
+
+    fun onGoogleLogin() {
+        viewModelScope.launch {
+            googleLogin()
+                .onSuccess { token ->
+                    Log.d("LoginViewModel", "GoogleIdToken: $token")
+                }
+                .onFailure { t ->
+                    Log.e("LoginViewModel", "GoogleLogin failed", t)
+                }
         }
     }
 }

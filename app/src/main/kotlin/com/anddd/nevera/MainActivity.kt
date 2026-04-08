@@ -50,9 +50,6 @@ class MainActivity : ComponentActivity() {
                                     popUpTo(LOGIN_ROUTE) { inclusive = true }
                                 }
                             },
-                            onGoogleLoginClick = {
-                                // TODO: Google SDK 연동 후 LoginViewModel.snsLogin 호출
-                            },
                             onKakaoLoginClick = {
                                 // TODO: Kakao SDK 연동 후 LoginViewModel.snsLogin 호출
                             }
