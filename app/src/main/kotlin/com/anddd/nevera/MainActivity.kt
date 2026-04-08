@@ -38,14 +38,14 @@ class MainActivity : ComponentActivity() {
                                     popUpTo(SPLASH_ROUTE) { inclusive = true }
                                 }
                             },
-                            onNavigateToHome = { accessToken ->
+                            onNavigateToHome = {
                                 navController.navigate(HOME_ROUTE) {
                                     popUpTo(SPLASH_ROUTE) { inclusive = true }
                                 }
                             }
                         )
                         loginScreen(
-                            onLoginSuccess = { accessToken ->
+                            onLoginSuccess = {
                                 navController.navigate(HOME_ROUTE) {
                                     popUpTo(LOGIN_ROUTE) { inclusive = true }
                                 }
