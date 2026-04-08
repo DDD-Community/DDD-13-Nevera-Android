@@ -1,8 +1,21 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
 }
+
+val localProperties = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { load(it) }
+    }
+}
+
+fun Properties.requireNotBlank(key: String): String =
+    getProperty(key)?.trim()?.takeIf { it.isNotEmpty() }
+        ?: error("local.properties에 $key 가 없습니다")
 
 android {
     namespace = "com.anddd.nevera.data"
@@ -12,6 +25,9 @@ android {
         minSdk = 30
         consumerProguardFiles("consumer-rules.pro")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val googleClientId = localProperties.requireNotBlank("GOOGLE_WEB_CLIENT_ID")
+        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$googleClientId\"")
     }
 
     buildFeatures {
