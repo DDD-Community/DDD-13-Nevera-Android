@@ -1,9 +1,7 @@
 package com.anddd.nevera.data.di
 
-import com.anddd.nevera.data.repository.DbTestRepositoryImpl
 import com.anddd.nevera.data.repository.TokenRepositoryImpl
 import com.anddd.nevera.data.repository.UserRepositoryImpl
-import com.anddd.nevera.domain.repository.DbTestRepository
 import com.anddd.nevera.domain.repository.TokenRepository
 import com.anddd.nevera.domain.repository.UserRepository
 import dagger.Binds
@@ -19,10 +17,6 @@ internal abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindUserRepository(impl: UserRepositoryImpl): UserRepository
-
-    @Binds
-    @Singleton
-    abstract fun bindDbTestRepository(impl: DbTestRepositoryImpl): DbTestRepository
 
     @Binds
     @Singleton

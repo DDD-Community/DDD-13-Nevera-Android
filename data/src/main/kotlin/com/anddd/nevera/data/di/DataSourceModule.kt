@@ -1,18 +1,13 @@
 package com.anddd.nevera.data.di
 
-import com.anddd.nevera.data.datasource.DbTestDataSource
-import com.anddd.nevera.data.datasource.FakeDbTestDataSourceImpl
-import com.anddd.nevera.data.datasource.FakeSessionDataSourceImpl
 import com.anddd.nevera.data.datasource.FakeSessionDataSource
+import com.anddd.nevera.data.datasource.FakeSessionDataSourceImpl
 import com.anddd.nevera.data.datasource.FakeUserDataSourceImpl
-import com.anddd.nevera.data.datasource.LocalDbTestDataSource
 import com.anddd.nevera.data.datasource.LocalSessionDataSource
 import com.anddd.nevera.data.datasource.LocalSessionDataSourceImpl
 import com.anddd.nevera.data.datasource.LocalUserDataSource
-import com.anddd.nevera.data.datasource.RemoteDbTestDataSource
-import com.anddd.nevera.data.datasource.RemoteDbTestDataSourceImpl
-import com.anddd.nevera.data.datasource.RemoteUserDataSourceImpl
 import com.anddd.nevera.data.datasource.RemoteUserDataSource
+import com.anddd.nevera.data.datasource.RemoteUserDataSourceImpl
 import com.anddd.nevera.data.datasource.SessionDataSource
 import com.anddd.nevera.data.datasource.UserDataSource
 import dagger.Binds
@@ -34,16 +29,6 @@ internal abstract class DataSourceModule {
     @Singleton
     @RemoteUserDataSource
     abstract fun bindRemoteUserDataSource(impl: RemoteUserDataSourceImpl): UserDataSource
-
-    @Binds
-    @Singleton
-    @LocalDbTestDataSource
-    abstract fun bindLocalDbTestDataSource(impl: FakeDbTestDataSourceImpl): DbTestDataSource
-
-    @Binds
-    @Singleton
-    @RemoteDbTestDataSource
-    abstract fun bindRemoteDbTestDataSource(impl: RemoteDbTestDataSourceImpl): DbTestDataSource
 
     @Binds
     @Singleton
