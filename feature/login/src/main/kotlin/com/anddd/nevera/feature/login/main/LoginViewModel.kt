@@ -3,7 +3,6 @@ package com.anddd.nevera.feature.login.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anddd.nevera.core.common.ApiResult
-import com.anddd.nevera.domain.model.SnsProvider
 import com.anddd.nevera.domain.usecase.EmailLoginUseCase
 import com.anddd.nevera.domain.usecase.SnsLoginUseCase
 import com.anddd.nevera.domain.usecase.validator.EmailValidationResult
@@ -47,7 +46,7 @@ class LoginViewModel @Inject constructor(
             _uiState.update { it.copy(status = LoginStatus.Loading) }
             when (val result = emailLoginUseCase(email, password)) {
                 is ApiResult.Success ->
-                    _uiState.update { it.copy(status = LoginStatus.Success(result.data.user.id)) }
+                    _uiState.update { it.copy(status = LoginStatus.Success("")) }
                 is ApiResult.Error -> {
                     _uiState.update { it.copy(status = LoginStatus.Idle) }
                     _sideEffect.send(LoginSideEffect.ShowErrorToast(result.error.message ?: "로그인에 실패했습니다."))
@@ -63,12 +62,12 @@ class LoginViewModel @Inject constructor(
         return emailResult == EmailValidationResult.Valid && passwordResult is PasswordValidationResult.Valid
     }
 
-    fun snsLogin(provider: SnsProvider, token: String) {
+    fun snsLogin(token: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(status = LoginStatus.Loading) }
-            when (val result = snsLoginUseCase(provider, token)) {
+            when (val result = snsLoginUseCase(token)) {
                 is ApiResult.Success ->
-                    _uiState.update { it.copy(status = LoginStatus.Success(result.data.user.id)) }
+                    _uiState.update { it.copy(status = LoginStatus.Success("")) }
                 is ApiResult.Error -> {
                     _uiState.update { it.copy(status = LoginStatus.Idle) }
                     _sideEffect.send(LoginSideEffect.ShowErrorToast(result.error.message ?: "SNS 로그인에 실패했습니다."))
