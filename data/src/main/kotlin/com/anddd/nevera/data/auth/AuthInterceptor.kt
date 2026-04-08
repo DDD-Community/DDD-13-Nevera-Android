@@ -1,9 +1,8 @@
 package com.anddd.nevera.data.auth
 
 import com.anddd.nevera.core.network.auth.SessionEventBus
-import com.anddd.nevera.core.network.auth.TokenProvider
-import com.anddd.nevera.data.api.AuthApi
-import com.anddd.nevera.data.api.RefreshRequest
+import com.anddd.nevera.data.datasource.RefreshDataSource
+import com.anddd.nevera.data.datasource.TokenDataSource
 import dagger.Lazy
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
@@ -23,17 +22,17 @@ import javax.inject.Inject
  * 4. refresh API가 401을 반환하면 세션 만료로 간주하고 토큰을 삭제한 뒤 세션 만료 이벤트를 발행
  * 5. 그 외 갱신 실패는 예외를 그대로 전파 (apiCall이 변환)
  *
- * [AuthApi]는 [AuthInterceptor]가 없는 전용 [okhttp3.OkHttpClient]를 사용한다.
+ * [UserApi]는 [AuthInterceptor]가 없는 전용 [okhttp3.OkHttpClient]를 사용한다.
  * refresh 요청이 동일한 인터셉터를 통과하면 [refreshMutex]를 보유한 채 다시 mutex 획득을 시도하는
  * 데드락이 발생할 수 있기 때문이다.
  *
- * [TokenProvider]와 [AuthApi]는 Dagger [Lazy]로 주입한다.
+ * [TokenDataSource]와 [RefreshDataSource]는 Dagger [Lazy]로 주입한다.
  * OkHttpClient 생성 시점에 이 인터셉터가 먼저 만들어지면서 아직 완성되지 않은
  * 다른 싱글톤을 참조하는 순환 의존성 문제를 방지하기 위함이다.
  */
 internal class AuthInterceptor @Inject constructor(
-    private val tokenProvider: Lazy<TokenProvider>,
-    private val authApi: Lazy<AuthApi>,
+    private val tokenDataSource: Lazy<TokenDataSource>,
+    private val refreshDataSource: Lazy<RefreshDataSource>,
     private val sessionEventBus: SessionEventBus
 ) : Interceptor {
 
@@ -42,7 +41,7 @@ internal class AuthInterceptor @Inject constructor(
 
     // OkHttp Interceptor는 동기 API이므로, suspend 함수 호출을 위해 runBlocking을 사용한다.
     override fun intercept(chain: Interceptor.Chain): Response {
-        val tokenBefore = runBlocking { tokenProvider.get().getAccessToken() }
+        val tokenBefore = runBlocking { tokenDataSource.get().getAccessToken() }
         val request = chain.request()
         val authedRequest = request.newBuilder()
             .apply { tokenBefore?.let { header("Authorization", "Bearer $it") } }
@@ -54,7 +53,7 @@ internal class AuthInterceptor @Inject constructor(
         // 401 Unauthorized : 인증 필요 (토큰 없음·만료)
         return runBlocking {
             refreshMutex.withLock {
-                val tokenAfterLock = tokenProvider.get().getAccessToken()
+                val tokenAfterLock = tokenDataSource.get().getAccessToken()
 
                 if (tokenAfterLock != null && tokenAfterLock != tokenBefore) {
                     // response 불필요
@@ -68,22 +67,25 @@ internal class AuthInterceptor @Inject constructor(
                     )
                 }
 
-                val refreshToken = tokenProvider.get().getRefreshToken()
+                val refreshToken = tokenDataSource.get().getRefreshToken()
                 if (refreshToken != null) {
                     // response 불필요
                     response.close()
 
                     try {
-                        val newTokens = authApi.get().refresh(RefreshRequest(refreshToken))
-                        tokenProvider.get().setTokens(newTokens.accessToken, newTokens.refreshToken)
+                        val response = refreshDataSource.get().refresh(refreshToken)
+                        val newTokenResult = response.result
+                            ?: throw IllegalStateException("Refresh response has no result")
+                        tokenDataSource.get().setTokens(newTokenResult.accessToken, newTokenResult.refreshToken)
+
                         return@withLock chain.proceed(
                             request.newBuilder()
-                                .header("Authorization", "Bearer ${newTokens.accessToken}")
+                                .header("Authorization", "Bearer ${newTokenResult.accessToken}")
                                 .build()
                         )
                     } catch (e: HttpException) {
                         if (e.code() == UNAUTHORIZED_STATUS_CODE) {
-                            tokenProvider.get().clearTokens()
+                            tokenDataSource.get().clearLoginData()
                             sessionEventBus.emitSessionExpired()
                         }
                         throw e
