@@ -18,7 +18,7 @@ fun HomeScreen(
     when (val state = uiState) {
         is HomeUiState.Loading -> LoadingContent()
         is HomeUiState.Error -> ErrorContent(message = state.message)
-        is HomeUiState.Success -> HomeContent(user = state.user)
+        is HomeUiState.Success -> HomeContent()
     }
 }
 

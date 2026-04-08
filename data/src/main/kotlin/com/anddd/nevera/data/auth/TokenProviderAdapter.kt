@@ -13,9 +13,20 @@ import javax.inject.Inject
 internal class TokenProviderAdapter @Inject constructor(
     private val tokenRepository: TokenRepository
 ) : TokenProvider {
-    override suspend fun getAccessToken(): String? = tokenRepository.getToken()
+    override suspend fun getAccessToken(): String? = tokenRepository.getAccessToken()
+
+    override suspend fun setAccessToken(accessToken: String) {
+        tokenRepository.setAccessToken(accessToken)
+    }
+
     override suspend fun getRefreshToken(): String? = tokenRepository.getRefreshToken()
-    override suspend fun saveTokens(accessToken: String, refreshToken: String) =
-        tokenRepository.saveTokens(accessToken, refreshToken)
-    override suspend fun clearTokens() = tokenRepository.clearSession()
+
+    override suspend fun setRefreshToken(refreshToken: String) {
+        tokenRepository.setRefreshToken(refreshToken)
+    }
+
+    override suspend fun setTokens(accessToken: String, refreshToken: String) =
+        tokenRepository.setTokens(accessToken, refreshToken)
+
+    override suspend fun clearTokens() = tokenRepository.clearLoginData()
 }

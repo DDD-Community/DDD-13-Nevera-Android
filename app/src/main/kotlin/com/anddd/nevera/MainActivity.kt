@@ -10,10 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
-import com.anddd.nevera.feature.main.home.navigation.homeRoute
 import com.anddd.nevera.feature.main.home.navigation.homeScreen
 import com.anddd.nevera.feature.login.main.navigation.LOGIN_ROUTE
 import com.anddd.nevera.feature.login.main.navigation.loginScreen
+import com.anddd.nevera.feature.main.home.navigation.HOME_ROUTE
 import com.anddd.nevera.feature.splash.main.navigation.SPLASH_ROUTE
 import com.anddd.nevera.feature.splash.main.navigation.splashScreen
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,15 +38,15 @@ class MainActivity : ComponentActivity() {
                                     popUpTo(SPLASH_ROUTE) { inclusive = true }
                                 }
                             },
-                            onNavigateToHome = { userId ->
-                                navController.navigate(homeRoute(userId)) {
+                            onNavigateToHome = { accessToken ->
+                                navController.navigate(HOME_ROUTE) {
                                     popUpTo(SPLASH_ROUTE) { inclusive = true }
                                 }
                             }
                         )
                         loginScreen(
-                            onLoginSuccess = { userId ->
-                                navController.navigate(homeRoute(userId)) {
+                            onLoginSuccess = { accessToken ->
+                                navController.navigate(HOME_ROUTE) {
                                     popUpTo(LOGIN_ROUTE) { inclusive = true }
                                 }
                             },

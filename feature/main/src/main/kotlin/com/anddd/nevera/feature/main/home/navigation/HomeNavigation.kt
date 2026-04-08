@@ -6,15 +6,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.anddd.nevera.feature.main.home.HomeScreen
 
-const val HOME_ROUTE = "home/{userId}"
-
-fun homeRoute(userId: String) = "home/$userId"
+const val HOME_ROUTE = "home"
 
 fun NavGraphBuilder.homeScreen() {
-    composable(
-        route = HOME_ROUTE,
-        arguments = listOf(navArgument("userId") { type = NavType.StringType })
-    ) {
+    composable(route = HOME_ROUTE) {
         HomeScreen()
     }
 }

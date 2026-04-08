@@ -20,7 +20,7 @@ class EmailLoginUseCase @Inject constructor(
     suspend operator fun invoke(email: String, password: String): ApiResult<LoginResult> {
         val result = userRepository.login(email, password)
         if (result is ApiResult.Success) {
-            tokenRepository.saveSession(result.data.token, result.data.refreshToken, result.data.user.id)
+            tokenRepository.setTokens(result.data.token, result.data.refreshToken)
         }
         return result
     }

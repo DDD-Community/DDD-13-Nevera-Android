@@ -75,7 +75,7 @@ internal class AuthInterceptor @Inject constructor(
 
                     try {
                         val newTokens = authApi.get().refresh(RefreshRequest(refreshToken))
-                        tokenProvider.get().saveTokens(newTokens.accessToken, newTokens.refreshToken)
+                        tokenProvider.get().setTokens(newTokens.accessToken, newTokens.refreshToken)
                         return@withLock chain.proceed(
                             request.newBuilder()
                                 .header("Authorization", "Bearer ${newTokens.accessToken}")

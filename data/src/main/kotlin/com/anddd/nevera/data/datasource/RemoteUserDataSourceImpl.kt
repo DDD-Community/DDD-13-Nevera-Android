@@ -5,7 +5,6 @@ import com.anddd.nevera.data.api.UserApi
 import com.anddd.nevera.data.model.LoginRequest
 import com.anddd.nevera.data.model.LoginResponse
 import com.anddd.nevera.data.model.SnsLoginRequest
-import com.anddd.nevera.data.model.UserResponse
 import javax.inject.Inject
 
 internal class RemoteUserDataSourceImpl @Inject constructor(
@@ -17,7 +16,4 @@ internal class RemoteUserDataSourceImpl @Inject constructor(
 
     override suspend fun snsLogin(provider: String, token: String): ApiResponse<LoginResponse> =
         userApi.snsLogin(SnsLoginRequest(provider, token))
-
-    override suspend fun getUser(userId: String): ApiResponse<UserResponse> =
-        userApi.getUser(userId)
 }

@@ -9,7 +9,6 @@ import com.anddd.nevera.data.mapper.toDomain
 import com.anddd.nevera.domain.model.LoginResult
 import com.anddd.nevera.domain.model.LoginType
 import com.anddd.nevera.domain.model.SnsProvider
-import com.anddd.nevera.domain.model.User
 import com.anddd.nevera.domain.repository.UserRepository
 import javax.inject.Inject
 
@@ -19,6 +18,7 @@ internal class UserRepositoryImpl @Inject constructor(
     private val apiCall: ApiCallExecutor
 ) : UserRepository {
 
+    // TODO :: 임시
     override suspend fun login(
         email: String,
         password: String
@@ -27,16 +27,12 @@ internal class UserRepositoryImpl @Inject constructor(
             .mapSuccess { it.toDomain(LoginType.EMAIL) }
     }
 
+    // TODO :: 임시
     override suspend fun snsLogin(
         provider: SnsProvider,
         token: String
     ): ApiResult<LoginResult> {
         return apiCall { userDataSource.snsLogin(provider.apiValue, token) }
             .mapSuccess { it.toDomain(LoginType.SNS) }
-    }
-
-    override suspend fun getUser(userId: String): ApiResult<User>  {
-        return apiCall { userDataSource.getUser(userId) }
-            .mapSuccess { it.toDomain() }
     }
 }

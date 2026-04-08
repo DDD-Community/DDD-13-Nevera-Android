@@ -25,11 +25,11 @@ class SplashViewModel @Inject constructor(
 
     private fun checkAutoLogin(startTime: Long) {
         viewModelScope.launch {
-            val userId = checkAutoLoginUseCase()
+            val accessToken = checkAutoLoginUseCase()
             val remaining = remainingDelay(startTime)
             if (remaining > 0) delay(remaining)
             _uiState.value = when {
-                userId != null -> SplashUiState.NavigateToHome(userId)
+                accessToken != null -> SplashUiState.NavigateToHome(accessToken)
                 else -> SplashUiState.NavigateToLogin
             }
         }

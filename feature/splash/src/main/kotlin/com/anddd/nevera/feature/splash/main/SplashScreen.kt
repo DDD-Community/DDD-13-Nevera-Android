@@ -19,7 +19,7 @@ fun SplashScreen(
     LaunchedEffect(uiState) {
         when (val state = uiState) {
             is SplashUiState.NavigateToLogin -> onNavigateToLogin()
-            is SplashUiState.NavigateToHome -> onNavigateToHome(state.userId)
+            is SplashUiState.NavigateToHome -> onNavigateToHome(state.accessToken)
             SplashUiState.Loading -> Unit
         }
     }

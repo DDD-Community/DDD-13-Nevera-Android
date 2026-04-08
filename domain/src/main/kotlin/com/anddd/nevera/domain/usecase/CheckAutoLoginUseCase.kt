@@ -8,7 +8,7 @@ class CheckAutoLoginUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(): String? {
-        val (token, _, userId) = tokenRepository.getSession()
-        return if (token != null) userId else null
+        val token = tokenRepository.getAccessToken()
+        return if (!token.isNullOrEmpty()) token else null
     }
 }

@@ -23,9 +23,4 @@ internal class FakeUserDataSourceImpl @Inject constructor() : UserDataSource {
         val user = UserResponse(id = "user_sns_001", name = "홍길동(SNS)", email = "sns_user@example.com")
         return ApiResponse(result = LoginResponse(user = user, accessToken = "fake_sns_token_xyz789", refreshToken = "fake_sns_refresh_xyz789"), error = null)
     }
-
-    override suspend fun getUser(userId: String): ApiResponse<UserResponse> {
-        delay(300)
-        return ApiResponse(result = UserResponse(id = userId, name = "홍길동", email = "user@example.com"), error = null)
-    }
 }
