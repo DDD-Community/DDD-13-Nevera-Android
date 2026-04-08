@@ -4,7 +4,7 @@ import com.anddd.nevera.data.datasource.AndroidKeyStoreProvider
 import com.anddd.nevera.data.datasource.KeyProvider
 import com.anddd.nevera.data.datasource.TokenDataSourceImpl
 import com.anddd.nevera.data.datasource.RefreshDataSource
-import com.anddd.nevera.data.datasource.RemoteRefreshDataSourceImpl
+import com.anddd.nevera.data.datasource.RefreshDataSourceImpl
 import com.anddd.nevera.data.datasource.TokenDataSource
 import com.anddd.nevera.data.datasource.UserDataSourceImpl
 import com.anddd.nevera.data.datasource.UserDataSource
@@ -32,5 +32,5 @@ internal abstract class DataSourceModule {
 
     @Binds
     @Singleton
-    abstract fun bindRefreshDataSource(impl: RemoteRefreshDataSourceImpl): RefreshDataSource
+    abstract fun bindRefreshDataSource(impl: RefreshDataSourceImpl): RefreshDataSource
 }

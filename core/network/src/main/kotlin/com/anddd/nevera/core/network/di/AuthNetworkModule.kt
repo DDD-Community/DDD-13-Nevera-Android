@@ -33,8 +33,8 @@ internal object AuthNetworkModule {
 
     @Provides
     @Singleton
-    @AuthOkHttpClient
-    fun provideAuthOkHttpClient(): OkHttpClient =
+    @RefreshOkHttpClient
+    fun provideRefreshOkHttpClient(): OkHttpClient =
         OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
             .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
@@ -44,9 +44,9 @@ internal object AuthNetworkModule {
 
     @Provides
     @Singleton
-    @AuthOkHttpClient
-    fun provideAuthRetrofit(
-        @AuthOkHttpClient okHttpClient: OkHttpClient,
+    @RefreshRetrofit
+    fun provideRefreshRetrofit(
+        @RefreshOkHttpClient okHttpClient: OkHttpClient,
         gson: Gson,
     ): Retrofit =
         Retrofit.Builder()

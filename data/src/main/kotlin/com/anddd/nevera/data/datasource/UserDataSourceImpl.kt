@@ -1,6 +1,5 @@
 package com.anddd.nevera.data.datasource
 
-import com.anddd.nevera.core.network.di.AuthOkHttpClient
 import com.anddd.nevera.core.network.model.ApiResponse
 import com.anddd.nevera.data.api.UserApi
 import com.anddd.nevera.data.model.auth.EmailRequest
@@ -12,7 +11,7 @@ import com.anddd.nevera.data.model.auth.SnsLoginRequest
 import javax.inject.Inject
 
 internal class UserDataSourceImpl @Inject constructor(
-    @param:AuthOkHttpClient private val userApi: UserApi
+    private val userApi: UserApi
 ) : UserDataSource {
 
     override suspend fun login(
