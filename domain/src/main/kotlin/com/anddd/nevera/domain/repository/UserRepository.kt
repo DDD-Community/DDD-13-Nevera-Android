@@ -12,7 +12,7 @@ interface UserRepository {
         name: String,
         passwordMatch: Boolean
     ): ApiResult<Unit>
-    suspend fun googleLogin(idToken: String): ApiResult<LoginResult>
+    suspend fun snsLogin(idToken: String): ApiResult<LoginResult>
     suspend fun emailRequest(email: String): ApiResult<Unit>
     suspend fun emailVerify(email: String, authCode: String): ApiResult<Unit>
     suspend fun logout(): ApiResult<Unit>

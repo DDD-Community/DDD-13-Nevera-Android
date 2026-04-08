@@ -21,6 +21,9 @@ internal class CryptoHelper @Inject constructor(
 
     fun decrypt(value: String): String {
         val combined = Base64.getDecoder().decode(value)
+        require(combined.size > GCM_IV_LENGTH) {
+            "Invalid encrypted data: too short to contain IV"
+        }
         val iv = combined.copyOfRange(0, GCM_IV_LENGTH)
         val encrypted = combined.copyOfRange(GCM_IV_LENGTH, combined.size)
         val cipher = Cipher.getInstance("AES/GCM/NoPadding")

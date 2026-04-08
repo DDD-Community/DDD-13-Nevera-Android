@@ -12,7 +12,7 @@ internal interface UserDataSource {
         name: String,
         passwordMatch: Boolean
     ): ApiResponse<String>
-    suspend fun googleLogin(idToken: String): ApiResponse<TokenResponse>
+    suspend fun snsLogin(idToken: String): ApiResponse<TokenResponse>
     suspend fun emailRequest(email: String): ApiResponse<String>
     suspend fun emailVerify(email: String, authCode: String): ApiResponse<String>
     suspend fun logout(): ApiResponse<String>

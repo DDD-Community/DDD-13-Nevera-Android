@@ -21,7 +21,7 @@ internal object ApiModule {
     @AuthOkHttpClient
     @Provides
     @Singleton
-    fun provideAuthApi(@AuthOkHttpClient retrofit: Retrofit): UserApi =
+    fun provideAuthenticatedUserApi(@AuthOkHttpClient retrofit: Retrofit): UserApi =
         retrofit.create(UserApi::class.java)
 
 }

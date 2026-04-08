@@ -30,8 +30,8 @@ internal class UserRepositoryImpl @Inject constructor(
             .mapSuccess { Unit }
     }
 
-    override suspend fun googleLogin(idToken: String): ApiResult<LoginResult> {
-        return apiCall { authDataSource.googleLogin(idToken) }
+    override suspend fun snsLogin(idToken: String): ApiResult<LoginResult> {
+        return apiCall { authDataSource.snsLogin(idToken) }
             .mapSuccess { it.toDomain() }
     }
 

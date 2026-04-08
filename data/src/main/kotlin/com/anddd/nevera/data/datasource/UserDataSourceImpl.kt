@@ -40,7 +40,7 @@ internal class UserDataSourceImpl @Inject constructor(
         return userApi.signup(request)
     }
 
-    override suspend fun googleLogin(idToken: String): ApiResponse<TokenResponse> {
+    override suspend fun snsLogin(idToken: String): ApiResponse<TokenResponse> {
         val request = SnsLoginRequest(idToken)
         return userApi.googleLogin(request)
     }

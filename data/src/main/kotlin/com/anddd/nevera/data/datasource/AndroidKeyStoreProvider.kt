@@ -16,7 +16,9 @@ internal class AndroidKeyStoreProvider @Inject constructor() : KeyProvider {
     @Synchronized
     override fun getKey(): SecretKey {
         if (keyStore.containsAlias(KEY_ALIAS)) {
-            return (keyStore.getEntry(KEY_ALIAS, null) as KeyStore.SecretKeyEntry).secretKey
+            val entry = keyStore.getEntry(KEY_ALIAS, null) as? KeyStore.SecretKeyEntry
+                ?: throw IllegalStateException("KeyStore entry '$KEY_ALIAS' is not a SecretKeyEntry")
+            return entry.secretKey
         }
         return KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore").apply {
             init(
