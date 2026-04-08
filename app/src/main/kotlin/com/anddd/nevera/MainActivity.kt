@@ -45,19 +45,22 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                         loginScreen(
-                            onLoginSuccess = {
+                            onNavigateToHome = {
                                 navController.navigate(HOME_ROUTE) {
                                     popUpTo(LOGIN_ROUTE) { inclusive = true }
                                 }
                             },
                             onGoogleLoginClick = {
                                 // TODO: Google SDK 연동 후 LoginViewModel.snsLogin 호출
-                            },
-                            onKakaoLoginClick = {
-                                // TODO: Kakao SDK 연동 후 LoginViewModel.snsLogin 호출
                             }
                         )
-                        homeScreen()
+                        homeScreen(
+                            onNavigateToLogin = {
+                                navController.navigate(LOGIN_ROUTE) {
+                                    popUpTo(HOME_ROUTE) { inclusive = true }
+                                }
+                            }
+                        )
                     }
                 }
             }

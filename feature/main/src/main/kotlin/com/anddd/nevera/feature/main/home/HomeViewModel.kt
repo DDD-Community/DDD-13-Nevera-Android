@@ -2,32 +2,46 @@ package com.anddd.nevera.feature.main.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.anddd.nevera.core.common.ApiResult
+import com.anddd.nevera.domain.usecase.LogoutUseCase
+import com.anddd.nevera.domain.usecase.WithdrawUseCase
+import com.anddd.nevera.feature.main.home.model.HomeSideEffect
 import com.anddd.nevera.feature.main.home.model.HomeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor() : ViewModel() {
+class HomeViewModel @Inject constructor(
+    private val logoutUseCase: LogoutUseCase,
+    private val withdrawUseCase: WithdrawUseCase,
+) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
+    private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Success)
     val uiState: StateFlow<HomeUiState> = _uiState
 
-    init {
-        loadUser()
+    private val _sideEffect = Channel<HomeSideEffect>(Channel.BUFFERED)
+    val sideEffect = _sideEffect.receiveAsFlow()
+
+    fun logout() {
+        viewModelScope.launch {
+            when (logoutUseCase()) {
+                is ApiResult.Success -> _sideEffect.send(HomeSideEffect.NavigateToLogin)
+                is ApiResult.Error -> Unit
+            }
+        }
     }
 
-    private fun loadUser() {
+    fun withdraw() {
         viewModelScope.launch {
-            // TODO :: 임시
-            _uiState.value = HomeUiState.Loading
-
-            delay(700)
-
-            _uiState.value = HomeUiState.Success
+            when (withdrawUseCase()) {
+                is ApiResult.Success -> _sideEffect.send(HomeSideEffect.NavigateToLogin)
+                is ApiResult.Error -> Unit
+            }
         }
     }
 }

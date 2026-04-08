@@ -5,6 +5,8 @@ import com.anddd.nevera.domain.usecase.validator.PasswordValidationResult
 
 data class LoginUiState(
     val status: LoginStatus = LoginStatus.Idle,
+    val email: String = "",
+    val password: String = "",
     val emailValidation: EmailValidationResult? = null,
     val passwordValidation: PasswordValidationResult? = null
 )

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anddd.nevera.core.common.ApiResult
 import com.anddd.nevera.domain.usecase.EmailLoginUseCase
+import com.anddd.nevera.domain.usecase.SignupUseCase
 import com.anddd.nevera.domain.usecase.SnsLoginUseCase
 import com.anddd.nevera.domain.usecase.ValidateEmailUseCase
 import com.anddd.nevera.domain.usecase.ValidatePasswordUseCase
@@ -24,6 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val emailLoginUseCase: EmailLoginUseCase,
+    private val signupUseCase: SignupUseCase,
     private val snsLoginUseCase: SnsLoginUseCase,
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
@@ -32,15 +34,25 @@ class LoginViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState
 
-    private val _sideEffect = Channel<LoginSideEffect>(Channel.Factory.BUFFERED)
+    private val _sideEffect = Channel<LoginSideEffect>(Channel.BUFFERED)
     val sideEffect = _sideEffect.receiveAsFlow()
 
     fun onEmailChange(email: String) {
-        _uiState.update { it.copy(emailValidation = validateEmailUseCase(email)) }
+        _uiState.update {
+            it.copy(
+                email = email,
+                emailValidation = validateEmailUseCase(email)
+            )
+        }
     }
 
     fun onPasswordChange(password: String) {
-        _uiState.update { it.copy(passwordValidation = validatePasswordUseCase(password)) }
+        _uiState.update {
+            it.copy(
+                password = password,
+                passwordValidation = validatePasswordUseCase(password)
+            )
+        }
     }
 
     fun login(email: String, password: String) {
@@ -49,11 +61,37 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(status = LoginStatus.Loading) }
             when (val result = emailLoginUseCase(email, password)) {
-                is ApiResult.Success ->
+                is ApiResult.Success -> {
                     _uiState.update { it.copy(status = LoginStatus.Success("")) }
+                    _sideEffect.send(LoginSideEffect.MoveToHomeScreen)
+                }
                 is ApiResult.Error -> {
                     _uiState.update { it.copy(status = LoginStatus.Idle) }
                     _sideEffect.send(LoginSideEffect.ShowErrorToast(result.error.message ?: "로그인에 실패했습니다."))
+                }
+            }
+        }
+    }
+
+    fun signup(email: String, password: String, name: String) {
+        if (!validateInputs(email, password) && name.isNotEmpty()) return
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(status = LoginStatus.Loading) }
+            when (val result = signupUseCase(email, password, name)) {
+                is ApiResult.Success -> {
+                    _uiState.update {
+                        it.copy(
+                            email = "",
+                            password = "",
+                            status = LoginStatus.Idle
+                        )
+                    }
+                    _sideEffect.send(LoginSideEffect.ShowToast("회원가입이 완료되었습니다."))
+                }
+                is ApiResult.Error -> {
+                    _uiState.update { it.copy(status = LoginStatus.Idle) }
+                    _sideEffect.send(LoginSideEffect.ShowErrorToast(result.error.message ?: "회원가입에 실패했습니다."))
                 }
             }
         }
@@ -70,8 +108,10 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(status = LoginStatus.Loading) }
             when (val result = snsLoginUseCase(token)) {
-                is ApiResult.Success ->
+                is ApiResult.Success -> {
                     _uiState.update { it.copy(status = LoginStatus.Success("")) }
+                    _sideEffect.send(LoginSideEffect.MoveToHomeScreen)
+                }
                 is ApiResult.Error -> {
                     _uiState.update { it.copy(status = LoginStatus.Idle) }
                     _sideEffect.send(LoginSideEffect.ShowErrorToast(result.error.message ?: "SNS 로그인에 실패했습니다."))
