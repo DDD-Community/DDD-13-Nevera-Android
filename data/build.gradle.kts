@@ -46,6 +46,9 @@ dependencies {
     implementation(libs.okhttp.logging)
     implementation(libs.datastore.preferences)
 
+    // Google Login
+    implementation(libs.bundles.google.login)
+
     testImplementation(libs.junit.jupiter)
     testRuntimeOnly(libs.junit.jupiter.engine)
     testRuntimeOnly(libs.junit.platform.launcher)
