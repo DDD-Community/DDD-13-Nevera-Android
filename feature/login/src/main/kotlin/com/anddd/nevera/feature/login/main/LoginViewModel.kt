@@ -1,6 +1,5 @@
 package com.anddd.nevera.feature.login.main
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anddd.nevera.core.common.ApiResult
@@ -85,12 +84,6 @@ class LoginViewModel @Inject constructor(
     fun onGoogleLogin() {
         viewModelScope.launch {
             googleLogin()
-                .onSuccess { token ->
-                    Log.d("LoginViewModel", "GoogleIdToken: $token")
-                }
-                .onFailure { t ->
-                    Log.e("LoginViewModel", "GoogleLogin failed", t)
-                }
         }
     }
 }

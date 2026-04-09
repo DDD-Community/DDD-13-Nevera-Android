@@ -7,11 +7,7 @@ class GoogleLoginUseCase @Inject constructor(
     private val googleLoginRepository: GoogleLoginRepository,
 ) {
 
-    suspend operator fun invoke(): Result<String> {
-        return try {
-            Result.success(googleLoginRepository.googleLogin())
-        } catch (e: Exception){
-            Result.failure(e)
-        }
+    suspend operator fun invoke() {
+        googleLoginRepository.googleLogin()
     }
 }
