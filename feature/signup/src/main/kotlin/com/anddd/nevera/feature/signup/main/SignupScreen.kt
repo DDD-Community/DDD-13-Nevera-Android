@@ -3,10 +3,13 @@ package com.anddd.nevera.feature.signup.main
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import com.anddd.nevera.core.ui.component.LoadingContent
 import com.anddd.nevera.feature.signup.main.component.SignupContent
 import com.anddd.nevera.feature.signup.main.model.SignupSideEffect
@@ -18,16 +21,17 @@ fun SignupScreen(
     viewModel: SignupViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val uiState by viewModel.uiState.collectAsState()
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        viewModel.sideEffect.collect { effect ->
-            when (effect) {
-                is SignupSideEffect.ShowToast ->
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
-                is SignupSideEffect.ShowErrorToast ->
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
-                is SignupSideEffect.MoveToLoginScreen -> onNavigateToLogin()
+    LaunchedEffect(lifecycleOwner, viewModel, context, onNavigateToLogin) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.sideEffect.collect { effect ->
+                when (effect) {
+                    is SignupSideEffect.ShowToast ->
+                        Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                    is SignupSideEffect.MoveToLoginScreen -> onNavigateToLogin()
+                }
             }
         }
     }
