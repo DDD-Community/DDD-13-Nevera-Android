@@ -82,7 +82,7 @@ class SignupViewModel @Inject constructor(
                 }
                 is ApiResult.Error -> {
                     _uiState.update { it.copy(status = SignupStatus.Idle) }
-                    _sideEffect.send(SignupSideEffect.ShowErrorToast(result.error.message ?: "인증 요청에 실패했습니다."))
+                    _sideEffect.send(SignupSideEffect.ShowToast(result.error.message ?: "인증 요청에 실패했습니다."))
                 }
             }
         }
@@ -99,7 +99,7 @@ class SignupViewModel @Inject constructor(
                 }
                 is ApiResult.Error -> {
                     _uiState.update { it.copy(status = SignupStatus.Idle) }
-                    _sideEffect.send(SignupSideEffect.ShowErrorToast(result.error.message ?: "인증 확인에 실패했습니다."))
+                    _sideEffect.send(SignupSideEffect.ShowToast(result.error.message ?: "인증 확인에 실패했습니다."))
                 }
             }
         }
@@ -118,7 +118,7 @@ class SignupViewModel @Inject constructor(
                 }
                 is ApiResult.Error -> {
                     _uiState.update { it.copy(status = SignupStatus.Idle) }
-                    _sideEffect.send(SignupSideEffect.ShowErrorToast(result.error.message ?: "회원가입에 실패했습니다."))
+                    _sideEffect.send(SignupSideEffect.ShowToast(result.error.message ?: "회원가입에 실패했습니다."))
                 }
             }
         }
