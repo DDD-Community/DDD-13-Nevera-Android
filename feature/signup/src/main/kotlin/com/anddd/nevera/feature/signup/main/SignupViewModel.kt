@@ -66,8 +66,8 @@ class SignupViewModel @Inject constructor(
     }
 
     fun requestEmailVerification() {
-        val email = _uiState.value.email
-        val emailResult = validateEmailUseCase(email)
+        val requestedEmail = _uiState.value.email
+        val emailResult = validateEmailUseCase(requestedEmail)
         if (emailResult != EmailValidationResult.Valid) {
             _uiState.update { it.copy(emailValidation = emailResult) }
             return
@@ -75,9 +75,14 @@ class SignupViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.update { it.copy(status = SignupStatus.Loading) }
-            when (val result = emailRequestUseCase(email)) {
+            when (val result = emailRequestUseCase(requestedEmail)) {
                 is ApiResult.Success -> {
-                    _uiState.update { it.copy(status = SignupStatus.Idle, isEmailRequestSent = true) }
+                    _uiState.update { current ->
+                        if (current.email == requestedEmail)
+                            current.copy(status = SignupStatus.Idle, isEmailRequestSent = true)
+                        else
+                            current.copy(status = SignupStatus.Idle)
+                    }
                     _sideEffect.send(SignupSideEffect.ShowToast("인증 코드가 이메일로 발송되었습니다."))
                 }
                 is ApiResult.Error -> {
@@ -89,12 +94,18 @@ class SignupViewModel @Inject constructor(
     }
 
     fun verifyAuthCode() {
-        val state = _uiState.value
+        val requestedEmail = _uiState.value.email
+        val requestedAuthCode = _uiState.value.authCode
         viewModelScope.launch {
             _uiState.update { it.copy(status = SignupStatus.Loading) }
-            when (val result = emailVerifyUseCase(state.email, state.authCode)) {
+            when (val result = emailVerifyUseCase(requestedEmail, requestedAuthCode)) {
                 is ApiResult.Success -> {
-                    _uiState.update { it.copy(status = SignupStatus.Idle, isEmailVerified = true) }
+                    _uiState.update { current ->
+                        if (current.email == requestedEmail)
+                            current.copy(status = SignupStatus.Idle, isEmailVerified = true)
+                        else
+                            current.copy(status = SignupStatus.Idle)
+                    }
                     _sideEffect.send(SignupSideEffect.ShowToast("이메일 인증이 완료되었습니다."))
                 }
                 is ApiResult.Error -> {
@@ -107,6 +118,14 @@ class SignupViewModel @Inject constructor(
 
     fun signup() {
         val state = _uiState.value
+        if (state.name.isBlank()) {
+            _sideEffect.trySend(SignupSideEffect.ShowToast("이름을 입력해주세요."))
+            return
+        }
+        if (!state.isEmailVerified) {
+            _sideEffect.trySend(SignupSideEffect.ShowToast("이메일 인증을 완료해주세요."))
+            return
+        }
         if (!validateInputs(state.email, state.password)) return
 
         viewModelScope.launch {

@@ -139,7 +139,7 @@ internal fun SignupContent(
         Button(
             onClick = onSignupClick,
             modifier = Modifier.fillMaxWidth(),
-            enabled = isEmailVerified && !isLoading
+            enabled = isEmailVerified && !isLoading && name.isNotBlank() && passwordErrors.isEmpty()
         ) {
             Text("회원가입")
         }
