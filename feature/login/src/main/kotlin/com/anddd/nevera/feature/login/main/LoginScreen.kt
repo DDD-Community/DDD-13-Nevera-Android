@@ -15,6 +15,7 @@ import com.anddd.nevera.feature.login.main.model.LoginStatus
 @Composable
 fun LoginScreen(
     onNavigateToHome: () -> Unit,
+    onNavigateToSignup: () -> Unit,
     onGoogleLoginClick: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
@@ -43,7 +44,7 @@ fun LoginScreen(
             onEmailChange = viewModel::onEmailChange,
             onPasswordChange = viewModel::onPasswordChange,
             onLoginClick = { viewModel.login(uiState.email, uiState.password) },
-            onSignupClick = { /* move signup screen */ },
+            onSignupClick = onNavigateToSignup,
             onGoogleLoginClick = onGoogleLoginClick
         )
     }

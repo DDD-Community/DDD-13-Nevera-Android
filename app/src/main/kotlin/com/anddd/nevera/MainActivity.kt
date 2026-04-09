@@ -14,6 +14,8 @@ import com.anddd.nevera.feature.main.home.navigation.homeScreen
 import com.anddd.nevera.feature.login.main.navigation.LOGIN_ROUTE
 import com.anddd.nevera.feature.login.main.navigation.loginScreen
 import com.anddd.nevera.feature.main.home.navigation.HOME_ROUTE
+import com.anddd.nevera.feature.signup.main.navigation.SIGNUP_ROUTE
+import com.anddd.nevera.feature.signup.main.navigation.signupScreen
 import com.anddd.nevera.feature.splash.main.navigation.SPLASH_ROUTE
 import com.anddd.nevera.feature.splash.main.navigation.splashScreen
 import dagger.hilt.android.AndroidEntryPoint
@@ -50,8 +52,16 @@ class MainActivity : ComponentActivity() {
                                     popUpTo(LOGIN_ROUTE) { inclusive = true }
                                 }
                             },
+                            onNavigateToSignup = {
+                                navController.navigate(SIGNUP_ROUTE)
+                            },
                             onGoogleLoginClick = {
                                 // TODO: Google SDK 연동 후 LoginViewModel.snsLogin 호출
+                            }
+                        )
+                        signupScreen(
+                            onNavigateToLogin = {
+                                navController.popBackStack()
                             }
                         )
                         homeScreen(

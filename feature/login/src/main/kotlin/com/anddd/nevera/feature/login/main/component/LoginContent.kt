@@ -70,7 +70,7 @@ internal fun LoginContent(
             visualTransformation = PasswordVisualTransformation(),
             isError = passwordErrors.isNotEmpty(),
             supportingText = if (passwordErrors.isNotEmpty()) {
-                { passwordErrors.forEach { ValidationErrorText(it) } }
+                { ValidationErrorText(passwordErrors.first()) }
             } else null
         )
         Spacer(modifier = Modifier.height(16.dp))
