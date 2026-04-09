@@ -31,7 +31,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             when (logoutUseCase()) {
                 is ApiResult.Success -> _sideEffect.send(HomeSideEffect.NavigateToLogin)
-                is ApiResult.Error -> Unit
+                is ApiResult.Error -> _sideEffect.send(HomeSideEffect.ShowError("로그아웃에 실패했습니다."))
             }
         }
     }
@@ -40,7 +40,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             when (withdrawUseCase()) {
                 is ApiResult.Success -> _sideEffect.send(HomeSideEffect.NavigateToLogin)
-                is ApiResult.Error -> Unit
+                is ApiResult.Error -> _sideEffect.send(HomeSideEffect.ShowError("회원 탈퇴에 실패했습니다."))
             }
         }
     }
