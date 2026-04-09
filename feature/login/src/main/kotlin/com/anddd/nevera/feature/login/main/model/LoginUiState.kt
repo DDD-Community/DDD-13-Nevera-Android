@@ -14,5 +14,5 @@ data class LoginUiState(
 sealed interface LoginStatus {
     data object Idle : LoginStatus
     data object Loading : LoginStatus
-    data class Success(val userId: String) : LoginStatus
+    data object Success : LoginStatus
 }

@@ -60,7 +60,7 @@ class LoginViewModel @Inject constructor(
             _uiState.update { it.copy(status = LoginStatus.Loading) }
             when (val result = emailLoginUseCase(email, password)) {
                 is ApiResult.Success -> {
-                    _uiState.update { it.copy(status = LoginStatus.Success("")) }
+                    _uiState.update { it.copy(status = LoginStatus.Success) }
                     _sideEffect.send(LoginSideEffect.MoveToHomeScreen)
                 }
                 is ApiResult.Error -> {
@@ -83,7 +83,7 @@ class LoginViewModel @Inject constructor(
             _uiState.update { it.copy(status = LoginStatus.Loading) }
             when (val result = snsLoginUseCase(token)) {
                 is ApiResult.Success -> {
-                    _uiState.update { it.copy(status = LoginStatus.Success("")) }
+                    _uiState.update { it.copy(status = LoginStatus.Success) }
                     _sideEffect.send(LoginSideEffect.MoveToHomeScreen)
                 }
                 is ApiResult.Error -> {
