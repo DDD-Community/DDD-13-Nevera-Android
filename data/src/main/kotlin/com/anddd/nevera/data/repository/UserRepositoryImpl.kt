@@ -14,8 +14,8 @@ internal class UserRepositoryImpl @Inject constructor(
     private val apiCall: ApiCallExecutor
 ) : UserRepository {
 
-    override suspend fun login(email: String, password: String): ApiResult<LoginResult> {
-        return apiCall { authDataSource.login(email, password) }
+    override suspend fun loginWithEmail(email: String, password: String): ApiResult<LoginResult> {
+        return apiCall { authDataSource.loginWithEmail(email, password) }
             .mapSuccess { it.toDomain() }
     }
 
@@ -28,8 +28,8 @@ internal class UserRepositoryImpl @Inject constructor(
             .mapSuccess { Unit }
     }
 
-    override suspend fun login(idToken: String): ApiResult<LoginResult> {
-        return apiCall { authDataSource.login(idToken) }
+    override suspend fun loginWithGoogle(idToken: String): ApiResult<LoginResult> {
+        return apiCall { authDataSource.loginWithGoogle(idToken) }
             .mapSuccess { it.toDomain() }
     }
 

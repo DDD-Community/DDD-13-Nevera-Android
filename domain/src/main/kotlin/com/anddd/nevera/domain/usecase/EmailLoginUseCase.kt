@@ -13,7 +13,7 @@ class EmailLoginUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(email: String, password: String): ApiResult<LoginResult> {
-        val result = userRepository.login(email, password)
+        val result = userRepository.loginWithEmail(email, password)
         if (result is ApiResult.Success) {
             tokenRepository.setTokens(
                 accessToken = result.data.accessToken,

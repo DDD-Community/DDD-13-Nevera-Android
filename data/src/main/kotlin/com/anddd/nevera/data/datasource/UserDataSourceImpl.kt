@@ -14,7 +14,7 @@ internal class UserDataSourceImpl @Inject constructor(
     private val userApi: UserApi
 ) : UserDataSource {
 
-    override suspend fun login(
+    override suspend fun loginWithEmail(
         email: String,
         password: String
     ): ApiResponse<TokenResponse> {
@@ -31,7 +31,7 @@ internal class UserDataSourceImpl @Inject constructor(
         return userApi.signup(request)
     }
 
-    override suspend fun login(idToken: String): ApiResponse<TokenResponse> {
+    override suspend fun loginWithGoogle(idToken: String): ApiResponse<TokenResponse> {
         val request = SnsLoginRequest(idToken)
         return userApi.googleLogin(request)
     }

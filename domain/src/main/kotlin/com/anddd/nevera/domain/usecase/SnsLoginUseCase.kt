@@ -8,12 +8,12 @@ import com.anddd.nevera.domain.repository.TokenRepository
 import javax.inject.Inject
 
 class SnsLoginUseCase @Inject constructor(
-    private val authRepository: UserRepository,
+    private val userRepository: UserRepository,
     private val tokenRepository: TokenRepository
 ) {
 
     suspend operator fun invoke(token: String): ApiResult<LoginResult> {
-        val result = authRepository.login(token)
+        val result = userRepository.loginWithGoogle(token)
         if (result is ApiResult.Success) {
             tokenRepository.setTokens(
                 result.data.accessToken,
