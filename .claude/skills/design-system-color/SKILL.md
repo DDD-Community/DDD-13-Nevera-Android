@@ -23,11 +23,20 @@ user-invocable: false
 
 새 토큰을 제안하기 전에 먼저 아래 기존 토큰으로 해결 가능한지 확인한다:
 
-- Background: `backgroundPrimary`, `backgroundSecondary`
-- Text: `textPrimary`, `textSecondary`, `textTertiary`, `textDisabled`, `textInverse`
-- Brand: `brandPrimary`, `onBrandPrimary`, `brandPrimarySubtle`, `onBrandPrimarySubtle`
-- Disabled: `disabledContainer`, `disabledContent`
-- Border / Divider: `borderDefault`, `divider`
+- **Text**: `textPrimary`, `textSecondary`, `textTertiary`, `textQuaternary`, `textCaption`, `textDisabled`, `textInverse`
+- **Icon**: `iconPrimary`, `iconSecondary`, `iconTertiary`, `iconQuaternary`, `iconCaption`, `iconDisabled`, `iconInverse`
+- **Primary** (브랜드 주색 — 오렌지): `primaryWeak`, `primaryNormal`, `primaryStrong`, `primaryHeavy`
+- **Secondary** (보조색 — 그레이): `secondaryWeak`, `secondaryNormal`, `secondaryStrong`, `secondaryHeavy`
+- **Accent**: `accentOrange`, `accentRed`, `accentYellow`, `accentLime`, `accentGreen`, `accentCyan`, `accentBlue`, `accentPurple`
+- **Background**: `backgroundPrimary`, `backgroundSecondary`, `backgroundTertiary`, `backgroundInverse`
+- **Surface**: `surfacePrimary`, `surfaceSecondary`, `surfaceTertiary`, `surfaceQuaternary`, `surfaceInverse`, `surfaceBrandPrimary`
+- **Border**: `borderNormal`, `borderStrong`
+- **Divider**: `dividerNormal`, `dividerStrong`
+- **Status — Information**: `statusInformationGhost`, `statusInformationWeak`, `statusInformationNormal`, `statusInformationStrong`
+- **Status — Positive**: `statusPositiveGhost`, `statusPositiveWeak`, `statusPositiveNormal`, `statusPositiveStrong`
+- **Status — Negative**: `statusNegativeGhost`, `statusNegativeWeak`, `statusNegativeNormal`, `statusNegativeStrong`
+- **Status — Warning**: `statusWarningGhost`, `statusWarningWeak`, `statusWarningNormal`, `statusWarningStrong`
+- **Notification**: `notificationRed`
 
 ## 판단 절차
 
@@ -39,12 +48,21 @@ user-invocable: false
 4. 기존 토큰만으로 역할을 명확하게 표현할 수 없을 때만 새 시맨틱 토큰을 제안한다.
 
 예시:
-- 화면 또는 기본 표면 배경 -> `NeveraTheme.colors.backgroundPrimary` 또는 `backgroundSecondary`
-- 본문 주요 텍스트 -> `NeveraTheme.colors.textPrimary`
-- 보조 텍스트 -> `NeveraTheme.colors.textSecondary` 또는 `textTertiary`
-- 비활성화된 콘텐츠 -> `NeveraTheme.colors.disabledContent` 또는 `textDisabled`
-- 주요 액션이나 브랜드 강조 영역 -> `NeveraTheme.colors.brandPrimary`
-- 보더와 구분선 -> `NeveraTheme.colors.borderDefault` 또는 `divider`
+- 화면 또는 기본 표면 배경 → `NeveraTheme.colors.backgroundPrimary` / `backgroundSecondary` / `backgroundTertiary`
+- 카드·시트 등 표면 → `NeveraTheme.colors.surfacePrimary` / `surfaceSecondary`
+- 본문 주요 텍스트 → `NeveraTheme.colors.textPrimary`
+- 보조 텍스트 → `NeveraTheme.colors.textSecondary` / `textTertiary` / `textQuaternary`
+- 캡션·힌트 텍스트 → `NeveraTheme.colors.textCaption`
+- 비활성화된 텍스트 → `NeveraTheme.colors.textDisabled`
+- 비활성화된 아이콘 → `NeveraTheme.colors.iconDisabled`
+- 주요 액션·브랜드 강조 → `NeveraTheme.colors.primaryNormal` (더 강하게: `primaryStrong`)
+- 보더 → `NeveraTheme.colors.borderNormal` / `borderStrong`
+- 구분선 → `NeveraTheme.colors.dividerNormal` / `dividerStrong`
+- 성공/긍정 상태 → `NeveraTheme.colors.statusPositiveNormal`
+- 오류/부정 상태 → `NeveraTheme.colors.statusNegativeNormal`
+- 경고 상태 → `NeveraTheme.colors.statusWarningNormal`
+- 정보 상태 → `NeveraTheme.colors.statusInformationNormal`
+- 알림 뱃지 → `NeveraTheme.colors.notificationRed`
 
 ## 새 컬러가 필요할 때
 
