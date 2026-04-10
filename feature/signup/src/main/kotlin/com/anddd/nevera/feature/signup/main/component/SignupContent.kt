@@ -60,9 +60,11 @@ internal fun SignupContent(
     var isConfirmPasswordVisible by remember { mutableStateOf(false) }
     val isLoading = status is SignupStatus.Loading
     val emailError = emailValidation.toErrorMessage()
+    val isEmailValid = emailValidation == EmailValidationResult.Valid
     val passwordErrors = passwordValidation.toErrorMessages()
     val confirmPasswordError =
         if (confirmPassword.isNotBlank() && !isPasswordMatched) "비밀번호가 일치하지 않습니다" else null
+    val canRequestEmailVerification = !isLoading && !isEmailVerified && isEmailValid
 
     Column(
         modifier = Modifier
@@ -104,7 +106,7 @@ internal fun SignupContent(
             Spacer(modifier = Modifier.width(8.dp))
             OutlinedButton(
                 onClick = onRequestEmailVerification,
-                enabled = !isLoading,
+                enabled = canRequestEmailVerification,
                 modifier = Modifier.align(Alignment.CenterVertically)
             ) {
                 Text("인증 요청")
