@@ -83,7 +83,14 @@ class LoginViewModel @Inject constructor(
 
     fun onGoogleLogin() {
         viewModelScope.launch {
-            googleLogin()
+            when(googleLogin()){
+                is ApiResult.Success -> {
+                    _sideEffect.send(LoginSideEffect.NavigateToMain)
+                }
+                is ApiResult.Error -> {
+                    _sideEffect.send(LoginSideEffect.ShowErrorToast("로그인 실패"))
+                }
+            }
         }
     }
 }

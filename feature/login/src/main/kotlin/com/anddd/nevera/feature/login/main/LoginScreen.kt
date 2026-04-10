@@ -26,6 +26,8 @@ fun LoginScreen(
             when (effect) {
                 is LoginSideEffect.ShowErrorToast ->
                     Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+
+                is LoginSideEffect.NavigateToMain -> onLoginSuccess("")
             }
         }
     }
