@@ -77,6 +77,7 @@ internal fun LoginContent(
             label = { Text("비밀번호") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             visualTransformation = if (isPasswordVisible) {
                 VisualTransformation.None
             } else {
