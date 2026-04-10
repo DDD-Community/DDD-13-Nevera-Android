@@ -65,6 +65,7 @@ internal fun SignupContent(
     val confirmPasswordError =
         if (confirmPassword.isNotBlank() && !isPasswordMatched) "비밀번호가 일치하지 않습니다" else null
     val canRequestEmailVerification = !isLoading && !isEmailVerified && isEmailValid
+    val canVerifyAuthCode = !isLoading && !isEmailVerified && authCode.isNotBlank()
 
     Column(
         modifier = Modifier
@@ -131,7 +132,7 @@ internal fun SignupContent(
                 Spacer(modifier = Modifier.width(8.dp))
                 OutlinedButton(
                     onClick = onVerifyAuthCode,
-                    enabled = !isLoading && !isEmailVerified
+                    enabled = canVerifyAuthCode
                 ) {
                     Text(if (isEmailVerified) "인증 완료" else "인증 확인")
                 }
