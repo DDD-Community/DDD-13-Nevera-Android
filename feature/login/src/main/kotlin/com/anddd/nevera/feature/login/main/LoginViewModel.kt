@@ -4,11 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anddd.nevera.core.common.ApiResult
 import com.anddd.nevera.domain.usecase.EmailLoginUseCase
-import com.anddd.nevera.domain.usecase.SnsLoginUseCase
+import com.anddd.nevera.domain.usecase.GoogleLoginUseCase
 import com.anddd.nevera.domain.usecase.ValidateEmailUseCase
 import com.anddd.nevera.domain.usecase.ValidatePasswordUseCase
 import com.anddd.nevera.domain.usecase.validator.EmailValidationResult
 import com.anddd.nevera.domain.usecase.validator.PasswordValidationResult
+import com.anddd.nevera.feature.login.BuildConfig
 import com.anddd.nevera.feature.login.main.model.LoginSideEffect
 import com.anddd.nevera.feature.login.main.model.LoginStatus
 import com.anddd.nevera.feature.login.main.model.LoginUiState
@@ -24,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val emailLoginUseCase: EmailLoginUseCase,
-    private val snsLoginUseCase: SnsLoginUseCase,
+    private val googleLoginUseCase: GoogleLoginUseCase,
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
 ) : ViewModel() {
@@ -53,7 +54,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun login(email: String, password: String) {
+    fun loginWithEmail(email: String, password: String) {
         if (!validateInputs(email, password)) return
 
         viewModelScope.launch {
@@ -78,10 +79,10 @@ class LoginViewModel @Inject constructor(
         return emailResult == EmailValidationResult.Valid && passwordResult is PasswordValidationResult.Valid
     }
 
-    fun snsLogin(token: String) {
+    fun loginWithGoogle(token: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(status = LoginStatus.Loading) }
-            when (val result = snsLoginUseCase(token)) {
+            when (val result = googleLoginUseCase(token)) {
                 is ApiResult.Success -> {
                     _uiState.update { it.copy(status = LoginStatus.Success) }
                     _sideEffect.send(LoginSideEffect.MoveToHomeScreen)
@@ -91,6 +92,14 @@ class LoginViewModel @Inject constructor(
                     _sideEffect.send(LoginSideEffect.ShowErrorToast(result.error.message ?: "SNS 로그인에 실패했습니다."))
                 }
             }
+        }
+    }
+
+    fun handleGoogleLoginFailure(throwable: Throwable) {
+        viewModelScope.launch {
+            if (BuildConfig.DEBUG) throwable.printStackTrace()
+            _uiState.update { it.copy(status = LoginStatus.Idle) }
+            _sideEffect.send(LoginSideEffect.ShowErrorToast("SNS 로그인에 실패했습니다."))
         }
     }
 }

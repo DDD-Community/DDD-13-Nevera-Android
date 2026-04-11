@@ -54,9 +54,6 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToSignup = {
                                 navController.navigate(SIGNUP_ROUTE)
-                            },
-                            onGoogleLoginClick = {
-                                // TODO: Google SDK 연동 후 LoginViewModel.snsLogin 호출
                             }
                         )
                         signupScreen(
