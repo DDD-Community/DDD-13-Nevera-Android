@@ -1,30 +1,45 @@
 package com.anddd.nevera.data.repository
 
-import com.anddd.nevera.data.datasource.LocalSessionDataSource
-import com.anddd.nevera.data.datasource.SessionDataSource
+import com.anddd.nevera.data.datasource.TokenDataSource
+import com.anddd.nevera.domain.model.LoginProvider
 import com.anddd.nevera.domain.repository.TokenRepository
 import javax.inject.Inject
 
 internal class TokenRepositoryImpl @Inject constructor(
-    @param:LocalSessionDataSource private val sessionDataSource: SessionDataSource
+    private val tokenDataSource: TokenDataSource
 ) : TokenRepository {
 
     override suspend fun getAccessToken(): String? =
-        sessionDataSource.getAccessToken()
+        tokenDataSource.getAccessToken()
 
     override suspend fun setAccessToken(accessToken: String) =
-        sessionDataSource.setAccessToken(accessToken)
+        tokenDataSource.setAccessToken(accessToken)
 
     override suspend fun getRefreshToken(): String? =
-        sessionDataSource.getRefreshToken()
+        tokenDataSource.getRefreshToken()
 
     override suspend fun setRefreshToken(refreshToken: String) =
-        sessionDataSource.setRefreshToken(refreshToken)
+        tokenDataSource.setRefreshToken(refreshToken)
 
     override suspend fun setTokens(accessToken: String, refreshToken: String) {
-        setAccessToken(accessToken)
-        setRefreshToken(refreshToken)
+        tokenDataSource.setTokens(accessToken, refreshToken)
     }
 
-    override suspend fun clearLoginData() = sessionDataSource.clearLoginData()
+    override suspend fun getProvider(): LoginProvider? {
+        return tokenDataSource.getProvider()
+    }
+
+    override suspend fun setProvider(provider: LoginProvider) {
+        tokenDataSource.setProvider(provider)
+    }
+
+    override suspend fun setLoginInfo(
+        accessToken: String,
+        refreshToken: String,
+        provider: LoginProvider
+    ) {
+        tokenDataSource.setLoginInfo(accessToken, refreshToken, provider)
+    }
+
+    override suspend fun clearLoginInfo() = tokenDataSource.clearLoginInfo()
 }

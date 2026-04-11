@@ -14,9 +14,9 @@ import com.anddd.nevera.feature.login.main.model.LoginStatus
 
 @Composable
 fun LoginScreen(
-    onLoginSuccess: (String) -> Unit,
+    onNavigateToHome: () -> Unit,
+    onNavigateToSignup: () -> Unit,
     onGoogleLoginClick: () -> Unit,
-    onKakaoLoginClick: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -25,29 +25,27 @@ fun LoginScreen(
     LaunchedEffect(Unit) {
         viewModel.sideEffect.collect { effect ->
             when (effect) {
+                is LoginSideEffect.ShowToast ->
+                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
                 is LoginSideEffect.ShowErrorToast ->
                     Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                is LoginSideEffect.MoveToHomeScreen -> onNavigateToHome()
             }
-        }
-    }
-
-    LaunchedEffect(uiState.status) {
-        if (uiState.status is LoginStatus.Success) {
-            onLoginSuccess((uiState.status as LoginStatus.Success).userId)
         }
     }
 
     when (uiState.status) {
         is LoginStatus.Loading -> LoadingContent()
         else -> LoginContent(
+            email = uiState.email,
+            password = uiState.password,
             emailValidation = uiState.emailValidation,
             passwordValidation = uiState.passwordValidation,
             onEmailChange = viewModel::onEmailChange,
             onPasswordChange = viewModel::onPasswordChange,
-            onLoginClick = { email, password -> viewModel.login(email, password) },
-            onGoogleLoginClick = onGoogleLoginClick,
-            onKakaoLoginClick = onKakaoLoginClick
+            onLoginClick = { viewModel.login(uiState.email, uiState.password) },
+            onSignupClick = onNavigateToSignup,
+            onGoogleLoginClick = onGoogleLoginClick
         )
     }
 }
-

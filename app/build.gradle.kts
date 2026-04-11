@@ -60,6 +60,7 @@ dependencies {
     implementation(project(":feature:splash"))
     implementation(project(":feature:login"))
     implementation(project(":feature:main"))
+    implementation(project(":feature:signup"))
 
     implementation(project(":data"))
 

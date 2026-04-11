@@ -8,4 +8,12 @@ annotation class AuthInterceptorQualifier
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class AuthOkHttpClient
+annotation class RefreshOkHttpClient
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class RefreshRetrofit
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class RefreshApi

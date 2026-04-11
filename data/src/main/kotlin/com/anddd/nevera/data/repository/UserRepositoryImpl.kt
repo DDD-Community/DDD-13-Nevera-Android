@@ -3,36 +3,53 @@ package com.anddd.nevera.data.repository
 import com.anddd.nevera.core.common.ApiResult
 import com.anddd.nevera.core.common.mapSuccess
 import com.anddd.nevera.core.network.auth.ApiCallExecutor
-import com.anddd.nevera.data.datasource.LocalUserDataSource
 import com.anddd.nevera.data.datasource.UserDataSource
 import com.anddd.nevera.data.mapper.toDomain
 import com.anddd.nevera.domain.model.LoginResult
-import com.anddd.nevera.domain.model.LoginType
-import com.anddd.nevera.domain.model.SnsProvider
 import com.anddd.nevera.domain.repository.UserRepository
 import javax.inject.Inject
 
 internal class UserRepositoryImpl @Inject constructor(
-    // 추후 @RemoteUserDataSource로 교체
-    @param:LocalUserDataSource private val userDataSource: UserDataSource,
+    private val authDataSource: UserDataSource,
     private val apiCall: ApiCallExecutor
 ) : UserRepository {
 
-    // TODO :: 임시
-    override suspend fun login(
-        email: String,
-        password: String
-    ): ApiResult<LoginResult> {
-        return apiCall { userDataSource.login(email, password) }
-            .mapSuccess { it.toDomain(LoginType.EMAIL) }
+    override suspend fun loginWithEmail(email: String, password: String): ApiResult<LoginResult> {
+        return apiCall { authDataSource.loginWithEmail(email, password) }
+            .mapSuccess { it.toDomain() }
     }
 
-    // TODO :: 임시
-    override suspend fun snsLogin(
-        provider: SnsProvider,
-        token: String
-    ): ApiResult<LoginResult> {
-        return apiCall { userDataSource.snsLogin(provider.apiValue, token) }
-            .mapSuccess { it.toDomain(LoginType.SNS) }
+    override suspend fun signup(
+        email: String,
+        password: String,
+        name: String
+    ): ApiResult<Unit> {
+        return apiCall { authDataSource.signup(email, password, name) }
+            .mapSuccess { Unit }
+    }
+
+    override suspend fun loginWithGoogle(idToken: String): ApiResult<LoginResult> {
+        return apiCall { authDataSource.loginWithGoogle(idToken) }
+            .mapSuccess { it.toDomain() }
+    }
+
+    override suspend fun emailRequest(email: String): ApiResult<Unit> {
+        return apiCall { authDataSource.emailRequest(email) }
+            .mapSuccess { Unit }
+    }
+
+    override suspend fun emailVerify(email: String, authCode: String): ApiResult<Unit> {
+        return apiCall { authDataSource.emailVerify(email, authCode) }
+            .mapSuccess { Unit }
+    }
+
+    override suspend fun logout(): ApiResult<Unit> {
+        return apiCall { authDataSource.logout() }
+            .mapSuccess { Unit }
+    }
+
+    override suspend fun withdraw(): ApiResult<Unit> {
+        return apiCall { authDataSource.withdraw() }
+            .mapSuccess { Unit }
     }
 }
