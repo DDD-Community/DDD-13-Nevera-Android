@@ -22,7 +22,7 @@ import javax.inject.Inject
  * 4. refresh API가 401을 반환하면 세션 만료로 간주하고 토큰을 삭제한 뒤 세션 만료 이벤트를 발행
  * 5. 그 외 갱신 실패는 예외를 그대로 전파 (apiCall이 변환)
  *
- * [UserApi]는 [AuthInterceptor]가 없는 전용 [okhttp3.OkHttpClient]를 사용한다.
+ * [RefreshDataSource]는 [AuthInterceptor]가 없는 전용 [okhttp3.OkHttpClient]를 사용한다.
  * refresh 요청이 동일한 인터셉터를 통과하면 [refreshMutex]를 보유한 채 다시 mutex 획득을 시도하는
  * 데드락이 발생할 수 있기 때문이다.
  *
