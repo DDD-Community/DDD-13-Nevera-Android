@@ -15,10 +15,8 @@ import javax.inject.Inject
 
 class GoogleAuthClient @Inject constructor() {
 
-    suspend fun getIdToken(
-        activity: Activity,
-        credentialManager: CredentialManager,
-    ): String {
+    suspend fun getIdToken(activity: Activity): String {
+        val credentialManager = CredentialManager.create(activity)
         val request = buildSignInRequest()
         val response = credentialManager.getCredential(context = activity, request = request)
         return extractIdToken(response)
