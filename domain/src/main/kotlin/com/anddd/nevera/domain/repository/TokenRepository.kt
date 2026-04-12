@@ -1,6 +1,6 @@
 package com.anddd.nevera.domain.repository
 
-import com.anddd.nevera.domain.model.LoginProvider
+import com.anddd.nevera.domain.model.auth.LoginProvider
 
 interface TokenRepository {
     suspend fun getAccessToken(): String?

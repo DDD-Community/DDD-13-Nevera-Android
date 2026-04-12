@@ -29,9 +29,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
-import com.anddd.nevera.domain.usecase.validator.EmailValidationResult
-import com.anddd.nevera.domain.usecase.validator.PasswordValidationError
-import com.anddd.nevera.domain.usecase.validator.PasswordValidationResult
+import com.anddd.nevera.domain.model.validation.EmailValidationResult
+import com.anddd.nevera.domain.model.validation.PasswordValidationError
+import com.anddd.nevera.domain.model.validation.PasswordValidationResult
 import com.anddd.nevera.feature.signup.main.model.SignupStatus
 
 @Composable

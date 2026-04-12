@@ -1,4 +1,4 @@
-package com.anddd.nevera.domain.model
+package com.anddd.nevera.domain.model.auth
 
 enum class LoginProvider(val providerName: String) {
     EMAIL("email"),

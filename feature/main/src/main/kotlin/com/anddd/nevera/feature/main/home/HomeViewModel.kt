@@ -3,8 +3,8 @@ package com.anddd.nevera.feature.main.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anddd.nevera.core.common.ApiResult
-import com.anddd.nevera.domain.usecase.LogoutUseCase
-import com.anddd.nevera.domain.usecase.WithdrawUseCase
+import com.anddd.nevera.domain.usecase.auth.LogoutUseCase
+import com.anddd.nevera.domain.usecase.auth.WithdrawUseCase
 import com.anddd.nevera.feature.main.home.model.HomeSideEffect
 import com.anddd.nevera.feature.main.home.model.HomeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel

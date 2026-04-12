@@ -1,4 +1,4 @@
-package com.anddd.nevera.domain.model
+package com.anddd.nevera.domain.model.auth
 
 data class LoginResult(
     val accessToken: String,

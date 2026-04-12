@@ -1,7 +1,7 @@
 package com.anddd.nevera.feature.login.main.model
 
-import com.anddd.nevera.domain.usecase.validator.EmailValidationResult
-import com.anddd.nevera.domain.usecase.validator.PasswordValidationResult
+import com.anddd.nevera.domain.model.validation.EmailValidationResult
+import com.anddd.nevera.domain.model.validation.PasswordValidationResult
 
 data class LoginUiState(
     val status: LoginStatus = LoginStatus.Idle,

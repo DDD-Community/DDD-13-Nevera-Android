@@ -1,6 +1,6 @@
 package com.anddd.nevera.data.datasource
 
-import com.anddd.nevera.domain.model.LoginProvider
+import com.anddd.nevera.domain.model.auth.LoginProvider
 
 internal interface TokenDataSource {
     suspend fun getAccessToken(): String?

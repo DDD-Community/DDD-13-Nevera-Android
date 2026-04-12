@@ -1,10 +1,14 @@
-package com.anddd.nevera.domain.usecase.validator
+package com.anddd.nevera.domain.usecase.validation
 
+import com.anddd.nevera.domain.model.validation.PasswordValidationError
+import com.anddd.nevera.domain.model.validation.PasswordValidationResult
 import javax.inject.Inject
 
-class PasswordValidator @Inject constructor() {
+class ValidatePasswordUseCase @Inject constructor() {
 
-    fun validate(password: String): PasswordValidationResult {
+    operator fun invoke(password: String): PasswordValidationResult = validate(password)
+
+    private fun validate(password: String): PasswordValidationResult {
         if (password.isBlank()) return PasswordValidationResult.Empty
 
         val errors = buildList {
@@ -16,25 +20,11 @@ class PasswordValidator @Inject constructor() {
         }
 
         return if (errors.isEmpty()) PasswordValidationResult.Valid
-               else PasswordValidationResult.Invalid(errors)
+        else PasswordValidationResult.Invalid(errors)
     }
 
     companion object {
         private const val MIN_LENGTH = 8
         private const val SPECIAL_CHARS = "!@#\$%^&*()_+\\-=\\[\\]{}|;':\",./<>?"
     }
-}
-
-sealed interface PasswordValidationResult {
-    data object Valid : PasswordValidationResult
-    data object Empty : PasswordValidationResult
-    data class Invalid(val errors: List<PasswordValidationError>) : PasswordValidationResult
-}
-
-sealed interface PasswordValidationError {
-    data class TooShort(val minLength: Int) : PasswordValidationError
-    data object MissingUppercase : PasswordValidationError
-    data object MissingLowercase : PasswordValidationError
-    data object MissingDigit : PasswordValidationError
-    data object MissingSpecialChar : PasswordValidationError
 }

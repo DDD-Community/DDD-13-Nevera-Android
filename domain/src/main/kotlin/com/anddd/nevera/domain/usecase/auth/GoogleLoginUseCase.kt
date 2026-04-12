@@ -1,8 +1,8 @@
-package com.anddd.nevera.domain.usecase
+package com.anddd.nevera.domain.usecase.auth
 
 import com.anddd.nevera.core.common.ApiResult
-import com.anddd.nevera.domain.model.LoginResult
-import com.anddd.nevera.domain.model.LoginProvider
+import com.anddd.nevera.domain.model.auth.LoginResult
+import com.anddd.nevera.domain.model.auth.LoginProvider
 import com.anddd.nevera.domain.repository.UserRepository
 import com.anddd.nevera.domain.repository.TokenRepository
 import javax.inject.Inject

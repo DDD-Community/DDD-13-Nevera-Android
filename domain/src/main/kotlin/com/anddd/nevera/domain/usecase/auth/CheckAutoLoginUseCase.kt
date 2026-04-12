@@ -1,4 +1,4 @@
-package com.anddd.nevera.domain.usecase
+package com.anddd.nevera.domain.usecase.auth
 
 import com.anddd.nevera.domain.repository.TokenRepository
 import javax.inject.Inject

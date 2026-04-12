@@ -1,7 +1,7 @@
 package com.anddd.nevera.data.repository
 
 import com.anddd.nevera.data.datasource.TokenDataSource
-import com.anddd.nevera.domain.model.LoginProvider
+import com.anddd.nevera.domain.model.auth.LoginProvider
 import com.anddd.nevera.domain.repository.TokenRepository
 import javax.inject.Inject
 
