@@ -1,6 +1,8 @@
 package com.anddd.nevera.domain.usecase.auth
 
 import com.anddd.nevera.core.common.NeveraResult
+import com.anddd.nevera.core.common.mapSuccess
+import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.domain.model.auth.LoginError
 import com.anddd.nevera.domain.model.auth.LoginProvider
 import com.anddd.nevera.domain.repository.TokenRepository
@@ -19,16 +21,13 @@ class EmailLoginUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(email: String, password: String): NeveraResult<Unit, LoginError> {
-        return when (val result = userRepository.loginWithEmail(email, password)) {
-            is NeveraResult.Success -> {
+        return userRepository.loginWithEmail(email, password)
+            .onSuccess { result ->
                 tokenRepository.setLoginInfo(
-                    accessToken = result.data.accessToken,
-                    refreshToken = result.data.refreshToken,
+                    accessToken = result.accessToken,
+                    refreshToken = result.refreshToken,
                     provider = LoginProvider.EMAIL
                 )
-                NeveraResult.Success(Unit)
-            }
-            is NeveraResult.Failure -> result
-        }
+            }.mapSuccess { Unit }
     }
 }

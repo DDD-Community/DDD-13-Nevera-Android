@@ -2,7 +2,8 @@ package com.anddd.nevera.feature.signup.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.anddd.nevera.core.common.ApiResult
+import com.anddd.nevera.core.common.onFailure
+import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.domain.usecase.email.EmailRequestUseCase
 import com.anddd.nevera.domain.usecase.email.EmailVerifyUseCase
 import com.anddd.nevera.domain.usecase.auth.SignupUseCase
@@ -88,8 +89,8 @@ class SignupViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.update { it.copy(status = SignupStatus.Loading) }
-            when (val result = emailRequestUseCase(requestedEmail)) {
-                is ApiResult.Success -> {
+            emailRequestUseCase(requestedEmail)
+                .onSuccess {
                     _uiState.update { current ->
                         if (current.email == requestedEmail)
                             current.copy(status = SignupStatus.Idle, isEmailRequestSent = true)
@@ -98,11 +99,10 @@ class SignupViewModel @Inject constructor(
                     }
                     _sideEffect.send(SignupSideEffect.ShowToast("인증 코드가 이메일로 발송되었습니다."))
                 }
-                is ApiResult.Error -> {
+                .onFailure { cause ->
                     _uiState.update { it.copy(status = SignupStatus.Idle) }
-                    _sideEffect.send(SignupSideEffect.ShowToast(result.error.message ?: "인증 요청에 실패했습니다."))
+                    _sideEffect.send(SignupSideEffect.ShowToast(cause.message ?: "인증 요청에 실패했습니다."))
                 }
-            }
         }
     }
 
@@ -116,8 +116,8 @@ class SignupViewModel @Inject constructor(
         val requestedAuthCode = state.authCode
         viewModelScope.launch {
             _uiState.update { it.copy(status = SignupStatus.Loading) }
-            when (val result = emailVerifyUseCase(requestedEmail, requestedAuthCode)) {
-                is ApiResult.Success -> {
+            emailVerifyUseCase(requestedEmail, requestedAuthCode)
+                .onSuccess {
                     _uiState.update { current ->
                         if (current.email == requestedEmail)
                             current.copy(status = SignupStatus.Idle, isEmailVerified = true)
@@ -126,11 +126,10 @@ class SignupViewModel @Inject constructor(
                     }
                     _sideEffect.send(SignupSideEffect.ShowToast("이메일 인증이 완료되었습니다."))
                 }
-                is ApiResult.Error -> {
+                .onFailure { cause ->
                     _uiState.update { it.copy(status = SignupStatus.Idle) }
-                    _sideEffect.send(SignupSideEffect.ShowToast(result.error.message ?: "인증 확인에 실패했습니다."))
+                    _sideEffect.send(SignupSideEffect.ShowToast(cause.message ?: "인증 확인에 실패했습니다."))
                 }
-            }
         }
     }
 
@@ -148,16 +147,15 @@ class SignupViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.update { it.copy(status = SignupStatus.Loading) }
-            when (val result = signupUseCase(state.email, state.password, state.name)) {
-                is ApiResult.Success -> {
+            signupUseCase(state.email, state.password, state.name)
+                .onSuccess {
                     _uiState.update { it.copy(status = SignupStatus.Success) }
                     _sideEffect.send(SignupSideEffect.MoveToLoginScreen)
                 }
-                is ApiResult.Error -> {
+                .onFailure { cause ->
                     _uiState.update { it.copy(status = SignupStatus.Idle) }
-                    _sideEffect.send(SignupSideEffect.ShowToast(result.error.message ?: "회원가입에 실패했습니다."))
+                    _sideEffect.send(SignupSideEffect.ShowToast(cause.message ?: "회원가입에 실패했습니다."))
                 }
-            }
         }
     }
 

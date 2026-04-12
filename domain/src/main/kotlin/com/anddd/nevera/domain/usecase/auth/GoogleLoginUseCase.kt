@@ -1,10 +1,12 @@
 package com.anddd.nevera.domain.usecase.auth
 
-import com.anddd.nevera.core.common.ApiResult
-import com.anddd.nevera.domain.model.auth.LoginResult
+import com.anddd.nevera.core.common.NetworkError
+import com.anddd.nevera.core.common.NeveraResult
+import com.anddd.nevera.core.common.mapSuccess
+import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.domain.model.auth.LoginProvider
-import com.anddd.nevera.domain.repository.UserRepository
 import com.anddd.nevera.domain.repository.TokenRepository
+import com.anddd.nevera.domain.repository.UserRepository
 import javax.inject.Inject
 
 class GoogleLoginUseCase @Inject constructor(
@@ -12,15 +14,14 @@ class GoogleLoginUseCase @Inject constructor(
     private val tokenRepository: TokenRepository
 ) {
 
-    suspend operator fun invoke(token: String): ApiResult<LoginResult> {
-        val result = userRepository.loginWithGoogle(token)
-        if (result is ApiResult.Success) {
-            tokenRepository.setLoginInfo(
-                accessToken = result.data.accessToken,
-                refreshToken = result.data.refreshToken,
-                provider = LoginProvider.GOOGLE
-            )
-        }
-        return result
+    suspend operator fun invoke(token: String): NeveraResult<Unit, NetworkError> {
+        return userRepository.loginWithGoogle(token)
+            .onSuccess { result ->
+                tokenRepository.setLoginInfo(
+                    accessToken = result.accessToken,
+                    refreshToken = result.refreshToken,
+                    provider = LoginProvider.GOOGLE
+                )
+            }.mapSuccess { Unit }
     }
 }
