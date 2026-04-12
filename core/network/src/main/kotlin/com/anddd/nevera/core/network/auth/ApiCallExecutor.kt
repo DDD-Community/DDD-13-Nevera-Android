@@ -1,8 +1,8 @@
 package com.anddd.nevera.core.network.auth
 
 import com.anddd.nevera.core.network.model.ApiResponse
-import com.anddd.nevera.core.common.ApiResult
 import com.anddd.nevera.core.common.NetworkError
+import com.anddd.nevera.core.common.NeveraResult
 import com.anddd.nevera.core.network.BuildConfig
 import com.google.gson.Gson
 import kotlinx.coroutines.CancellationException
@@ -22,16 +22,16 @@ import javax.inject.Singleton
 @Singleton
 class ApiCallExecutor @Inject constructor(private val gson: Gson) {
 
-    suspend operator fun <T> invoke(block: suspend () -> ApiResponse<T>?): ApiResult<T> {
+    suspend operator fun <T> invoke(block: suspend () -> ApiResponse<T>?): NeveraResult<T, NetworkError> {
         return try {
-            val body = block() ?: return ApiResult.Error(
+            val body = block() ?: return NeveraResult.Failure(
                 NetworkError.UnknownError(message = "Empty response body")
             )
 
             val error = body.error
             // 200 응답이어도 body.error가 존재하면 서버 비즈니스 에러로 처리
             if (body.result == null && error != null) {
-                return ApiResult.Error(
+                return NeveraResult.Failure(
                     NetworkError.HttpError(
                         code = error.code ?: -1,
                         message = error.message ?: "Empty Message"
@@ -41,9 +41,9 @@ class ApiCallExecutor @Inject constructor(private val gson: Gson) {
 
             val result = body.result
             if (result != null) {
-                ApiResult.Success(result)
+                NeveraResult.Success(result)
             } else {
-                ApiResult.Error(
+                NeveraResult.Failure(
                     NetworkError.UnknownError(message = "Empty result")
                 )
             }
@@ -54,7 +54,7 @@ class ApiCallExecutor @Inject constructor(private val gson: Gson) {
             if (BuildConfig.DEBUG) {
                 e.printStackTrace()
             }
-            ApiResult.Error(
+            NeveraResult.Failure(
                 NetworkError.TimeoutError(throwable = e)
             )
         } catch (e: HttpException) {
@@ -65,7 +65,7 @@ class ApiCallExecutor @Inject constructor(private val gson: Gson) {
                     gson.fromJson(reader, ApiResponse::class.java)?.error
                 }
             }.getOrNull()
-            ApiResult.Error(
+            NeveraResult.Failure(
                 NetworkError.HttpError(
                     code = apiError?.code ?: e.code(),
                     message = apiError?.message ?: e.message(),
@@ -76,14 +76,14 @@ class ApiCallExecutor @Inject constructor(private val gson: Gson) {
             if (BuildConfig.DEBUG) {
                 e.printStackTrace()
             }
-            ApiResult.Error(
+            NeveraResult.Failure(
                 NetworkError.NetworkConnectionError(throwable = e)
             )
         } catch (e: Exception) {
             if (BuildConfig.DEBUG) {
                 e.printStackTrace()
             }
-            ApiResult.Error(
+            NeveraResult.Failure(
                 NetworkError.UnknownError(
                     message = e.message,
                     throwable = e
