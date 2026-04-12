@@ -1,11 +1,13 @@
 package com.anddd.nevera.domain.repository
 
 import com.anddd.nevera.core.common.ApiResult
-import com.anddd.nevera.domain.model.LoginResult
-import com.anddd.nevera.domain.model.MessageResult
+import com.anddd.nevera.core.common.NeveraResult
+import com.anddd.nevera.domain.model.auth.LoginError
+import com.anddd.nevera.domain.model.auth.LoginResult
+import com.anddd.nevera.domain.model.common.MessageResult
 
 interface UserRepository {
-    suspend fun loginWithEmail(email: String, password: String): ApiResult<LoginResult>
+    suspend fun loginWithEmail(email: String, password: String): NeveraResult<LoginResult, LoginError>
     suspend fun signup(
         email: String,
         password: String,

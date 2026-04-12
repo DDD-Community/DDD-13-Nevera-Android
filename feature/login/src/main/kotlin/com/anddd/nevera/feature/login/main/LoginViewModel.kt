@@ -3,12 +3,15 @@ package com.anddd.nevera.feature.login.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anddd.nevera.core.common.ApiResult
-import com.anddd.nevera.domain.usecase.EmailLoginUseCase
-import com.anddd.nevera.domain.usecase.GoogleLoginUseCase
-import com.anddd.nevera.domain.usecase.ValidateEmailUseCase
-import com.anddd.nevera.domain.usecase.ValidatePasswordUseCase
-import com.anddd.nevera.domain.usecase.validator.EmailValidationResult
-import com.anddd.nevera.domain.usecase.validator.PasswordValidationResult
+import com.anddd.nevera.core.common.NeveraResult
+import com.anddd.nevera.domain.model.common.CommonError
+import com.anddd.nevera.domain.model.auth.LoginError
+import com.anddd.nevera.domain.usecase.auth.EmailLoginUseCase
+import com.anddd.nevera.domain.usecase.auth.GoogleLoginUseCase
+import com.anddd.nevera.domain.usecase.validation.ValidateEmailUseCase
+import com.anddd.nevera.domain.usecase.validation.ValidatePasswordUseCase
+import com.anddd.nevera.domain.model.validation.EmailValidationResult
+import com.anddd.nevera.domain.model.validation.PasswordValidationResult
 import com.anddd.nevera.feature.login.BuildConfig
 import com.anddd.nevera.feature.login.main.model.LoginSideEffect
 import com.anddd.nevera.feature.login.main.model.LoginStatus
@@ -60,15 +63,26 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(status = LoginStatus.Loading) }
             when (val result = emailLoginUseCase(email, password)) {
-                is ApiResult.Success -> {
+                is NeveraResult.Success -> {
                     _uiState.update { it.copy(status = LoginStatus.Success) }
                     _sideEffect.send(LoginSideEffect.MoveToHomeScreen)
                 }
-                is ApiResult.Error -> {
+                is NeveraResult.Failure -> {
                     _uiState.update { it.copy(status = LoginStatus.Idle) }
-                    _sideEffect.send(LoginSideEffect.ShowErrorToast(result.error.message ?: "로그인에 실패했습니다."))
+                    _sideEffect.send(LoginSideEffect.ShowErrorToast(result.error.toMessage()))
                 }
             }
+        }
+    }
+
+    private fun LoginError.toMessage(): String = when (this) {
+        LoginError.InvalidCredentials -> "이메일 또는 비밀번호가 틀렸습니다."
+        is LoginError.Common -> when (val error = this.error) {
+            CommonError.NetworkUnavailable -> "네트워크 연결을 확인해주세요."
+            CommonError.Timeout -> "요청 시간이 초과됐습니다."
+            CommonError.Unauthorized -> "다시 로그인해주세요."
+            is CommonError.ServerError -> error.message ?: "로그인에 실패했습니다."
+            CommonError.Unknown -> "로그인에 실패했습니다."
         }
     }
 
