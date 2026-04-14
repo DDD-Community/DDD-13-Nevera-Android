@@ -56,7 +56,7 @@ internal fun LoginContent(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "로그인", style = MaterialTheme.typography.headlineMedium)
+        Text(text = "로그인", style = NeveraTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(32.dp))
         OutlinedTextField(
             value = email,
@@ -116,7 +116,7 @@ internal fun LoginContent(
             HorizontalDivider(modifier = Modifier.weight(1f))
             Text(
                 text = "  SNS 로그인  ",
-                style = MaterialTheme.typography.bodySmall,
+                style = NeveraTheme.typography.captionLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             HorizontalDivider(modifier = Modifier.weight(1f))
@@ -136,7 +136,7 @@ private fun ValidationErrorText(message: String) {
     Text(
         text = message,
         color = MaterialTheme.colorScheme.error,
-        style = MaterialTheme.typography.bodySmall
+        style = NeveraTheme.typography.captionLarge
     )
 }
 
@@ -151,7 +151,7 @@ private fun PasswordVisibilityToggle(
     ) {
         Text(
             text = if (visible) "숨김" else "보기",
-            style = MaterialTheme.typography.labelMedium
+            style = NeveraTheme.typography.captionMedium
         )
     }
 }

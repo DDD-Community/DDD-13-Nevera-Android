@@ -132,7 +132,7 @@ internal fun SignupContent(
 
 @Composable
 private fun SignupHeader() {
-    Text(text = "회원가입", style = MaterialTheme.typography.headlineMedium)
+    Text(text = "회원가입", style = NeveraTheme.typography.headlineMedium)
 }
 
 @Composable
@@ -311,7 +311,7 @@ private fun PasswordVisibilityToggle(
     ) {
         Text(
             text = if (visible) "숨김" else "보기",
-            style = MaterialTheme.typography.labelMedium
+            style = NeveraTheme.typography.captionMedium
         )
     }
 }
@@ -321,7 +321,7 @@ private fun ValidationErrorText(message: String) {
     Text(
         text = message,
         color = MaterialTheme.colorScheme.error,
-        style = MaterialTheme.typography.bodySmall
+        style = NeveraTheme.typography.captionLarge
     )
 }
 
