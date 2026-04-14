@@ -2,7 +2,7 @@ package com.anddd.nevera.feature.splash.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.anddd.nevera.domain.usecase.CheckAutoLoginUseCase
+import com.anddd.nevera.domain.usecase.auth.CheckAutoLoginUseCase
 import com.anddd.nevera.feature.splash.main.model.SplashUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay

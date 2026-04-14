@@ -23,8 +23,18 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        getByName("debug") {
+            storeFile = rootProject.file("keystore/debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+
     buildTypes {
         debug {
+            signingConfig = signingConfigs.getByName("debug")
             isMinifyEnabled = false
             isShrinkResources = false
         }
@@ -60,6 +70,7 @@ dependencies {
     implementation(project(":feature:splash"))
     implementation(project(":feature:login"))
     implementation(project(":feature:main"))
+    implementation(project(":feature:signup"))
 
     implementation(project(":data"))
 

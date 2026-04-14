@@ -1,5 +1,7 @@
 package com.anddd.nevera.feature.login.main.component
 
+import androidx.compose.ui.tooling.preview.Preview
+import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,25 +24,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.anddd.nevera.domain.usecase.validator.EmailValidationResult
-import com.anddd.nevera.domain.usecase.validator.PasswordValidationError
-import com.anddd.nevera.domain.usecase.validator.PasswordValidationResult
+import com.anddd.nevera.domain.model.validation.EmailValidationResult
+import com.anddd.nevera.domain.model.validation.PasswordValidationError
+import com.anddd.nevera.domain.model.validation.PasswordValidationResult
 
 @Composable
 internal fun LoginContent(
+    email: String,
+    password: String,
     emailValidation: EmailValidationResult?,
     passwordValidation: PasswordValidationResult?,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
-    onLoginClick: (String, String) -> Unit,
-    onGoogleLoginClick: () -> Unit,
-    onKakaoLoginClick: () -> Unit
+    onLoginClick: () -> Unit,
+    onSignupClick: () -> Unit,
+    onGoogleLoginClick: () -> Unit
 ) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-
+    var isPasswordVisible by remember { mutableStateOf(false) }
     val emailError = emailValidation.toErrorMessage()
     val passwordErrors = passwordValidation.toErrorMessages()
 
@@ -54,13 +60,11 @@ internal fun LoginContent(
         Spacer(modifier = Modifier.height(32.dp))
         OutlinedTextField(
             value = email,
-            onValueChange = {
-                email = it
-                onEmailChange(it)
-            },
+            onValueChange = onEmailChange,
             label = { Text("이메일") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             isError = emailError != null,
             supportingText = if (emailError != null) {
                 { ValidationErrorText(emailError) }
@@ -69,22 +73,37 @@ internal fun LoginContent(
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
             value = password,
-            onValueChange = {
-                password = it
-                onPasswordChange(it)
-            },
+            onValueChange = onPasswordChange,
             label = { Text("비밀번호") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            visualTransformation = if (isPasswordVisible) {
+                VisualTransformation.None
+            } else {
+                PasswordVisualTransformation()
+            },
             isError = passwordErrors.isNotEmpty(),
+            trailingIcon = {
+                PasswordVisibilityToggle(
+                    visible = isPasswordVisible,
+                    onToggle = { isPasswordVisible = !isPasswordVisible }
+                )
+            },
             supportingText = if (passwordErrors.isNotEmpty()) {
-                { passwordErrors.forEach { ValidationErrorText(it) } }
+                { ValidationErrorText(passwordErrors.first()) }
             } else null
         )
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
+        OutlinedButton(
+            onClick = onSignupClick,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("이메일 회원가입")
+        }
+        Spacer(modifier = Modifier.height(4.dp))
         Button(
-            onClick = { onLoginClick(email, password) },
+            onClick = onLoginClick,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("이메일 로그인")
@@ -109,13 +128,6 @@ internal fun LoginContent(
         ) {
             Text("Google로 계속하기")
         }
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedButton(
-            onClick = onKakaoLoginClick,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("카카오로 계속하기")
-        }
     }
 }
 
@@ -126,6 +138,22 @@ private fun ValidationErrorText(message: String) {
         color = MaterialTheme.colorScheme.error,
         style = MaterialTheme.typography.bodySmall
     )
+}
+
+@Composable
+private fun PasswordVisibilityToggle(
+    visible: Boolean,
+    onToggle: () -> Unit
+) {
+    TextButton(
+        onClick = onToggle,
+        modifier = Modifier.padding(end = 4.dp)
+    ) {
+        Text(
+            text = if (visible) "숨김" else "보기",
+            style = MaterialTheme.typography.labelMedium
+        )
+    }
 }
 
 private fun EmailValidationResult?.toErrorMessage(): String? = when (this) {
@@ -145,4 +173,42 @@ private fun PasswordValidationError.toMessage(): String = when (this) {
     PasswordValidationError.MissingLowercase -> "소문자를 포함해야 합니다"
     PasswordValidationError.MissingDigit -> "숫자를 포함해야 합니다"
     PasswordValidationError.MissingSpecialChar -> "특수문자를 포함해야 합니다"
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun LoginContentPreview() {
+    NeveraTheme {
+        LoginContent(
+            email = "",
+            password = "",
+            emailValidation = null,
+            passwordValidation = null,
+            onEmailChange = {},
+            onPasswordChange = {},
+            onLoginClick = {},
+            onSignupClick = {},
+            onGoogleLoginClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "LoginContent - 유효성 오류")
+@Composable
+private fun LoginContentErrorPreview() {
+    NeveraTheme {
+        LoginContent(
+            email = "invalid-email",
+            password = "short",
+            emailValidation = EmailValidationResult.InvalidFormat,
+            passwordValidation = PasswordValidationResult.Invalid(
+                listOf(PasswordValidationError.TooShort(8))
+            ),
+            onEmailChange = {},
+            onPasswordChange = {},
+            onLoginClick = {},
+            onSignupClick = {},
+            onGoogleLoginClick = {}
+        )
+    }
 }

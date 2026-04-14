@@ -1,14 +1,12 @@
 package com.anddd.nevera.data.di
 
-import com.anddd.nevera.data.datasource.FakeSessionDataSource
-import com.anddd.nevera.data.datasource.FakeSessionDataSourceImpl
-import com.anddd.nevera.data.datasource.FakeUserDataSourceImpl
-import com.anddd.nevera.data.datasource.LocalSessionDataSource
-import com.anddd.nevera.data.datasource.LocalSessionDataSourceImpl
-import com.anddd.nevera.data.datasource.LocalUserDataSource
-import com.anddd.nevera.data.datasource.RemoteUserDataSource
-import com.anddd.nevera.data.datasource.RemoteUserDataSourceImpl
-import com.anddd.nevera.data.datasource.SessionDataSource
+import com.anddd.nevera.data.datasource.AndroidKeyStoreProvider
+import com.anddd.nevera.data.datasource.KeyProvider
+import com.anddd.nevera.data.datasource.TokenDataSourceImpl
+import com.anddd.nevera.data.datasource.RefreshDataSource
+import com.anddd.nevera.data.datasource.RefreshDataSourceImpl
+import com.anddd.nevera.data.datasource.TokenDataSource
+import com.anddd.nevera.data.datasource.UserDataSourceImpl
 import com.anddd.nevera.data.datasource.UserDataSource
 import dagger.Binds
 import dagger.Module
@@ -22,21 +20,17 @@ internal abstract class DataSourceModule {
 
     @Binds
     @Singleton
-    @LocalUserDataSource
-    abstract fun bindLocalUserDataSource(impl: FakeUserDataSourceImpl): UserDataSource
+    abstract fun bindKeyProvider(impl: AndroidKeyStoreProvider): KeyProvider
 
     @Binds
     @Singleton
-    @RemoteUserDataSource
-    abstract fun bindRemoteUserDataSource(impl: RemoteUserDataSourceImpl): UserDataSource
+    abstract fun bindTokenDataSource(impl: TokenDataSourceImpl): TokenDataSource
 
     @Binds
     @Singleton
-    @LocalSessionDataSource
-    abstract fun bindLocalSessionDataSource(impl: LocalSessionDataSourceImpl): SessionDataSource
+    abstract fun bindUserDataSource(impl: UserDataSourceImpl): UserDataSource
 
     @Binds
     @Singleton
-    @FakeSessionDataSource
-    abstract fun bindFakeSessionDataSource(impl: FakeSessionDataSourceImpl): SessionDataSource
+    abstract fun bindRefreshDataSource(impl: RefreshDataSourceImpl): RefreshDataSource
 }
