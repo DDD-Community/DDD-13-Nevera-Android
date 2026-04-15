@@ -40,14 +40,14 @@ jobs:
 
       - name: Run unit tests
         id: unit-test
-        run: ./gradlew testDebugUnitTest --no-daemon
+        run: ./gradlew testDebugUnitTest --no-daemon --info
         continue-on-error: true
         env:
           GOOGLE_WEB_CLIENT_ID: ${{ secrets.GOOGLE_WEB_CLIENT_ID }}
 
       - name: Run Lint Debug
         id: lint
-        run: ./gradlew lintDebug --no-daemon
+        run: ./gradlew lintDebug --no-daemon --info
         continue-on-error: true
         env:
           GOOGLE_WEB_CLIENT_ID: ${{ secrets.GOOGLE_WEB_CLIENT_ID }}
