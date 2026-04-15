@@ -42,11 +42,15 @@ jobs:
         id: unit-test
         run: ./gradlew testDebugUnitTest --no-daemon
         continue-on-error: true
+        env:
+          GOOGLE_WEB_CLIENT_ID: ${{ secrets.GOOGLE_WEB_CLIENT_ID }}
 
       - name: Run Lint Debug
         id: lint
         run: ./gradlew lintDebug --no-daemon
         continue-on-error: true
+        env:
+          GOOGLE_WEB_CLIENT_ID: ${{ secrets.GOOGLE_WEB_CLIENT_ID }}
 
       - name: Upload Lint Debug Result
         uses: actions/upload-artifact@v4
