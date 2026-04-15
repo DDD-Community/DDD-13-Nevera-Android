@@ -23,21 +23,38 @@ user-invocable: false
 
 새 토큰을 제안하기 전에 먼저 아래 기존 토큰으로 해결 가능한지 확인한다:
 
-| 토큰 | fontSize | fontWeight | 주요 용도 |
-|---|---|---|---|
-| `display` | 32sp | Bold | 최상위 타이틀, 히어로 영역 |
-| `heading1` | 24sp | Bold | 화면 제목 |
-| `heading2` | 20sp | SemiBold | 섹션 제목 |
-| `heading3` | 18sp | SemiBold | 서브 섹션 제목 |
-| `bodyLarge` | 16sp | Normal | 주요 본문 텍스트 |
-| `bodyMedium` | 14sp | Normal | 일반 본문 텍스트 |
-| `bodySmall` | 13sp | Normal | 보조 본문 텍스트 |
-| `labelLarge` | 16sp | Medium | 큰 버튼, 주요 탭 레이블 |
-| `labelMedium` | 14sp | Medium | 버튼, 탭, 입력 레이블 |
-| `labelSmall` | 12sp | Medium | 작은 버튼, 보조 레이블 |
-| `captionLarge` | 13sp | Normal | 보조 설명 |
-| `captionMedium` | 12sp | Normal | 타임스탬프, 힌트 텍스트 |
-| `captionSmall` | 11sp | Normal | 매우 작은 보조 텍스트 |
+### Headline — 페이지·모듈 단위 타이틀 (Bold)
+
+| 토큰 | fontSize | lineHeight | fontWeight | 주요 용도 |
+|---|---|---|---|---|
+| `headlineLarge` | 26sp | 36sp | Bold | 최상위 타이틀, 히어로 영역 |
+| `headlineMedium` | 24sp | 34sp | Bold | 화면 제목 |
+| `headlineSmall` | 20sp | 30sp | Bold | 섹션 제목 |
+
+### Title — 섹션·카드·리스트 제목 (SemiBold)
+
+| 토큰 | fontSize | lineHeight | fontWeight | 주요 용도 |
+|---|---|---|---|---|
+| `titleLarge` | 18sp | 27sp | SemiBold | 서브 섹션 제목, 카드 헤더 |
+| `titleMedium` | 16sp | 24sp | SemiBold | 중간 섹션 제목, 주요 탭 레이블 |
+| `titleSmall` | 15sp | 23sp | SemiBold | 작은 섹션 제목 |
+| `titleXSmall` | 14sp | 21sp | SemiBold | 보조 제목, 입력 레이블 |
+
+### Body — 본문 텍스트 (Normal)
+
+| 토큰 | fontSize | lineHeight | fontWeight | 주요 용도 |
+|---|---|---|---|---|
+| `bodyLarge` | 16sp | 24sp | Normal | 주요 본문 텍스트 |
+| `bodyMedium` | 15sp | 23sp | Normal | 일반 본문 텍스트 |
+| `bodySmall` | 14sp | 21sp | Normal | 보조 본문 텍스트 |
+
+### Caption — 버튼·태그 등 UI 요소 기능 전달 (Normal/SemiBold)
+
+| 토큰 | fontSize | lineHeight | fontWeight | 주요 용도 |
+|---|---|---|---|---|
+| `captionLarge` | 13sp | 20sp | Normal | 버튼 텍스트, 보조 설명, 에러·힌트 메시지 |
+| `captionMedium` | 12sp | 18sp | **SemiBold** | 태그, 배지, 강조 레이블 |
+| `captionSmall` | 11sp | 17sp | Normal | 타임스탬프, 매우 작은 보조 텍스트 |
 
 ## 판단 절차
 
@@ -49,14 +66,15 @@ user-invocable: false
 4. 기존 토큰만으로 역할을 명확하게 표현할 수 없을 때만 새 시맨틱 토큰을 제안한다.
 
 예시:
-- 화면 최상단 큰 제목 → `NeveraTheme.typography.display`
-- 화면 제목 → `NeveraTheme.typography.heading1`
-- 카드 섹션 제목 → `NeveraTheme.typography.heading2` 또는 `heading3`
+- 화면 최상단 큰 제목 → `NeveraTheme.typography.headlineLarge`
+- 화면 제목 → `NeveraTheme.typography.headlineMedium`
+- 섹션 제목 → `NeveraTheme.typography.headlineSmall`
+- 카드·서브 섹션 제목 → `NeveraTheme.typography.titleLarge` 또는 `titleMedium`
 - 일반 본문 → `NeveraTheme.typography.bodyMedium`
-- 버튼 텍스트 → `NeveraTheme.typography.labelMedium`
-- 입력 필드 레이블 → `NeveraTheme.typography.labelMedium`
-- 날짜/시간 표시 → `NeveraTheme.typography.captionMedium`
-- 에러/힌트 메시지 → `NeveraTheme.typography.captionMedium` 또는 `captionLarge`
+- 버튼 텍스트 → `NeveraTheme.typography.captionLarge`
+- 입력 필드 레이블 → `NeveraTheme.typography.titleXSmall`
+- 날짜/시간 표시 → `NeveraTheme.typography.captionSmall`
+- 에러/힌트 메시지 → `NeveraTheme.typography.captionLarge` 또는 `captionMedium`
 
 ## 올바른 사용 예시
 
@@ -64,7 +82,7 @@ user-invocable: false
 // ✅ 올바른 typography 사용
 Text(
     text = "화면 제목",
-    style = NeveraTheme.typography.heading1,
+    style = NeveraTheme.typography.headlineMedium,
     color = NeveraTheme.colors.textPrimary,
 )
 
