@@ -1,11 +1,11 @@
 package com.anddd.nevera.data.di
 
 import com.anddd.nevera.data.datasource.AndroidKeyStoreProvider
-import com.anddd.nevera.data.datasource.FcmTokenDataSource
-import com.anddd.nevera.data.datasource.FcmTokenDataSourceImpl
+import com.anddd.nevera.data.datasource.FcmTokenLocalDataSource
+import com.anddd.nevera.data.datasource.FcmTokenLocalDataSourceImpl
 import com.anddd.nevera.data.datasource.KeyProvider
-import com.anddd.nevera.data.datasource.NotificationDataSource
-import com.anddd.nevera.data.datasource.NotificationDataSourceImpl
+import com.anddd.nevera.data.datasource.NotificationRemoteDataSource
+import com.anddd.nevera.data.datasource.NotificationRemoteDataSourceImpl
 import com.anddd.nevera.data.datasource.TokenDataSourceImpl
 import com.anddd.nevera.data.datasource.RefreshDataSource
 import com.anddd.nevera.data.datasource.RefreshDataSourceImpl
@@ -40,9 +40,9 @@ internal abstract class DataSourceModule {
 
     @Binds
     @Singleton
-    abstract fun bindFcmTokenDataSource(impl: FcmTokenDataSourceImpl): FcmTokenDataSource
+    abstract fun bindFcmTokenLocalDataSource(impl: FcmTokenLocalDataSourceImpl): FcmTokenLocalDataSource
 
     @Binds
     @Singleton
-    abstract fun bindNotificationDataSource(impl: NotificationDataSourceImpl): NotificationDataSource
+    abstract fun bindNotificationRemoteDataSource(impl: NotificationRemoteDataSourceImpl): NotificationRemoteDataSource
 }

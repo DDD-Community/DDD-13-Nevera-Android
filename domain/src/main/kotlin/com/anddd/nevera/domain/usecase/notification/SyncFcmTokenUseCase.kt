@@ -15,7 +15,7 @@ class SyncFcmTokenUseCase @Inject constructor(
         defaultFcmToken: suspend () -> String? = { null }
     ): NeveraResult<Unit, FcmTokenError> {
         var fcmToken = fcmTokenRepository.getFcmToken()
-        var needsSync = fcmTokenRepository.needsSync()
+        var needsSync = fcmTokenRepository.isSyncNeeded()
 
         if (fcmToken.isNullOrEmpty()) {
             // 앱 초기 실행 직후에는 Firebase Installations ID 생성, Google Play Services 연결,

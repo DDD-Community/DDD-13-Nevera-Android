@@ -11,5 +11,5 @@ internal interface NotificationApi {
     @POST("api/v1/notification/token")
     suspend fun registerFcmToken(
         @Body body: RegisterFcmTokenRequest
-    ): ApiResponse<RegisterFcmTokenResponse>?
+    ): ApiResponse<RegisterFcmTokenResponse>
 }

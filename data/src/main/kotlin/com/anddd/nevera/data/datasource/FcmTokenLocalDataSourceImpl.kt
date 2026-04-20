@@ -13,9 +13,9 @@ import javax.inject.Inject
 
 private val Context.pushTokenDataStore: DataStore<Preferences> by preferencesDataStore(name = "push_token")
 
-internal class FcmTokenDataSourceImpl @Inject constructor(
+internal class FcmTokenLocalDataSourceImpl @Inject constructor(
     @param:ApplicationContext private val context: Context,
-) : FcmTokenDataSource {
+) : FcmTokenLocalDataSource {
 
     private val dataStore = context.pushTokenDataStore
 
@@ -26,7 +26,7 @@ internal class FcmTokenDataSourceImpl @Inject constructor(
         dataStore.edit { it[KEY_FCM_TOKEN] = token }
     }
 
-    override suspend fun needsSync(): Boolean =
+    override suspend fun isSyncNeeded(): Boolean =
         dataStore.data.first()[KEY_NEEDS_SYNC] ?: false
 
     override suspend fun setNeedsSync(value: Boolean) {
