@@ -6,7 +6,6 @@ import com.anddd.nevera.domain.model.notification.FcmTokenError
 interface FcmTokenRepository {
     suspend fun getFcmToken(): String?
     suspend fun markTokenForSync(token: String)
-    // suspend fun saveFcmToken(token: String)
     suspend fun clearSyncNeeded()
     suspend fun clearFcmData()
     suspend fun isSyncNeeded(): Boolean
