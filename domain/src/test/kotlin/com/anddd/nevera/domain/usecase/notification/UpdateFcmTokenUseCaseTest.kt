@@ -1,16 +1,17 @@
 package com.anddd.nevera.domain.usecase.notification
 
 import com.anddd.nevera.core.common.NeveraResult
-import com.anddd.nevera.domain.model.auth.LoginProvider
 import com.anddd.nevera.domain.model.common.CommonError
 import com.anddd.nevera.domain.model.notification.FcmTokenError
-import com.anddd.nevera.domain.repository.TokenRepository
+import com.anddd.nevera.domain.repository.FcmTokenRepository
 import com.anddd.nevera.domain.testutil.FakeFcmTokenRepository
+import com.anddd.nevera.domain.testutil.FakeTokenRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import kotlin.coroutines.cancellation.CancellationException
 
 class UpdateFcmTokenUseCaseTest {
 
@@ -83,39 +84,38 @@ class UpdateFcmTokenUseCaseTest {
         assertEquals(listOf("new-token"), fcmTokenRepository.registeredTokens)
         assertTrue(fcmTokenRepository.syncNeeded)
     }
+
+    @Test
+    fun `repository가 CancellationException을 던지면 그대로 전파한다`() = runTest {
+        val fcmTokenRepository = ThrowingFcmTokenRepository(CancellationException("cancelled"))
+        val tokenRepository = FakeTokenRepository(accessToken = "access-token")
+        val useCase = UpdateFcmTokenUseCase(fcmTokenRepository, tokenRepository)
+
+        var thrown: Throwable? = null
+        try {
+            useCase("new-token")
+        } catch (ce: CancellationException) {
+            thrown = ce
+        }
+
+        assertEquals("cancelled", thrown?.message)
+    }
 }
 
-private class FakeTokenRepository(
-    private var accessToken: String?,
-) : TokenRepository {
+private class ThrowingFcmTokenRepository(
+    private val exception: Throwable,
+) : FcmTokenRepository {
 
-    override suspend fun getAccessToken(): String? = accessToken
+    override suspend fun getFcmToken(): String? = "old-token"
 
-    override suspend fun setAccessToken(accessToken: String) {
-        this.accessToken = accessToken
+    override suspend fun markTokenForSync(token: String) {
+        throw exception
     }
 
-    override suspend fun getRefreshToken(): String? = null
+    override suspend fun clearSyncNeeded() = Unit
 
-    override suspend fun setRefreshToken(refreshToken: String) = Unit
+    override suspend fun isSyncNeeded(): Boolean = false
 
-    override suspend fun setTokens(accessToken: String, refreshToken: String) {
-        this.accessToken = accessToken
-    }
-
-    override suspend fun getProvider(): LoginProvider? = null
-
-    override suspend fun setProvider(provider: LoginProvider) = Unit
-
-    override suspend fun setLoginInfo(
-        accessToken: String,
-        refreshToken: String,
-        provider: LoginProvider,
-    ) {
-        this.accessToken = accessToken
-    }
-
-    override suspend fun clearLoginInfo() {
-        accessToken = null
-    }
+    override suspend fun registerFcmToken(token: String): NeveraResult<Unit, FcmTokenError> =
+        NeveraResult.Success(Unit)
 }
