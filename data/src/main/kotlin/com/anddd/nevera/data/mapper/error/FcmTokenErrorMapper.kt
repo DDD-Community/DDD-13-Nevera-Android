@@ -9,12 +9,12 @@ import com.anddd.nevera.domain.model.notification.FcmTokenError
  * 서버 비즈니스 에러 코드는 FCM 전용 에러로 매핑하고,
  * 나머지 인프라성 실패는 공통 에러로 변환해 [FcmTokenError.Common]에 담는다.
  */
-internal fun NetworkError.toFcmTokenError(): FcmTokenError = when (this) {
-    is NetworkError.HttpError -> when (code) {
-        MEMBER_NOT_FOUND -> FcmTokenError.MemberNotFound
-        else -> FcmTokenError.Common(toCommonError())
+internal fun NetworkError.toFcmTokenError(): FcmTokenError {
+    return if (this is NetworkError.HttpError && code == MEMBER_NOT_FOUND) {
+        FcmTokenError.MemberNotFound
+    } else {
+        FcmTokenError.Common(toCommonError())
     }
-    else -> FcmTokenError.Common(toCommonError())
 }
 
 private const val MEMBER_NOT_FOUND = 2041
