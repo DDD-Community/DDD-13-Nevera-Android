@@ -4,8 +4,8 @@ import com.anddd.nevera.core.common.NeveraResult
 import com.anddd.nevera.domain.model.auth.LoginProvider
 import com.anddd.nevera.domain.model.common.CommonError
 import com.anddd.nevera.domain.model.notification.FcmTokenError
-import com.anddd.nevera.domain.repository.FcmTokenRepository
 import com.anddd.nevera.domain.repository.TokenRepository
+import com.anddd.nevera.domain.testutil.FakeFcmTokenRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -16,7 +16,7 @@ class UpdateFcmTokenUseCaseTest {
 
     @Test
     fun `저장된 토큰과 동일하면 아무 작업도 하지 않고 성공을 반환한다`() = runTest {
-        val fcmTokenRepository = UpdateFakeFcmTokenRepository(
+        val fcmTokenRepository = FakeFcmTokenRepository(
             storedToken = "same-token",
             syncNeeded = false,
         )
@@ -33,7 +33,7 @@ class UpdateFcmTokenUseCaseTest {
 
     @Test
     fun `미로그인 상태면 동기화 대상으로 표시만 하고 성공을 반환한다`() = runTest {
-        val fcmTokenRepository = UpdateFakeFcmTokenRepository(
+        val fcmTokenRepository = FakeFcmTokenRepository(
             storedToken = "old-token",
             syncNeeded = false,
         )
@@ -50,7 +50,7 @@ class UpdateFcmTokenUseCaseTest {
 
     @Test
     fun `로그인 상태에서 등록 성공 시 needsSync를 해제하고 성공을 반환한다`() = runTest {
-        val fcmTokenRepository = UpdateFakeFcmTokenRepository(
+        val fcmTokenRepository = FakeFcmTokenRepository(
             storedToken = "old-token",
             syncNeeded = false,
         )
@@ -68,7 +68,7 @@ class UpdateFcmTokenUseCaseTest {
     @Test
     fun `로그인 상태에서 등록 실패 시 실패를 반환하고 needsSync를 유지한다`() = runTest {
         val error = FcmTokenError.Common(CommonError.Unknown)
-        val fcmTokenRepository = UpdateFakeFcmTokenRepository(
+        val fcmTokenRepository = FakeFcmTokenRepository(
             storedToken = "old-token",
             syncNeeded = false,
             registerResult = NeveraResult.Failure(error),
@@ -82,39 +82,6 @@ class UpdateFcmTokenUseCaseTest {
         assertEquals(listOf("new-token"), fcmTokenRepository.markedTokens)
         assertEquals(listOf("new-token"), fcmTokenRepository.registeredTokens)
         assertTrue(fcmTokenRepository.syncNeeded)
-    }
-}
-
-private class UpdateFakeFcmTokenRepository(
-    var storedToken: String?,
-    var syncNeeded: Boolean,
-    var registerResult: NeveraResult<Unit, FcmTokenError> = NeveraResult.Success(Unit),
-) : FcmTokenRepository {
-
-    val markedTokens = mutableListOf<String>()
-    val registeredTokens = mutableListOf<String>()
-
-    override suspend fun getFcmToken(): String? = storedToken
-
-    override suspend fun saveFcmToken(token: String) {
-        storedToken = token
-    }
-
-    override suspend fun markTokenForSync(token: String) {
-        markedTokens += token
-        storedToken = token
-        syncNeeded = true
-    }
-
-    override suspend fun isSyncNeeded(): Boolean = syncNeeded
-
-    override suspend fun setNeedsSync(value: Boolean) {
-        syncNeeded = value
-    }
-
-    override suspend fun registerFcmToken(token: String): NeveraResult<Unit, FcmTokenError> {
-        registeredTokens += token
-        return registerResult
     }
 }
 

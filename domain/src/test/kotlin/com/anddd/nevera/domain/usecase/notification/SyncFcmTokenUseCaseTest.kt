@@ -3,7 +3,7 @@ package com.anddd.nevera.domain.usecase.notification
 import com.anddd.nevera.core.common.NeveraResult
 import com.anddd.nevera.domain.model.common.CommonError
 import com.anddd.nevera.domain.model.notification.FcmTokenError
-import com.anddd.nevera.domain.repository.FcmTokenRepository
+import com.anddd.nevera.domain.testutil.FakeFcmTokenRepository
 import com.anddd.nevera.domain.usecase.notification.FcmTokenProvider
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -103,37 +103,4 @@ class SyncFcmTokenUseCaseTest {
 
 private class FakeFcmTokenProvider(private val token: String?) : FcmTokenProvider {
     override suspend fun getToken(): String? = token
-}
-
-private class FakeFcmTokenRepository(
-    var storedToken: String?,
-    var syncNeeded: Boolean,
-    var registerResult: NeveraResult<Unit, FcmTokenError> = NeveraResult.Success(Unit),
-) : FcmTokenRepository {
-
-    val markedTokens = mutableListOf<String>()
-    val registeredTokens = mutableListOf<String>()
-
-    override suspend fun getFcmToken(): String? = storedToken
-
-    override suspend fun saveFcmToken(token: String) {
-        storedToken = token
-    }
-
-    override suspend fun markTokenForSync(token: String) {
-        markedTokens += token
-        storedToken = token
-        syncNeeded = true
-    }
-
-    override suspend fun isSyncNeeded(): Boolean = syncNeeded
-
-    override suspend fun setNeedsSync(value: Boolean) {
-        syncNeeded = value
-    }
-
-    override suspend fun registerFcmToken(token: String): NeveraResult<Unit, FcmTokenError> {
-        registeredTokens += token
-        return registerResult
-    }
 }
