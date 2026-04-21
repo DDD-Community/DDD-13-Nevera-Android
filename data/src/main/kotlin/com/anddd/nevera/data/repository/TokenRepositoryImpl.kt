@@ -1,14 +1,12 @@
 package com.anddd.nevera.data.repository
 
-import com.anddd.nevera.data.datasource.FcmTokenLocalDataSource
 import com.anddd.nevera.data.datasource.TokenDataSource
 import com.anddd.nevera.domain.model.auth.LoginProvider
 import com.anddd.nevera.domain.repository.TokenRepository
 import javax.inject.Inject
 
 internal class TokenRepositoryImpl @Inject constructor(
-    private val fcmTokenDataSource: FcmTokenLocalDataSource,
-    private val tokenDataSource: TokenDataSource
+    private val tokenDataSource: TokenDataSource,
 ) : TokenRepository {
 
     override suspend fun getAccessToken(): String? =
@@ -43,8 +41,5 @@ internal class TokenRepositoryImpl @Inject constructor(
         tokenDataSource.setLoginInfo(accessToken, refreshToken, provider)
     }
 
-    override suspend fun clearLoginInfo() {
-        tokenDataSource.clearLoginInfo()
-        fcmTokenDataSource.clearFcmData()
-    }
+    override suspend fun clearLoginInfo() = tokenDataSource.clearLoginInfo()
 }

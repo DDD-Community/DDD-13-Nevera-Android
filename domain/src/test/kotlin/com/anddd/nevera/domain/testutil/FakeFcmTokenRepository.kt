@@ -25,6 +25,11 @@ class FakeFcmTokenRepository(
         syncNeeded = false
     }
 
+    override suspend fun clearFcmData() {
+        storedToken = null
+        syncNeeded = false
+    }
+
     override suspend fun isSyncNeeded(): Boolean = syncNeeded
 
     override suspend fun registerFcmToken(token: String): NeveraResult<Unit, FcmTokenError> {

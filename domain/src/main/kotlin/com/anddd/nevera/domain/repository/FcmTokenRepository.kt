@@ -8,6 +8,7 @@ interface FcmTokenRepository {
     suspend fun markTokenForSync(token: String)
     // suspend fun saveFcmToken(token: String)
     suspend fun clearSyncNeeded()
+    suspend fun clearFcmData()
     suspend fun isSyncNeeded(): Boolean
     suspend fun registerFcmToken(token: String): NeveraResult<Unit, FcmTokenError>
 }

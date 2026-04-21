@@ -114,6 +114,8 @@ private class ThrowingFcmTokenRepository(
 
     override suspend fun clearSyncNeeded() = Unit
 
+    override suspend fun clearFcmData() = Unit
+
     override suspend fun isSyncNeeded(): Boolean = false
 
     override suspend fun registerFcmToken(token: String): NeveraResult<Unit, FcmTokenError> =

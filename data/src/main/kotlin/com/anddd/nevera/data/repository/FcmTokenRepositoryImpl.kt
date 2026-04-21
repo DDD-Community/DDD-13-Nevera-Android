@@ -28,6 +28,10 @@ internal class FcmTokenRepositoryImpl @Inject constructor(
         fcmTokenDataSource.setNeedsSync(false)
     }
 
+    override suspend fun clearFcmData() {
+        fcmTokenDataSource.clearFcmData()
+    }
+
     override suspend fun isSyncNeeded(): Boolean {
         return fcmTokenDataSource.isSyncNeeded()
     }
