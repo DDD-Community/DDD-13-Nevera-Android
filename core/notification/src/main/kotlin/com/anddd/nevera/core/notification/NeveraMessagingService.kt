@@ -17,6 +17,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 @AndroidEntryPoint
 class NeveraMessagingService : FirebaseMessagingService() {
@@ -28,13 +29,14 @@ class NeveraMessagingService : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         serviceScope.launch {
-            runCatching {
+            try {
                 updateFcmTokenUseCase(token)
-            }.onSuccess { result ->
-                result.logFcmSyncFailure(TAG, BuildConfig.DEBUG, Log::w)
-            }.onFailure {
+                    .logFcmSyncFailure(TAG, BuildConfig.DEBUG, Log::w)
+            } catch (ce: CancellationException) {
+                throw ce
+            } catch (t: Throwable) {
                 if (BuildConfig.DEBUG) {
-                    Log.e(TAG, "FCM 토큰 업데이트 실패", it)
+                    Log.e(TAG, "FCM 토큰 업데이트 실패", t)
                 }
             }
         }

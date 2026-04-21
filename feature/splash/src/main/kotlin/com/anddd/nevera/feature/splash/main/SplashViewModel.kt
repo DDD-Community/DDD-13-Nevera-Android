@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
@@ -44,14 +45,13 @@ class SplashViewModel @Inject constructor(
     }
 
     private suspend fun syncFcmToken() {
-        runCatching {
+        try {
             syncFcmTokenUseCase()
-        }.onSuccess { result ->
-            result.logFcmSyncFailure(TAG, BuildConfig.DEBUG, Log::w)
-        }.onFailure { throwable ->
-            if (BuildConfig.DEBUG) {
-                Log.e(TAG, throwable.message, throwable)
-            }
+                .logFcmSyncFailure(TAG, BuildConfig.DEBUG, Log::w)
+        } catch (ce: CancellationException) {
+            throw ce
+        } catch (t: Throwable) {
+            if (BuildConfig.DEBUG) Log.e(TAG, t.message, t)
         }
     }
 

@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
@@ -102,14 +103,13 @@ class LoginViewModel @Inject constructor(
     }
 
     private suspend fun syncFcmToken() {
-        runCatching {
+        try {
             syncFcmTokenUseCase()
-        }.onSuccess { result ->
-            result.logFcmSyncFailure(TAG, BuildConfig.DEBUG, Log::w)
-        }.onFailure { throwable ->
-            if (BuildConfig.DEBUG) {
-                Log.e(TAG, throwable.message, throwable)
-            }
+                .logFcmSyncFailure(TAG, BuildConfig.DEBUG, Log::w)
+        } catch (ce: CancellationException) {
+            throw ce
+        } catch (t: Throwable) {
+            if (BuildConfig.DEBUG) Log.e(TAG, t.message, t)
         }
     }
 
