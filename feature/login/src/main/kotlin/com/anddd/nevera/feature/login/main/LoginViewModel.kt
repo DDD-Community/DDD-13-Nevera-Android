@@ -18,8 +18,6 @@ import com.anddd.nevera.feature.login.main.model.LoginSideEffect
 import com.anddd.nevera.feature.login.main.model.LoginStatus
 import com.anddd.nevera.feature.login.main.model.LoginUiState
 import com.anddd.nevera.feature.login.main.model.toUiModel
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.ktx.messaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,7 +25,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
@@ -106,9 +103,7 @@ class LoginViewModel @Inject constructor(
 
     private suspend fun syncFcmToken() {
         runCatching {
-            syncFcmTokenUseCase {
-                Firebase.messaging.token.await()
-            }
+            syncFcmTokenUseCase()
         }.onSuccess { result ->
             result.logFcmSyncFailure(TAG, BuildConfig.DEBUG, Log::w)
         }.onFailure { throwable ->

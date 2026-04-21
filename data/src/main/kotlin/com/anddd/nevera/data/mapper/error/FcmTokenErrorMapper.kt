@@ -11,11 +11,10 @@ import com.anddd.nevera.domain.model.notification.FcmTokenError
  */
 internal fun NetworkError.toFcmTokenError(): FcmTokenError = when (this) {
     is NetworkError.HttpError -> when (code) {
-        2041 -> FcmTokenError.MemberNotFound
-        2051 -> FcmTokenError.TokenNotFound
-        2052 -> FcmTokenError.InvalidToken
-        2053 -> FcmTokenError.SendError
+        MEMBER_NOT_FOUND -> FcmTokenError.MemberNotFound
         else -> FcmTokenError.Common(toCommonError())
     }
     else -> FcmTokenError.Common(toCommonError())
 }
+
+private const val MEMBER_NOT_FOUND = 2041

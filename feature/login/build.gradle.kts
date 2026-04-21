@@ -70,10 +70,6 @@ dependencies {
     // Google Login
     implementation(libs.bundles.google.login)
 
-    // Firebase Messaging
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.messaging)
-
     testImplementation(libs.junit.jupiter)
     testRuntimeOnly(libs.junit.jupiter.engine)
     testRuntimeOnly(libs.junit.platform.launcher)

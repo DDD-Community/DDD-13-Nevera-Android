@@ -8,14 +8,11 @@ import com.anddd.nevera.domain.usecase.auth.CheckAutoLoginUseCase
 import com.anddd.nevera.domain.usecase.notification.SyncFcmTokenUseCase
 import com.anddd.nevera.feature.splash.BuildConfig
 import com.anddd.nevera.feature.splash.main.model.SplashUiState
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.ktx.messaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
@@ -48,9 +45,7 @@ class SplashViewModel @Inject constructor(
 
     private suspend fun syncFcmToken() {
         runCatching {
-            syncFcmTokenUseCase {
-                Firebase.messaging.token.await()
-            }
+            syncFcmTokenUseCase()
         }.onSuccess { result ->
             result.logFcmSyncFailure(TAG, BuildConfig.DEBUG, Log::w)
         }.onFailure { throwable ->

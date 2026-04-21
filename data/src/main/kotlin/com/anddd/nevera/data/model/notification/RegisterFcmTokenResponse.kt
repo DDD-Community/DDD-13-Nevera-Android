@@ -1,5 +1,8 @@
 package com.anddd.nevera.data.model.notification
 
+import com.google.gson.annotations.SerializedName
+
 internal data class RegisterFcmTokenResponse(
-    val message: String
+    @SerializedName("message")
+    val message: String?
 )

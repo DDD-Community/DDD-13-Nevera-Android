@@ -47,10 +47,6 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
-    // Firebase Messaging
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.messaging)
-
     testImplementation(libs.junit.jupiter)
     testRuntimeOnly(libs.junit.jupiter.engine)
     testRuntimeOnly(libs.junit.platform.launcher)

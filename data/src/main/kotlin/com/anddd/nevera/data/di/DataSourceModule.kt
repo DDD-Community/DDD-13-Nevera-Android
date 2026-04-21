@@ -3,6 +3,7 @@ package com.anddd.nevera.data.di
 import com.anddd.nevera.data.datasource.AndroidKeyStoreProvider
 import com.anddd.nevera.data.datasource.FcmTokenLocalDataSource
 import com.anddd.nevera.data.datasource.FcmTokenLocalDataSourceImpl
+import com.anddd.nevera.data.datasource.FirebaseFcmTokenProvider
 import com.anddd.nevera.data.datasource.KeyProvider
 import com.anddd.nevera.data.datasource.NotificationRemoteDataSource
 import com.anddd.nevera.data.datasource.NotificationRemoteDataSourceImpl
@@ -12,6 +13,7 @@ import com.anddd.nevera.data.datasource.RefreshDataSourceImpl
 import com.anddd.nevera.data.datasource.TokenDataSource
 import com.anddd.nevera.data.datasource.UserDataSourceImpl
 import com.anddd.nevera.data.datasource.UserDataSource
+import com.anddd.nevera.domain.usecase.notification.FcmTokenProvider
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -45,4 +47,8 @@ internal abstract class DataSourceModule {
     @Binds
     @Singleton
     abstract fun bindNotificationRemoteDataSource(impl: NotificationRemoteDataSourceImpl): NotificationRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindFcmTokenProvider(impl: FirebaseFcmTokenProvider): FcmTokenProvider
 }

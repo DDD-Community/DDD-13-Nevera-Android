@@ -1,8 +1,10 @@
 package com.anddd.nevera.domain.usecase.notification
 
 import com.anddd.nevera.core.common.NeveraResult
+import com.anddd.nevera.domain.model.common.CommonError
 import com.anddd.nevera.domain.model.notification.FcmTokenError
 import com.anddd.nevera.domain.repository.FcmTokenRepository
+import com.anddd.nevera.domain.usecase.notification.FcmTokenProvider
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -10,18 +12,14 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
-class
-SyncFcmTokenUseCaseTest {
+class SyncFcmTokenUseCaseTest {
 
     @Test
     fun `needsSync가 false이고 저장된 토큰이 없으면 fallback 토큰을 저장하고 동기화한다`() = runTest {
-        val repository = FakeFcmTokenRepository(
-            storedToken = null,
-            syncNeeded = false,
-        )
-        val useCase = SyncFcmTokenUseCase(repository)
+        val repository = FakeFcmTokenRepository(storedToken = null, syncNeeded = false)
+        val useCase = SyncFcmTokenUseCase(repository, FakeFcmTokenProvider("fallback-token"))
 
-        val result = useCase { "fallback-token" }
+        val result = useCase()
 
         assertEquals(NeveraResult.Success(Unit), result)
         assertEquals("fallback-token", repository.storedToken)
@@ -32,13 +30,10 @@ SyncFcmTokenUseCaseTest {
 
     @Test
     fun `needsSync가 true이고 저장된 토큰이 없으면 fallback 토큰으로 복구 후 동기화한다`() = runTest {
-        val repository = FakeFcmTokenRepository(
-            storedToken = null,
-            syncNeeded = true,
-        )
-        val useCase = SyncFcmTokenUseCase(repository)
+        val repository = FakeFcmTokenRepository(storedToken = null, syncNeeded = true)
+        val useCase = SyncFcmTokenUseCase(repository, FakeFcmTokenProvider("restored-token"))
 
-        val result = useCase { "restored-token" }
+        val result = useCase()
 
         assertEquals(NeveraResult.Success(Unit), result)
         assertEquals("restored-token", repository.storedToken)
@@ -49,13 +44,10 @@ SyncFcmTokenUseCaseTest {
 
     @Test
     fun `needsSync가 true이고 저장된 토큰이 있으면 저장된 토큰으로 동기화한다`() = runTest {
-        val repository = FakeFcmTokenRepository(
-            storedToken = "cached-token",
-            syncNeeded = true,
-        )
-        val useCase = SyncFcmTokenUseCase(repository)
+        val repository = FakeFcmTokenRepository(storedToken = "cached-token", syncNeeded = true)
+        val useCase = SyncFcmTokenUseCase(repository, FakeFcmTokenProvider("unused-token"))
 
-        val result = useCase { "unused-token" }
+        val result = useCase()
 
         assertEquals(NeveraResult.Success(Unit), result)
         assertEquals("cached-token", repository.storedToken)
@@ -66,13 +58,10 @@ SyncFcmTokenUseCaseTest {
 
     @Test
     fun `needsSync가 false이고 저장된 토큰이 있으면 아무 작업도 하지 않는다`() = runTest {
-        val repository = FakeFcmTokenRepository(
-            storedToken = "cached-token",
-            syncNeeded = false,
-        )
-        val useCase = SyncFcmTokenUseCase(repository)
+        val repository = FakeFcmTokenRepository(storedToken = "cached-token", syncNeeded = false)
+        val useCase = SyncFcmTokenUseCase(repository, FakeFcmTokenProvider("unused-token"))
 
-        val result = useCase { "unused-token" }
+        val result = useCase()
 
         assertEquals(NeveraResult.Success(Unit), result)
         assertEquals("cached-token", repository.storedToken)
@@ -83,13 +72,10 @@ SyncFcmTokenUseCaseTest {
 
     @Test
     fun `fallback이 null을 반환하면 동기화하지 않는다`() = runTest {
-        val repository = FakeFcmTokenRepository(
-            storedToken = null,
-            syncNeeded = true,
-        )
-        val useCase = SyncFcmTokenUseCase(repository)
+        val repository = FakeFcmTokenRepository(storedToken = null, syncNeeded = true)
+        val useCase = SyncFcmTokenUseCase(repository, FakeFcmTokenProvider(null))
 
-        val result = useCase { null }
+        val result = useCase()
 
         assertEquals(NeveraResult.Success(Unit), result)
         assertNull(repository.storedToken)
@@ -103,16 +89,20 @@ SyncFcmTokenUseCaseTest {
         val repository = FakeFcmTokenRepository(
             storedToken = "cached-token",
             syncNeeded = true,
-            registerResult = NeveraResult.Failure(FcmTokenError.Common(com.anddd.nevera.domain.model.common.CommonError.Unknown))
+            registerResult = NeveraResult.Failure(FcmTokenError.Common(CommonError.Unknown))
         )
-        val useCase = SyncFcmTokenUseCase(repository)
+        val useCase = SyncFcmTokenUseCase(repository, FakeFcmTokenProvider("unused-token"))
 
-        val result = useCase { "unused-token" }
+        val result = useCase()
 
-        assertEquals(NeveraResult.Failure(FcmTokenError.Common(com.anddd.nevera.domain.model.common.CommonError.Unknown)), result)
+        assertEquals(NeveraResult.Failure(FcmTokenError.Common(CommonError.Unknown)), result)
         assertEquals(listOf("cached-token"), repository.registeredTokens)
         assertTrue(repository.syncNeeded)
     }
+}
+
+private class FakeFcmTokenProvider(private val token: String?) : FcmTokenProvider {
+    override suspend fun getToken(): String? = token
 }
 
 private class FakeFcmTokenRepository(

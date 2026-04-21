@@ -6,9 +6,6 @@ import com.anddd.nevera.domain.model.common.CommonError
 
 fun FcmTokenError.toLogMessage(): String = when (this) {
     FcmTokenError.MemberNotFound -> "FCM 동기화 실패: MEMBER_NOT_FOUND(status=404, code=2041, message=존재하지 않는 사용자입니다.)"
-    FcmTokenError.TokenNotFound -> "FCM 동기화 실패: FCM_TOKEN_NOT_FOUND(status=404, code=2051, message=FCM 토큰이 등록되지 않은 사용자입니다.)"
-    FcmTokenError.InvalidToken -> "FCM 동기화 실패: FCM_TOKEN_INVALID(status=400, code=2052, message=유효하지 않은 FCM 토큰입니다.)"
-    FcmTokenError.SendError -> "FCM 동기화 실패: FCM_SEND_ERROR(status=500, code=2053, message=푸시 알림 전송 중 오류가 발생했습니다.)"
     is FcmTokenError.Common -> when (val commonError = error) {
         CommonError.NetworkUnavailable -> "FCM 동기화 실패: 네트워크 연결을 확인해주세요."
         CommonError.Timeout -> "FCM 동기화 실패: 요청 시간이 초과되었습니다."
@@ -22,8 +19,8 @@ inline fun NeveraResult<Unit, FcmTokenError>.logFcmSyncFailure(
     tag: String,
     isDebug: Boolean,
     logWarning: (String, String) -> Unit,
-) {
-    onFailure { error ->
+): NeveraResult<Unit, FcmTokenError> {
+    return onFailure { error ->
         if (!isDebug) return@onFailure
         logWarning(tag, error.toLogMessage())
     }
