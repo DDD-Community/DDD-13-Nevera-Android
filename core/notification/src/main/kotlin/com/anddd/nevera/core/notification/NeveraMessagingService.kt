@@ -1,6 +1,7 @@
 package com.anddd.nevera.core.notification
 
 import android.Manifest
+import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
@@ -55,7 +56,10 @@ class NeveraMessagingService : FirebaseMessagingService() {
         val deepLink = remoteMessage.data[NOTIFICATION_DEEPLINK] ?: DEFAULT_DEEP_LINK
 
         // TODO :: 현재 type과 deepLink가 전달되고 있지 않은 상황, 임시로 type을 default로 설정합니다.
-        type = NotificationType.DEFAULT
+        if (type == NotificationType.UNKNOWN && BuildConfig.DEBUG) {
+            Log.e(TAG, "unknown type, $remoteMessage")
+            type = NotificationType.DEFAULT
+        }
 
         when (type) {
             NotificationType.DEFAULT -> {
@@ -80,29 +84,6 @@ class NeveraMessagingService : FirebaseMessagingService() {
         type: NotificationType,
         deepLink: String,
     ) {
-        val intent = Intent(Intent.ACTION_VIEW, deepLink.toUri()).apply {
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        }
-
-        val pendingIntent = PendingIntent.getActivity(
-            this,
-            type.ordinal,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
-        )
-
-        val notificationBuilder = NotificationCompat.Builder(
-            this,
-            getString(R.string.default_notification_channel_id)
-        )
-
-        val notification = notificationBuilder.setContentTitle(title)
-            .setContentText(body)
-            .setSmallIcon(applicationInfo.icon)
-            .setAutoCancel(true)
-            .setContentIntent(pendingIntent)
-            .build()
-
         if (!canNotify()) {
             if (BuildConfig.DEBUG) {
                 Log.d(TAG, "알림 권한 미승인 또는 알림 비활성화 상태로 notify를 건너뜁니다.")
@@ -110,8 +91,44 @@ class NeveraMessagingService : FirebaseMessagingService() {
             return
         }
 
+        val pendingIntent = createPendingIntent(type, deepLink)
+        val notification = buildNotification(title, body, pendingIntent)
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(type.ordinal, notification)
+    }
+
+    private fun createPendingIntent(
+        type: NotificationType,
+        deepLink: String,
+    ): PendingIntent {
+        val intent = Intent(Intent.ACTION_VIEW, deepLink.toUri()).apply {
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        }
+
+        return PendingIntent.getActivity(
+            this,
+            type.ordinal,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
+    }
+
+    private fun buildNotification(
+        title: String?,
+        body: String?,
+        pendingIntent: PendingIntent,
+    ) : Notification {
+        val builder = NotificationCompat.Builder(
+            this,
+            getString(R.string.default_notification_channel_id)
+        )
+
+        return builder.setContentTitle(title)
+            .setContentText(body)
+            .setSmallIcon(applicationInfo.icon)
+            .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
+            .build()
     }
 
     private fun canNotify(): Boolean {
