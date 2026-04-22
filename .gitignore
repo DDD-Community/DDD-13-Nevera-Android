@@ -45,7 +45,6 @@ gradle-app.setting
 # Secrets (보안 중요!)
 # ======================
 secrets.properties
-google-services.json
 GoogleService-Info.plist
 
 # ======================

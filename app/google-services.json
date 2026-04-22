@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "547506128537",
+    "project_id": "nevera-android-cc255",
+    "storage_bucket": "nevera-android-cc255.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:547506128537:android:395514f65041409d735a08",
+        "android_client_info": {
+          "package_name": "com.anddd.nevera"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsUcD3M4cxQJHBkWmChjiimIsJqBfClr4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
