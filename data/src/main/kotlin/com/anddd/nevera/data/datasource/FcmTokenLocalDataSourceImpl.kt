@@ -14,7 +14,7 @@ import javax.inject.Inject
 private val Context.pushTokenDataStore: DataStore<Preferences> by preferencesDataStore(name = "push_token")
 
 internal class FcmTokenLocalDataSourceImpl @Inject constructor(
-    @param:ApplicationContext private val context: Context,
+    @ApplicationContext context: Context,
 ) : FcmTokenLocalDataSource {
 
     private val dataStore = context.pushTokenDataStore
