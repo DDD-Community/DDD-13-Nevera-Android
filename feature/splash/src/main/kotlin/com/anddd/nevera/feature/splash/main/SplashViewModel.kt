@@ -25,11 +25,7 @@ class SplashViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<SplashUiState>(SplashUiState.Loading)
     val uiState: StateFlow<SplashUiState> = _uiState
 
-    init {
-        checkAutoLogin(startTime = System.currentTimeMillis())
-    }
-
-    private fun checkAutoLogin(startTime: Long) {
+    fun startAutoLogin(startTime: Long = System.currentTimeMillis()) {
         viewModelScope.launch {
             val accessToken = checkAutoLoginUseCase()
             val remaining = remainingDelay(startTime)
