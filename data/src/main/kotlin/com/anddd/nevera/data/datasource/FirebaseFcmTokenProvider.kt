@@ -14,7 +14,7 @@ internal class FirebaseFcmTokenProvider @Inject constructor() : FcmTokenProvider
     // 이 상태에서 token을 요청하면 GMS RPC가 SERVICE_NOT_AVAILABLE을 반환하며
     // Firebase SDK가 내부 retry를 반복해 Task가 완료되지 않아 await()이 무한 suspend 되므로
     // timeout 설정이 필요합니다.
-    override suspend fun getToken(): String? =
+    override suspend fun getFcmToken(): String? =
         withTimeoutOrNull(FCM_TOKEN_TIMEOUT_MS) {
             Firebase.messaging.token.await()
         }
