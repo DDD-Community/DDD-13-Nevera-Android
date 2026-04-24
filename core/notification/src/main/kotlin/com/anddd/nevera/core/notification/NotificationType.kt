@@ -1,6 +1,6 @@
 package com.anddd.nevera.core.notification
 
-enum class NotificationType(val value: String) {
+internal enum class NotificationType(val value: String) {
     DEFAULT("default"),
     UNKNOWN("unknown");
 
