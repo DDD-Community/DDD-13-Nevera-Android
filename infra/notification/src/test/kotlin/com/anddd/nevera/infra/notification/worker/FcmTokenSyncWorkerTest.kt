@@ -281,9 +281,9 @@ class FcmTokenSyncWorkerTest {
 }
 
 private class FakeFcmTokenProvider(private val token: String?) : FcmTokenProvider {
-    override suspend fun getFcmToken(): String? = token
+    override suspend fun getToken(): String? = token
 }
 
 private class ThrowingFcmTokenProvider(private val exception: Throwable) : FcmTokenProvider {
-    override suspend fun getFcmToken(): String? = throw exception
+    override suspend fun getToken(): String? = throw exception
 }

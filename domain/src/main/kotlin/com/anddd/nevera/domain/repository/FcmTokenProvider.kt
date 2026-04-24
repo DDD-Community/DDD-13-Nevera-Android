@@ -1,5 +1,5 @@
 package com.anddd.nevera.domain.repository
 
 interface FcmTokenProvider {
-    suspend fun getFcmToken(): String?
+    suspend fun getToken(): String?
 }

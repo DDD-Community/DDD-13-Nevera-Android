@@ -59,7 +59,7 @@ class FcmTokenSyncWorker @AssistedInject constructor(
 
         val fetched = runCatching {
             // Firebase FCM Token 요청
-            fcmTokenProvider.getFcmToken()
+            fcmTokenProvider.getToken()
         }.onFailure {
             if (it is CancellationException) throw it
         }.getOrNull()
