@@ -1,4 +1,4 @@
-package com.anddd.nevera.core.notification
+package com.anddd.nevera.infra.notification
 
 internal enum class NotificationType(val value: String) {
     DEFAULT("default"),

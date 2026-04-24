@@ -1,4 +1,4 @@
-package com.anddd.nevera.core.notification
+package com.anddd.nevera.infra.notification
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

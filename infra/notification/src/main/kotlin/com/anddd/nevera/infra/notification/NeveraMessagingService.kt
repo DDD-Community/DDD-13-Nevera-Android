@@ -1,4 +1,4 @@
-package com.anddd.nevera.core.notification
+package com.anddd.nevera.infra.notification
 
 import android.Manifest
 import android.app.Notification
@@ -12,40 +12,20 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
 import androidx.core.content.ContextCompat
-import com.anddd.nevera.domain.model.notification.logFcmSyncFailure
-import com.anddd.nevera.domain.usecase.notification.UpdateFcmTokenUseCase
+import com.anddd.nevera.domain.scheduler.FcmSyncScheduler
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.coroutines.cancellation.CancellationException
 
 @AndroidEntryPoint
 class NeveraMessagingService : FirebaseMessagingService() {
 
-    @Inject lateinit var updateFcmTokenUseCase: UpdateFcmTokenUseCase
-
-    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    @Inject lateinit var fcmSyncScheduler: FcmSyncScheduler
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        serviceScope.launch {
-            try {
-                updateFcmTokenUseCase(token)
-                    .logFcmSyncFailure(TAG, BuildConfig.DEBUG, Log::w)
-            } catch (ce: CancellationException) {
-                throw ce
-            } catch (t: Throwable) {
-                if (BuildConfig.DEBUG) {
-                    Log.e(TAG, "FCM 토큰 업데이트 실패", t)
-                }
-            }
-        }
+        fcmSyncScheduler.scheduleUpdateFcmToken(token)
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
@@ -117,7 +97,7 @@ class NeveraMessagingService : FirebaseMessagingService() {
         title: String?,
         body: String?,
         pendingIntent: PendingIntent,
-    ) : Notification {
+    ): Notification {
         val builder = NotificationCompat.Builder(
             this,
             getString(R.string.default_notification_channel_id)
@@ -141,11 +121,6 @@ class NeveraMessagingService : FirebaseMessagingService() {
                 this,
                 Manifest.permission.POST_NOTIFICATIONS,
             ) == PackageManager.PERMISSION_GRANTED
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        serviceScope.cancel()
     }
 
     companion object {
