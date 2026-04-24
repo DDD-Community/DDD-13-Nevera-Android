@@ -6,7 +6,7 @@ import com.anddd.nevera.domain.repository.TokenRepository
 import javax.inject.Inject
 
 internal class TokenRepositoryImpl @Inject constructor(
-    private val tokenDataSource: TokenDataSource
+    private val tokenDataSource: TokenDataSource,
 ) : TokenRepository {
 
     override suspend fun getAccessToken(): String? =

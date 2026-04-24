@@ -18,7 +18,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     buildFeatures {
+        // AGP 8.0부터는 BuildConfig가 기본 비활성화 상태
+        buildConfig = true
         compose = true
     }
 
@@ -37,6 +40,7 @@ dependencies {
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+    implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.material3)

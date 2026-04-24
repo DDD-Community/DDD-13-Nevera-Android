@@ -3,6 +3,7 @@ package com.anddd.nevera
 import android.app.Application
 import android.content.Intent
 import com.anddd.nevera.core.network.auth.SessionEventBus
+import com.anddd.nevera.core.notification.NotificationChannelInitializer
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +21,7 @@ class NeveraApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        NotificationChannelInitializer.initialize(this)
         observeSessionExpired()
     }
 
@@ -33,11 +35,9 @@ class NeveraApplication : Application() {
     private fun observeSessionExpired() {
         applicationScope.launch {
             sessionEventBus.sessionExpiredEvent.collect {
-                startActivity(
-                    Intent(this@NeveraApplication, MainActivity::class.java).apply {
-                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                    }
-                )
+                Intent(this@NeveraApplication, MainActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                }.let(::startActivity)
             }
         }
     }

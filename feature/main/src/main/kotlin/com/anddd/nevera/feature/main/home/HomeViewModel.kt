@@ -6,6 +6,7 @@ import com.anddd.nevera.core.common.onFailure
 import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.domain.usecase.auth.LogoutUseCase
 import com.anddd.nevera.domain.usecase.auth.WithdrawUseCase
+import com.anddd.nevera.feature.main.BuildConfig
 import com.anddd.nevera.feature.main.home.model.HomeSideEffect
 import com.anddd.nevera.feature.main.home.model.HomeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,7 +31,7 @@ class HomeViewModel @Inject constructor(
 
     fun logout() {
         viewModelScope.launch {
-            logoutUseCase()
+            logoutUseCase(BuildConfig.DEBUG)
                 .onSuccess {
                     _sideEffect.send(HomeSideEffect.NavigateToLogin)
                 }.onFailure {
