@@ -4,40 +4,40 @@ import com.anddd.nevera.core.common.NeveraResult
 import com.anddd.nevera.core.common.map
 import com.anddd.nevera.core.network.auth.ApiCallExecutor
 import com.anddd.nevera.data.datasource.FcmTokenLocalDataSource
-import com.anddd.nevera.data.datasource.NotificationRemoteDataSource
+import com.anddd.nevera.data.datasource.FcmTokenRemoteDataSource
 import com.anddd.nevera.data.mapper.error.toFcmTokenError
 import com.anddd.nevera.domain.model.notification.FcmTokenError
 import com.anddd.nevera.domain.repository.FcmTokenRepository
 import javax.inject.Inject
 
 internal class FcmTokenRepositoryImpl @Inject constructor(
-    private val fcmTokenDataSource: FcmTokenLocalDataSource,
-    private val notificationDataSource: NotificationRemoteDataSource,
+    private val fcmTokenLocalDataSource: FcmTokenLocalDataSource,
+    private val fcmTokenRemoteDataSource: FcmTokenRemoteDataSource,
     private val apiCall: ApiCallExecutor,
 ) : FcmTokenRepository {
 
     override suspend fun getFcmToken(): String? {
-        return fcmTokenDataSource.getFcmToken()
+        return fcmTokenLocalDataSource.getFcmToken()
     }
 
     override suspend fun markTokenForSync(token: String) {
-        fcmTokenDataSource.markTokenForSync(token)
+        fcmTokenLocalDataSource.markTokenForSync(token)
     }
 
     override suspend fun clearSyncNeeded() {
-        fcmTokenDataSource.setNeedsSync(false)
+        fcmTokenLocalDataSource.setNeedsSync(false)
     }
 
     override suspend fun clearFcmData() {
-        fcmTokenDataSource.clearFcmData()
+        fcmTokenLocalDataSource.clearFcmData()
     }
 
     override suspend fun isSyncNeeded(): Boolean {
-        return fcmTokenDataSource.isSyncNeeded()
+        return fcmTokenLocalDataSource.isSyncNeeded()
     }
 
     override suspend fun registerFcmToken(token: String): NeveraResult<Unit, FcmTokenError> {
-        return apiCall { notificationDataSource.registerFcmToken(token) }
+        return apiCall { fcmTokenRemoteDataSource.registerFcmToken(token) }
             .map(
                 onSuccess = { },
                 onFailure = { it.toFcmTokenError() },

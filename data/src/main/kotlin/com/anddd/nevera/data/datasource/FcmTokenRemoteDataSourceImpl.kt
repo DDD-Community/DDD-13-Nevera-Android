@@ -6,9 +6,9 @@ import com.anddd.nevera.data.model.notification.RegisterFcmTokenRequest
 import com.anddd.nevera.data.model.notification.RegisterFcmTokenResponse
 import javax.inject.Inject
 
-internal class NotificationRemoteDataSourceImpl @Inject constructor(
+internal class FcmTokenRemoteDataSourceImpl @Inject constructor(
     private val notificationApi: NotificationApi,
-) : NotificationRemoteDataSource {
+) : FcmTokenRemoteDataSource {
 
     override suspend fun registerFcmToken(pushToken: String): ApiResponse<RegisterFcmTokenResponse> {
         val request = RegisterFcmTokenRequest(pushToken)

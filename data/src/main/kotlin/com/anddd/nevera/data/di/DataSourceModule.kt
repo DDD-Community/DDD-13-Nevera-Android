@@ -5,8 +5,8 @@ import com.anddd.nevera.data.datasource.FcmTokenLocalDataSource
 import com.anddd.nevera.data.datasource.FcmTokenLocalDataSourceImpl
 import com.anddd.nevera.data.datasource.FirebaseFcmTokenProvider
 import com.anddd.nevera.data.datasource.KeyProvider
-import com.anddd.nevera.data.datasource.NotificationRemoteDataSource
-import com.anddd.nevera.data.datasource.NotificationRemoteDataSourceImpl
+import com.anddd.nevera.data.datasource.FcmTokenRemoteDataSource
+import com.anddd.nevera.data.datasource.FcmTokenRemoteDataSourceImpl
 import com.anddd.nevera.data.datasource.TokenDataSourceImpl
 import com.anddd.nevera.data.datasource.RefreshDataSource
 import com.anddd.nevera.data.datasource.RefreshDataSourceImpl
@@ -46,7 +46,7 @@ internal abstract class DataSourceModule {
 
     @Binds
     @Singleton
-    abstract fun bindNotificationRemoteDataSource(impl: NotificationRemoteDataSourceImpl): NotificationRemoteDataSource
+    abstract fun bindFcmTokenRemoteDataSource(impl: FcmTokenRemoteDataSourceImpl): FcmTokenRemoteDataSource
 
     @Binds
     @Singleton
