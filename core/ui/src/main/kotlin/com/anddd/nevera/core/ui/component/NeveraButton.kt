@@ -1,5 +1,6 @@
 package com.anddd.nevera.core.ui.component
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -55,6 +56,9 @@ fun NeveraButton(
     }
     require(iconOnly || text.isNotBlank() || leadingIcon != null || trailingIcon != null) {
         "text가 비어 있을 경우 leadingIcon 또는 trailingIcon 중 하나는 반드시 제공해야 합니다."
+    }
+    if (iconOnly && leadingIcon != null && trailingIcon != null) {
+        Log.w("NeveraButton", "iconOnly=true일 때 leadingIcon과 trailingIcon이 둘 다 전달되었습니다. trailingIcon은 무시됩니다.")
     }
 
     val interactionSource = remember { MutableInteractionSource() }
