@@ -48,6 +48,10 @@ fun NeveraButton(
     leadingIcon: (@Composable () -> Unit)? = null,
     trailingIcon: (@Composable () -> Unit)? = null,
 ) {
+    require(!iconOnly || leadingIcon != null || trailingIcon != null) {
+        "iconOnly=true 일 때 leadingIcon 또는 trailingIcon 중 하나는 반드시 제공해야 합니다."
+    }
+
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
 
