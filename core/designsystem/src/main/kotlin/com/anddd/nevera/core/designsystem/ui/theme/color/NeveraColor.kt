@@ -51,7 +51,8 @@ class NeveraColor(
     val backgroundPrimary: Color,
     val backgroundSecondary: Color,
     val backgroundTertiary: Color,
-    val backgroundInverse: Color,
+    val backgroundBrand: Color,
+    val backgroundDimmed: Color,
 
     // Surface
     val surfacePrimary: Color,
@@ -60,6 +61,7 @@ class NeveraColor(
     val surfaceQuaternary: Color,
     val surfaceInverse: Color,
     val surfaceBrandPrimary: Color,
+    val surfaceBrandSecondary: Color,
 
     // Border
     val borderNormal: Color,
@@ -99,9 +101,9 @@ class NeveraColor(
 
 internal val LightNeveraColors = NeveraColor(
     // Text
-    textPrimary = ColorPalette.gray95,
-    textSecondary = ColorPalette.gray80,
-    textTertiary = ColorPalette.gray60,
+    textPrimary = ColorPalette.black,
+    textSecondary = ColorPalette.gray90,
+    textTertiary = ColorPalette.gray70,
     textQuaternary = ColorPalette.gray50,
     textCaption = ColorPalette.gray40,
     textDisabled = ColorPalette.gray30,
@@ -142,7 +144,8 @@ internal val LightNeveraColors = NeveraColor(
     backgroundPrimary = ColorPalette.white,
     backgroundSecondary = ColorPalette.gray5,
     backgroundTertiary = ColorPalette.gray10,
-    backgroundInverse = ColorPalette.gray95,
+    backgroundBrand = ColorPalette.orange5,
+    backgroundDimmed = ColorPalette.alphaBlack24,
 
     // Surface
     surfacePrimary = ColorPalette.white,
@@ -151,6 +154,7 @@ internal val LightNeveraColors = NeveraColor(
     surfaceQuaternary = ColorPalette.gray20,
     surfaceInverse = ColorPalette.gray95,
     surfaceBrandPrimary = ColorPalette.orange5,
+    surfaceBrandSecondary = ColorPalette.orange10,
 
     // Border
     borderNormal = ColorPalette.gray10,
@@ -182,7 +186,7 @@ internal val LightNeveraColors = NeveraColor(
     statusWarningGhost = ColorPalette.yellow5,
     statusWarningWeak = ColorPalette.yellow10,
     statusWarningNormal = ColorPalette.yellow50,
-    statusWarningStrong = ColorPalette.yellow60,
+    statusWarningStrong = ColorPalette.yellow70,
 
     // Notification
     notificationRed = ColorPalette.red50,
@@ -191,9 +195,9 @@ internal val LightNeveraColors = NeveraColor(
 // TODO: Dark mode colors - pending design team's color palette
 internal val DarkNeveraColors = NeveraColor(
     // Text
-    textPrimary = ColorPalette.gray95,
-    textSecondary = ColorPalette.gray80,
-    textTertiary = ColorPalette.gray60,
+    textPrimary = ColorPalette.black,
+    textSecondary = ColorPalette.gray90,
+    textTertiary = ColorPalette.gray70,
     textQuaternary = ColorPalette.gray50,
     textCaption = ColorPalette.gray40,
     textDisabled = ColorPalette.gray30,
@@ -234,7 +238,8 @@ internal val DarkNeveraColors = NeveraColor(
     backgroundPrimary = ColorPalette.white,
     backgroundSecondary = ColorPalette.gray5,
     backgroundTertiary = ColorPalette.gray10,
-    backgroundInverse = ColorPalette.gray95,
+    backgroundBrand = ColorPalette.orange5,
+    backgroundDimmed = ColorPalette.alphaBlack24,
 
     // Surface
     surfacePrimary = ColorPalette.white,
@@ -243,6 +248,7 @@ internal val DarkNeveraColors = NeveraColor(
     surfaceQuaternary = ColorPalette.gray20,
     surfaceInverse = ColorPalette.gray95,
     surfaceBrandPrimary = ColorPalette.orange5,
+    surfaceBrandSecondary = ColorPalette.orange10,
 
     // Border
     borderNormal = ColorPalette.gray10,
@@ -274,7 +280,7 @@ internal val DarkNeveraColors = NeveraColor(
     statusWarningGhost = ColorPalette.yellow5,
     statusWarningWeak = ColorPalette.yellow10,
     statusWarningNormal = ColorPalette.yellow50,
-    statusWarningStrong = ColorPalette.yellow60,
+    statusWarningStrong = ColorPalette.yellow70,
 
     // Notification
     notificationRed = ColorPalette.red50,
