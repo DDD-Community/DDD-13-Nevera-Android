@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.core.designsystem.ui.theme.shape.NeveraRadius
 import com.anddd.nevera.core.designsystem.ui.theme.spacing.NeveraSpacing
+import com.anddd.nevera.core.designsystem.ui.theme.typography.NeveraTypography
 
 enum class NeveraButtonColor { Primary, Secondary }
 
@@ -64,7 +65,7 @@ fun NeveraButton(
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
 
-    val sizeSpec = size.toSpec()
+    val sizeSpec = size.toSpec(NeveraTheme.typography)
     val colorSpec = buttonColors(color, style, isPressed)
     // Figma 변수명은 --radius/small이지만 실제값 8dp는 NeveraRadius.medium에 해당
     val shape = remember(style) {
@@ -146,9 +147,7 @@ private data class NeveraButtonColorSpec(
     val borderColor: Color = Color.Transparent,
 )
 
-@Composable
-private fun NeveraButtonSize.toSpec(): NeveraButtonSizeSpec {
-    val typography = NeveraTheme.typography
+private fun NeveraButtonSize.toSpec(typography: NeveraTypography): NeveraButtonSizeSpec {
     return when (this) {
         NeveraButtonSize.Large -> NeveraButtonSizeSpec(
             height = 48.dp,
