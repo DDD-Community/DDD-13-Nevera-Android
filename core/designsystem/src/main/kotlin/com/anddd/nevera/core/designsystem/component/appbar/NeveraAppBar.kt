@@ -190,6 +190,26 @@ private fun NeveraAppBarActionTextTertiaryPreview() {
 }
 
 @Preview(
+    name = "NeveraAppBar - Long Title Action Text",
+    showBackground = true,
+    widthDp = 360,
+)
+@Composable
+private fun NeveraAppBarLongTitleActionTextPreview() {
+    NeveraTheme {
+        NeveraAppBar(
+            title = "아주 긴 제목 텍스트가 들어왔을 때의 모습 확인",
+            navigation = AppBarNavigation.Back(onClick = {}),
+            action = AppBarAction.Text(
+                label = "건너뛰기",
+                onClick = {},
+                tone = AppBarAction.Text.Tone.Tertiary,
+            ),
+        )
+    }
+}
+
+@Preview(
     name = "NeveraAppBar - Action Icons",
     showBackground = true,
     widthDp = 360,
