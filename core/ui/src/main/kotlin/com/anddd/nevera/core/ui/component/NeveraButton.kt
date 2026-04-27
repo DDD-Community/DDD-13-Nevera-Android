@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.core.designsystem.ui.theme.shape.NeveraRadius
+import com.anddd.nevera.core.designsystem.ui.theme.spacing.NeveraSpacing
 import com.anddd.nevera.core.designsystem.ui.theme.typography.NeveraTypography
 
 enum class NeveraButtonColor { Primary, Secondary }
@@ -66,10 +67,9 @@ fun NeveraButton(
 
     val sizeSpec = size.toSpec(NeveraTheme.typography)
     val colorSpec = buttonColors(color, style, isPressed)
-    // Figma 변수명은 --radius/small이지만 실제값 8dp는 NeveraRadius.medium에 해당
     val shape = remember(style) {
-        if (style == NeveraButtonStyle.Rounded) RoundedCornerShape(NeveraRadius.full)
-        else RoundedCornerShape(NeveraRadius.medium)
+        if (style == NeveraButtonStyle.Rounded) RoundedCornerShape(NeveraRadius.max)
+        else RoundedCornerShape(NeveraRadius.small)
     }
 
     val baseModifier = modifier
@@ -147,11 +147,12 @@ private data class NeveraButtonColorSpec(
 )
 
 private fun NeveraButtonSize.toSpec(typography: NeveraTypography): NeveraButtonSizeSpec {
+
     return when (this) {
         NeveraButtonSize.Large -> NeveraButtonSizeSpec(
             height = 48.dp,
-            horizontalPadding = 16.dp,
-            verticalPadding = 12.dp,
+            horizontalPadding = NeveraSpacing.padding6,
+            verticalPadding = NeveraSpacing.padding5,
             iconSize = 20.dp,
             iconTextPadding = 8.dp,
             textStyle = typography.titleMedium,
@@ -160,8 +161,8 @@ private fun NeveraButtonSize.toSpec(typography: NeveraTypography): NeveraButtonS
             height = 40.dp,
             horizontalPadding = 14.dp,
             verticalPadding = 10.dp,
-            iconSize = 18.dp,
-            iconTextPadding = 6.dp,
+            iconSize = 20.dp,
+            iconTextPadding = 8.dp,
             textStyle = typography.titleSmall,
         )
         NeveraButtonSize.Small -> NeveraButtonSizeSpec(
@@ -176,9 +177,9 @@ private fun NeveraButtonSize.toSpec(typography: NeveraTypography): NeveraButtonS
             height = 28.dp,
             horizontalPadding = 8.dp,
             verticalPadding = 6.dp,
-            iconSize = 14.dp,
+            iconSize = 12.dp,
             iconTextPadding = 4.dp,
-            textStyle = typography.captionStrong,
+            textStyle = typography.captionMedium,
         )
     }
 }
