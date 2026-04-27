@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Intent
 import com.anddd.nevera.core.network.auth.SessionEventBus
 import com.anddd.nevera.core.notification.NotificationChannelInitializer
+import timber.log.Timber
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +22,7 @@ class NeveraApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
         NotificationChannelInitializer.initialize(this)
         observeSessionExpired()
     }
