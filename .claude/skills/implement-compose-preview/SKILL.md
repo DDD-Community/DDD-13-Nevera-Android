@@ -63,7 +63,7 @@ version: 0.1.0
 )
 @Composable
 private fun [ComponentName]Preview() {
-    PickleTheme {
+    NeveraTheme {
         [ComponentName](
             // 파라미터
         )
@@ -81,7 +81,7 @@ private fun [ComponentName]Preview() {
 )
 @Composable
 private fun [ComponentName][Variant1]Preview() {
-    PickleTheme {
+    NeveraTheme {
         [ComponentName](
             type = [EnumType].[Variant1],
         )
@@ -95,7 +95,7 @@ private fun [ComponentName][Variant1]Preview() {
 )
 @Composable
 private fun [ComponentName][Variant2]Preview() {
-    PickleTheme {
+    NeveraTheme {
         [ComponentName](
             type = [EnumType].[Variant2],
         )
@@ -114,7 +114,7 @@ private fun [ComponentName][Variant2]Preview() {
 
 | 항목 | 규칙 |
 |------|------|
-| 테마 | 항상 `PickleTheme {}` 로 감싸기 |
+| 테마 | 항상 `NeveraTheme {}` 로 감싸기 |
 | 배경 | `showBackground = true` |
 | 너비 | `widthDp = 360` |
 | 접근제어 | `private` |
