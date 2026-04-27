@@ -8,5 +8,6 @@ internal object AppBarDefault {
     val horizontalSpacingMedium = NeveraSpacing.medium
     val horizontalSpacingLarge = NeveraSpacing.base
     val actionSpacing = NeveraSpacing.xSmall
-    val iconSize = 48.dp
+    val iconButtonSize = 32.dp
+    val iconSize = 24.dp
 }

@@ -37,9 +37,7 @@ fun NeveraDisplayAppBar(
 
 @Composable
 private fun RowScope.Title(title: String?) {
-    val showTitle = title != null
-
-    if (showTitle) {
+    if (title != null) {
         Text(
             text = title,
             modifier = Modifier.weight(1f),
@@ -137,6 +135,32 @@ private fun NeveraDisplayAppBarActionIconsPreview() {
                 AppBarAction.Icons.Item(
                     painter = NeveraIcons.Search,
                     contentDescription = "검색",
+                    onClick = {},
+                ),
+            ),
+        )
+    }
+}
+
+@Preview(
+    name = "NeveraDisplayAppBar - Action Icons 2",
+    showBackground = true,
+    widthDp = 360,
+)
+@Composable
+private fun NeveraDisplayAppBarActionIcons2Preview() {
+    NeveraTheme {
+        NeveraDisplayAppBar(
+            title = "타이틀",
+            action = AppBarAction.Icons(
+                AppBarAction.Icons.Item(
+                    painter = NeveraIcons.Search,
+                    contentDescription = "검색",
+                    onClick = {},
+                ),
+                AppBarAction.Icons.Item(
+                    painter = NeveraIcons.Info,
+                    contentDescription = "정보",
                     onClick = {},
                 ),
             ),

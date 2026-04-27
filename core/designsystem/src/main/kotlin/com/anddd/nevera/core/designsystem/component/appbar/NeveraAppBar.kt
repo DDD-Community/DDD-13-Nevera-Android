@@ -168,6 +168,33 @@ private fun NeveraAppBarActionIconsPreview() {
 }
 
 @Preview(
+    name = "NeveraAppBar - Action Icons 2",
+    showBackground = true,
+    widthDp = 360,
+)
+@Composable
+private fun NeveraAppBarActionIcons2Preview() {
+    NeveraTheme {
+        NeveraAppBar(
+            title = "타이틀",
+            navigation = AppBarNavigation.Back(onClick = {}),
+            action = AppBarAction.Icons(
+                AppBarAction.Icons.Item(
+                    painter = NeveraIcons.Search,
+                    contentDescription = "검색",
+                    onClick = {},
+                ),
+                AppBarAction.Icons.Item(
+                    painter = NeveraIcons.Info,
+                    contentDescription = "정보",
+                    onClick = {},
+                ),
+            ),
+        )
+    }
+}
+
+@Preview(
     name = "NeveraAppBar - No Background",
     showBackground = false,
     widthDp = 360,

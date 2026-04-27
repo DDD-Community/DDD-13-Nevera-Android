@@ -1,44 +1,41 @@
 package com.anddd.nevera.core.designsystem.component.appbar
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.unit.Dp
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
 @Composable
 internal fun AppBarNavigationSlot(navigation: AppBarNavigation) {
     when (navigation) {
-        is AppBarNavigation.Back -> IconButton(onClick = navigation.onClick) {
-            Icon(
-                painter = NeveraIcons.ArrowBack,
-                contentDescription = "뒤로가기",
-                tint = NeveraTheme.colors.iconPrimary,
-            )
-        }
+        is AppBarNavigation.Back -> AppBarIconButton(
+            painter = NeveraIcons.ArrowBack,
+            onClick = navigation.onClick,
+            contentDescription = "뒤로가기",
+        )
 
-        is AppBarNavigation.Close -> IconButton(onClick = navigation.onClick) {
-            Icon(
-                painter = NeveraIcons.Close,
-                contentDescription = "닫기",
-                tint = NeveraTheme.colors.iconPrimary,
-            )
-        }
+        is AppBarNavigation.Close -> AppBarIconButton(
+            painter = NeveraIcons.Close,
+            onClick = navigation.onClick,
+            contentDescription = "닫기",
+        )
 
-        is AppBarNavigation.Menu -> IconButton(onClick = navigation.onClick) {
-            Icon(
-                painter = NeveraIcons.Menu,
-                contentDescription = "메뉴",
-                tint = NeveraTheme.colors.iconPrimary,
-            )
-        }
+        is AppBarNavigation.Menu -> AppBarIconButton(
+            painter = NeveraIcons.Menu,
+            onClick = navigation.onClick,
+            contentDescription = "메뉴",
+        )
 
         AppBarNavigation.None -> Unit
     }
@@ -47,15 +44,13 @@ internal fun AppBarNavigationSlot(navigation: AppBarNavigation) {
 @Composable
 internal fun AppBarActionSlot(action: AppBarAction) {
     when (action) {
-        is AppBarAction.Icons -> Row {
+        is AppBarAction.Icons -> Row(horizontalArrangement = Arrangement.spacedBy(AppBarDefault.actionSpacing)) {
             action.items.forEach { item ->
-                IconButton(onClick = item.onClick) {
-                    Icon(
-                        painter = item.painter,
-                        contentDescription = item.contentDescription,
-                        tint = NeveraTheme.colors.iconPrimary,
-                    )
-                }
+                AppBarIconButton(
+                    painter = item.painter,
+                    onClick = item.onClick,
+                    contentDescription = item.contentDescription,
+                )
             }
         }
 
@@ -75,5 +70,26 @@ internal fun AppBarActionSlot(action: AppBarAction) {
         }
 
         AppBarAction.None -> Unit
+    }
+}
+
+@Composable
+private fun AppBarIconButton(
+    painter: Painter,
+    onClick: () -> Unit,
+    contentDescription: String? = null,
+) {
+    CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
+        IconButton(
+            onClick = onClick,
+            modifier = Modifier.size(AppBarDefault.iconButtonSize),
+        ) {
+            Icon(
+                painter = painter,
+                contentDescription = contentDescription,
+                modifier = Modifier.size(AppBarDefault.iconSize),
+                tint = NeveraTheme.colors.iconPrimary
+            )
+        }
     }
 }
