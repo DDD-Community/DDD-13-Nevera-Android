@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -73,7 +73,7 @@ fun NeveraButton(
     }
 
     val baseModifier = modifier
-        .then(if (iconOnly) Modifier.size(sizeSpec.height) else Modifier.height(sizeSpec.height))
+        .then(if (iconOnly) Modifier.size(sizeSpec.height) else Modifier.heightIn(min = sizeSpec.height))
         // alpha를 clip/background보다 앞에 두어 border 포함 버튼 전체가 균일하게 dimming되도록 함
         .alpha(if (enabled) 1f else 0.3f)
         // ripple이 shape 경계 밖으로 넘치지 않도록 clip을 clickable보다 앞에 배치
