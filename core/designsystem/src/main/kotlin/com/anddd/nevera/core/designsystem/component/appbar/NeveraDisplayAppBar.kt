@@ -13,6 +13,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
+/**
+ * 큰 제목을 강조해서 보여주는 디스플레이형 AppBar를 표시합니다.
+ *
+ * 좌측에는 큰 타이틀을, 우측에는 action 영역을 배치합니다.
+ * 섹션 진입 화면이나 타이틀 강조가 필요한 화면 상단에 사용합니다.
+ *
+ * @param modifier 루트 AppBar에 적용할 [Modifier]
+ * @param title 좌측에 표시할 제목. `null`이면 제목 영역은 비워 두고 action 정렬만 유지합니다.
+ * @param action 우측에 표시할 액션 요소입니다.
+ * @param showBackground AppBar 배경 표시 여부입니다.
+ */
 @Composable
 fun NeveraDisplayAppBar(
     modifier: Modifier = Modifier,

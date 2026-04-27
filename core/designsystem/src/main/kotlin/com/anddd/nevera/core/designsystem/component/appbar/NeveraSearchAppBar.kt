@@ -15,6 +15,18 @@ import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
+/**
+ * 검색 UI를 AppBar 내부에 배치하는 검색형 AppBar를 표시합니다.
+ *
+ * 좌측에는 navigation, 중앙에는 호출자가 전달한 검색 영역, 우측에는 action을 배치합니다.
+ * 검색 입력 필드나 검색 상태 UI를 상단 바에 직접 노출해야 하는 화면에 사용합니다.
+ *
+ * @param modifier 루트 AppBar에 적용할 [Modifier]
+ * @param navigation 좌측에 표시할 내비게이션 요소입니다.
+ * @param action 우측에 표시할 액션 요소입니다.
+ * @param showBackground AppBar 배경 표시 여부입니다.
+ * @param searchBar AppBar 중앙 영역에 표시할 검색 UI 슬롯입니다.
+ */
 @Composable
 fun NeveraSearchAppBar(
     modifier: Modifier = Modifier,

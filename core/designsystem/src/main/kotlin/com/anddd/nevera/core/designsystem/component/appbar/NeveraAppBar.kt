@@ -11,6 +11,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
+/**
+ * 가장 기본적인 형태의 Nevera AppBar를 표시합니다.
+ *
+ * 중앙에 제목을 배치하고, 좌측에는 navigation, 우측에는 action 영역을 구성합니다.
+ * 일반적인 상세 화면이나 설정 화면의 상단 바에 사용합니다.
+ *
+ * @param modifier 루트 AppBar에 적용할 [Modifier]
+ * @param title 가운데에 표시할 제목. `null`이면 제목을 표시하지 않습니다.
+ * @param navigation 좌측에 표시할 내비게이션 요소입니다.
+ * @param action 우측에 표시할 액션 요소입니다.
+ * @param showBackground AppBar 배경 표시 여부입니다.
+ */
 @Composable
 fun NeveraAppBar(
     modifier: Modifier = Modifier,

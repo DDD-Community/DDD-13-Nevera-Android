@@ -16,6 +16,13 @@ import androidx.compose.ui.unit.Dp
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
+/**
+ * [AppBarNavigation] 값을 실제 좌측 내비게이션 UI로 변환해 표시합니다.
+ *
+ * 전달된 타입에 따라 뒤로가기, 닫기, 메뉴 버튼을 렌더링하거나 아무것도 표시하지 않습니다.
+ *
+ * @param navigation 좌측에 표시할 내비게이션 상태입니다.
+ */
 @Composable
 internal fun AppBarNavigationSlot(navigation: AppBarNavigation) {
     when (navigation) {
@@ -41,6 +48,13 @@ internal fun AppBarNavigationSlot(navigation: AppBarNavigation) {
     }
 }
 
+/**
+ * [AppBarAction] 값을 실제 우측 액션 UI로 변환해 표시합니다.
+ *
+ * 아이콘 액션, 텍스트 액션, 액션 없음 상태를 AppBar 우측 영역 규칙에 맞춰 렌더링합니다.
+ *
+ * @param action 우측에 표시할 액션 상태입니다.
+ */
 @Composable
 internal fun AppBarActionSlot(action: AppBarAction) {
     when (action) {
@@ -73,6 +87,15 @@ internal fun AppBarActionSlot(action: AppBarAction) {
     }
 }
 
+/**
+ * AppBar에서 사용하는 공통 아이콘 버튼을 표시합니다.
+ *
+ * 최소 터치 영역 기본값을 비활성화한 뒤, 디자인 시스템에서 정의한 버튼과 아이콘 크기를 적용합니다.
+ *
+ * @param painter 표시할 아이콘 [Painter]
+ * @param onClick 버튼 클릭 시 실행할 동작입니다.
+ * @param contentDescription 접근성을 위한 아이콘 설명입니다.
+ */
 @Composable
 private fun AppBarIconButton(
     painter: Painter,

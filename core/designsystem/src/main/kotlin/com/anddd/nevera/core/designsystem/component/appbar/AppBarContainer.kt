@@ -13,6 +13,17 @@ import androidx.compose.ui.unit.Dp
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.core.designsystem.ui.theme.color.ColorPalette
 
+/**
+ * AppBar의 공통 레이아웃, 높이, 배경, 가로 패딩을 적용하는 컨테이너입니다.
+ *
+ * 개별 AppBar 구현은 이 컨테이너 안에 navigation, title, action 같은 내용을 배치합니다.
+ *
+ * @param modifier 루트 컨테이너에 적용할 [Modifier]
+ * @param showBackground 배경 표시 여부입니다.
+ * @param startPadding 시작 지점에 적용할 가로 패딩입니다.
+ * @param endPadding 끝 지점에 적용할 가로 패딩입니다.
+ * @param content AppBar 내부에 배치할 콘텐츠입니다.
+ */
 @Composable
 internal fun AppBarContainer(
     modifier: Modifier = Modifier,
