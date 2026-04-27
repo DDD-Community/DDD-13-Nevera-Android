@@ -22,11 +22,12 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 internal object AuthNetworkModule {
 
+    private const val OKHTTP_TAG = "OkHttp"
     private const val TIMEOUT_SECONDS = 30L
 
     private val loggingInterceptor: HttpLoggingInterceptor =
         HttpLoggingInterceptor { message ->
-            Timber.tag("OkHttp").d(message)
+            Timber.tag(OKHTTP_TAG).d(message)
         }.apply {
             redactHeader("Authorization")
             redactHeader("Cookie")

@@ -64,8 +64,6 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.coroutines.android)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-
     implementation(libs.timber)
 
     // Google Login
@@ -79,4 +77,5 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    debugImplementation(libs.androidx.compose.ui.tooling)
 }
