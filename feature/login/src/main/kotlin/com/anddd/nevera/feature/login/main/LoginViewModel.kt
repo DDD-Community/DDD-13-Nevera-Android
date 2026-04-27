@@ -1,11 +1,11 @@
 package com.anddd.nevera.feature.login.main
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anddd.nevera.core.common.onFailure
 import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.domain.model.notification.logFcmSyncFailure
+import timber.log.Timber
 import com.anddd.nevera.domain.model.validation.EmailValidationResult
 import com.anddd.nevera.domain.model.validation.PasswordValidationResult
 import com.anddd.nevera.domain.usecase.auth.EmailLoginUseCase
@@ -105,11 +105,11 @@ class LoginViewModel @Inject constructor(
     private suspend fun syncFcmToken() {
         try {
             syncFcmTokenUseCase()
-                .logFcmSyncFailure(TAG, BuildConfig.DEBUG, Log::w)
+                .logFcmSyncFailure(TAG, BuildConfig.DEBUG) { tag, message -> Timber.tag(tag).w(message) }
         } catch (ce: CancellationException) {
             throw ce
         } catch (t: Throwable) {
-            if (BuildConfig.DEBUG) Log.e(TAG, t.message, t)
+            Timber.e(t, "syncFcmToken")
         }
     }
 

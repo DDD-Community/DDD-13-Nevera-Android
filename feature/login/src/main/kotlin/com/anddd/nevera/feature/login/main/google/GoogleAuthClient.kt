@@ -1,12 +1,12 @@
 package com.anddd.nevera.feature.login.main.google
 
 import android.app.Activity
-import android.util.Log
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
 import com.anddd.nevera.feature.login.BuildConfig
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
+import timber.log.Timber
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import java.security.MessageDigest
@@ -41,9 +41,7 @@ class GoogleAuthClient @Inject constructor() {
                 data = response.credential.data
             ).idToken
         } catch (e: GoogleIdTokenParsingException) {
-            if (BuildConfig.DEBUG) {
-                Log.e("GoogleAuthClient", "getIdToken failed", e)
-            }
+            Timber.e(e, "getIdToken failed")
             throw e
         }
     }

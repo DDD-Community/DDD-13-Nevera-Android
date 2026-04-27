@@ -1,9 +1,9 @@
 package com.anddd.nevera.feature.splash.main
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anddd.nevera.domain.model.notification.logFcmSyncFailure
+import timber.log.Timber
 import com.anddd.nevera.domain.usecase.auth.CheckAutoLoginUseCase
 import com.anddd.nevera.domain.usecase.notification.SyncFcmTokenUseCase
 import com.anddd.nevera.feature.splash.BuildConfig
@@ -43,11 +43,13 @@ class SplashViewModel @Inject constructor(
     private suspend fun syncFcmToken() {
         try {
             syncFcmTokenUseCase()
-                .logFcmSyncFailure(TAG, BuildConfig.DEBUG, Log::w)
+                .logFcmSyncFailure(TAG, BuildConfig.DEBUG) { tag, message ->
+                    Timber.tag(tag).w(message)
+                }
         } catch (ce: CancellationException) {
             throw ce
         } catch (t: Throwable) {
-            if (BuildConfig.DEBUG) Log.e(TAG, t.message, t)
+            Timber.e(t, "syncFcmToken")
         }
     }
 

@@ -9,6 +9,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import timber.log.Timber
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -24,7 +25,9 @@ internal object AuthNetworkModule {
     private const val TIMEOUT_SECONDS = 30L
 
     private val loggingInterceptor: HttpLoggingInterceptor =
-        HttpLoggingInterceptor().apply {
+        HttpLoggingInterceptor { message ->
+            Timber.tag("OkHttp").d(message)
+        }.apply {
             redactHeader("Authorization")
             redactHeader("Cookie")
             level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
