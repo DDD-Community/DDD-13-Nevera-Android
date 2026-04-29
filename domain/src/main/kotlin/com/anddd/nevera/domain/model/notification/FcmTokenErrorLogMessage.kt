@@ -17,11 +17,9 @@ fun FcmTokenError.toLogMessage(): String = when (this) {
 
 inline fun NeveraResult<Unit, FcmTokenError>.logFcmSyncFailure(
     tag: String,
-    isDebug: Boolean,
     logWarning: (String, String) -> Unit,
 ): NeveraResult<Unit, FcmTokenError> {
     return onFailure { error ->
-        if (!isDebug) return@onFailure
         logWarning(tag, error.toLogMessage())
     }
 }

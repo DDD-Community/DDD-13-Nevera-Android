@@ -7,8 +7,8 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
+import timber.log.Timber
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
 import androidx.core.content.ContextCompat
@@ -37,7 +37,7 @@ class NeveraMessagingService : FirebaseMessagingService() {
 
         // TODO :: 현재 type과 deepLink가 전달되고 있지 않은 상황, 임시로 type을 default로 설정합니다.
         if (type == NotificationType.UNKNOWN && BuildConfig.DEBUG) {
-            Log.e(TAG, "unknown type, $remoteMessage")
+            Timber.e("unknown type, $remoteMessage")
             type = NotificationType.DEFAULT
         }
 
@@ -51,9 +51,7 @@ class NeveraMessagingService : FirebaseMessagingService() {
                 )
             }
             NotificationType.UNKNOWN -> {
-                if (BuildConfig.DEBUG) {
-                    Log.e(TAG, "unknown type, $remoteMessage")
-                }
+                Timber.e("알 수 없는 알림 타입 수신, type: ${remoteMessage.data[NOTIFICATION_TYPE]}")
             }
         }
     }
@@ -65,9 +63,7 @@ class NeveraMessagingService : FirebaseMessagingService() {
         deepLink: String,
     ) {
         if (!canNotify()) {
-            if (BuildConfig.DEBUG) {
-                Log.d(TAG, "알림 권한 미승인 또는 알림 비활성화 상태로 notify를 건너뜁니다.")
-            }
+            Timber.d("알림 권한 미승인 또는 알림 비활성화 상태로 notify를 건너뜁니다.")
             return
         }
 

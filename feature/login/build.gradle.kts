@@ -38,7 +38,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
-        // AGP 8.0부터는 BuildConfig가 기본 비활성화 상태
         buildConfig = true
         compose = true
     }
@@ -65,7 +64,7 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.coroutines.android)
-    debugImplementation(libs.androidx.compose.ui.tooling)
+    implementation(libs.timber)
 
     // Google Login
     implementation(libs.bundles.google.login)
@@ -78,4 +77,5 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    debugImplementation(libs.androidx.compose.ui.tooling)
 }

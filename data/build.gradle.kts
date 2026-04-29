@@ -15,7 +15,6 @@ android {
     }
 
     buildFeatures {
-        // AGP 8.0부터는 BuildConfig가 기본 비활성화 상태
         buildConfig = true
     }
 
@@ -45,6 +44,7 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
     implementation(libs.datastore.preferences)
+    implementation(libs.timber)
 
     // Firebase Messaging
     implementation(platform(libs.firebase.bom))

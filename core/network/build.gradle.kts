@@ -31,7 +31,6 @@ android {
     }
 
     buildFeatures {
-        // AGP 8.0부터는 BuildConfig가 기본 비활성화 상태
         buildConfig = true
     }
 
@@ -52,6 +51,7 @@ dependencies {
     implementation(libs.retrofit.converter.gson)
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
+    implementation(libs.timber)
 
     testImplementation(libs.junit.jupiter)
     testRuntimeOnly(libs.junit.jupiter.engine)

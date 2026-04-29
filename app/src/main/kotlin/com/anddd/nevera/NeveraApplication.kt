@@ -6,6 +6,7 @@ import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.anddd.nevera.core.network.auth.SessionEventBus
 import com.anddd.nevera.infra.notification.NotificationChannelInitializer
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,6 +30,8 @@ class NeveraApplication : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
+        TimberInitializer.init()
+        FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = !BuildConfig.DEBUG
         NotificationChannelInitializer.initialize(this)
         observeSessionExpired()
     }

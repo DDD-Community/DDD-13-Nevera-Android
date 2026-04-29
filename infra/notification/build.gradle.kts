@@ -14,7 +14,6 @@ android {
     }
 
     buildFeatures {
-        // AGP 8.0부터는 BuildConfig가 기본 비활성화 상태
         buildConfig = true
     }
 
@@ -40,6 +39,7 @@ dependencies {
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.messaging)
+    implementation(libs.timber)
 
     implementation(libs.work.runtime.ktx)
     implementation(libs.hilt.work)

@@ -5,13 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.anddd.nevera.core.common.onFailure
 import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.domain.scheduler.FcmSyncScheduler
+import timber.log.Timber
 import com.anddd.nevera.domain.model.validation.EmailValidationResult
 import com.anddd.nevera.domain.model.validation.PasswordValidationResult
 import com.anddd.nevera.domain.usecase.auth.EmailLoginUseCase
 import com.anddd.nevera.domain.usecase.auth.GoogleLoginUseCase
 import com.anddd.nevera.domain.usecase.validation.ValidateEmailUseCase
 import com.anddd.nevera.domain.usecase.validation.ValidatePasswordUseCase
-import com.anddd.nevera.feature.login.BuildConfig
 import com.anddd.nevera.feature.login.main.model.LoginSideEffect
 import com.anddd.nevera.feature.login.main.model.LoginStatus
 import com.anddd.nevera.feature.login.main.model.LoginUiState
@@ -99,7 +99,7 @@ class LoginViewModel @Inject constructor(
 
     fun handleGoogleLoginFailure(throwable: Throwable) {
         viewModelScope.launch {
-            if (BuildConfig.DEBUG) throwable.printStackTrace()
+            Timber.e(throwable, "Google 로그인 실패")
             _uiState.update { it.copy(status = LoginStatus.Idle) }
             _sideEffect.send(LoginSideEffect.ShowErrorToast("SNS 로그인에 실패했습니다."))
         }

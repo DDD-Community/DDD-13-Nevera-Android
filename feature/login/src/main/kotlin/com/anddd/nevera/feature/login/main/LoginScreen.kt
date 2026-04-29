@@ -1,7 +1,6 @@
 package com.anddd.nevera.feature.login.main
 
 import android.app.Activity
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -11,6 +10,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.anddd.nevera.core.ui.component.LoadingContent
+import timber.log.Timber
 import com.anddd.nevera.feature.login.main.component.LoginContent
 import com.anddd.nevera.feature.login.main.google.GoogleAuthClient
 import com.anddd.nevera.feature.login.main.model.LoginSideEffect
@@ -27,7 +27,7 @@ fun LoginScreen(
     val context = LocalContext.current
     val activity = context as? Activity
     if (activity == null) {
-        Log.w("LoginScreen", "Google 로그인은 Activity context가 필요합니다")
+        Timber.i("Google 로그인은 Activity context가 필요합니다")
         return
     }
     val scope = rememberCoroutineScope()
