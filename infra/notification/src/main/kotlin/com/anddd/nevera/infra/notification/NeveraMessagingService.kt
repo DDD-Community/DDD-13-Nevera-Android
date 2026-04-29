@@ -1,0 +1,130 @@
+package com.anddd.nevera.infra.notification
+
+import android.Manifest
+import android.app.Notification
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.core.app.NotificationCompat
+import timber.log.Timber
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.net.toUri
+import androidx.core.content.ContextCompat
+import com.anddd.nevera.domain.scheduler.FcmSyncScheduler
+import com.google.firebase.messaging.FirebaseMessagingService
+import com.google.firebase.messaging.RemoteMessage
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+
+@AndroidEntryPoint
+class NeveraMessagingService : FirebaseMessagingService() {
+
+    @Inject lateinit var fcmSyncScheduler: FcmSyncScheduler
+
+    override fun onNewToken(token: String) {
+        super.onNewToken(token)
+        fcmSyncScheduler.scheduleUpdateFcmToken(token)
+    }
+
+    override fun onMessageReceived(remoteMessage: RemoteMessage) {
+        super.onMessageReceived(remoteMessage)
+        var type = NotificationType.from(remoteMessage.data[NOTIFICATION_TYPE])
+        val title = remoteMessage.data[NOTIFICATION_TITLE]
+        val body = remoteMessage.data[NOTIFICATION_BODY]
+        val deepLink = remoteMessage.data[NOTIFICATION_DEEPLINK] ?: DEFAULT_DEEP_LINK
+
+        // TODO :: 현재 type과 deepLink가 전달되고 있지 않은 상황, 임시로 type을 default로 설정합니다.
+        if (type == NotificationType.UNKNOWN && BuildConfig.DEBUG) {
+            Timber.e("unknown type, $remoteMessage")
+            type = NotificationType.DEFAULT
+        }
+
+        when (type) {
+            NotificationType.DEFAULT -> {
+                showNotification(
+                    title = title,
+                    body = body,
+                    type = type,
+                    deepLink = deepLink,
+                )
+            }
+            NotificationType.UNKNOWN -> {
+                Timber.e("알 수 없는 알림 타입 수신, type: ${remoteMessage.data[NOTIFICATION_TYPE]}")
+            }
+        }
+    }
+
+    private fun showNotification(
+        title: String?,
+        body: String?,
+        type: NotificationType,
+        deepLink: String,
+    ) {
+        if (!canNotify()) {
+            Timber.d("알림 권한 미승인 또는 알림 비활성화 상태로 notify를 건너뜁니다.")
+            return
+        }
+
+        val pendingIntent = createPendingIntent(type, deepLink)
+        val notification = buildNotification(title, body, pendingIntent)
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(type.ordinal, notification)
+    }
+
+    private fun createPendingIntent(
+        type: NotificationType,
+        deepLink: String,
+    ): PendingIntent {
+        val intent = Intent(Intent.ACTION_VIEW, deepLink.toUri()).apply {
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        }
+
+        return PendingIntent.getActivity(
+            this,
+            type.ordinal,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
+    }
+
+    private fun buildNotification(
+        title: String?,
+        body: String?,
+        pendingIntent: PendingIntent,
+    ): Notification {
+        val builder = NotificationCompat.Builder(
+            this,
+            getString(R.string.default_notification_channel_id)
+        )
+
+        return builder.setContentTitle(title)
+            .setContentText(body)
+            .setSmallIcon(applicationInfo.icon)
+            .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
+            .build()
+    }
+
+    private fun canNotify(): Boolean {
+        if (!NotificationManagerCompat.from(this).areNotificationsEnabled()) {
+            return false
+        }
+
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS,
+            ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    companion object {
+        private const val TAG = "NeveraMessagingService"
+        private const val NOTIFICATION_TYPE = "type"
+        private const val NOTIFICATION_TITLE = "title"
+        private const val NOTIFICATION_BODY = "body"
+        private const val NOTIFICATION_DEEPLINK = "deepLink"
+        private const val DEFAULT_DEEP_LINK = "nevera://"
+    }
+}

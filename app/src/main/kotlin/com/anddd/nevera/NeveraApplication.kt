@@ -2,9 +2,11 @@ package com.anddd.nevera
 
 import android.app.Application
 import android.content.Intent
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
 import com.anddd.nevera.core.network.auth.SessionEventBus
+import com.anddd.nevera.infra.notification.NotificationChannelInitializer
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.anddd.nevera.core.notification.NotificationChannelInitializer
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,9 +15,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltAndroidApp
-class NeveraApplication : Application() {
+class NeveraApplication : Application(), Configuration.Provider {
 
     @Inject lateinit var sessionEventBus: SessionEventBus
+    @Inject lateinit var workerFactory: HiltWorkerFactory
+
+    override fun getWorkManagerConfiguration(): Configuration =
+        Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
 
     // Application 생명주기와 동일한 스코프 (앱 프로세스 종료 시 함께 취소됨)
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
