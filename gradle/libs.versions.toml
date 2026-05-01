@@ -32,6 +32,7 @@ firebaseCrashlyticsPlugin = "3.0.3"
 googleServices = "4.4.2"
 
 timber = "5.0.1"
+coreSplashscreen = "1.2.0"
 
 # WorkManager
 workManager = "2.10.1"
@@ -90,6 +91,7 @@ hilt-work-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashscreen" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
