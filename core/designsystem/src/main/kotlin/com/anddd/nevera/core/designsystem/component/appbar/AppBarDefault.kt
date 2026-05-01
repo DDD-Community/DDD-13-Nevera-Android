@@ -10,14 +10,14 @@ import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
  */
 internal object AppBarDefault {
     val height = 56.dp
-    val horizontalSpacingMedium = NeveraTheme.spacing.medium
-    val horizontalSpacingLarge = NeveraTheme.spacing.base
-    val actionSpacing = NeveraTheme.spacing.xSmall
+    val horizontalSpacingMedium = NeveraTheme.spacing.padding5
+    val horizontalSpacingLarge = NeveraTheme.spacing.padding6
+    val actionSpacing = NeveraTheme.spacing.gap2
     val iconButtonSize = NeveraTheme.iconSize.large
     val iconSize = NeveraTheme.iconSize.medium
     val logoWidth = 100.dp
     val logoHeight = 32.dp
     val titleHorizontalGap = 46.dp
-    val textActionHorizontalPadding = NeveraTheme.spacing.xSmall
-    val textActionVerticalPadding = NeveraTheme.spacing.small
+    val textActionHorizontalPadding = NeveraTheme.spacing.padding1
+    val textActionVerticalPadding = NeveraTheme.spacing.padding3
 }
