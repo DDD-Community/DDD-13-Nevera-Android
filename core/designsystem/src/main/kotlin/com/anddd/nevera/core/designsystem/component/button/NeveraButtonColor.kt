@@ -25,8 +25,8 @@ internal fun NeveraColor.filledButtonColors(color: NeveraButtonColor): NeveraBut
         NeveraButtonColor.Primary -> NeveraButtonColors(
             containerColor = primaryNormal,
             contentColor = textInverse,
-            pressedContentColor = primaryStrong,
-            pressedContainerColor = textInverse,
+            pressedContainerColor = primaryStrong,
+            pressedContentColor = textInverse,
         )
 
         NeveraButtonColor.Secondary -> NeveraButtonColors(
