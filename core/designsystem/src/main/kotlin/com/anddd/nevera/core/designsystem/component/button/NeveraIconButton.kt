@@ -30,7 +30,7 @@ internal fun NeveraIconButton(
     modifier: Modifier = Modifier,
     size: NeveraButtonSize = NeveraButtonSize.Large,
     enabled: Boolean = true,
-    shape: Shape = RoundedCornerShape(NeveraTheme.radius.large),
+    shape: Shape = RoundedCornerShape(NeveraTheme.radius.xSmall),
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
