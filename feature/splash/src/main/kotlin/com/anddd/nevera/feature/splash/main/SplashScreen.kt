@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.ColorPainter
@@ -23,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.splash.R
-import com.anddd.nevera.feature.splash.main.model.SplashUiState
+import com.anddd.nevera.feature.splash.main.model.SplashSideEffect
 
 private val LogoWidth = 222.dp
 private val LogoHeight = 100.dp
@@ -34,17 +32,16 @@ fun SplashScreen(
     onNavigateToHome: (String) -> Unit,
     viewModel: SplashViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-
     NotificationPermissionRequester(
         onPermissionFlowCompleted = viewModel::startAutoLogin,
     )
 
-    LaunchedEffect(uiState) {
-        when (val state = uiState) {
-            is SplashUiState.NavigateToLogin -> onNavigateToLogin()
-            is SplashUiState.NavigateToHome -> onNavigateToHome(state.accessToken)
-            SplashUiState.Loading -> Unit
+    LaunchedEffect(Unit) {
+        viewModel.sideEffect.collect { effect ->
+            when (effect) {
+                is SplashSideEffect.MoveToHome -> onNavigateToHome(effect.accessToken)
+                is SplashSideEffect.MoveToLogin -> onNavigateToLogin()
+            }
         }
     }
 
