@@ -15,8 +15,8 @@ fun NeveraConfirmDialog(
     subtitle: String,
     positive: String,
     negative: String,
-    onPositive: () -> Unit = {},
-    onNegative: () -> Unit = {},
+    onPositive: () -> Unit,
+    onNegative: () -> Unit,
 ) {
     NeveraDialog(
         modifier = modifier,
@@ -41,6 +41,8 @@ fun NeveraConfirmDialogPreview() {
             subtitle = "Subtitle",
             positive = "CTA",
             negative = "Sub",
+            onPositive = {},
+            onNegative = {}
         )
     }
 }

@@ -13,7 +13,7 @@ import com.anddd.nevera.core.designsystem.ui.theme.shadow.neveraShadow
 @Composable
 internal fun NeveraDialog(
     modifier: Modifier = Modifier,
-    onDismissRequest: () -> Unit = {},
+    onDismissRequest: () -> Unit,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Dialog(onDismissRequest = onDismissRequest) {
