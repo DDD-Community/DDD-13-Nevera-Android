@@ -9,6 +9,7 @@ import com.anddd.nevera.core.designsystem.ui.theme.color.DarkNeveraColors
 import com.anddd.nevera.core.designsystem.ui.theme.color.LightNeveraColors
 import com.anddd.nevera.core.designsystem.ui.theme.color.LocalNeveraColors
 import com.anddd.nevera.core.designsystem.ui.theme.color.NeveraColor
+import com.anddd.nevera.core.designsystem.ui.theme.shadow.NeveraShadow
 import com.anddd.nevera.core.designsystem.ui.theme.iconsize.NeveraIconSize
 import com.anddd.nevera.core.designsystem.ui.theme.shape.NeveraRadius
 import com.anddd.nevera.core.designsystem.ui.theme.spacing.NeveraSpacing
@@ -50,4 +51,7 @@ object NeveraTheme {
 
     val iconSize: NeveraIconSize
         get() = NeveraIconSize
+
+    val shadow: NeveraShadow
+        get() = NeveraShadow
 }
