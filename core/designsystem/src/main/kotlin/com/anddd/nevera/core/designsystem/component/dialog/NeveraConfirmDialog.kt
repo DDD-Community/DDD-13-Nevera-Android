@@ -3,8 +3,8 @@ package com.anddd.nevera.core.designsystem.component.dialog
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.anddd.nevera.core.designsystem.component.dialog.internal.DialogButtons
-import com.anddd.nevera.core.designsystem.component.dialog.internal.DialogContent
+import com.anddd.nevera.core.designsystem.component.dialog.internal.DialogActionButtons
+import com.anddd.nevera.core.designsystem.component.dialog.internal.DialogTitleContent
 import com.anddd.nevera.core.designsystem.component.dialog.internal.NeveraDialog
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
@@ -22,8 +22,8 @@ fun NeveraConfirmDialog(
         modifier = modifier,
         onDismissRequest = onNegative
     ) {
-        DialogContent(title = title, subtitle = subtitle)
-        DialogButtons(
+        DialogTitleContent(title = title, subtitle = subtitle)
+        DialogActionButtons(
             positive = positive,
             negative = negative,
             onPositive = onPositive,

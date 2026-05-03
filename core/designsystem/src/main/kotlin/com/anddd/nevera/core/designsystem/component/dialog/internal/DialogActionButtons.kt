@@ -17,7 +17,7 @@ import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
 // TODO :: NeveraFilledButton 으로 변경 필요
 @Composable
-internal fun DialogButtons(
+internal fun DialogActionButtons(
     positive: String,
     negative: String,
     onPositive: () -> Unit,
@@ -60,9 +60,9 @@ internal fun DialogButtons(
 
 @Preview(showBackground = true)
 @Composable
-private fun DialogButtonsPreview() {
+private fun DialogActionButtonsPreview() {
     NeveraTheme {
-        DialogButtons(
+        DialogActionButtons(
             positive = "CTA",
             negative = "Sub",
             onPositive = {},

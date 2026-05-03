@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
 @Composable
-internal fun DialogContent(title: String, subtitle: String) {
+internal fun DialogTitleContent(title: String, subtitle: String) {
     Column {
         Text(
             text = title,
@@ -46,9 +46,9 @@ internal fun DialogContent(title: String, subtitle: String) {
 
 @Preview(showBackground = true)
 @Composable
-private fun DialogContentPreview() {
+private fun DialogTitleContentPreview() {
     NeveraTheme {
-        DialogContent(
+        DialogTitleContent(
             title = "Title",
             subtitle = "Subtitle",
         )
