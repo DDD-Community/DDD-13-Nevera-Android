@@ -3,6 +3,7 @@ package com.anddd.nevera.core.designsystem.component.dialog.internal
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,7 +27,7 @@ internal fun DialogActionButtons(
     Row(modifier = Modifier.padding(NeveraTheme.spacing.padding6)) {
         Button(
             onClick = onNegative,
-            modifier = Modifier.height(48.dp)
+            modifier = Modifier.heightIn(48.dp)
                 .weight(1f),
             colors = buttonColors(
                 containerColor = NeveraTheme.colors.surfaceBrandPrimary,
@@ -43,7 +44,7 @@ internal fun DialogActionButtons(
 
         Button(
             onClick = onPositive,
-            modifier = Modifier.height(48.dp)
+            modifier = Modifier.heightIn(48.dp)
                 .weight(1f),
             colors = buttonColors(
                 containerColor = NeveraTheme.colors.primaryNormal,
