@@ -1,0 +1,10 @@
+<resources>
+    <string name="splash_subtitle">당신만의 식비 구조대</string>
+    <string name="splash_logo_description">로고</string>
+
+
+    <string name="notification_permission_rationale_title">알림 권한이 필요합니다</string>
+    <string name="notification_permission_rationale_message">유통기한 임박 알림 등 중요한 정보를 받기 위해 알림 권한이 필요합니다.</string>
+    <string name="notification_permission_rationale_confirm">허용하기</string>
+    <string name="notification_permission_rationale_dismiss">나중에</string>
+</resources>

@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anddd.nevera.domain.scheduler.FcmSyncScheduler
 import com.anddd.nevera.domain.usecase.auth.CheckAutoLoginUseCase
-import com.anddd.nevera.feature.splash.main.model.SplashUiState
+import com.anddd.nevera.feature.splash.main.model.SplashSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,8 +18,8 @@ class SplashViewModel @Inject constructor(
     private val fcmSyncScheduler: FcmSyncScheduler,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<SplashUiState>(SplashUiState.Loading)
-    val uiState: StateFlow<SplashUiState> = _uiState
+    private val _sideEffect = Channel<SplashSideEffect>(Channel.BUFFERED)
+    val sideEffect = _sideEffect.receiveAsFlow()
 
     fun startAutoLogin(startTime: Long = System.currentTimeMillis()) {
         viewModelScope.launch {
@@ -27,11 +27,11 @@ class SplashViewModel @Inject constructor(
             val remaining = remainingDelay(startTime)
             if (remaining > 0) delay(remaining)
 
-            _uiState.value = if (accessToken != null) {
+            if (accessToken != null) {
                 fcmSyncScheduler.scheduleSyncFcmToken()
-                SplashUiState.NavigateToHome(accessToken)
+                _sideEffect.send(SplashSideEffect.MoveToHome(accessToken))
             } else {
-                SplashUiState.NavigateToLogin
+                _sideEffect.send(SplashSideEffect.MoveToLogin)
             }
         }
     }

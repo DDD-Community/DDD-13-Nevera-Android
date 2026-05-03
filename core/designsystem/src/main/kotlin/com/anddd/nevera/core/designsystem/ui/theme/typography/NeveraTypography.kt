@@ -1,18 +1,42 @@
 package com.anddd.nevera.core.designsystem.ui.theme.typography
 
+import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.anddd.nevera.core.designsystem.R
 
+// weight: Compose의 font 선택자 / variationSettings: variable font의 wght axis 직접 지정 (미설정 시 기본값 400으로 렌더링됨)
+@OptIn(ExperimentalTextApi::class)
 private val PretendardFamily = FontFamily(
-    Font(R.font.pretendard_variable, weight = FontWeight.Light),
-    Font(R.font.pretendard_variable, weight = FontWeight.Normal),
-    Font(R.font.pretendard_variable, weight = FontWeight.Medium),
-    Font(R.font.pretendard_variable, weight = FontWeight.SemiBold),
-    Font(R.font.pretendard_variable, weight = FontWeight.Bold),
+    Font(
+        resId = R.font.pretendard_variable,
+        weight = FontWeight.Light,
+        variationSettings = FontVariation.Settings(FontVariation.weight(300))
+    ),
+    Font(
+        resId = R.font.pretendard_variable,
+        weight = FontWeight.Normal,
+        variationSettings = FontVariation.Settings(FontVariation.weight(400))
+    ),
+    Font(
+        resId = R.font.pretendard_variable,
+        weight = FontWeight.Medium,
+        variationSettings = FontVariation.Settings(FontVariation.weight(500))
+    ),
+    Font(
+        resId = R.font.pretendard_variable,
+        weight = FontWeight.SemiBold,
+        variationSettings = FontVariation.Settings(FontVariation.weight(600))
+    ),
+    Font(
+        resId = R.font.pretendard_variable,
+        weight = FontWeight.Bold,
+        variationSettings = FontVariation.Settings(FontVariation.weight(700))
+    ),
 )
 
 object NeveraTypography {
