@@ -21,9 +21,9 @@ internal fun DialogTitleContent(title: String, subtitle: String) {
             modifier = Modifier.fillMaxWidth()
                 .heightIn(47.dp)
                 .padding(
-                    start = NeveraTheme.spacing.padding7,
-                    top = NeveraTheme.spacing.padding7,
-                    end = NeveraTheme.spacing.padding7,
+                    start = NeveraTheme.spacing.padding20,
+                    top = NeveraTheme.spacing.padding20,
+                    end = NeveraTheme.spacing.padding20,
                 ),
             color = NeveraTheme.colors.textSecondary,
             style = NeveraTheme.typography.titleLarge,
@@ -34,9 +34,9 @@ internal fun DialogTitleContent(title: String, subtitle: String) {
             modifier = Modifier.fillMaxWidth()
                 .heightIn(37.dp)
                 .padding(
-                    start = NeveraTheme.spacing.padding7,
-                    top = NeveraTheme.spacing.padding6,
-                    end = NeveraTheme.spacing.padding7,
+                    start = NeveraTheme.spacing.padding20,
+                    top = NeveraTheme.spacing.padding16,
+                    end = NeveraTheme.spacing.padding20,
                 ),
             color = NeveraTheme.colors.textQuaternary,
             style = NeveraTheme.typography.bodySmall,
