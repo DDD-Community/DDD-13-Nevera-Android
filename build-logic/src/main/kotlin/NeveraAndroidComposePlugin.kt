@@ -29,6 +29,7 @@ class NeveraAndroidComposePlugin : Plugin<Project> {
                 "implementation"(platform(bom))
                 "implementation"(libs.findLibrary("androidx-compose-ui").get())
                 "implementation"(libs.findLibrary("androidx-compose-material3").get())
+                "implementation"(libs.findLibrary("androidx-compose-ui-tooling-preview").get())
                 "debugImplementation"(libs.findLibrary("androidx-compose-ui-tooling").get())
                 "debugImplementation"(libs.findLibrary("androidx-compose-ui-test-manifest").get())
                 "androidTestImplementation"(platform(bom))
