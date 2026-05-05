@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -62,11 +63,10 @@ internal fun MyPageContent(
                 modifier = Modifier
                     .background(NeveraTheme.colors.dividerNormal)
                     .fillMaxWidth()
-                    .height(8.dp)
+                    .height(NeveraTheme.spacing.gap8)
             )
 
             SettingsContent(
-                modifier = Modifier.padding(16.dp),
                 settingItems = uiState.settingItems,
                 onClick = { type -> onIntent(MyPageIntent.SettingItemClicked(type)) }
             )

@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.R
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.mypage.main.model.SettingItemType
@@ -31,15 +30,18 @@ internal fun SettingsContent(
     onClick: (SettingItemType) -> Unit
 ) {
     Column(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = NeveraTheme.spacing.padding16)
     ) {
         Text(
+            modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding16),
             text = "설정",
             style = NeveraTheme.typography.bodyMedium,
             color = NeveraTheme.colors.textTertiary
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap8))
 
         LazyColumn(
             modifier = Modifier.fillMaxWidth()
@@ -66,7 +68,10 @@ private fun SettingItem(
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(vertical = 12.dp),
+            .padding(
+                vertical = NeveraTheme.spacing.padding12,
+                horizontal = NeveraTheme.spacing.padding16
+            ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
@@ -75,7 +80,7 @@ private fun SettingItem(
             contentDescription = item.label
         )
 
-        Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap12))
 
         Text(
             text = item.label,
