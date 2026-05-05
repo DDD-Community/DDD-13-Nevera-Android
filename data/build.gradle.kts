@@ -1,6 +1,8 @@
 plugins {
     id("nevera.android.library")
     id("nevera.android.hilt")
+    id("nevera.network")
+    id("nevera.firebase")
 }
 
 android {
@@ -22,13 +24,6 @@ dependencies {
     // implementation(project(":core:database"))
     implementation(project(":domain"))
     implementation(libs.coroutines.android)
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.gson)
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.logging)
     implementation(libs.datastore.preferences)
     implementation(libs.timber)
-
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.messaging)
 }

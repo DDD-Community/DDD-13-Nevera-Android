@@ -14,12 +14,13 @@ class NeveraFeaturePlugin : Plugin<Project> {
 
             dependencies {
                 "implementation"(project(":core:common"))
-                "implementation"(project(":core:ui"))
                 "implementation"(project(":core:designsystem"))
+                "implementation"(project(":core:ui"))
                 "implementation"(project(":domain"))
 
                 "implementation"(libs.findLibrary("lifecycle-viewmodel-compose").get())
                 "implementation"(libs.findLibrary("hilt-navigation-compose").get())
+                "implementation"(libs.findLibrary("coil-compose").get())
                 "implementation"(libs.findLibrary("timber").get())
             }
         }

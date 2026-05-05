@@ -13,11 +13,11 @@ class NeveraAndroidApplicationPlugin : Plugin<Project> {
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
             pluginManager.apply("com.android.application")
-            pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
-            pluginManager.apply("com.google.dagger.hilt.android")
-            pluginManager.apply("com.google.devtools.ksp")
             pluginManager.apply("com.google.gms.google-services")
             pluginManager.apply("com.google.firebase.crashlytics")
+            pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
+            pluginManager.apply("nevera.android.hilt")
+            pluginManager.apply("nevera.test.android")
 
             configure<ApplicationExtension> {
                 defaultConfig {
@@ -34,26 +34,13 @@ class NeveraAndroidApplicationPlugin : Plugin<Project> {
                     compose = true
                     buildConfig = true
                 }
-
-                testOptions {
-                    unitTests.all {
-                        it.useJUnitPlatform()
-                    }
-                }
             }
 
             dependencies {
                 val bom = libs.findLibrary("androidx-compose-bom").get()
                 "implementation"(platform(bom))
-                "implementation"(libs.findLibrary("hilt-android").get())
-                "ksp"(libs.findLibrary("hilt-compiler").get())
                 "debugImplementation"(libs.findLibrary("androidx-compose-ui-tooling").get())
                 "debugImplementation"(libs.findLibrary("androidx-compose-ui-test-manifest").get())
-                "testImplementation"(libs.findLibrary("junit-jupiter").get())
-                "testRuntimeOnly"(libs.findLibrary("junit-jupiter-engine").get())
-                "testRuntimeOnly"(libs.findLibrary("junit-platform-launcher").get())
-                "androidTestImplementation"(libs.findLibrary("androidx-junit").get())
-                "androidTestImplementation"(libs.findLibrary("androidx-espresso-core").get())
                 "androidTestImplementation"(platform(bom))
                 "androidTestImplementation"(libs.findLibrary("androidx-compose-ui-test-junit4").get())
             }

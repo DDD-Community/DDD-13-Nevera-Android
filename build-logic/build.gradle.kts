@@ -12,6 +12,22 @@ dependencies {
 
 gradlePlugin {
     plugins {
+        register("neveraTestUnit") {
+            id = "nevera.test.unit"
+            implementationClass = "NeveraTestUnitPlugin"
+        }
+        register("neveraTestAndroid") {
+            id = "nevera.test.android"
+            implementationClass = "NeveraTestAndroidPlugin"
+        }
+        register("neveraNetwork") {
+            id = "nevera.network"
+            implementationClass = "NeveraNetworkPlugin"
+        }
+        register("neveraFirebase") {
+            id = "nevera.firebase"
+            implementationClass = "NeveraFirebasePlugin"
+        }
         register("neveraKotlinJvm") {
             id = "nevera.kotlin.jvm"
             implementationClass = "NeveraKotlinJvmPlugin"

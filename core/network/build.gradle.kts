@@ -1,7 +1,7 @@
 plugins {
     id("nevera.android.library")
     id("nevera.android.hilt")
-    alias(libs.plugins.kotlin.serialization)
+    id("nevera.network")
 }
 
 android {
@@ -29,10 +29,5 @@ android {
 dependencies {
     implementation(project(":core:common"))
     implementation(libs.coroutines.android)
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.gson)
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.logging)
     implementation(libs.timber)
 }
