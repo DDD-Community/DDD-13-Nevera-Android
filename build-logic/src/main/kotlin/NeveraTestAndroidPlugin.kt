@@ -1,9 +1,6 @@
-import com.android.build.api.dsl.ApplicationExtension
-import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalogsExtension
-import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
 
@@ -17,22 +14,6 @@ class NeveraTestAndroidPlugin : Plugin<Project> {
 
             // Android 테스트는 JUnit5 단위 테스트 의존성을 함께 사용한다.
             pluginManager.apply("nevera.test.unit")
-
-            // Android plugin이 실제로 적용된 뒤에만 testOptions를 안전하게 건다.
-            pluginManager.withPlugin("com.android.library") {
-                configure<LibraryExtension> {
-                    testOptions {
-                        unitTests.all { it.useJUnitPlatform() }
-                    }
-                }
-            }
-            pluginManager.withPlugin("com.android.application") {
-                configure<ApplicationExtension> {
-                    testOptions {
-                        unitTests.all { it.useJUnitPlatform() }
-                    }
-                }
-            }
 
             // Compose 테스트는 별도 plugin에서 책임진다.
             dependencies {
