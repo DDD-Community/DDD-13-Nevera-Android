@@ -35,8 +35,6 @@ class MyPageViewModel @Inject constructor() : ViewModel() {
     // ② 순수 함수 — 동기적 상태 전이 (부수 효과 없음, 테스트 용이)
     private fun reduce(state: MyPageUiState, intent: MyPageIntent): MyPageUiState = when (intent) {
         MyPageIntent.Load -> state.copy(status = MyPageStatus.Loading)
-        MyPageIntent.Submit -> state.copy(status = MyPageStatus.Loading)
-        MyPageIntent.Reset -> MyPageUiState()
         is MyPageIntent.SettingItemClicked -> state
     }
 
@@ -44,8 +42,6 @@ class MyPageViewModel @Inject constructor() : ViewModel() {
     private fun handleEffect(intent: MyPageIntent) {
         when (intent) {
             MyPageIntent.Load -> load()
-            MyPageIntent.Submit -> submit()
-            MyPageIntent.Reset -> Unit
             is MyPageIntent.SettingItemClicked -> when (intent.type) {
                 SettingItemType.Notification -> {}
                 SettingItemType.Account -> {}
@@ -58,14 +54,6 @@ class MyPageViewModel @Inject constructor() : ViewModel() {
         viewModelScope.launch {
             // TODO: UseCase로 초기 데이터 로드
             _uiState.update { it.copy(status = MyPageStatus.Idle) }
-        }
-    }
-
-    private fun submit() {
-        viewModelScope.launch {
-            // TODO: UseCase로 제출 처리
-            _uiState.update { it.copy(status = MyPageStatus.Success) }
-            _sideEffect.send(MyPageSideEffect.NavigateBack)
         }
     }
 }
