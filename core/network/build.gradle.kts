@@ -1,18 +1,14 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.hilt)
-    alias(libs.plugins.ksp)
+    id("nevera.android.library")
+    id("nevera.android.hilt")
     alias(libs.plugins.kotlin.serialization)
 }
 
 android {
     namespace = "com.anddd.nevera.core.network"
-    compileSdk = 36
 
     defaultConfig {
-        minSdk = 30
         consumerProguardFiles("consumer-rules.pro")
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -25,26 +21,13 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
     buildFeatures {
         buildConfig = true
-    }
-
-    testOptions {
-        unitTests.all {
-            it.useJUnitPlatform()
-        }
     }
 }
 
 dependencies {
     implementation(project(":core:common"))
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
     implementation(libs.coroutines.android)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.retrofit)
@@ -52,8 +35,4 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
     implementation(libs.timber)
-
-    testImplementation(libs.junit.jupiter)
-    testRuntimeOnly(libs.junit.jupiter.engine)
-    testRuntimeOnly(libs.junit.platform.launcher)
 }
