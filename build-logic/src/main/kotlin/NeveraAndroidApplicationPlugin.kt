@@ -36,6 +36,7 @@ class NeveraAndroidApplicationPlugin : Plugin<Project> {
                 }
             }
 
+            // 앱 모듈에서 필요한 Compose BOM과 Compose 테스트 의존성만 직접 추가한다.
             dependencies {
                 val bom = libs.findLibrary("androidx-compose-bom").get()
                 "implementation"(platform(bom))

@@ -6,6 +6,9 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
 
+/**
+ * Compose UI를 쓰는 Android library 모듈용 확장 plugin.
+ */
 class NeveraAndroidComposePlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
@@ -20,6 +23,7 @@ class NeveraAndroidComposePlugin : Plugin<Project> {
                 }
             }
 
+            // Compose 관련 BOM, 런타임, 테스트 의존성은 여기서 함께 묶는다.
             dependencies {
                 val bom = libs.findLibrary("androidx-compose-bom").get()
                 "implementation"(platform(bom))

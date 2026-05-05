@@ -4,6 +4,9 @@ import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
 
+/**
+ * JUnit5 공통 의존성만 제공하는 가장 작은 테스트 관심사 plugin.
+ */
 class NeveraTestUnitPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {

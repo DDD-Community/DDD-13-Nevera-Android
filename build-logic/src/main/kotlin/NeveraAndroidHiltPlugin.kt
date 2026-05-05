@@ -4,6 +4,9 @@ import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
 
+/**
+ * Hilt와 KSP 조합을 독립 관심사로 분리한 plugin.
+ */
 class NeveraAndroidHiltPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
