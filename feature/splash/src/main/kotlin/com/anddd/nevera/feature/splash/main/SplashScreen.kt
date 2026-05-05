@@ -57,7 +57,7 @@ fun SplashContent(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-        Spacer(modifier = Modifier.height(NeveraTheme.spacing.padding3))
+        Spacer(modifier = Modifier.height(NeveraTheme.spacing.padding8))
 
         Image(
             painter = ColorPainter(NeveraTheme.colors.primaryNormal),
@@ -69,7 +69,7 @@ fun SplashContent(modifier: Modifier = Modifier) {
             contentScale = ContentScale.Fit,
         )
 
-        Spacer(modifier = Modifier.height(NeveraTheme.spacing.padding3))
+        Spacer(modifier = Modifier.height(NeveraTheme.spacing.padding8))
 
         Text(
             text = stringResource(R.string.splash_subtitle),

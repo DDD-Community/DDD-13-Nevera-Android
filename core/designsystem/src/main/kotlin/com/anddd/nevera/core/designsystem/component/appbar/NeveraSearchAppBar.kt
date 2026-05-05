@@ -46,9 +46,9 @@ fun NeveraSearchAppBar(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             AppBarNavigationSlot(navigation = navigation)
-            Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap2))
-            Box(modifier = Modifier.weight(1f)) { searchBar() }
             Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap4))
+            Box(modifier = Modifier.weight(1f)) { searchBar() }
+            Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap8))
             AppBarActionSlot(action = action)
         }
     }
