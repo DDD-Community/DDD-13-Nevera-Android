@@ -6,6 +6,7 @@ import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
+import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 
 class NeveraAndroidApplicationPlugin : Plugin<Project> {
     override fun apply(target: Project) {
@@ -36,7 +37,10 @@ class NeveraAndroidApplicationPlugin : Plugin<Project> {
                 }
             }
 
-            // 앱 모듈에서 필요한 Compose BOM과 Compose 테스트 의존성만 직접 추가한다.
+            configure<KotlinAndroidProjectExtension> {
+                jvmToolchain(17)
+            }
+
             dependencies {
                 val bom = libs.findLibrary("androidx-compose-bom").get()
                 "implementation"(platform(bom))
