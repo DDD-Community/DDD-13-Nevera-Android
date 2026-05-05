@@ -21,6 +21,7 @@ class NeveraFeaturePlugin : Plugin<Project> {
                 "implementation"(libs.findLibrary("lifecycle-viewmodel-compose").get())
                 "implementation"(libs.findLibrary("hilt-navigation-compose").get())
                 "implementation"(libs.findLibrary("coil-compose").get())
+                "implementation"(libs.findLibrary("coil-network-okhttp").get())
                 "implementation"(libs.findLibrary("timber").get())
             }
         }
