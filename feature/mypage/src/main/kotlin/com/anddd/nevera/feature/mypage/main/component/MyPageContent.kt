@@ -48,10 +48,6 @@ internal fun MyPageContent(
                 .fillMaxSize()
                 .padding(innerPadding),
         ) {
-            if (uiState.status == MyPageStatus.Loading) {
-                LoadingContent()
-            }
-
             Column {
                 // TODO: 실데이터 연결 시 uiState에서 주입
                 ProfileContent(profile = uiState.profile)
@@ -67,6 +63,10 @@ internal fun MyPageContent(
                     settingItems = uiState.settingItems,
                     onClick = { type -> onIntent(MyPageIntent.SettingItemClicked(type)) }
                 )
+            }
+
+            if (uiState.status == MyPageStatus.Loading) {
+                LoadingContent()
             }
         }
     }
