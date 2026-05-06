@@ -24,9 +24,7 @@ android {
         buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$googleClientId\"")
     }
 
-    buildFeatures {
-        buildConfig = true
-    }
+
 }
 
 dependencies {

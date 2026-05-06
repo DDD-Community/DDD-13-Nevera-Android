@@ -4,10 +4,6 @@ plugins {
 
 android {
     namespace = "com.anddd.nevera.feature.signup"
-
-    buildFeatures {
-        buildConfig = true
-    }
 }
 
 dependencies {

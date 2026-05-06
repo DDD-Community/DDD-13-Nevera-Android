@@ -4,10 +4,6 @@ plugins {
 
 android {
     namespace = "com.anddd.nevera.feature.splash"
-
-    buildFeatures {
-        buildConfig = true
-    }
 }
 
 dependencies {
