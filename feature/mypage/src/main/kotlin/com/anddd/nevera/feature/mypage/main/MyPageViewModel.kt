@@ -2,10 +2,13 @@ package com.anddd.nevera.feature.mypage.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.anddd.nevera.core.designsystem.R as DesignSystemR
+import com.anddd.nevera.feature.mypage.R
 import com.anddd.nevera.feature.mypage.main.model.MyPageIntent
 import com.anddd.nevera.feature.mypage.main.model.MyPageSideEffect
 import com.anddd.nevera.feature.mypage.main.model.MyPageStatus
 import com.anddd.nevera.feature.mypage.main.model.MyPageUiState
+import com.anddd.nevera.feature.mypage.main.model.SettingItemUiModel
 import com.anddd.nevera.feature.mypage.main.model.SettingItemType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -20,7 +23,27 @@ import javax.inject.Inject
 @HiltViewModel
 class MyPageViewModel @Inject constructor() : ViewModel() {
 
-    private val _uiState = MutableStateFlow(MyPageUiState())
+    private val _uiState = MutableStateFlow(
+        MyPageUiState(
+            settingItems = listOf(
+                SettingItemUiModel(
+                    iconRes = DesignSystemR.drawable.ic_bell,
+                    labelRes = R.string.setting_notification,
+                    type = SettingItemType.Notification,
+                ),
+                SettingItemUiModel(
+                    iconRes = DesignSystemR.drawable.ic_user_circle,
+                    labelRes = R.string.setting_account,
+                    type = SettingItemType.Account,
+                ),
+                SettingItemUiModel(
+                    iconRes = DesignSystemR.drawable.ic_info,
+                    labelRes = R.string.setting_app_info,
+                    type = SettingItemType.AppInfo,
+                )
+            ),
+        )
+    )
     val uiState: StateFlow<MyPageUiState> = _uiState.asStateFlow()
 
     private val _sideEffect = Channel<MyPageSideEffect>(Channel.BUFFERED)

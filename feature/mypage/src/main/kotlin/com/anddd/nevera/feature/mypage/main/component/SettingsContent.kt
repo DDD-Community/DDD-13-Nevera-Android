@@ -15,9 +15,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.anddd.nevera.core.designsystem.R
+import com.anddd.nevera.core.designsystem.R as DesignSystemR
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
+import com.anddd.nevera.feature.mypage.R
 import com.anddd.nevera.feature.mypage.main.model.SettingItemType
 import com.anddd.nevera.feature.mypage.main.model.SettingItemUiModel
 
@@ -58,6 +60,8 @@ private fun SettingItem(
     item: SettingItemUiModel,
     onClick: () -> Unit,
 ) {
+    val label = stringResource(item.labelRes)
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -71,13 +75,13 @@ private fun SettingItem(
         Image(
             modifier = Modifier.size(NeveraTheme.iconSize.medium),
             painter = painterResource(item.iconRes),
-            contentDescription = item.label
+            contentDescription = label
         )
 
         Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap12))
 
         Text(
-            text = item.label,
+            text = label,
             style = NeveraTheme.typography.bodyLarge,
             color = NeveraTheme.colors.textSecondary
         )
@@ -86,7 +90,7 @@ private fun SettingItem(
 
         Image(
             modifier = Modifier.size(NeveraTheme.iconSize.xSmall),
-            painter = painterResource(R.drawable.ic_chevron_right),
+            painter = painterResource(DesignSystemR.drawable.ic_chevron_right),
             contentDescription = null,
         )
     }
@@ -103,18 +107,18 @@ private fun SettingsContentPreview() {
         SettingsContent(
             settingItems = listOf(
                 SettingItemUiModel(
-                    iconRes = R.drawable.ic_bell,
-                    label = "알림",
+                    iconRes = DesignSystemR.drawable.ic_bell,
+                    labelRes = R.string.setting_notification,
                     type = SettingItemType.Notification,
                 ),
                 SettingItemUiModel(
-                    iconRes = R.drawable.ic_user_circle,
-                    label = "계정",
+                    iconRes = DesignSystemR.drawable.ic_user_circle,
+                    labelRes = R.string.setting_account,
                     type = SettingItemType.Account,
                 ),
                 SettingItemUiModel(
-                    iconRes = R.drawable.ic_info,
-                    label = "앱정보",
+                    iconRes = DesignSystemR.drawable.ic_info,
+                    labelRes = R.string.setting_app_info,
                     type = SettingItemType.AppInfo,
                 )
             ),
