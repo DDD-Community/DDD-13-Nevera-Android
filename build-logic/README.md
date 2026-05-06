@@ -8,7 +8,7 @@ Nevera 프로젝트의 Gradle Convention Plugin 모음입니다.
 | --- | --- | --- |
 | `nevera.test.unit` | JVM 단위 테스트 의존성 | — |
 | `nevera.test.android` | Android 테스트 설정 + 의존성 | `nevera.test.unit` |
-| `nevera.network` | Retrofit + OkHttp + Serialization | `kotlin.plugin.serialization` |
+| `nevera.network` | Retrofit + OkHttp (Gson 기반 네트워크 공통화) | — |
 | `nevera.firebase` | Firebase Messaging | — |
 | `nevera.kotlin.jvm` | 순수 Kotlin JVM 모듈 기본 구성 | `nevera.test.unit` |
 | `nevera.android.library` | Android library 기본 구성 | `nevera.test.android` |

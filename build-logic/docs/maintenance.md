@@ -14,7 +14,7 @@
 ### `nevera.network`는 최소 공통화 성격
 
 현재 `nevera.network`는 네트워크 의존성 중복 제거 목적의 plugin입니다.  
-`converter-gson`과 `kotlinx-serialization-json`이 함께 포함되므로, 나중에 직렬화 전략을 하나로 통일할 때는 이 plugin부터 다시 조정해야 합니다.
+`retrofit`과 `converter-gson`을 포함하므로, 나중에 직렬화 전략을 변경할 때는 이 plugin부터 다시 조정해야 합니다.
 
 ### `nevera.firebase`의 범위
 
