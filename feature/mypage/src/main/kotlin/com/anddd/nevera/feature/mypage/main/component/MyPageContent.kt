@@ -28,9 +28,8 @@ internal fun MyPageContent(
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
-        modifier = modifier
-            .fillMaxSize()
-            .background(NeveraTheme.colors.backgroundPrimary),
+        modifier = modifier.fillMaxSize(),
+        containerColor = NeveraTheme.colors.backgroundPrimary,
         topBar = {
             NeveraDisplayAppBar(
                 title = "마이",
@@ -47,7 +46,6 @@ internal fun MyPageContent(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(NeveraTheme.colors.backgroundPrimary)
                 .padding(innerPadding),
         ) {
             if (uiState.status == MyPageStatus.Loading) {
