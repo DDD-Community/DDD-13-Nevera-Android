@@ -14,6 +14,7 @@ class NeveraAndroidApplicationPlugin : Plugin<Project> {
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
             pluginManager.apply("com.android.application")
+            pluginManager.apply("org.jetbrains.kotlin.android")
             pluginManager.apply("com.google.gms.google-services")
             pluginManager.apply("com.google.firebase.crashlytics")
             pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
