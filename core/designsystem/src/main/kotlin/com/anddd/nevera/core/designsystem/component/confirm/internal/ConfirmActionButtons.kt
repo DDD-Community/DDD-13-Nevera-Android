@@ -1,4 +1,4 @@
-package com.anddd.nevera.core.designsystem.component.dialog.internal
+package com.anddd.nevera.core.designsystem.component.confirm.internal
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,8 +12,12 @@ import com.anddd.nevera.core.designsystem.component.button.NeveraFilledButton
 import com.anddd.nevera.core.designsystem.component.button.NeveraWeakButton
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
+/**
+ * Confirm surface에서 공통으로 쓰는 negative/positive 액션 행입니다.
+ * 버튼 순서와 간격 규칙을 한 곳에서 유지하기 위해 분리했습니다.
+ */
 @Composable
-internal fun DialogActionButtons(
+internal fun ConfirmActionButtons(
     positive: String,
     negative: String,
     onPositive: () -> Unit,
@@ -24,7 +28,7 @@ internal fun DialogActionButtons(
             label = negative,
             onClick = onNegative,
             modifier = Modifier.weight(1f),
-            color = NeveraButtonColor.Primary
+            color = NeveraButtonColor.Primary,
         )
 
         Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap12))
@@ -33,16 +37,16 @@ internal fun DialogActionButtons(
             label = positive,
             onClick = onPositive,
             modifier = Modifier.weight(1f),
-            color = NeveraButtonColor.Primary
+            color = NeveraButtonColor.Primary,
         )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun DialogActionButtonsPreview() {
+private fun ConfirmActionButtonsPreview() {
     NeveraTheme {
-        DialogActionButtons(
+        ConfirmActionButtons(
             positive = "CTA",
             negative = "Sub",
             onPositive = {},

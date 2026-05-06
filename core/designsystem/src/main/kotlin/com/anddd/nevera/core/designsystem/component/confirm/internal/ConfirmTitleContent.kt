@@ -1,8 +1,7 @@
-package com.anddd.nevera.core.designsystem.component.dialog.internal
+package com.anddd.nevera.core.designsystem.component.confirm.internal
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -13,12 +12,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
+/**
+ * Confirm surface에서 공통으로 쓰는 제목/설명 블록입니다.
+ * Dialog와 BottomSheet가 같은 규칙을 쓸 때만 공유합니다.
+ */
 @Composable
-internal fun DialogTitleContent(title: String, subtitle: String) {
+internal fun ConfirmTitleContent(
+    title: String,
+    subtitle: String,
+) {
     Column {
         Text(
             text = title,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .heightIn(47.dp)
                 .padding(
                     start = NeveraTheme.spacing.padding20,
@@ -31,7 +38,8 @@ internal fun DialogTitleContent(title: String, subtitle: String) {
         )
         Text(
             text = subtitle,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .heightIn(37.dp)
                 .padding(
                     start = NeveraTheme.spacing.padding20,
@@ -47,9 +55,9 @@ internal fun DialogTitleContent(title: String, subtitle: String) {
 
 @Preview(showBackground = true)
 @Composable
-private fun DialogTitleContentPreview() {
+private fun ConfirmTitleContentPreview() {
     NeveraTheme {
-        DialogTitleContent(
+        ConfirmTitleContent(
             title = "Title",
             subtitle = "Subtitle",
         )
