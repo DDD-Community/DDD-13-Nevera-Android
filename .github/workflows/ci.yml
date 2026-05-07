@@ -31,7 +31,9 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          # build-logic/src/**/*.kt 추가: Convention Plugin Kotlin 소스는 .gradle* 패턴에 매칭되지 않아
+          # 플러그인 로직만 변경 시 캐시가 갱신되지 않는 문제를 방지
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', 'build-logic/src/**/*.kt', 'gradle/libs.versions.toml') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
 

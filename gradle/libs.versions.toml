@@ -33,6 +33,7 @@ googleServices = "4.4.2"
 
 timber = "5.0.1"
 coreSplashscreen = "1.2.0"
+coil = "3.4.0"
 
 # WorkManager
 workManager = "2.10.1"
@@ -92,6 +93,13 @@ mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashscreen" }
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
+
+# Gradle plugin artifacts (build-logic 컴파일용)
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "ksp" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
