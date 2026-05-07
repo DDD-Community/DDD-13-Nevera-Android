@@ -6,7 +6,6 @@ import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
-import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 
 class NeveraAndroidApplicationPlugin : Plugin<Project> {
     override fun apply(target: Project) {
@@ -14,7 +13,6 @@ class NeveraAndroidApplicationPlugin : Plugin<Project> {
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
             pluginManager.apply("com.android.application")
-            pluginManager.apply("org.jetbrains.kotlin.android")
             pluginManager.apply("com.google.gms.google-services")
             pluginManager.apply("com.google.firebase.crashlytics")
             pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
@@ -36,10 +34,6 @@ class NeveraAndroidApplicationPlugin : Plugin<Project> {
                     compose = true
                     buildConfig = true
                 }
-            }
-
-            configure<KotlinAndroidProjectExtension> {
-                jvmToolchain(17)
             }
 
             dependencies {
