@@ -69,6 +69,11 @@ internal fun NeveraBaseTextField(
     val placeholderColor = NeveraTextFieldColors.placeholderColor(config.type, enabled)
     val descriptionColor = NeveraTextFieldColors.descriptionColor(config.state, enabled, config.negativeColor)
 
+    val contentPadding = when (config.type) {
+        NeveraTextFieldType.Box -> NeveraTextFieldDefaults.BoxContentPadding
+        NeveraTextFieldType.Underline -> NeveraTextFieldDefaults.UnderlineContentPadding
+    }
+
     val textStyle = when (config.type) {
         NeveraTextFieldType.Box -> NeveraTheme.typography.bodyLarge
         NeveraTextFieldType.Underline -> NeveraTheme.typography.titleLarge
@@ -121,7 +126,7 @@ internal fun NeveraBaseTextField(
                 Row(
                     modifier = containerModifier
                         .fillMaxWidth()
-                        .padding(NeveraTextFieldDefaults.ContentPadding),
+                        .padding(contentPadding),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Box(modifier = Modifier.weight(1f)) {
@@ -188,7 +193,7 @@ private fun TrailingIcons(
             Icon(
                 painter = NeveraIcons.Check,
                 contentDescription = null,
-                modifier = Modifier.size(NeveraTheme.iconSize.small),
+                modifier = Modifier.size(NeveraTheme.iconSize.medium),
                 tint = stateIconColor,
             )
         }
@@ -196,7 +201,7 @@ private fun TrailingIcons(
             Icon(
                 painter = NeveraIcons.Warning,
                 contentDescription = null,
-                modifier = Modifier.size(NeveraTheme.iconSize.small),
+                modifier = Modifier.size(NeveraTheme.iconSize.medium),
                 tint = stateIconColor,
             )
         }
@@ -205,7 +210,7 @@ private fun TrailingIcons(
                 Icon(
                     painter = if (eyeVisible) NeveraIcons.EyesOff else NeveraIcons.Eyes,
                     contentDescription = null,
-                    modifier = Modifier.size(NeveraTheme.iconSize.small),
+                    modifier = Modifier.size(NeveraTheme.iconSize.medium),
                     tint = eyeIconColor,
                 )
             }

@@ -11,7 +11,14 @@ internal object NeveraTextFieldDefaults {
 
     val BoxShape: Shape = RoundedCornerShape(NeveraTheme.spacing.padding8)
 
-    val ContentPadding: PaddingValues = PaddingValues(all = NeveraTheme.spacing.padding12)
+    val BoxContentPadding: PaddingValues = PaddingValues(all = NeveraTheme.spacing.padding12)
+
+    val UnderlineContentPadding: PaddingValues = PaddingValues(
+        start = NeveraTheme.spacing.padding4,
+        top = NeveraTheme.spacing.padding4,
+        end = NeveraTheme.spacing.padding8,
+        bottom = NeveraTheme.spacing.padding4
+    )
 
     val BorderWidth: Dp = 1.dp
 
