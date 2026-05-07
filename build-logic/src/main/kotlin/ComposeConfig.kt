@@ -1,3 +1,5 @@
+package com.anddd.nevera.buildlogic
+
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.Project

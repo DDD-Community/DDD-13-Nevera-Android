@@ -1,3 +1,5 @@
+package com.anddd.nevera.buildlogic
+
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
