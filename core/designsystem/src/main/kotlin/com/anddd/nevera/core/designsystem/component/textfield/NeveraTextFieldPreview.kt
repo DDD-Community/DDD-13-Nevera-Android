@@ -87,6 +87,40 @@ private fun PreviewNeveraTextField_Password() {
     }
 }
 
+@Preview(name = "NeveraTextField - Positive + Eye", showBackground = true, widthDp = 360)
+@Composable
+private fun PreviewNeveraTextField_PositiveWithEye() {
+    NeveraTheme {
+        NeveraTextField(
+            value = "password123",
+            onValueChange = {},
+            config = NeveraTextFieldConfig(
+                heading = "비밀번호 확인",
+                state = NeveraTextFieldState.Positive,
+                description = "비밀번호가 일치합니다",
+                isPassword = true,
+            ),
+        )
+    }
+}
+
+@Preview(name = "NeveraTextField - Negative + Eye", showBackground = true, widthDp = 360)
+@Composable
+private fun PreviewNeveraTextField_NegativeWithEye() {
+    NeveraTheme {
+        NeveraTextField(
+            value = "pw",
+            onValueChange = {},
+            config = NeveraTextFieldConfig(
+                heading = "비밀번호 확인",
+                state = NeveraTextFieldState.Negative,
+                description = "비밀번호가 일치하지 않습니다",
+                isPassword = true,
+            ),
+        )
+    }
+}
+
 @Preview(name = "NeveraTextField - useIcon=false", showBackground = true, widthDp = 360)
 @Composable
 private fun PreviewNeveraTextField_NoIcon() {
@@ -199,6 +233,17 @@ private class NeveraTextFieldConfigProvider : PreviewParameterProvider<NeveraTex
             heading = "Password",
             isPassword = true,
             placeholder = "비밀번호를 입력하세요",
+        ),
+        NeveraTextFieldConfig(
+            heading = "Positive + Eye",
+            state = NeveraTextFieldState.Positive,
+            isPassword = true,
+        ),
+        NeveraTextFieldConfig(
+            heading = "Negative + Eye",
+            state = NeveraTextFieldState.Negative,
+            description = "형식이 올바르지 않습니다",
+            isPassword = true,
         ),
         NeveraTextFieldConfig(
             heading = "useIcon = false",
