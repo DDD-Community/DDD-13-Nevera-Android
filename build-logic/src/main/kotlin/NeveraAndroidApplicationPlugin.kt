@@ -20,8 +20,11 @@ class NeveraAndroidApplicationPlugin : Plugin<Project> {
             pluginManager.apply("nevera.test.android")
 
             configure<ApplicationExtension> {
+                compileSdk = 36
+
                 defaultConfig {
                     minSdk = 30
+                    targetSdk = 36
                     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
                 }
 

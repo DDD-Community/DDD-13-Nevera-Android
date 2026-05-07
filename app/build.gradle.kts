@@ -4,15 +4,9 @@ plugins {
 
 android {
     namespace = "com.anddd.nevera"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
 
     defaultConfig {
         applicationId = "com.anddd.nevera"
-        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
     }
