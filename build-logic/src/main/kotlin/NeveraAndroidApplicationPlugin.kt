@@ -10,9 +10,9 @@ class NeveraAndroidApplicationPlugin : Plugin<Project> {
             pluginManager.apply("com.android.application")
             pluginManager.apply("com.google.gms.google-services")
             pluginManager.apply("com.google.firebase.crashlytics")
-            configureCompose()
             pluginManager.apply("nevera.android.hilt")
             pluginManager.apply("nevera.test.android")
+            configureCompose()
 
             configure<ApplicationExtension> {
                 compileSdk = 36

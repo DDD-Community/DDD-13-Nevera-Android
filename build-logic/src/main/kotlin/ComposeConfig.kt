@@ -11,6 +11,8 @@ internal fun Project.configureCompose() {
 
     pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
 
+    // library·application 양쪽 컨텍스트에서 호출되므로, 실제 적용된 Android plugin에 해당하는
+    // extension만 configure하기 위해 withPlugin 콜백을 사용한다.
     pluginManager.withPlugin("com.android.library") {
         configure<LibraryExtension> { buildFeatures { compose = true } }
     }
