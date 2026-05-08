@@ -209,7 +209,7 @@ private fun TrailingIcons(
         if (showEyeIcon) {
             IconButton(onClick = onEyeIconClick) {
                 Icon(
-                    painter = if (eyeVisible) NeveraIcons.EyesOff else NeveraIcons.Eyes,
+                    painter = if (eyeVisible) NeveraIcons.EyeOff else NeveraIcons.Eye,
                     contentDescription = if (eyeVisible) "비밀번호 숨기기" else "비밀번호 표시",
                     modifier = Modifier.size(NeveraTheme.iconSize.medium),
                     tint = eyeIconColor,
