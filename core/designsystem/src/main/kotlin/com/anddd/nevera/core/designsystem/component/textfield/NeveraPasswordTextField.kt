@@ -2,6 +2,7 @@ package com.anddd.nevera.core.designsystem.component.textfield
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import com.anddd.nevera.core.designsystem.component.textfield.internal.NeveraBaseTextField
 
 /**
@@ -28,6 +29,17 @@ fun NeveraPasswordTextField(
         enabled = enabled,
         useIcon = true,
         isPassword = true,
-        config = config,
+        config = NeveraTextFieldConfig(
+            type = config.type,
+            state = config.state,
+            heading = config.heading,
+            placeholder = config.placeholder,
+            description = config.description,
+            negativeColor = config.negativeColor,
+            singleLine = config.singleLine,
+            // KeyboardType.Password 고정으로 OS 키보드 자동완성/추천 입력 비활성화
+            keyboardOptions = config.keyboardOptions.copy(keyboardType = KeyboardType.Password),
+            keyboardActions = config.keyboardActions,
+        ),
     )
 }
