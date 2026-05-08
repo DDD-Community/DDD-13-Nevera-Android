@@ -216,7 +216,10 @@ private fun TrailingIcons(
                 modifier = Modifier
                     .size(NeveraTheme.iconSize.medium)
                     .clip(CircleShape)
-                    .clickable(onClick = onEyeIconClick),
+                    .clickable(
+                        enabled = enabled,
+                        onClick = onEyeIconClick,
+                    ),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
