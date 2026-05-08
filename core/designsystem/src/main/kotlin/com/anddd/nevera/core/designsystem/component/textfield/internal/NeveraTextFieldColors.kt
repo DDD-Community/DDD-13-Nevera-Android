@@ -8,6 +8,9 @@ import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
 internal object NeveraTextFieldColors {
 
+    private fun resolveNegativeColor(negativeColor: Color, fallback: Color): Color =
+        if (negativeColor != Color.Unspecified) negativeColor else fallback
+
     @Composable
     fun borderColor(
         type: NeveraTextFieldType,
@@ -17,11 +20,7 @@ internal object NeveraTextFieldColors {
         enabled: Boolean,
         negativeColor: Color,
     ): Color {
-        val resolvedNegativeColor = if (negativeColor != Color.Unspecified) {
-            negativeColor
-        } else {
-            NeveraTheme.colors.statusNegativeNormal
-        }
+        val resolvedNegativeColor = resolveNegativeColor(negativeColor, NeveraTheme.colors.statusNegativeNormal)
         val defaultColor = when (type) {
             NeveraTextFieldType.Box -> Color.Transparent
             NeveraTextFieldType.Underline -> NeveraTheme.colors.borderNormal
@@ -56,8 +55,7 @@ internal object NeveraTextFieldColors {
 
     @Composable
     fun placeholderColor(type: NeveraTextFieldType, enabled: Boolean): Color = when {
-        !enabled -> NeveraTheme.colors.textDisabled
-        type == NeveraTextFieldType.Box -> NeveraTheme.colors.textCaption
+        enabled && type == NeveraTextFieldType.Box -> NeveraTheme.colors.textCaption
         else -> NeveraTheme.colors.textDisabled
     }
 
@@ -67,11 +65,7 @@ internal object NeveraTextFieldColors {
         enabled: Boolean,
         negativeColor: Color,
     ): Color {
-        val resolvedNegativeColor = if (negativeColor != Color.Unspecified) {
-            negativeColor
-        } else {
-            NeveraTheme.colors.statusNegativeStrong
-        }
+        val resolvedNegativeColor = resolveNegativeColor(negativeColor, NeveraTheme.colors.statusNegativeStrong)
         return when {
             !enabled -> NeveraTheme.colors.textDisabled
             state == NeveraTextFieldState.Negative -> resolvedNegativeColor
@@ -84,11 +78,7 @@ internal object NeveraTextFieldColors {
         state: NeveraTextFieldState,
         negativeColor: Color,
     ): Color {
-        val resolvedNegativeColor = if (negativeColor != Color.Unspecified) {
-            negativeColor
-        } else {
-            NeveraTheme.colors.statusNegativeNormal
-        }
+        val resolvedNegativeColor = resolveNegativeColor(negativeColor, NeveraTheme.colors.statusNegativeNormal)
         return when (state) {
             NeveraTextFieldState.Positive -> NeveraTheme.colors.statusPositiveNormal
             NeveraTextFieldState.Negative -> resolvedNegativeColor
