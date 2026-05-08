@@ -3,6 +3,7 @@ package com.anddd.nevera.core.designsystem.component.textfield.internal
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -48,6 +49,7 @@ internal fun NeveraBaseTextField(
     enabled: Boolean = true,
     useIcon: Boolean = true,
     isPassword: Boolean = false,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     config: NeveraTextFieldConfig,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -123,7 +125,7 @@ internal fun NeveraBaseTextField(
             enabled = enabled,
             textStyle = textStyle.copy(color = inputTextColor),
             keyboardOptions = config.keyboardOptions,
-            keyboardActions = config.keyboardActions,
+            keyboardActions = keyboardActions,
             singleLine = config.singleLine,
             visualTransformation = visualTransformation,
             interactionSource = interactionSource,
