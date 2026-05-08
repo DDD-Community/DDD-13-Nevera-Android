@@ -46,6 +46,8 @@ internal fun NeveraBaseTextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    useIcon: Boolean = true,
+    isPassword: Boolean = false,
     config: NeveraTextFieldConfig,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -54,7 +56,7 @@ internal fun NeveraBaseTextField(
     var eyeVisible by rememberSaveable { mutableStateOf(false) }
 
     val visualTransformation = when {
-        config.isPassword && !eyeVisible -> PasswordVisualTransformation()
+        isPassword && !eyeVisible -> PasswordVisualTransformation()
         else -> VisualTransformation.None
     }
 
@@ -146,8 +148,8 @@ internal fun NeveraBaseTextField(
                     TrailingIcons(
                         state = config.state,
                         isActive = isActive,
-                        useIcon = config.useIcon,
-                        isPassword = config.isPassword,
+                        useIcon = useIcon,
+                        isPassword = isPassword,
                         eyeVisible = eyeVisible,
                         enabled = enabled,
                         negativeColor = config.negativeColor,

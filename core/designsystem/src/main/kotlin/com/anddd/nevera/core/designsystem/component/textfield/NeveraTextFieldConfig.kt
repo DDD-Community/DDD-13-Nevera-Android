@@ -25,8 +25,6 @@ class NeveraTextFieldConfig(
     val heading: String? = null,
     val placeholder: String? = null,
     val description: String? = null,
-    val isPassword: Boolean = false,
-    val useIcon: Boolean = true,
     val negativeColor: Color = Color.Unspecified,
     val singleLine: Boolean = true,
     val keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
@@ -40,8 +38,6 @@ class NeveraTextFieldConfig(
             heading == other.heading &&
             placeholder == other.placeholder &&
             description == other.description &&
-            isPassword == other.isPassword &&
-            useIcon == other.useIcon &&
             negativeColor == other.negativeColor &&
             singleLine == other.singleLine &&
             keyboardOptions == other.keyboardOptions
@@ -53,8 +49,6 @@ class NeveraTextFieldConfig(
         result = 31 * result + (heading?.hashCode() ?: 0)
         result = 31 * result + (placeholder?.hashCode() ?: 0)
         result = 31 * result + (description?.hashCode() ?: 0)
-        result = 31 * result + isPassword.hashCode()
-        result = 31 * result + useIcon.hashCode()
         result = 31 * result + negativeColor.hashCode()
         result = 31 * result + singleLine.hashCode()
         result = 31 * result + keyboardOptions.hashCode()
