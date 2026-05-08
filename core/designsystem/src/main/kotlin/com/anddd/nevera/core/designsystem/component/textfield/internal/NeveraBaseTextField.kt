@@ -2,6 +2,8 @@ package com.anddd.nevera.core.designsystem.component.textfield.internal
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -14,9 +16,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -207,7 +209,14 @@ private fun TrailingIcons(
             )
         }
         if (showEyeIcon) {
-            IconButton(onClick = onEyeIconClick) {
+            // IconButton은 Material3 최소 터치 타겟(48dp)을 강제해 필드 높이를 팽창시키므로 Box+clickable로 대체.
+            Box(
+                modifier = Modifier
+                    .size(NeveraTheme.iconSize.medium)
+                    .clip(CircleShape)
+                    .clickable(onClick = onEyeIconClick),
+                contentAlignment = Alignment.Center,
+            ) {
                 Icon(
                     painter = if (eyeVisible) NeveraIcons.EyeOff else NeveraIcons.Eye,
                     contentDescription = if (eyeVisible) "비밀번호 숨기기" else "비밀번호 표시",
