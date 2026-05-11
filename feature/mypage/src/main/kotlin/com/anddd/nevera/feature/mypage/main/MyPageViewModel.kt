@@ -2,14 +2,11 @@ package com.anddd.nevera.feature.mypage.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.anddd.nevera.core.designsystem.R as DesignSystemR
-import com.anddd.nevera.feature.mypage.R
 import com.anddd.nevera.feature.mypage.main.model.MyPageIntent
 import com.anddd.nevera.feature.mypage.main.model.MyPageSideEffect
 import com.anddd.nevera.feature.mypage.main.model.MyPageStatus
 import com.anddd.nevera.feature.mypage.main.model.MyPageUiState
-import com.anddd.nevera.feature.mypage.main.model.SettingItemUiModel
-import com.anddd.nevera.feature.mypage.main.model.SettingItemType
+import com.anddd.nevera.feature.mypage.main.model.SettingItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,21 +23,9 @@ class MyPageViewModel @Inject constructor() : ViewModel() {
     private val _uiState = MutableStateFlow(
         MyPageUiState(
             settingItems = listOf(
-                SettingItemUiModel(
-                    iconRes = DesignSystemR.drawable.ic_bell,
-                    labelRes = R.string.setting_notification,
-                    type = SettingItemType.Notification,
-                ),
-                SettingItemUiModel(
-                    iconRes = DesignSystemR.drawable.ic_user_circle,
-                    labelRes = R.string.setting_account,
-                    type = SettingItemType.Account,
-                ),
-                SettingItemUiModel(
-                    iconRes = DesignSystemR.drawable.ic_info,
-                    labelRes = R.string.setting_app_info,
-                    type = SettingItemType.AppInfo,
-                )
+                SettingItem.Notification,
+                SettingItem.Account,
+                SettingItem.AppInfo,
             ),
         )
     )
@@ -65,10 +50,10 @@ class MyPageViewModel @Inject constructor() : ViewModel() {
     private fun handleEffect(intent: MyPageIntent) {
         when (intent) {
             MyPageIntent.Load -> load()
-            is MyPageIntent.SettingItemClicked -> when (intent.type) {
-                SettingItemType.Notification -> {}
-                SettingItemType.Account -> {}
-                SettingItemType.AppInfo -> {}
+            is MyPageIntent.SettingItemClicked -> when (intent.item) {
+                SettingItem.Notification -> {}
+                SettingItem.Account -> {}
+                SettingItem.AppInfo -> {}
             }
         }
     }

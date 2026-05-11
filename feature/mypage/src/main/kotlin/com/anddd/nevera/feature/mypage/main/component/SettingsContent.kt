@@ -19,15 +19,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.anddd.nevera.core.designsystem.R as DesignSystemR
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
-import com.anddd.nevera.feature.mypage.R
-import com.anddd.nevera.feature.mypage.main.model.SettingItemType
-import com.anddd.nevera.feature.mypage.main.model.SettingItemUiModel
+import com.anddd.nevera.feature.mypage.main.model.SettingItem
+import com.anddd.nevera.feature.mypage.main.model.iconRes
+import com.anddd.nevera.feature.mypage.main.model.labelRes
 
 @Composable
 internal fun SettingsContent(
-    settingItems: List<SettingItemUiModel>,
+    settingItems: List<SettingItem>,
     modifier: Modifier = Modifier,
-    onClick: (SettingItemType) -> Unit
+    onClick: (SettingItem) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -47,7 +47,7 @@ internal fun SettingsContent(
             settingItems.forEach { item ->
                 SettingItem(
                     item = item,
-                    onClick = { onClick(item.type) }
+                    onClick = { onClick(item) }
                 )
             }
         }
@@ -57,10 +57,10 @@ internal fun SettingsContent(
 @Composable
 private fun SettingItem(
     modifier: Modifier = Modifier,
-    item: SettingItemUiModel,
+    item: SettingItem,
     onClick: () -> Unit,
 ) {
-    val label = stringResource(item.labelRes)
+    val label = stringResource(item.labelRes())
 
     Row(
         modifier = modifier
@@ -74,7 +74,7 @@ private fun SettingItem(
     ) {
         Image(
             modifier = Modifier.size(NeveraTheme.iconSize.medium),
-            painter = painterResource(item.iconRes),
+            painter = painterResource(item.iconRes()),
             contentDescription = label
         )
 
@@ -106,21 +106,9 @@ private fun SettingsContentPreview() {
     NeveraTheme {
         SettingsContent(
             settingItems = listOf(
-                SettingItemUiModel(
-                    iconRes = DesignSystemR.drawable.ic_bell,
-                    labelRes = R.string.setting_notification,
-                    type = SettingItemType.Notification,
-                ),
-                SettingItemUiModel(
-                    iconRes = DesignSystemR.drawable.ic_user_circle,
-                    labelRes = R.string.setting_account,
-                    type = SettingItemType.Account,
-                ),
-                SettingItemUiModel(
-                    iconRes = DesignSystemR.drawable.ic_info,
-                    labelRes = R.string.setting_app_info,
-                    type = SettingItemType.AppInfo,
-                )
+                SettingItem.Notification,
+                SettingItem.Account,
+                SettingItem.AppInfo,
             ),
             onClick = {},
         )
