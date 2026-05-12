@@ -31,6 +31,11 @@ class NeveraFeaturePlugin : Plugin<Project> {
                 "implementation"(libs.findLibrary("coil-compose").get())
                 "implementation"(libs.findLibrary("coil-network-okhttp").get())
                 "implementation"(libs.findLibrary("timber").get())
+
+                "implementation"(libs.findLibrary("orbit-core").get())
+                "implementation"(libs.findLibrary("orbit-viewmodel").get())
+                "implementation"(libs.findLibrary("orbit-compose").get())
+                "testImplementation"(libs.findLibrary("orbit-test").get())
             }
         }
     }
