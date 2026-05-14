@@ -1,5 +1,9 @@
 <resources>
-    <string name="setting_notification">알림</string>
-    <string name="setting_account">계정</string>
-    <string name="setting_app_info">앱정보</string>
+    <string name="mypage_title">마이</string>
+    <string name="mypage_notification_icon_desc">알림</string>
+    <string name="mypage_settings_header">설정</string>
+    <string name="mypage_profile_image_desc">프로필 이미지</string>
+    <string name="setting_notification">알림 설정</string>
+    <string name="setting_account">계정 설정</string>
+    <string name="setting_app_info">앱 정보</string>
 </resources>

@@ -70,6 +70,9 @@ class MainActivity : ComponentActivity() {
                                 navController.navigate(LOGIN_ROUTE) {
                                     popUpTo(HOME_ROUTE) { inclusive = true }
                                 }
+                            },
+                            onNavigateToMyPage = {
+                                navController.navigate(MY_PAGE_ROUTE)
                             }
                         )
                         myPageScreen()

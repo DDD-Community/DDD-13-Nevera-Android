@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.anddd.nevera.core.designsystem.component.appbar.NeveraAppBarAction
 import com.anddd.nevera.core.designsystem.component.appbar.NeveraDisplayAppBar
@@ -20,6 +21,8 @@ import com.anddd.nevera.feature.mypage.main.model.MyPageIntent
 import com.anddd.nevera.feature.mypage.main.model.MyPageStatus
 import com.anddd.nevera.feature.mypage.main.model.MyPageUiState
 import com.anddd.nevera.feature.mypage.main.model.ProfileUiModel
+import com.anddd.nevera.feature.mypage.main.model.SettingItem
+import com.anddd.nevera.feature.mypage.R as MyPageR
 
 @Composable
 internal fun MyPageContent(
@@ -32,11 +35,11 @@ internal fun MyPageContent(
         containerColor = NeveraTheme.colors.backgroundPrimary,
         topBar = {
             NeveraDisplayAppBar(
-                title = "마이",
+                title = stringResource(MyPageR.string.mypage_title),
                 action = NeveraAppBarAction.Icons.of(
                     NeveraAppBarAction.Icons.Item(
-                        painter = NeveraIcons.Search,
-                        contentDescription = "검색",
+                        painter = NeveraIcons.Bell,
+                        contentDescription = stringResource(MyPageR.string.mypage_notification_icon_desc),
                         onClick = {},
                     )
                 ),
@@ -78,7 +81,12 @@ private fun MyPageContentPreview() {
     NeveraTheme {
         MyPageContent(
             uiState = MyPageUiState(
-                profile = ProfileUiModel("hong@example.com")
+                profile = ProfileUiModel("hong@example.com"),
+                settingItems = listOf(
+                    SettingItem.Notification,
+                    SettingItem.Account,
+                    SettingItem.AppInfo,
+                ),
             ),
             onIntent = {},
         )

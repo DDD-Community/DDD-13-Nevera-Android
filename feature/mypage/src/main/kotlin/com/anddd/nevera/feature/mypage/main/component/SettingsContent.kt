@@ -17,11 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.anddd.nevera.core.designsystem.R as DesignSystemR
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
+import com.anddd.nevera.feature.mypage.R as MyPageR
 import com.anddd.nevera.feature.mypage.main.model.SettingItem
 import com.anddd.nevera.feature.mypage.main.model.iconRes
 import com.anddd.nevera.feature.mypage.main.model.labelRes
+import com.anddd.nevera.core.designsystem.R as DesignSystemR
 
 @Composable
 internal fun SettingsContent(
@@ -36,7 +37,7 @@ internal fun SettingsContent(
     ) {
         Text(
             modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding16),
-            text = "설정",
+            text = stringResource(MyPageR.string.mypage_settings_header),
             style = NeveraTheme.typography.bodyMedium,
             color = NeveraTheme.colors.textTertiary
         )
