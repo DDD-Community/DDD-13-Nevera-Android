@@ -14,18 +14,18 @@ class SampleViewModel @Inject constructor(
 
 ) : NeveraViewModel<SampleUiState, SampleSideEffect, SampleIntent, SimpleMutation>(SampleUiState()) {
 
-    override fun onIntent(intent: SampleIntent) {
+    override fun handleIntent(intent: SampleIntent) {
         when (intent) {
             SampleIntent.ClickButton -> onClickButton()
         }
     }
 
     private fun onClickButton() = intent {
-        onReduce(SimpleMutation.IncrementCount)
+        applyMutation(SimpleMutation.IncrementCount)
         postSideEffect(SampleSideEffect.ShowToast("클릭: ${state.count}"))
     }
 
-    override suspend fun Syntax<SampleUiState, SampleSideEffect>.onReduce(mutation: SimpleMutation) {
+    override suspend fun Syntax<SampleUiState, SampleSideEffect>.applyMutation(mutation: SimpleMutation) {
         when (mutation) {
             SimpleMutation.IncrementCount -> reduce { state.copy(count = state.count + 1) }
         }

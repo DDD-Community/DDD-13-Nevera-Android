@@ -2,7 +2,6 @@ package com.anddd.nevera.feature.sample.main
 
 import android.widget.Toast
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.anddd.nevera.feature.sample.main.component.SampleContent
@@ -25,9 +24,8 @@ fun SampleScreen(
         }
     }
 
-    val onButtonClick = remember { { viewModel.onIntent(SampleIntent.ClickButton) } }
     SampleContent(
         count = state.count,
-        onButtonClick = onButtonClick,
+        onButtonClick = { viewModel.handleIntent(SampleIntent.ClickButton) },
     )
 }

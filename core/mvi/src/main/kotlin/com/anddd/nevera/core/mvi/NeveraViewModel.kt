@@ -11,7 +11,7 @@ import timber.log.Timber
  * Nevera MVI 아키텍처의 기반 ViewModel.
  *
  * Orbit ContainerHost를 래핑하여 Intent → Mutation → State 흐름을 강제한다.
- * 모든 feature ViewModel은 이 클래스를 상속해 [onIntent]와 [onReduce]를 구현한다.
+ * 모든 feature ViewModel은 이 클래스를 상속해 [handleIntent]와 [applyMutation]을 구현한다.
  *
  * @param STATE      화면 렌더링에 사용되는 불변 UI 상태. [NeveraState] 구현체.
  * @param SIDE_EFFECT 토스트·네비게이션 등 단발성 부수 효과. [NeveraSideEffect] 구현체.
@@ -37,13 +37,13 @@ abstract class NeveraViewModel<
 
     /**
      * UI로부터 수신한 Intent를 처리한다.
-     * 내부적으로 비즈니스 로직을 수행한 뒤 [onReduce]를 호출해 State를 갱신한다.
+     * 내부적으로 비즈니스 로직을 수행한 뒤 [applyMutation]을 호출해 State를 갱신한다.
      */
-    abstract fun onIntent(action: INTENT)
+    abstract fun handleIntent(action: INTENT)
 
     /**
      * [MUTATION]을 받아 현재 State를 새로운 State로 변환한다.
      * Orbit [Syntax] 스코프 안에서 실행되므로 `reduce`, `postSideEffect` 등을 사용할 수 있다.
      */
-    protected abstract suspend fun Syntax<STATE, SIDE_EFFECT>.onReduce(mutation: MUTATION)
+    protected abstract suspend fun Syntax<STATE, SIDE_EFFECT>.applyMutation(mutation: MUTATION)
 }
