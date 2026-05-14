@@ -19,7 +19,8 @@ import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 @Composable
 internal fun HomeContent(
     onLogoutClick: () -> Unit,
-    onWithdrawClick: () -> Unit
+    onWithdrawClick: () -> Unit,
+    onNavigateToMyPage: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -46,6 +47,13 @@ internal fun HomeContent(
         ) {
             Text("회원탈퇴")
         }
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(
+            onClick = onNavigateToMyPage,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("마이페이지")
+        }
     }
 }
 
@@ -55,7 +63,8 @@ private fun HomeContentPreview() {
     NeveraTheme {
         HomeContent(
             onLogoutClick = {},
-            onWithdrawClick = {}
+            onWithdrawClick = {},
+            onNavigateToMyPage = {},
         )
     }
 }

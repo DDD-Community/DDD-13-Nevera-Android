@@ -16,7 +16,8 @@ import com.anddd.nevera.feature.main.home.model.HomeUiState
 @Composable
 fun HomeScreen(
     onNavigateToLogin: () -> Unit,
-    viewModel: HomeViewModel = hiltViewModel()
+    onNavigateToMyPage: () -> Unit,
+    viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -37,7 +38,8 @@ fun HomeScreen(
         is HomeUiState.Error -> ErrorContent(message = state.message)
         is HomeUiState.Success -> HomeContent(
             onLogoutClick = viewModel::logout,
-            onWithdrawClick = viewModel::withdraw
+            onWithdrawClick = viewModel::withdraw,
+            onNavigateToMyPage = onNavigateToMyPage,
         )
     }
 }

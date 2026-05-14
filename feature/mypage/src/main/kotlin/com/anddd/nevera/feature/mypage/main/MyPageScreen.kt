@@ -11,11 +11,8 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
-import com.anddd.nevera.core.ui.component.LoadingContent
 import com.anddd.nevera.feature.mypage.main.component.MyPageContent
-import com.anddd.nevera.feature.mypage.main.model.MyPageIntent
 import com.anddd.nevera.feature.mypage.main.model.MyPageSideEffect
-import com.anddd.nevera.feature.mypage.main.model.MyPageStatus
 
 @Composable
 fun MyPageScreen(
@@ -30,7 +27,6 @@ fun MyPageScreen(
             viewModel.sideEffect.collect { effect ->
                 when (effect) {
                     is MyPageSideEffect.ShowToast -> Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
-                    MyPageSideEffect.NavigateBack -> onNavigateBack()
                 }
             }
         }
