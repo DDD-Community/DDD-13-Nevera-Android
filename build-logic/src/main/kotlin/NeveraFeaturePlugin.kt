@@ -24,6 +24,7 @@ class NeveraFeaturePlugin : Plugin<Project> {
                 "implementation"(project(":core:common"))
                 "implementation"(project(":core:designsystem"))
                 "implementation"(project(":core:ui"))
+                "implementation"(project(":core:mvi"))
                 "implementation"(project(":domain"))
 
                 "implementation"(libs.findLibrary("lifecycle-viewmodel-compose").get())

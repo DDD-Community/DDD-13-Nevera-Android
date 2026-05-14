@@ -31,6 +31,7 @@ firebaseBom = "33.13.0"
 firebaseCrashlyticsPlugin = "3.0.3"
 googleServices = "4.4.2"
 
+orbitMvi = "11.0.0"
 timber = "5.0.1"
 coreSplashscreen = "1.2.0"
 coil = "3.4.0"
@@ -91,6 +92,10 @@ hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltWo
 hilt-work-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltWork" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 
+orbit-core = { group = "org.orbit-mvi", name = "orbit-core", version.ref = "orbitMvi" }
+orbit-viewmodel = { group = "org.orbit-mvi", name = "orbit-viewmodel", version.ref = "orbitMvi" }
+orbit-compose = { group = "org.orbit-mvi", name = "orbit-compose", version.ref = "orbitMvi" }
+
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashscreen" }
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
@@ -118,3 +123,4 @@ google-login = [
     "androidx-credentials-play-services-auth",
     "googleid",
 ]
+orbit = ["orbit-core", "orbit-viewmodel", "orbit-compose"]
