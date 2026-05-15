@@ -1,5 +1,7 @@
 package com.anddd.nevera.feature.mypage.main.model
 
-sealed interface MyPageSideEffect {
+import com.anddd.nevera.core.mvi.NeveraSideEffect
+
+sealed interface MyPageSideEffect : NeveraSideEffect {
     data class ShowToast(val message: String) : MyPageSideEffect
 }
