@@ -12,7 +12,7 @@ import com.anddd.nevera.domain.repository.AppInfoRepository
 import javax.inject.Inject
 
 internal class AppInfoRepositoryImpl @Inject constructor(
-    @VersionName private val versionName: String,
+    @param:VersionName private val versionName: String,
     private val appInfoRemoteDataSource: AppInfoRemoteDataSource,
     private val apiCall: ApiCallExecutor,
 ) : AppInfoRepository {
