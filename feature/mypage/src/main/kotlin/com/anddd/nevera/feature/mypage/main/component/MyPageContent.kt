@@ -18,7 +18,6 @@ import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.core.ui.component.LoadingContent
 import com.anddd.nevera.feature.mypage.main.model.MyPageIntent
-import com.anddd.nevera.feature.mypage.main.model.MyPageStatus
 import com.anddd.nevera.feature.mypage.main.model.MyPageUiState
 import com.anddd.nevera.feature.mypage.main.model.ProfileUiModel
 import com.anddd.nevera.feature.mypage.main.model.SettingItem
@@ -68,7 +67,7 @@ internal fun MyPageContent(
                 )
             }
 
-            if (uiState.status == MyPageStatus.Loading) {
+            if (uiState.isLoading) {
                 LoadingContent()
             }
         }

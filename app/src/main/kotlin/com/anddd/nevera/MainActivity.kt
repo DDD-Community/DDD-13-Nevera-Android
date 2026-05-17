@@ -19,6 +19,8 @@ import com.anddd.nevera.feature.signup.main.navigation.signupScreen
 import com.anddd.nevera.feature.splash.main.navigation.SPLASH_ROUTE
 import com.anddd.nevera.feature.splash.main.navigation.splashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.anddd.nevera.feature.mypage.appinfo.navigation.APP_INFO_ROUTE
+import com.anddd.nevera.feature.mypage.appinfo.navigation.appInfoScreen
 import com.anddd.nevera.feature.mypage.main.navigation.MY_PAGE_ROUTE
 import com.anddd.nevera.feature.mypage.main.navigation.myPageScreen
 import dagger.hilt.android.AndroidEntryPoint
@@ -75,7 +77,16 @@ class MainActivity : ComponentActivity() {
                                 navController.navigate(MY_PAGE_ROUTE)
                             }
                         )
-                        myPageScreen()
+                        myPageScreen(
+                            onNavigateToAppInfo = {
+                                navController.navigate(APP_INFO_ROUTE)
+                            }
+                        )
+                        appInfoScreen(
+                            onNavigateBack = {
+                                navController.popBackStack()
+                            }
+                        )
                     }
                 }
             }

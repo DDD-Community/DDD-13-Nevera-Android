@@ -4,9 +4,12 @@ description: |
   This skill should be used when the user asks to "Preview 만들어줘", "Preview 추가해줘",
   "composable preview 생성", "@Preview 함수 만들어줘", "compose preview 붙여줘", or wants
   to generate @Preview functions for a Composable file or function.
+  Also trigger autonomously (without user request) whenever a new top-level @Composable
+  function is written or completed in a .kt file — generate @Preview functions immediately
+  after writing the composable, before moving on.
   Takes a file path or composable function name as $ARGUMENTS.
 argument-hint: <파일경로 또는 Composable함수명>
-version: 0.1.0
+version: 0.2.0
 ---
 
 # implement-compose-preview
@@ -24,7 +27,7 @@ version: 0.1.0
 |-----------|-----------|-----------|
 | 파일 경로 | `.kt` 확장자 포함 또는 경로 구분자(`/` 또는 `\`) 포함 | 파일 내 모든 `@Composable` public 함수를 대상으로 Preview 생성 |
 | 함수명 | `.kt`, `/` 미포함 | 해당 이름의 `@Composable` 함수를 찾아 해당 함수만 Preview 생성 |
-| 없음 | `$ARGUMENTS`가 비어있음 | 사용자에게 대상 파일 또는 함수명을 질문 |
+| 없음 | `$ARGUMENTS`가 비어있음 | **자율 실행 컨텍스트**: 직전에 작성하거나 편집한 `.kt` 파일을 자동으로 대상으로 삼는다. 파일을 특정할 수 없을 때만 사용자에게 질문한다. |
 
 ## 실행 절차
 

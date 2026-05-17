@@ -6,8 +6,10 @@ import com.anddd.nevera.feature.mypage.main.MyPageScreen
 
 const val MY_PAGE_ROUTE = "mypage"
 
-fun NavGraphBuilder.myPageScreen() {
+fun NavGraphBuilder.myPageScreen(
+    onNavigateToAppInfo: () -> Unit,
+) {
     composable(route = MY_PAGE_ROUTE) {
-        MyPageScreen()
+        MyPageScreen(onNavigateToAppInfo = onNavigateToAppInfo)
     }
 }
