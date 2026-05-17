@@ -4,7 +4,6 @@ import com.anddd.nevera.core.mvi.NeveraViewModel
 import com.anddd.nevera.feature.mypage.main.model.MyPageIntent
 import com.anddd.nevera.feature.mypage.main.model.MyPageMutation
 import com.anddd.nevera.feature.mypage.main.model.MyPageSideEffect
-import com.anddd.nevera.feature.mypage.main.model.MyPageStatus
 import com.anddd.nevera.feature.mypage.main.model.MyPageUiState
 import com.anddd.nevera.feature.mypage.main.model.SettingItem
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -51,8 +50,8 @@ class MyPageViewModel @Inject constructor(
 
     override suspend fun Syntax<MyPageUiState, MyPageSideEffect>.applyMutation(mutation: MyPageMutation) {
         when (mutation) {
-            MyPageMutation.Loading -> reduce { state.copy(status = MyPageStatus.Loading) }
-            MyPageMutation.LoadComplete -> reduce { state.copy(status = MyPageStatus.Idle) }
+            MyPageMutation.Loading -> reduce { state.copy(isLoading = true) }
+            MyPageMutation.LoadComplete -> reduce { state.copy(isLoading = false) }
         }
     }
 }
