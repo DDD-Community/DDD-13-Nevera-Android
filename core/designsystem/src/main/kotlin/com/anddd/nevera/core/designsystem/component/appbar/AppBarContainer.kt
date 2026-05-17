@@ -35,13 +35,13 @@ internal fun AppBarContainer(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .requiredHeight(AppBarDefault.height)
             .then(
                 if (showBackground) Modifier.background(NeveraTheme.colors.backgroundPrimary)
                 else Modifier
             )
+            .padding(start = startPadding, end = endPadding)
             .statusBarsPadding()
-            .padding(start = startPadding, end = endPadding),
+            .requiredHeight(AppBarDefault.height),
         contentAlignment = Alignment.CenterStart,
         content = content
     )

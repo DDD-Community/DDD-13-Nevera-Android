@@ -22,9 +22,11 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -32,7 +34,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextFieldConfig
@@ -41,21 +45,52 @@ import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextFieldTyp
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
+/**
+ * NeveraTextField 계열의 공통 렌더링 구현체. 공개 API에서 직접 사용하지 않는다.
+ *
+ * **커서 정책**
+ * - [autoMoveCursor] = true (기본): 포커스 획득 시 커서를 텍스트 맨 뒤로, 해제 시 맨 앞으로 이동.
+ *   String 기반 공개 오버로드에서 사용하는 기본 정책이다.
+ * - [autoMoveCursor] = false: 커서 위치를 [onTextFieldValueChange] 콜백으로 받은 [TextFieldValue] 그대로 유지.
+ *   [TextFieldValue] 기반 공개 오버로드에서 호출자가 커서를 직접 제어할 때 사용한다.
+ *
+ * **오버로드 구조** (공개 API → 이 함수)
+ * ```
+ * NeveraTextField(String)      → NeveraTextField(TextFieldValue, autoMoveCursor=true)  → NeveraBaseTextField
+ * NeveraTextField(TextFieldValue) → NeveraBaseTextField(autoMoveCursor=false, 기본값)
+ * ```
+ *
+ * @param textFieldValue 커서·선택 정보를 포함한 현재 입력 상태. String 오버로드에서는 내부 관리됨.
+ * @param onTextFieldValueChange 입력 상태(텍스트·커서·선택) 변경 콜백
+ * @param useIcon true이면 state에 따라 check/warning 아이콘, 비밀번호 필드에서 eye 아이콘을 trailing에 표시
+ * @param isPassword true이면 eye 아이콘 토글과 [PasswordVisualTransformation] 적용
+ * @param autoMoveCursor 포커스 기반 자동 커서 이동 정책 활성화 여부
+ * @param suffix trailing 영역 우측에 렌더링할 추가 컨텐츠. NeveraTextFieldSuffix 활용 권장.
+ */
 @Composable
 internal fun NeveraBaseTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
+    textFieldValue: TextFieldValue,
+    onTextFieldValueChange: (TextFieldValue) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     useIcon: Boolean = true,
     isPassword: Boolean = false,
+    autoMoveCursor: Boolean = true,
+    suffix: (@Composable () -> Unit)? = null,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     config: NeveraTextFieldConfig,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
-    val isActive = value.isNotEmpty()
+    val isActive = textFieldValue.text.isNotEmpty()
     var eyeVisible by rememberSaveable { mutableStateOf(false) }
+
+    AutoMoveCursorEffect(
+        enabled = autoMoveCursor,
+        isFocused = isFocused,
+        textFieldValue = textFieldValue,
+        onTextFieldValueChange = onTextFieldValueChange,
+    )
 
     val visualTransformation = when {
         isPassword && !eyeVisible -> PasswordVisualTransformation()
@@ -89,7 +124,11 @@ internal fun NeveraBaseTextField(
     val containerModifier = when (config.type) {
         NeveraTextFieldType.Box -> Modifier
             .background(containerColor, NeveraTextFieldDefaults.BoxShape)
-            .border(NeveraTextFieldDefaults.BorderWidth, borderColor, NeveraTextFieldDefaults.BoxShape)
+            .border(
+                width = NeveraTextFieldDefaults.BorderWidth,
+                color = borderColor,
+                shape = NeveraTextFieldDefaults.BoxShape
+            )
 
         // border()는 사방 테두리를 그리므로 drawBehind로 하단선만 직접 그린다.
         NeveraTextFieldType.Underline -> Modifier
@@ -117,8 +156,8 @@ internal fun NeveraBaseTextField(
 
         // Material3 TextField/OutlinedTextField는 내부 padding·color·shape이 고정되어 Underline 타입과 커스텀 배경 적용이 불가능하다.
         BasicTextField(
-            value = value,
-            onValueChange = onValueChange,
+            value = textFieldValue,
+            onValueChange = onTextFieldValueChange,
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = 48.dp),
@@ -137,7 +176,7 @@ internal fun NeveraBaseTextField(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Box(modifier = Modifier.weight(1f)) {
-                        if (value.isEmpty() && config.placeholder != null) {
+                        if (textFieldValue.text.isEmpty() && config.placeholder != null) {
                             Text(
                                 text = config.placeholder,
                                 style = textStyle,
@@ -157,6 +196,7 @@ internal fun NeveraBaseTextField(
                         negativeColor = config.negativeColor,
                         onEyeIconClick = { eyeVisible = !eyeVisible },
                     )
+                    suffix?.invoke()
                 }
             },
         )
@@ -231,6 +271,31 @@ private fun TrailingIcons(
                     tint = eyeIconColor,
                 )
             }
+        }
+    }
+}
+
+/**
+ * 포커스 상태에 따라 커서를 자동으로 이동시키는 기본 커서 정책.
+ * - 포커스 획득: 커서를 텍스트 맨 뒤로 이동
+ * - 포커스 해제: 커서를 맨 앞으로 이동
+ *
+ * [enabled]=false이면 아무 동작도 하지 않으며, 호출자가 커서를 직접 제어한다.
+ */
+@Composable
+private fun AutoMoveCursorEffect(
+    enabled: Boolean,
+    isFocused: Boolean,
+    textFieldValue: TextFieldValue,
+    onTextFieldValueChange: (TextFieldValue) -> Unit,
+) {
+    if (!enabled) return
+    // LaunchedEffect는 isFocused 변화 시점의 값을 캡처하므로 rememberUpdatedState로 최신 값을 참조한다.
+    val current by rememberUpdatedState(textFieldValue)
+    LaunchedEffect(isFocused) {
+        val newSelection = if (isFocused) TextRange(current.text.length) else TextRange(0)
+        if (current.selection != newSelection) {
+            onTextFieldValueChange(current.copy(selection = newSelection))
         }
     }
 }

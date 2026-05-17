@@ -90,6 +90,71 @@ private fun PreviewNeveraTextField_NegativeCustomColor() {
 
 // endregion
 
+// region — NeveraTextField (suffix)
+
+@Preview(name = "NeveraTextField - Positive + Suffix", showBackground = true, widthDp = 360)
+@Composable
+private fun PreviewNeveraTextField_Positive_WithSuffix() {
+    NeveraTheme {
+        NeveraTextField(
+            value = "100000",
+            onValueChange = {},
+            suffix = { NeveraTextFieldSuffix("원") },
+            config = NeveraTextFieldConfig(
+                heading = "금액",
+                state = NeveraTextFieldState.Positive,
+            ),
+        )
+    }
+}
+
+@Preview(name = "NeveraTextField - Suffix Only (useIcon=false)", showBackground = true, widthDp = 360)
+@Composable
+private fun PreviewNeveraTextField_SuffixOnly() {
+    NeveraTheme {
+        NeveraTextField(
+            value = "50000",
+            onValueChange = {},
+            useIcon = false,
+            suffix = { NeveraTextFieldSuffix("원") },
+            config = NeveraTextFieldConfig(heading = "금액"),
+        )
+    }
+}
+
+@Preview(name = "NeveraTextField - Negative + Suffix", showBackground = true, widthDp = 360)
+@Composable
+private fun PreviewNeveraTextField_Negative_WithSuffix() {
+    NeveraTheme {
+        NeveraTextField(
+            value = "0",
+            onValueChange = {},
+            suffix = { NeveraTextFieldSuffix("원") },
+            config = NeveraTextFieldConfig(
+                heading = "금액",
+                state = NeveraTextFieldState.Negative,
+                description = "1원 이상 입력해주세요",
+            ),
+        )
+    }
+}
+
+@Preview(name = "NeveraTextField - Disabled + Suffix", showBackground = true, widthDp = 360)
+@Composable
+private fun PreviewNeveraTextField_Disabled_WithSuffix() {
+    NeveraTheme {
+        NeveraTextField(
+            value = "30000",
+            onValueChange = {},
+            enabled = false,
+            suffix = { NeveraTextFieldSuffix("원") },
+            config = NeveraTextFieldConfig(heading = "금액"),
+        )
+    }
+}
+
+// endregion
+
 // region — NeveraPasswordTextField
 
 @Preview(name = "NeveraPasswordTextField - Normal", showBackground = true, widthDp = 360)

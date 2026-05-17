@@ -4,7 +4,6 @@ import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.mypage.main.component.MyPageContent
 import com.anddd.nevera.feature.mypage.main.model.MyPageSideEffect
 import org.orbitmvi.orbit.compose.collectAsState
@@ -26,10 +25,8 @@ fun MyPageScreen(
         }
     }
 
-    NeveraTheme {
-        MyPageContent(
-            uiState = uiState,
-            onIntent = viewModel::handleIntent,
-        )
-    }
+    MyPageContent(
+        uiState = uiState,
+        onIntent = viewModel::handleIntent,
+    )
 }
