@@ -30,7 +30,7 @@ internal fun ConfirmActionButtons(
             label = negative,
             onClick = onNegative,
             modifier = Modifier.weight(1f),
-            color = positiveButtonColor,
+            color = negativeButtonColor,
         )
 
         Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap12))
@@ -39,7 +39,7 @@ internal fun ConfirmActionButtons(
             label = positive,
             onClick = onPositive,
             modifier = Modifier.weight(1f),
-            color = negativeButtonColor,
+            color = positiveButtonColor,
         )
     }
 }
