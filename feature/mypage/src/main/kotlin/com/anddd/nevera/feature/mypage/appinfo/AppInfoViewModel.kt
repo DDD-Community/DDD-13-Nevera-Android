@@ -1,40 +1,48 @@
 package com.anddd.nevera.feature.mypage.appinfo
 
-import android.content.Context
+import com.anddd.nevera.core.common.onFailure
+import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.core.mvi.NeveraViewModel
+import com.anddd.nevera.domain.usecase.appinfo.GetAppInfoUseCase
 import com.anddd.nevera.feature.mypage.appinfo.model.AppInfoIntent
 import com.anddd.nevera.feature.mypage.appinfo.model.AppInfoMutation
 import com.anddd.nevera.feature.mypage.appinfo.model.AppInfoSideEffect
-import com.anddd.nevera.feature.mypage.appinfo.model.AppInfoUiModel
 import com.anddd.nevera.feature.mypage.appinfo.model.AppInfoUiState
+import com.anddd.nevera.feature.mypage.appinfo.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import org.orbitmvi.orbit.syntax.Syntax
 import javax.inject.Inject
 
 @HiltViewModel
 class AppInfoViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
+    private val getAppInfo: GetAppInfoUseCase,
 ) : NeveraViewModel<AppInfoUiState, AppInfoSideEffect, AppInfoIntent, AppInfoMutation>(
     AppInfoUiState()
 ) {
     init {
-        loadVersionName()
+        loadAppInfo()
     }
 
     override fun handleIntent(intent: AppInfoIntent) {
         when (intent) {
             AppInfoIntent.NavigateBack -> onNavigateBack()
-            AppInfoIntent.TermsClicked -> {}
-            AppInfoIntent.PrivacyPolicyClicked -> {}
+            AppInfoIntent.TermsClicked -> {
+                // TODO onNavigateToTerms
+            }
+            AppInfoIntent.PrivacyPolicyClicked -> {
+                // TODO onNavigateToPrivacyPolicy
+            }
         }
     }
 
-    private fun loadVersionName() = intent {
-        val versionName = context.packageManager
-            .getPackageInfo(context.packageName, 0)
-            .versionName ?: ""
-        applyMutation(AppInfoMutation.LoadCompleted(AppInfoUiModel(versionName = "V$versionName")))
+    private fun loadAppInfo() = intent {
+        applyMutation(AppInfoMutation.Loading)
+        getAppInfo().onSuccess {
+            applyMutation(AppInfoMutation.LoadCompleted(it.toUiModel()))
+        }.onFailure {
+            applyMutation(AppInfoMutation.LoadFailure)
+            postSideEffect(AppInfoSideEffect.ShowNetworkErrorToast)
+        }
     }
 
     private fun onNavigateBack() = intent {
@@ -45,6 +53,7 @@ class AppInfoViewModel @Inject constructor(
         when (mutation) {
             AppInfoMutation.Loading -> reduce { state.copy(isLoading = true) }
             is AppInfoMutation.LoadCompleted -> reduce { state.copy(isLoading = false, appInfo = mutation.appInfo) }
+            AppInfoMutation.LoadFailure -> reduce { state.copy(isLoading = false) }
         }
     }
 }
