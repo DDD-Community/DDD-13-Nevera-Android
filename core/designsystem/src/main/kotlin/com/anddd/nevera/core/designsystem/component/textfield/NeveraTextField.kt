@@ -39,10 +39,10 @@ fun NeveraTextField(
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     config: NeveraTextFieldConfig = NeveraTextFieldConfig(),
 ) {
-    // TextFieldValue를 내부에서 관리해 BasicTextField에 커서 위치까지 전달한다.
-    // rememberSaveable로 화면 회전 등 config 변경 시에도 커서 위치를 유지한다.
-    // value(String)가 외부에서 변경되면 LaunchedEffect가 감지해 내부 상태를 동기화한다.
-    // 이때 커서를 끝으로 강제하지 않고 현재 위치를 새 텍스트 길이 내로 clamp해 보존한다.
+    // BasicTextField는 TextFieldValue를 요구하므로 내부에서 변환해 관리한다.
+    // 커서 위치는 포커스 획득 시 맨 뒤, 해제 시 맨 앞으로 항상 재설정되므로 저장할 필요가 없다 → remember 의도적 사용.
+    // 입력값은 onValueChange → ViewModel uiState → value 경로로 관리된다.
+    // 외부에서 value가 변경되면 LaunchedEffect가 감지해 텍스트를 동기화하며, 커서는 새 텍스트 길이 내로 clamp한다.
     var textFieldValue by remember { mutableStateOf(TextFieldValue(value)) }
     LaunchedEffect(value) {
         if (value != textFieldValue.text) {
