@@ -13,8 +13,8 @@ class ValidatePasswordUseCase @Inject constructor() {
 
         val errors = buildList {
             if (password.length < MIN_LENGTH) add(PasswordValidationError.TooShort(MIN_LENGTH))
-            if (password.none { it.isUpperCase() }) add(PasswordValidationError.MissingUppercase)
-            if (password.none { it.isLowerCase() }) add(PasswordValidationError.MissingLowercase)
+            if (password.length > MAX_LENGTH) add(PasswordValidationError.TooLong(MAX_LENGTH))
+            if (password.none { it.isLetter() }) add(PasswordValidationError.MissingLetter)
             if (password.none { it.isDigit() }) add(PasswordValidationError.MissingDigit)
             if (password.none { it in SPECIAL_CHARS }) add(PasswordValidationError.MissingSpecialChar)
         }
@@ -25,6 +25,7 @@ class ValidatePasswordUseCase @Inject constructor() {
 
     companion object {
         private const val MIN_LENGTH = 8
-        private const val SPECIAL_CHARS = "!@#\$%^&*()_+\\-=\\[\\]{}|;':\",./<>?"
+        private const val MAX_LENGTH = 20
+        private const val SPECIAL_CHARS = "!@#\$%^&*()_+-=[]{}|;':\",./<>?"
     }
 }
