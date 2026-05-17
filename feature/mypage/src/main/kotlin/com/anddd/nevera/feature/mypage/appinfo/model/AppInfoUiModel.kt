@@ -11,5 +11,13 @@ data class AppInfoUiModel(
 internal fun AppInfo.toUiModel(): AppInfoUiModel = AppInfoUiModel(
     termsUrl = termsUrl,
     privacyPolicyUrl = privacyPolicyUrl,
-    versionName = "V$versionName",
+    versionName = versionName
+        .trim()
+        .let { raw ->
+            when {
+                raw.isEmpty() -> ""
+                raw.startsWith("v", ignoreCase = true) -> raw.replaceFirstChar { it.uppercase() }
+                else -> "V$raw"
+            }
+        },
 )
