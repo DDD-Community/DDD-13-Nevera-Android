@@ -19,6 +19,7 @@ import com.anddd.nevera.core.designsystem.ui.theme.spacing.NeveraSpacing
 import com.anddd.nevera.domain.model.validation.EmailValidationResult
 import com.anddd.nevera.domain.model.validation.PasswordValidationError
 import com.anddd.nevera.domain.model.validation.PasswordValidationResult
+import com.anddd.nevera.feature.login.main.model.LoginIntent
 
 @Composable
 internal fun LoginContent(
@@ -26,11 +27,7 @@ internal fun LoginContent(
     password: String,
     emailValidation: EmailValidationResult?,
     passwordValidation: PasswordValidationResult?,
-    onEmailChange: (String) -> Unit,
-    onPasswordChange: (String) -> Unit,
-    onLoginClick: () -> Unit,
-    onSignupClick: () -> Unit,
-    onGoogleLoginClick: () -> Unit,
+    onIntent: (LoginIntent) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -50,13 +47,13 @@ internal fun LoginContent(
             password = password,
             emailValidation = emailValidation,
             passwordValidation = passwordValidation,
-            onEmailChange = onEmailChange,
-            onPasswordChange = onPasswordChange,
-            onLoginClick = onLoginClick,
+            onEmailChange = { onIntent(LoginIntent.EmailChanged(it)) },
+            onPasswordChange = { onIntent(LoginIntent.PasswordChanged(it)) },
+            onLoginClick = { onIntent(LoginIntent.LoginWithEmailClicked) },
         )
         LoginEtcSection(
-            onGoogleLoginClick = onGoogleLoginClick,
-            onSignupClick = onSignupClick,
+            onGoogleLoginClick = { onIntent(LoginIntent.GoogleLoginButtonClicked) },
+            onSignupClick = { onIntent(LoginIntent.SignupClicked) },
         )
     }
 }
@@ -70,11 +67,7 @@ private fun LoginContentPreview() {
             password = "",
             emailValidation = null,
             passwordValidation = null,
-            onEmailChange = {},
-            onPasswordChange = {},
-            onLoginClick = {},
-            onSignupClick = {},
-            onGoogleLoginClick = {},
+            onIntent = {},
         )
     }
 }
@@ -90,11 +83,7 @@ private fun LoginContentErrorPreview() {
             passwordValidation = PasswordValidationResult.Invalid(
                 listOf(PasswordValidationError.TooShort(8))
             ),
-            onEmailChange = {},
-            onPasswordChange = {},
-            onLoginClick = {},
-            onSignupClick = {},
-            onGoogleLoginClick = {},
+            onIntent = {},
         )
     }
 }
@@ -108,11 +97,7 @@ private fun LoginContentEnabledPreview() {
             password = "Password1!",
             emailValidation = EmailValidationResult.Valid,
             passwordValidation = PasswordValidationResult.Valid,
-            onEmailChange = {},
-            onPasswordChange = {},
-            onLoginClick = {},
-            onSignupClick = {},
-            onGoogleLoginClick = {},
+            onIntent = {},
         )
     }
 }

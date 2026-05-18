@@ -54,6 +54,8 @@ fun LoginScreen(
             is LoginSideEffect.GoogleLoginFailed ->
                 Toast.makeText(context, effect.error.message, Toast.LENGTH_SHORT).show()
             LoginSideEffect.MoveToHomeScreen -> onNavigateToHome()
+            LoginSideEffect.MoveToSignupScreen -> onNavigateToSignup()
+            LoginSideEffect.StartGoogleLogin -> googleLogin()
         }
     }
 
@@ -63,11 +65,7 @@ fun LoginScreen(
             password = uiState.password,
             emailValidation = uiState.emailValidation,
             passwordValidation = uiState.passwordValidation,
-            onEmailChange = { viewModel.handleIntent(LoginIntent.EmailChanged(it)) },
-            onPasswordChange = { viewModel.handleIntent(LoginIntent.PasswordChanged(it)) },
-            onLoginClick = { viewModel.handleIntent(LoginIntent.LoginWithEmailClicked) },
-            onSignupClick = onNavigateToSignup,
-            onGoogleLoginClick = ::googleLogin,
+            onIntent = viewModel::handleIntent,
         )
         if (uiState.isLoading) {
             LoadingContent()

@@ -35,6 +35,8 @@ class LoginViewModel @Inject constructor(
             is LoginIntent.EmailChanged -> onEmailChanged(intent.email)
             is LoginIntent.PasswordChanged -> onPasswordChanged(intent.password)
             is LoginIntent.LoginWithEmailClicked -> onLoginWithEmailClicked()
+            is LoginIntent.GoogleLoginButtonClicked -> onGoogleLoginButtonClicked()
+            is LoginIntent.SignupClicked -> onSignupClicked()
             is LoginIntent.LoginWithGoogleClicked -> onLoginWithGoogle(intent.token)
             is LoginIntent.GoogleLoginFailed -> onGoogleLoginFailed(intent.throwable)
         }
@@ -80,6 +82,14 @@ class LoginViewModel @Inject constructor(
                 applyMutation(LoginMutation.LoginFailed)
                 postSideEffect(LoginSideEffect.GoogleLoginFailed(errorUiModel))
             }
+    }
+
+    private fun onGoogleLoginButtonClicked() = intent {
+        postSideEffect(LoginSideEffect.StartGoogleLogin)
+    }
+
+    private fun onSignupClicked() = intent {
+        postSideEffect(LoginSideEffect.MoveToSignupScreen)
     }
 
     private fun onGoogleLoginFailed(throwable: Throwable) = intent {
