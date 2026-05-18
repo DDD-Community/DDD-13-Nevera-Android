@@ -35,8 +35,9 @@ fun SplashScreen(
     viewModel: SplashViewModel = hiltViewModel()
 ) {
     NotificationPermissionRequester(
-        onPermissionFlowCompleted = { 
-            viewModel.handleIntent(SplashIntent.StartAutoLogin())
+        onPermissionFlowCompleted = {
+            val startTime = System.currentTimeMillis()
+            viewModel.handleIntent(SplashIntent.StartAutoLogin(startTime))
         },
     )
 
