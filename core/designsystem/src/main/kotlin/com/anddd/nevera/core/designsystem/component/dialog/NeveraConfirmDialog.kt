@@ -2,21 +2,22 @@ package com.anddd.nevera.core.designsystem.component.dialog
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.anddd.nevera.core.designsystem.component.button.NeveraButtonColor
 import com.anddd.nevera.core.designsystem.component.confirm.internal.ConfirmActionButtons
 import com.anddd.nevera.core.designsystem.component.confirm.internal.ConfirmTitleContent
 import com.anddd.nevera.core.designsystem.component.dialog.internal.NeveraDialog
-import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
 @Composable
 fun NeveraConfirmDialog(
     modifier: Modifier = Modifier,
     title: String,
-    subtitle: String,
+    subtitle: String? = null,
     positive: String,
     negative: String,
     onPositive: () -> Unit,
     onNegative: () -> Unit,
+    positiveButtonColor: NeveraButtonColor = NeveraButtonColor.Primary,
+    negativeButtonColor: NeveraButtonColor = NeveraButtonColor.Primary,
 ) {
     NeveraDialog(
         modifier = modifier,
@@ -28,21 +29,8 @@ fun NeveraConfirmDialog(
             negative = negative,
             onPositive = onPositive,
             onNegative = onNegative,
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun NeveraConfirmDialogPreview() {
-    NeveraTheme {
-        NeveraConfirmDialog(
-            title = "Title",
-            subtitle = "Subtitle",
-            positive = "CTA",
-            negative = "Sub",
-            onPositive = {},
-            onNegative = {}
+            positiveButtonColor = positiveButtonColor,
+            negativeButtonColor = negativeButtonColor
         )
     }
 }

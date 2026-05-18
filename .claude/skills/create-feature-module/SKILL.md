@@ -2,11 +2,11 @@
 name: create-feature-module
 description: |
   feature 모듈 껍데기를 MVI 구조로 생성한다. "feature 모듈 만들어줘", "feature 껍데기 생성", "create-feature-module" 등의 요청에 응답한다.
-  build.gradle.kts, Intent/Screen/ViewModel/UiState/SideEffect/Navigation/Content 파일 생성,
+  build.gradle.kts, Intent/Screen/ViewModel/UiState/SideEffect/Mutation/Navigation/Content 파일 생성,
   settings.gradle.kts 및 app/build.gradle.kts 자동 등록까지 한 번에 처리한다.
   $ARGUMENTS로 모듈명(소문자, 예: profile / user-profile)을 받는다.
 argument-hint: <모듈명 (예: profile, user-profile)>
-version: 0.2.0
+version: 0.3.0
 ---
 
 # create-feature-module
@@ -43,26 +43,33 @@ version: 0.2.0
 
 ---
 
-## 아키텍처 개요 (MVI / UDF)
+## 아키텍처 개요 (Orbit MVI / UDF)
 
-생성되는 파일은 아래 단방향 데이터 흐름을 강제한다.
+`core:mvi` 모듈의 `NeveraViewModel`을 기반으로 하는 Orbit MVI 패턴을 사용한다.
 
 ```
-View ──Intent──▶ processIntent()
-                     │
-                  reduce()          ← 순수 함수, 동기 상태 전이
-                     │
-                  handleEffect()    ← 비동기 부수 효과 분기
-                     │
-              ┌──────┴──────┐
-           uiState       sideEffect
-              │               │
-           View            View (LaunchedEffect)
+[View]      viewModel.handleIntent(Intent)
+                │
+                ▼
+[ViewModel] handleIntent(intent)    ← NeveraViewModel abstract override, 단일 진입점
+                │  when(intent) → onXxx()
+                ▼
+            intent {}               ← Orbit coroutine scope
+                │
+                ▼
+            applyMutation(Mutation) ← suspend, Syntax<STATE, SIDE_EFFECT> context
+             ┌────┴────┐
+           reduce    postSideEffect
+             │            │
+           STATE      SIDE_EFFECT
+             │            │
+[View]  collectAsState  collectSideEffect
 ```
 
-- **Intent**: View → ViewModel 유일한 진입점
-- **reduce**: 상태 전이 로직 (부수 효과 없음, 단위 테스트 용이)
-- **handleEffect**: 비동기 작업 분기 (새 Intent 추가 시 여기와 private 함수만 수정)
+- **NeveraIntent**: View → ViewModel 유일한 진입점 (marker interface)
+- **NeveraMutation**: 상태 전이 기술 단위 — `applyMutation`에서 `reduce`로 적용
+- **NeveraState**: UI 렌더링용 불변 상태 (marker interface)
+- **NeveraSideEffect**: 토스트·네비게이션 등 단발성 부수 효과 (marker interface)
 
 ---
 
@@ -94,18 +101,20 @@ mkdir -p feature/{name}/src/androidTest/kotlin/com/anddd/nevera
 
 ### Step 4: 파일 생성
 
-Write 툴로 아래 10개 파일을 순서대로 생성한다.
+Write 툴로 아래 12개 파일을 순서대로 생성한다.
 
 1. `feature/{name}/build.gradle.kts`
-2. `feature/{name}/src/main/kotlin/com/anddd/nevera/feature/{name}/main/model/{Name}Intent.kt`
-3. `feature/{name}/src/main/kotlin/com/anddd/nevera/feature/{name}/main/model/{Name}UiState.kt`
-4. `feature/{name}/src/main/kotlin/com/anddd/nevera/feature/{name}/main/model/{Name}SideEffect.kt`
-5. `feature/{name}/src/main/kotlin/com/anddd/nevera/feature/{name}/main/{Name}ViewModel.kt`
-6. `feature/{name}/src/main/kotlin/com/anddd/nevera/feature/{name}/main/component/{Name}Content.kt`
-7. `feature/{name}/src/main/kotlin/com/anddd/nevera/feature/{name}/main/{Name}Screen.kt`
-8. `feature/{name}/src/main/kotlin/com/anddd/nevera/feature/{name}/main/navigation/{Name}Navigation.kt`
-9. `feature/{name}/src/test/kotlin/com/anddd/nevera/ExampleUnitTest.kt`
-10. `feature/{name}/src/androidTest/kotlin/com/anddd/nevera/ExampleInstrumentedTest.kt`
+2. `feature/{name}/src/main/AndroidManifest.xml`
+3. `feature/{name}/src/main/kotlin/com/anddd/nevera/feature/{name}/main/model/{Name}Intent.kt`
+4. `feature/{name}/src/main/kotlin/com/anddd/nevera/feature/{name}/main/model/{Name}UiState.kt`
+5. `feature/{name}/src/main/kotlin/com/anddd/nevera/feature/{name}/main/model/{Name}SideEffect.kt`
+6. `feature/{name}/src/main/kotlin/com/anddd/nevera/feature/{name}/main/model/{Name}Mutation.kt`
+7. `feature/{name}/src/main/kotlin/com/anddd/nevera/feature/{name}/main/{Name}ViewModel.kt`
+8. `feature/{name}/src/main/kotlin/com/anddd/nevera/feature/{name}/main/component/{Name}Content.kt`
+9. `feature/{name}/src/main/kotlin/com/anddd/nevera/feature/{name}/main/{Name}Screen.kt`
+10. `feature/{name}/src/main/kotlin/com/anddd/nevera/feature/{name}/main/navigation/{Name}Navigation.kt`
+11. `feature/{name}/src/test/kotlin/com/anddd/nevera/ExampleUnitTest.kt`
+12. `feature/{name}/src/androidTest/kotlin/com/anddd/nevera/ExampleInstrumentedTest.kt`
 
 ### Step 5: settings.gradle.kts 수정
 
@@ -126,10 +135,10 @@ include(":feature:{name}")
 ### Step 7: 완료 보고
 
 생성된 파일 목록을 출력하고, 아래 사항을 안내한다:
-- `{Name}Intent` — feature 도메인에 맞는 Intent로 교체 (현재는 `Load` / `Submit` / `Reset` 예시)
-- `{Name}UiState` — 도메인 필드 추가 (현재는 `status`만 포함)
-- `{Name}Status` — 필요한 상태 추가 (현재는 `Idle` / `Loading` / `Success`)
+- `{Name}Intent` — feature 도메인에 맞는 Intent로 교체 (현재는 `Load` / `Submit` 예시)
+- `{Name}UiState` — 도메인 필드 추가 (현재는 `isLoading: Boolean`만 포함)
 - `{Name}SideEffect` — 도메인에 맞는 효과 추가 (현재는 `ShowToast` / `NavigateBack` 예시)
+- `{Name}Mutation` — 도메인에 맞는 상태 전이 케이스 추가 (현재는 `LoadSuccess` 예시)
 - `{Name}ViewModel` — `load()` / `submit()` 내 실제 UseCase 호출로 교체
 - `{Name}Screen` — `onNavigateBack` 대신 feature에 맞는 navigation callback으로 교체
 - `MainActivity` NavHost에 `{camelName}Screen()` 등록
@@ -142,106 +151,66 @@ include(":feature:{name}")
 
 ```kotlin
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.hilt)
-    alias(libs.plugins.ksp)
+    id("nevera.feature")
 }
 
 android {
     namespace = "com.anddd.nevera.feature.{name}"
-    compileSdk = 36
-
-    defaultConfig {
-        minSdk = 30
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    buildFeatures {
-        buildConfig = true
-        compose = true
-    }
-
-    testOptions {
-        unitTests.all { it.useJUnitPlatform() }
-    }
 }
 
 dependencies {
-    implementation(project(":core:common"))
-    implementation(project(":core:ui"))
-    implementation(project(":core:designsystem"))
-    implementation(project(":domain"))
-
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(libs.hilt.navigation.compose)
     implementation(libs.coroutines.android)
-    implementation(libs.timber)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
-
-    testImplementation(libs.junit.jupiter)
-    testRuntimeOnly(libs.junit.jupiter.engine)
-    testRuntimeOnly(libs.junit.platform.launcher)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 }
 ```
 
 ---
 
-### 2. {Name}Intent.kt
+### 2. AndroidManifest.xml
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<manifest />
+```
+
+---
+
+### 3. {Name}Intent.kt
 
 ```kotlin
 package com.anddd.nevera.feature.{name}.main.model
 
-sealed interface {Name}Intent {
+import com.anddd.nevera.core.mvi.NeveraIntent
+
+sealed interface {Name}Intent : NeveraIntent {
     data object Load : {Name}Intent
     data object Submit : {Name}Intent
-    data object Reset : {Name}Intent
 }
 ```
 
 ---
 
-### 3. {Name}UiState.kt
+### 4. {Name}UiState.kt
 
 ```kotlin
 package com.anddd.nevera.feature.{name}.main.model
+
+import com.anddd.nevera.core.mvi.NeveraState
 
 data class {Name}UiState(
-    val status: {Name}Status = {Name}Status.Idle,
-)
-
-sealed interface {Name}Status {
-    data object Idle : {Name}Status
-    data object Loading : {Name}Status
-    data object Success : {Name}Status
-}
+    val isLoading: Boolean = false,
+) : NeveraState
 ```
 
 ---
 
-### 4. {Name}SideEffect.kt
+### 5. {Name}SideEffect.kt
 
 ```kotlin
 package com.anddd.nevera.feature.{name}.main.model
 
-sealed interface {Name}SideEffect {
+import com.anddd.nevera.core.mvi.NeveraSideEffect
+
+sealed interface {Name}SideEffect : NeveraSideEffect {
     data class ShowToast(val message: String) : {Name}SideEffect
     data object NavigateBack : {Name}SideEffect
 }
@@ -249,70 +218,66 @@ sealed interface {Name}SideEffect {
 
 ---
 
-### 5. {Name}ViewModel.kt
+### 6. {Name}Mutation.kt
+
+```kotlin
+package com.anddd.nevera.feature.{name}.main.model
+
+import com.anddd.nevera.core.mvi.NeveraMutation
+
+sealed interface {Name}Mutation : NeveraMutation {
+    data object LoadSuccess : {Name}Mutation
+}
+```
+
+---
+
+### 7. {Name}ViewModel.kt
 
 ```kotlin
 package com.anddd.nevera.feature.{name}.main
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.anddd.nevera.core.mvi.NeveraViewModel
 import com.anddd.nevera.feature.{name}.main.model.{Name}Intent
+import com.anddd.nevera.feature.{name}.main.model.{Name}Mutation
 import com.anddd.nevera.feature.{name}.main.model.{Name}SideEffect
-import com.anddd.nevera.feature.{name}.main.model.{Name}Status
 import com.anddd.nevera.feature.{name}.main.model.{Name}UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.syntax.Syntax
 import javax.inject.Inject
 
 @HiltViewModel
-class {Name}ViewModel @Inject constructor() : ViewModel() {
+class {Name}ViewModel @Inject constructor() :
+    NeveraViewModel<{Name}UiState, {Name}SideEffect, {Name}Intent, {Name}Mutation>({Name}UiState()) {
 
-    private val _uiState = MutableStateFlow({Name}UiState())
-    val uiState: StateFlow<{Name}UiState> = _uiState.asStateFlow()
-
-    private val _sideEffect = Channel<{Name}SideEffect>(Channel.BUFFERED)
-    val sideEffect = _sideEffect.receiveAsFlow()
-
-    // ① 단일 진입점 — View → ViewModel 유일한 경로 (UDF 강제)
-    fun processIntent(intent: {Name}Intent) {
-        _uiState.update { reduce(it, intent) }
-        handleEffect(intent)
+    init {
+        handleIntent({Name}Intent.Load)
     }
 
-    // ② 순수 함수 — 동기적 상태 전이 (부수 효과 없음, 테스트 용이)
-    private fun reduce(state: {Name}UiState, intent: {Name}Intent): {Name}UiState = when (intent) {
-        {Name}Intent.Load -> state.copy(status = {Name}Status.Loading)
-        {Name}Intent.Submit -> state.copy(status = {Name}Status.Loading)
-        {Name}Intent.Reset -> {Name}UiState()
-    }
-
-    // ③ 비동기 부수 효과 분기 — 새 비동기 Intent 추가 시 여기와 private 함수만 수정
-    private fun handleEffect(intent: {Name}Intent) {
+    override fun handleIntent(intent: {Name}Intent) {
         when (intent) {
             {Name}Intent.Load -> load()
             {Name}Intent.Submit -> submit()
-            else -> Unit
         }
     }
 
-    private fun load() {
-        viewModelScope.launch {
-            // TODO: UseCase로 초기 데이터 로드
-            _uiState.update { it.copy(status = {Name}Status.Idle) }
-        }
+    private fun load() = intent {
+        reduce { state.copy(isLoading = true) }
+        // TODO: UseCase로 초기 데이터 로드
+        applyMutation({Name}Mutation.LoadSuccess)
     }
 
-    private fun submit() {
-        viewModelScope.launch {
-            // TODO: UseCase로 제출 처리
-            _uiState.update { it.copy(status = {Name}Status.Success) }
-            _sideEffect.send({Name}SideEffect.NavigateBack)
+    private fun submit() = intent {
+        reduce { state.copy(isLoading = true) }
+        // TODO: UseCase로 제출 처리
+        postSideEffect({Name}SideEffect.NavigateBack)
+    }
+
+    override suspend fun Syntax<{Name}UiState, {Name}SideEffect>.applyMutation(
+        mutation: {Name}Mutation,
+    ) {
+        when (mutation) {
+            {Name}Mutation.LoadSuccess -> reduce { state.copy(isLoading = false) }
         }
     }
 }
@@ -320,20 +285,20 @@ class {Name}ViewModel @Inject constructor() : ViewModel() {
 
 ---
 
-### 6. {Name}Content.kt
+### 8. {Name}Content.kt
 
 ```kotlin
 package com.anddd.nevera.feature.{name}.main.component
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
+import com.anddd.nevera.core.ui.component.LoadingContent
 import com.anddd.nevera.feature.{name}.main.model.{Name}Intent
 import com.anddd.nevera.feature.{name}.main.model.{Name}UiState
 
@@ -343,13 +308,14 @@ internal fun {Name}Content(
     onIntent: ({Name}Intent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 24.dp, vertical = 32.dp),
-    ) {
-        // TODO: UI 구현
-        Text(text = "{Name}")
+    Box(modifier = modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            // TODO: UI 구현
+            Text(text = "{Name}")
+        }
+        if (uiState.isLoading) {
+            LoadingContent()
+        }
     }
 }
 
@@ -367,27 +333,19 @@ private fun {Name}ContentPreview() {
 
 ---
 
-### 7. {Name}Screen.kt
+### 9. {Name}Screen.kt
 
 ```kotlin
 package com.anddd.nevera.feature.{name}.main
 
 import android.widget.Toast
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.repeatOnLifecycle
-import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
-import com.anddd.nevera.core.ui.component.LoadingContent
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.anddd.nevera.feature.{name}.main.component.{Name}Content
-import com.anddd.nevera.feature.{name}.main.model.{Name}Intent
 import com.anddd.nevera.feature.{name}.main.model.{Name}SideEffect
-import com.anddd.nevera.feature.{name}.main.model.{Name}Status
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun {Name}Screen(
@@ -395,39 +353,26 @@ fun {Name}Screen(
     viewModel: {Name}ViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState = viewModel.collectAsState().value
 
-    LaunchedEffect(viewModel) {
-        viewModel.processIntent({Name}Intent.Load)
-    }
-
-    LaunchedEffect(lifecycleOwner, viewModel) {
-        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            viewModel.sideEffect.collect { effect ->
-                when (effect) {
-                    is {Name}SideEffect.ShowToast -> Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
-                    {Name}SideEffect.NavigateBack -> onNavigateBack()
-                }
-            }
+    viewModel.collectSideEffect { effect ->
+        when (effect) {
+            is {Name}SideEffect.ShowToast ->
+                Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+            {Name}SideEffect.NavigateBack -> onNavigateBack()
         }
     }
 
-    NeveraTheme {
-        when (uiState.status) {
-            is {Name}Status.Loading -> LoadingContent()
-            else -> {Name}Content(
-                uiState = uiState,
-                onIntent = viewModel::processIntent,
-            )
-        }
-    }
+    {Name}Content(
+        uiState = uiState,
+        onIntent = viewModel::handleIntent,
+    )
 }
 ```
 
 ---
 
-### 8. {Name}Navigation.kt
+### 10. {Name}Navigation.kt
 
 ```kotlin
 package com.anddd.nevera.feature.{name}.main.navigation
@@ -449,7 +394,7 @@ fun NavGraphBuilder.{camelName}Screen(
 
 ---
 
-### 9. ExampleUnitTest.kt
+### 11. ExampleUnitTest.kt
 
 ```kotlin
 package com.anddd.nevera
@@ -466,7 +411,7 @@ class ExampleUnitTest {
 
 ---
 
-### 10. ExampleInstrumentedTest.kt
+### 12. ExampleInstrumentedTest.kt
 
 ```kotlin
 package com.anddd.nevera
