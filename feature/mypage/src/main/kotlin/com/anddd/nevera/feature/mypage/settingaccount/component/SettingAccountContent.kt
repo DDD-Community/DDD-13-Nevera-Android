@@ -11,6 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.anddd.nevera.core.designsystem.component.appbar.NeveraAppBar
 import com.anddd.nevera.core.designsystem.component.appbar.NeveraAppBarNavigation
+import com.anddd.nevera.core.designsystem.component.button.NeveraButtonColor
 import com.anddd.nevera.core.designsystem.component.dialog.NeveraConfirmDialog
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.core.ui.component.LoadingContent
@@ -53,14 +54,13 @@ internal fun SettingAccountContent(
             }
 
             if (uiState.showLogoutDialog) {
-                // TODO 타이틀만 있는 다이얼로그로 교체
                 NeveraConfirmDialog(
                     title = stringResource(MyPageR.string.setting_account_logout_dialog_title),
-                    subtitle = "",
                     positive = stringResource(MyPageR.string.setting_account_logout_confirm),
                     negative = stringResource(MyPageR.string.setting_account_dialog_dismiss),
                     onNegative = { onIntent(SettingAccountIntent.CancelLogoutClicked) },
                     onPositive = { onIntent(SettingAccountIntent.ConfirmLogoutClicked) },
+                    negativeButtonColor = NeveraButtonColor.Secondary,
                 )
             }
 
@@ -72,6 +72,8 @@ internal fun SettingAccountContent(
                     negative = stringResource(MyPageR.string.setting_account_dialog_dismiss),
                     onNegative = { onIntent(SettingAccountIntent.CancelWithdrawClicked) },
                     onPositive = { onIntent(SettingAccountIntent.ConfirmWithdrawClicked) },
+                    negativeButtonColor = NeveraButtonColor.Secondary,
+                    positiveButtonColor = NeveraButtonColor.Danger,
                 )
             }
 
