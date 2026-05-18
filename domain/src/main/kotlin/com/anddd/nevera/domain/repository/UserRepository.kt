@@ -4,6 +4,7 @@ import com.anddd.nevera.core.common.NetworkError
 import com.anddd.nevera.core.common.NeveraResult
 import com.anddd.nevera.domain.model.auth.LoginError
 import com.anddd.nevera.domain.model.auth.LoginResult
+import com.anddd.nevera.domain.model.auth.WithdrawError
 import com.anddd.nevera.domain.model.common.MessageResult
 
 interface UserRepository {
@@ -21,5 +22,5 @@ interface UserRepository {
     suspend fun emailRequest(email: String): NeveraResult<MessageResult, NetworkError>
     suspend fun emailVerify(email: String, authCode: String): NeveraResult<MessageResult, NetworkError>
     suspend fun logout(): NeveraResult<MessageResult, NetworkError>
-    suspend fun withdraw(): NeveraResult<MessageResult, NetworkError>
+    suspend fun withdraw(): NeveraResult<MessageResult, WithdrawError>
 }

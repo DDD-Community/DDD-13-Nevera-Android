@@ -2,6 +2,7 @@ package com.anddd.nevera.feature.mypage.settingaccount
 
 import com.anddd.nevera.core.common.onFailure
 import com.anddd.nevera.core.common.onSuccess
+import com.anddd.nevera.domain.model.auth.WithdrawError
 import com.anddd.nevera.core.mvi.NeveraViewModel
 import com.anddd.nevera.domain.usecase.auth.LogoutUseCase
 import com.anddd.nevera.domain.usecase.auth.WithdrawUseCase
@@ -66,9 +67,15 @@ class SettingAccountViewModel @Inject constructor(
         applyMutation(SettingAccountMutation.Loading)
         withdraw().onSuccess {
             postSideEffect(SettingAccountSideEffect.NavigateToLogin)
-        }.onFailure {
-            applyMutation(SettingAccountMutation.LoadingComplete)
-            postSideEffect(SettingAccountSideEffect.ShowNetworkErrorToast)
+        }.onFailure { error ->
+            when (error) {
+                is WithdrawError.SessionInvalid ->
+                    postSideEffect(SettingAccountSideEffect.NavigateToLogin)
+                is WithdrawError.Common -> {
+                    applyMutation(SettingAccountMutation.LoadingComplete)
+                    postSideEffect(SettingAccountSideEffect.ShowNetworkErrorToast)
+                }
+            }
         }
     }
 

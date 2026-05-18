@@ -7,9 +7,11 @@ import com.anddd.nevera.core.common.mapSuccess
 import com.anddd.nevera.core.network.auth.ApiCallExecutor
 import com.anddd.nevera.data.datasource.UserDataSource
 import com.anddd.nevera.data.mapper.error.toLoginError
+import com.anddd.nevera.data.mapper.error.toWithdrawError
 import com.anddd.nevera.data.mapper.toDomain
 import com.anddd.nevera.domain.model.auth.LoginError
 import com.anddd.nevera.domain.model.auth.LoginResult
+import com.anddd.nevera.domain.model.auth.WithdrawError
 import com.anddd.nevera.domain.model.common.MessageResult
 import com.anddd.nevera.domain.repository.UserRepository
 import javax.inject.Inject
@@ -63,8 +65,11 @@ internal class UserRepositoryImpl @Inject constructor(
             .mapSuccess { it.toDomain() }
     }
 
-    override suspend fun withdraw(): NeveraResult<MessageResult, NetworkError> {
+    override suspend fun withdraw(): NeveraResult<MessageResult, WithdrawError> {
         return apiCall { authDataSource.withdraw() }
-            .mapSuccess { it.toDomain() }
+            .map(
+                transformSuccess = { it.toDomain() },
+                transformFailure = { it.toWithdrawError() },
+            )
     }
 }
