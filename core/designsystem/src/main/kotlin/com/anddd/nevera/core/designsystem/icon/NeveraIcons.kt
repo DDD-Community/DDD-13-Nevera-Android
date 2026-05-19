@@ -32,4 +32,12 @@ object NeveraIcons {
         @Composable get() = painterResource(R.drawable.ic_textfield_eyes)
     val EyeOff: Painter
         @Composable get() = painterResource(R.drawable.ic_textfield_eyes_off)
+    val ReceiptCameraWhite: Painter
+        @Composable get() = painterResource(R.drawable.ic_receipt_camera_white)
+    val ReceiptCloseWhite: Painter
+        @Composable get() = painterResource(R.drawable.ic_receipt_close_white)
+    val ReceiptCameraSwap: Painter
+        @Composable get() = painterResource(R.drawable.ic_receipt_cameraswap_white)
+    val ReceiptGallery: Painter
+        @Composable get() = painterResource(R.drawable.ic_receipt_gallery)
 }

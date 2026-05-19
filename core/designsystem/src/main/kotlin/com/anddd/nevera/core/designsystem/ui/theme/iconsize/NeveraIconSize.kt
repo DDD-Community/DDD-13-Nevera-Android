@@ -10,4 +10,6 @@ object NeveraIconSize {
     val medium: Dp = 24.dp
     val large: Dp = 32.dp
     val xLarge: Dp = 40.dp
+    // TODO :: 토큰에 없는 사이즈라 문의중인 상태
+    val xxLarge: Dp = 48.dp
 }
