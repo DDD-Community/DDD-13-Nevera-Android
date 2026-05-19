@@ -34,6 +34,10 @@ fun SignupScreen(
                 context.showToast(effect.message ?: context.getString(R.string.signup_toast_verify_not_found))
             SignupSideEffect.SignupEmailNotVerified ->
                 context.showToast(context.getString(R.string.signup_toast_email_not_verified))
+            is SignupSideEffect.SignupUnverifiedEmail ->
+                context.showToast(effect.message ?: context.getString(R.string.signup_toast_unverified_email))
+            is SignupSideEffect.SignupAuthNotFound ->
+                context.showToast(effect.message ?: context.getString(R.string.signup_toast_auth_not_found))
             SignupSideEffect.SignupServerError ->
                 context.showToast(context.getString(R.string.signup_toast_signup_failed))
             SignupSideEffect.TimerExpired ->

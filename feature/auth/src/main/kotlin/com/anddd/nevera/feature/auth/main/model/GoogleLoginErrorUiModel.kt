@@ -1,6 +1,7 @@
 package com.anddd.nevera.feature.auth.main.model
 
-import com.anddd.nevera.core.common.NetworkError
+import com.anddd.nevera.domain.model.auth.GoogleLoginError
+import com.anddd.nevera.domain.model.common.CommonError
 
 sealed interface GoogleLoginErrorUiModel {
     val message: String
@@ -22,9 +23,13 @@ sealed interface GoogleLoginErrorUiModel {
     }
 }
 
-internal fun NetworkError.toUiModel(): GoogleLoginErrorUiModel = when (this) {
-    is NetworkError.HttpError -> GoogleLoginErrorUiModel.ServerError(message ?: "SNS 로그인에 실패했습니다.")
-    is NetworkError.NetworkConnectionError -> GoogleLoginErrorUiModel.NetworkUnavailable
-    is NetworkError.TimeoutError -> GoogleLoginErrorUiModel.Timeout
-    is NetworkError.UnknownError -> GoogleLoginErrorUiModel.Unknown
+internal fun GoogleLoginError.toUiModel(): GoogleLoginErrorUiModel = when (this) {
+    is GoogleLoginError.InvalidToken ->
+        GoogleLoginErrorUiModel.ServerError(serverMessage ?: "유효하지 않은 Google 토큰입니다.")
+    is GoogleLoginError.Common -> when (val e = error) {
+        CommonError.NetworkUnavailable -> GoogleLoginErrorUiModel.NetworkUnavailable
+        CommonError.Timeout -> GoogleLoginErrorUiModel.Timeout
+        is CommonError.ServerError -> GoogleLoginErrorUiModel.ServerError(e.message ?: "SNS 로그인에 실패했습니다.")
+        else -> GoogleLoginErrorUiModel.Unknown
+    }
 }

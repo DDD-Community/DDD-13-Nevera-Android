@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anddd.nevera.core.common.onFailure
 import com.anddd.nevera.core.common.onSuccess
+import com.anddd.nevera.domain.model.auth.LogoutError
 import com.anddd.nevera.domain.usecase.auth.LogoutUseCase
 import com.anddd.nevera.domain.usecase.auth.WithdrawUseCase
 import com.anddd.nevera.feature.main.BuildConfig
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,6 +37,9 @@ class HomeViewModel @Inject constructor(
                 .onSuccess {
                     _sideEffect.send(HomeSideEffect.NavigateToLogin)
                 }.onFailure {
+                    if (it is LogoutError.TokenNotFound) {
+                        Timber.e(it.serverMessage ?: "토큰을 찾을 수 없습니다.")
+                    }
                     _sideEffect.send(HomeSideEffect.ShowError("로그아웃에 실패했습니다."))
                 }
         }

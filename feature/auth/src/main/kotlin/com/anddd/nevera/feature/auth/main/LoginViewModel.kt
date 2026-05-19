@@ -78,10 +78,7 @@ class LoginViewModel @Inject constructor(
                 postSideEffect(LoginSideEffect.MoveToHomeScreen)
             }.onFailure { cause ->
                 val errorUiModel = cause.toUiModel()
-                Timber.e(
-                    t = cause.throwable,
-                    message = "googleLoginUseCase, Google 로그인 실패: ${errorUiModel::class.simpleName}"
-                )
+                Timber.e("googleLoginUseCase, Google 로그인 실패: ${errorUiModel::class.simpleName}")
                 applyMutation(LoginMutation.LoginFailed)
                 postSideEffect(LoginSideEffect.GoogleLoginFailed(errorUiModel))
             }

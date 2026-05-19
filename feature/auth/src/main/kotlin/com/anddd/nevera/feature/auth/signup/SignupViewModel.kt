@@ -7,6 +7,7 @@ import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.core.mvi.NeveraViewModel
 import com.anddd.nevera.domain.model.auth.EmailRequestError
 import com.anddd.nevera.domain.model.auth.EmailVerifyError
+import com.anddd.nevera.domain.model.auth.SignupError
 import com.anddd.nevera.domain.model.validation.EmailValidationResult
 import com.anddd.nevera.domain.model.validation.PasswordValidationResult
 import com.anddd.nevera.domain.usecase.auth.SignupUseCase
@@ -210,13 +211,25 @@ class SignupViewModel @Inject constructor(
             return@intent
         }
         applyMutation(SignupMutation.Loading)
-        signupUseCase(state.email, state.password, "")
+        signupUseCase(state.email, state.password)
             .onSuccess {
                 postSideEffect(SignupSideEffect.MoveToLoginScreen)
             }
-            .onFailure {
-                applyMutation(SignupMutation.SignupFailed)
-                postSideEffect(SignupSideEffect.SignupServerError)
+            .onFailure { error ->
+                when (error) {
+                    is SignupError.UnverifiedEmail -> {
+                        applyMutation(SignupMutation.SignupFailed)
+                        postSideEffect(SignupSideEffect.SignupUnverifiedEmail(error.serverMessage))
+                    }
+                    is SignupError.NotFound -> {
+                        applyMutation(SignupMutation.SignupFailed)
+                        postSideEffect(SignupSideEffect.SignupAuthNotFound(error.serverMessage))
+                    }
+                    is SignupError.Common -> {
+                        applyMutation(SignupMutation.SignupFailed)
+                        postSideEffect(SignupSideEffect.SignupServerError)
+                    }
+                }
             }
     }
 
