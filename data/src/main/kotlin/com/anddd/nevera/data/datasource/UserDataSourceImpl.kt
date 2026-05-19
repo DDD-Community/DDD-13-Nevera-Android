@@ -26,9 +26,8 @@ internal class UserDataSourceImpl @Inject constructor(
     override suspend fun signup(
         email: String,
         password: String,
-        name: String
     ): ApiResponse<MessageResponse> {
-        val request = SignupRequest(email, password, name)
+        val request = SignupRequest(email, password)
         return userApi.signup(request)
     }
 

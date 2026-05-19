@@ -9,7 +9,6 @@ internal interface UserDataSource {
     suspend fun signup(
         email: String,
         password: String,
-        name: String
     ): ApiResponse<MessageResponse>
     suspend fun loginWithGoogle(idToken: String): ApiResponse<TokenResponse>
     suspend fun emailRequest(email: String): ApiResponse<MessageResponse>

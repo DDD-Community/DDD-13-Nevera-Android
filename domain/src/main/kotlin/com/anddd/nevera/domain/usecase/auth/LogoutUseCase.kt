@@ -1,8 +1,8 @@
 package com.anddd.nevera.domain.usecase.auth
 
-import com.anddd.nevera.core.common.NetworkError
 import com.anddd.nevera.core.common.NeveraResult
 import com.anddd.nevera.core.common.onSuccess
+import com.anddd.nevera.domain.model.auth.LogoutError
 import com.anddd.nevera.domain.model.common.MessageResult
 import com.anddd.nevera.domain.scheduler.FcmSyncScheduler
 import com.anddd.nevera.domain.repository.FcmTokenRepository
@@ -18,7 +18,7 @@ class LogoutUseCase @Inject constructor(
     private val fcmSyncScheduler: FcmSyncScheduler,
 ) {
 
-    suspend operator fun invoke(isDebug: Boolean): NeveraResult<MessageResult, NetworkError> {
+    suspend operator fun invoke(isDebug: Boolean): NeveraResult<MessageResult, LogoutError> {
         return userRepository.logout()
             .onSuccess {
                 cancelFcmSyncWork(isDebug)
