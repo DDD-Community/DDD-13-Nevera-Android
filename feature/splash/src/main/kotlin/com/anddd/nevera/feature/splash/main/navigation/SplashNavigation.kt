@@ -8,7 +8,7 @@ const val SPLASH_ROUTE = "splash"
 
 fun NavGraphBuilder.splashScreen(
     onNavigateToLogin: () -> Unit,
-    onNavigateToHome: (String) -> Unit
+    onNavigateToHome: () -> Unit
 ) {
     composable(route = SPLASH_ROUTE) {
         SplashScreen(

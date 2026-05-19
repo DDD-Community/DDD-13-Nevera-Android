@@ -31,7 +31,7 @@ private val LogoHeight = 100.dp
 @Composable
 fun SplashScreen(
     onNavigateToLogin: () -> Unit,
-    onNavigateToHome: (String) -> Unit,
+    onNavigateToHome: () -> Unit,
     viewModel: SplashViewModel = hiltViewModel()
 ) {
     NotificationPermissionRequester(
@@ -43,7 +43,7 @@ fun SplashScreen(
 
     viewModel.collectSideEffect { effect ->
         when (effect) {
-            is SplashSideEffect.MoveToHome -> onNavigateToHome(effect.accessToken)
+            is SplashSideEffect.MoveToHome -> onNavigateToHome()
             is SplashSideEffect.MoveToLogin -> onNavigateToLogin()
         }
     }
