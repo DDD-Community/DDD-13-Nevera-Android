@@ -1,9 +1,7 @@
 package com.anddd.nevera.data.repository
 
-import com.anddd.nevera.core.common.NetworkError
 import com.anddd.nevera.core.common.NeveraResult
 import com.anddd.nevera.core.common.map
-import com.anddd.nevera.core.common.mapSuccess
 import com.anddd.nevera.core.network.auth.ApiCallExecutor
 import com.anddd.nevera.data.datasource.UserDataSource
 import com.anddd.nevera.data.mapper.error.toEmailRequestError
@@ -85,18 +83,21 @@ internal class UserRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun logout(): NeveraResult<MessageResult, LogoutError> =
-        apiCall { authDataSource.logout() }
-            .map(
-                transformSuccess = { it.toDomain() },
-                transformFailure = { it.toLogoutError() }
-            )
+    override suspend fun logout(): NeveraResult<MessageResult, LogoutError> {
+        return apiCall {
+            authDataSource.logout()
+        }.map(
+            transformSuccess = { it.toDomain() },
+            transformFailure = { it.toLogoutError() }
+        )
+    }
 
     override suspend fun withdraw(): NeveraResult<MessageResult, WithdrawError> {
-        return apiCall { authDataSource.withdraw() }
-            .map(
-                transformSuccess = { it.toDomain() },
-                transformFailure = { it.toWithdrawError() },
-            )
+        return apiCall {
+            authDataSource.withdraw()
+        }.map(
+            transformSuccess = { it.toDomain() },
+            transformFailure = { it.toWithdrawError() },
+        )
     }
 }
