@@ -17,6 +17,7 @@ import com.anddd.nevera.feature.main.home.model.HomeUiState
 fun HomeScreen(
     onNavigateToLogin: () -> Unit,
     onNavigateToMyPage: () -> Unit,
+    onNavigateToReceipt: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -40,6 +41,7 @@ fun HomeScreen(
             onLogoutClick = viewModel::logout,
             onWithdrawClick = viewModel::withdraw,
             onNavigateToMyPage = onNavigateToMyPage,
+            onNavigateToReceipt = onNavigateToReceipt,
         )
     }
 }

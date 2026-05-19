@@ -21,6 +21,7 @@ internal fun HomeContent(
     onLogoutClick: () -> Unit,
     onWithdrawClick: () -> Unit,
     onNavigateToMyPage: () -> Unit,
+    onNavigateToReceipt: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -54,6 +55,13 @@ internal fun HomeContent(
         ) {
             Text("마이페이지")
         }
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(
+            onClick = onNavigateToReceipt,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("영수증 스캔 (테스트)")
+        }
     }
 }
 
@@ -65,6 +73,7 @@ private fun HomeContentPreview() {
             onLogoutClick = {},
             onWithdrawClick = {},
             onNavigateToMyPage = {},
+            onNavigateToReceipt = {},
         )
     }
 }

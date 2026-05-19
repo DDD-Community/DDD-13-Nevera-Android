@@ -48,6 +48,7 @@ dependencies {
     implementation(project(":feature:main"))
     implementation(project(":feature:signup"))
     implementation(project(":feature:mypage"))
+    implementation(project(":feature:receipt"))
 
     implementation(project(":data"))
 
