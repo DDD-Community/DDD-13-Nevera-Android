@@ -382,13 +382,7 @@ private fun PasswordValidationResult?.toErrorMessages(): List<String> = when (th
     else -> emptyList()
 }
 
-private fun PasswordValidationError.toMessage(): String = when (this) {
-    is PasswordValidationError.TooShort -> "최소 ${minLength}자 이상이어야 합니다"
-    PasswordValidationError.MissingUppercase -> "대문자를 포함해야 합니다"
-    PasswordValidationError.MissingLowercase -> "소문자를 포함해야 합니다"
-    PasswordValidationError.MissingDigit -> "숫자를 포함해야 합니다"
-    PasswordValidationError.MissingSpecialChar -> "특수문자를 포함해야 합니다"
-}
+private fun PasswordValidationError.toMessage(): String = "영문+숫자+특수문자 조합 8~20자"
 
 @Preview(showBackground = true)
 @Composable

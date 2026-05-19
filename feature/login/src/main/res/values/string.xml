@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="login_logo_description">식구 로고</string>
+    <string name="login_subtitle">당신만의 식비 구조대</string>
+    <string name="login_email_header">이메일</string>
+    <string name="login_email_placeholder">hello@email.com</string>
+    <string name="login_email_error_invalid_format">올바른 이메일을 입력해주세요</string>
+    <string name="login_password_header">비밀번호</string>
+    <string name="login_password_placeholder">비밀번호 입력</string>
+    <string name="login_password_error_requirement">영문+숫자+특수문자 조합 8~20자</string>
+    <string name="login_submit_button">로그인하기</string>
+    <string name="login_divider_or">또는</string>
+    <string name="login_google_button">Google로 시작하기</string>
+    <string name="login_signup_guide">계정이 없으신가요?</string>
+    <string name="login_signup_button">회원가입</string>
+</resources>

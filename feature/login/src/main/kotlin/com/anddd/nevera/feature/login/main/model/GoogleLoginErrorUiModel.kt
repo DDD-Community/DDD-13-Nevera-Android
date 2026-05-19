@@ -5,11 +5,11 @@ import com.anddd.nevera.core.common.NetworkError
 sealed interface GoogleLoginErrorUiModel {
     val message: String
 
-    object NetworkUnavailable : GoogleLoginErrorUiModel {
+    data object NetworkUnavailable : GoogleLoginErrorUiModel {
         override val message: String = "네트워크 연결을 확인해주세요."
     }
 
-    object Timeout : GoogleLoginErrorUiModel {
+    data object Timeout : GoogleLoginErrorUiModel {
         override val message: String = "요청 시간이 초과됐습니다."
     }
 
@@ -17,7 +17,7 @@ sealed interface GoogleLoginErrorUiModel {
         override val message: String = "SNS 로그인에 실패했습니다.",
     ) : GoogleLoginErrorUiModel
 
-    object Unknown : GoogleLoginErrorUiModel {
+    data object Unknown : GoogleLoginErrorUiModel {
         override val message: String = "SNS 로그인에 실패했습니다."
     }
 }
