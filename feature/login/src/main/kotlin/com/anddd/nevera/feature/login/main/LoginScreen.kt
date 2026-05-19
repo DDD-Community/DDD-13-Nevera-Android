@@ -38,11 +38,12 @@ fun LoginScreen(
         scope.launch {
             try {
                 val idToken = googleAuthClient.getIdToken(activity)
-                viewModel.handleIntent(LoginIntent.LoginWithGoogleClicked(idToken))
+                viewModel.handleIntent(LoginIntent.GoogleLoginSucceeded(idToken))
             } catch (ce: CancellationException) {
                 throw ce
             } catch (throwable: Throwable) {
-                viewModel.handleIntent(LoginIntent.GoogleLoginFailed(throwable))
+                Timber.e(throwable, "Google 토큰 취득 실패")
+                viewModel.handleIntent(LoginIntent.GoogleLoginFailed)
             }
         }
     }

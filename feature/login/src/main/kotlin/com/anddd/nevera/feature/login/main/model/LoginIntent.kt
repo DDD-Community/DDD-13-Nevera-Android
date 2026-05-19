@@ -8,6 +8,6 @@ sealed interface LoginIntent : NeveraIntent {
     data object LoginWithEmailClicked : LoginIntent
     data object GoogleLoginButtonClicked : LoginIntent
     data object SignupClicked : LoginIntent
-    data class LoginWithGoogleClicked(val token: String) : LoginIntent
-    data class GoogleLoginFailed(val throwable: Throwable) : LoginIntent
+    data class GoogleLoginSucceeded(val token: String) : LoginIntent
+    data object GoogleLoginFailed : LoginIntent
 }

@@ -37,8 +37,8 @@ class LoginViewModel @Inject constructor(
             is LoginIntent.LoginWithEmailClicked -> onLoginWithEmailClicked()
             is LoginIntent.GoogleLoginButtonClicked -> onGoogleLoginButtonClicked()
             is LoginIntent.SignupClicked -> onSignupClicked()
-            is LoginIntent.LoginWithGoogleClicked -> onLoginWithGoogle(intent.token)
-            is LoginIntent.GoogleLoginFailed -> onGoogleLoginFailed(intent.throwable)
+            is LoginIntent.GoogleLoginSucceeded -> onLoginWithGoogle(intent.token)
+            is LoginIntent.GoogleLoginFailed -> onGoogleLoginFailed()
         }
     }
 
@@ -92,8 +92,7 @@ class LoginViewModel @Inject constructor(
         postSideEffect(LoginSideEffect.MoveToSignupScreen)
     }
 
-    private fun onGoogleLoginFailed(throwable: Throwable) = intent {
-        Timber.e(throwable, "Google 로그인 실패")
+    private fun onGoogleLoginFailed() = intent {
         applyMutation(LoginMutation.LoginFailed)
         postSideEffect(LoginSideEffect.GoogleLoginFailed(GoogleLoginErrorUiModel.Unknown))
     }
