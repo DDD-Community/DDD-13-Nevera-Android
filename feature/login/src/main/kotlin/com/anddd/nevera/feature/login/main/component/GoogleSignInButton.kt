@@ -44,7 +44,7 @@ internal fun GoogleSignInButton(
             Image(
                 painter = painterResource(R.drawable.img_google),
                 contentDescription = null,
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(NeveraTheme.iconSize.medium),
             )
             Spacer(Modifier.width(NeveraTheme.spacing.gap8))
             Text(
