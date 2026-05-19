@@ -6,9 +6,13 @@ import com.anddd.nevera.core.common.map
 import com.anddd.nevera.core.common.mapSuccess
 import com.anddd.nevera.core.network.auth.ApiCallExecutor
 import com.anddd.nevera.data.datasource.UserDataSource
+import com.anddd.nevera.data.mapper.error.toEmailRequestError
+import com.anddd.nevera.data.mapper.error.toEmailVerifyError
 import com.anddd.nevera.data.mapper.error.toLoginError
 import com.anddd.nevera.data.mapper.error.toWithdrawError
 import com.anddd.nevera.data.mapper.toDomain
+import com.anddd.nevera.domain.model.auth.EmailRequestError
+import com.anddd.nevera.domain.model.auth.EmailVerifyError
 import com.anddd.nevera.domain.model.auth.LoginError
 import com.anddd.nevera.domain.model.auth.LoginResult
 import com.anddd.nevera.domain.model.auth.WithdrawError
@@ -47,18 +51,24 @@ internal class UserRepositoryImpl @Inject constructor(
             .mapSuccess { it.toDomain() }
     }
 
-    override suspend fun emailRequest(email: String): NeveraResult<MessageResult, NetworkError> {
-        return apiCall { authDataSource.emailRequest(email) }
-            .mapSuccess { it.toDomain() }
-    }
+    override suspend fun emailRequest(email: String): NeveraResult<MessageResult, EmailRequestError> =
+        apiCall {
+            authDataSource.emailRequest(email)
+        }.map(
+            transformSuccess = { it.toDomain() },
+            transformFailure = { it.toEmailRequestError() }
+        )
 
     override suspend fun emailVerify(
         email: String,
         authCode: String,
-    ): NeveraResult<MessageResult, NetworkError> {
-        return apiCall { authDataSource.emailVerify(email, authCode) }
-            .mapSuccess { it.toDomain() }
-    }
+    ): NeveraResult<MessageResult, EmailVerifyError> =
+        apiCall {
+            authDataSource.emailVerify(email, authCode)
+        }.map(
+            transformSuccess = { it.toDomain() },
+            transformFailure = { it.toEmailVerifyError() }
+        )
 
     override suspend fun logout(): NeveraResult<MessageResult, NetworkError> {
         return apiCall { authDataSource.logout() }

@@ -2,6 +2,8 @@ package com.anddd.nevera.domain.repository
 
 import com.anddd.nevera.core.common.NetworkError
 import com.anddd.nevera.core.common.NeveraResult
+import com.anddd.nevera.domain.model.auth.EmailRequestError
+import com.anddd.nevera.domain.model.auth.EmailVerifyError
 import com.anddd.nevera.domain.model.auth.LoginError
 import com.anddd.nevera.domain.model.auth.LoginResult
 import com.anddd.nevera.domain.model.auth.WithdrawError
@@ -19,8 +21,8 @@ interface UserRepository {
         name: String
     ): NeveraResult<MessageResult, NetworkError>
     suspend fun loginWithGoogle(idToken: String): NeveraResult<LoginResult, NetworkError>
-    suspend fun emailRequest(email: String): NeveraResult<MessageResult, NetworkError>
-    suspend fun emailVerify(email: String, authCode: String): NeveraResult<MessageResult, NetworkError>
+    suspend fun emailRequest(email: String): NeveraResult<MessageResult, EmailRequestError>
+    suspend fun emailVerify(email: String, authCode: String): NeveraResult<MessageResult, EmailVerifyError>
     suspend fun logout(): NeveraResult<MessageResult, NetworkError>
     suspend fun withdraw(): NeveraResult<MessageResult, WithdrawError>
 }

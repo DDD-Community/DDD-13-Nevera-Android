@@ -32,7 +32,7 @@ class SplashViewModel @Inject constructor(
 
         if (accessToken != null) {
             fcmSyncScheduler.scheduleSyncFcmToken()
-            postSideEffect(SplashSideEffect.MoveToHome(accessToken))
+            postSideEffect(SplashSideEffect.MoveToHome)
         } else {
             postSideEffect(SplashSideEffect.MoveToLogin)
         }
