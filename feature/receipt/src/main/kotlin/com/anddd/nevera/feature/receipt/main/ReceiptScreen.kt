@@ -25,9 +25,14 @@ fun ReceiptScreen(
     val cameraPermissionState = rememberCameraPermissionState()
     val galleryPermissionState = rememberGalleryPermissionState()
 
-    LaunchedEffect(uiState.mode, galleryPermissionState.hasPermission) {
-        if (uiState.mode is ReceiptMode.Gallery && galleryPermissionState.hasPermission) {
-            viewModel.handleIntent(ReceiptIntent.LoadGalleryImages)
+    LaunchedEffect(uiState.mode, cameraPermissionState.hasPermission, galleryPermissionState.hasPermission) {
+        when (uiState.mode) {
+            ReceiptMode.Camera -> if (!cameraPermissionState.hasPermission) cameraPermissionState.requestPermission()
+            ReceiptMode.Gallery -> if (!galleryPermissionState.hasPermission) {
+                galleryPermissionState.requestPermission()
+            } else {
+                viewModel.handleIntent(ReceiptIntent.LoadGalleryImages)
+            }
         }
     }
 
