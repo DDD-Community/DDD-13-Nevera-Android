@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="receipt_scan_title">영수증 스캔</string>
+    <string name="receipt_switch_to_camera">카메라 모드</string>
+    <string name="receipt_hint_line1">영수증이 잘 보일 수 있도록</string>
+    <string name="receipt_hint_line2">종이가 구겨지지 않게 평평하게 펴주세요</string>
+    <string name="receipt_permission_dialog_title">기기의 권한이 꺼져있어요</string>
+    <string name="receipt_permission_dialog_subtitle">설정에서 권한을 허용해주세요</string>
+    <string name="receipt_permission_dialog_positive">알림 켜기</string>
+    <string name="receipt_permission_dialog_negative">닫기</string>
+    <string name="ordercapture_title">온라인 주문내역 캡처</string>
+</resources>
