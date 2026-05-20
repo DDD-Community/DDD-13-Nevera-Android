@@ -29,7 +29,8 @@ internal fun GoogleLoginError.toUiModel(): GoogleLoginErrorUiModel = when (this)
     is GoogleLoginError.Common -> when (val e = error) {
         CommonError.NetworkUnavailable -> GoogleLoginErrorUiModel.NetworkUnavailable
         CommonError.Timeout -> GoogleLoginErrorUiModel.Timeout
+        CommonError.Unauthorized -> GoogleLoginErrorUiModel.ServerError("다시 로그인해주세요.")
         is CommonError.ServerError -> GoogleLoginErrorUiModel.ServerError(e.message ?: "SNS 로그인에 실패했습니다.")
-        else -> GoogleLoginErrorUiModel.Unknown
+        CommonError.Unknown -> GoogleLoginErrorUiModel.Unknown
     }
 }
