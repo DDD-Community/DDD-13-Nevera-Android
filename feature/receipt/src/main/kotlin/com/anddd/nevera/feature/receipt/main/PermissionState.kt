@@ -37,7 +37,7 @@ fun rememberCameraPermissionState(): PermissionState {
         ActivityResultContracts.RequestPermission()
     ) { granted ->
         hasPermission = granted
-        if (!granted) isDenied = true
+        isDenied = !granted
     }
 
     return remember(hasPermission, isDenied) {
@@ -76,7 +76,7 @@ fun rememberGalleryPermissionState(): PermissionState {
                 hasPermission = result[Manifest.permission.READ_EXTERNAL_STORAGE] == true
             }
         }
-        if (!hasPermission) isDenied = true
+        isDenied = !hasPermission
     }
 
     return remember(hasPermission, isPartialAccess, isDenied) {
