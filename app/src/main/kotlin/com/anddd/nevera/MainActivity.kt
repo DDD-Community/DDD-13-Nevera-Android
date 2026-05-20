@@ -88,6 +88,9 @@ class MainActivity : ComponentActivity() {
                         receiptScreen(
                             onNavigateBack = {
                                 navController.popBackStack()
+                            },
+                            onNavigateToResult = { uri ->
+                                // TODO: ResultScreen 구현 후 navigate 연결
                             }
                         )
                         myPageScreen(

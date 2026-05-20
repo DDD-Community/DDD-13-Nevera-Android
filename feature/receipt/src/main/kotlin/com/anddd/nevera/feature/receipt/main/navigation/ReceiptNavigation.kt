@@ -1,5 +1,6 @@
 package com.anddd.nevera.feature.receipt.main.navigation
 
+import android.net.Uri
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
@@ -14,6 +15,7 @@ val ORDER_CAPTURE_ROUTE = "$RECEIPT_ROUTE?$RECEIPT_INITIAL_MODE_ARG=$GALLERY_MOD
 
 fun NavGraphBuilder.receiptScreen(
     onNavigateBack: () -> Unit,
+    onNavigateToResult: (Uri) -> Unit,
 ) {
     composable(
         route = "$RECEIPT_ROUTE?$RECEIPT_INITIAL_MODE_ARG={$RECEIPT_INITIAL_MODE_ARG}",
@@ -24,6 +26,9 @@ fun NavGraphBuilder.receiptScreen(
             }
         ),
     ) {
-        ReceiptScreen(onNavigateBack = onNavigateBack)
+        ReceiptScreen(
+            onNavigateBack = onNavigateBack,
+            onNavigateToResult = onNavigateToResult,
+        )
     }
 }

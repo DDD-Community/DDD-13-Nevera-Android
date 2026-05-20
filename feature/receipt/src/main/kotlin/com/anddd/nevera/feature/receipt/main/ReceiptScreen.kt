@@ -18,6 +18,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 fun ReceiptScreen(
     onNavigateBack: () -> Unit,
+    onNavigateToResult: (Uri) -> Unit,
     viewModel: ReceiptViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -39,7 +40,7 @@ fun ReceiptScreen(
     viewModel.collectSideEffect { effect ->
         when (effect) {
             ReceiptSideEffect.NavigateBack -> onNavigateBack()
-            is ReceiptSideEffect.NavigateToResult -> onNavigateBack()
+            is ReceiptSideEffect.NavigateToResult -> onNavigateToResult(effect.uri)
             ReceiptSideEffect.OpenCameraSettings -> {
                 cameraPermissionState.clearDenied()
                 context.openAppSettings()
