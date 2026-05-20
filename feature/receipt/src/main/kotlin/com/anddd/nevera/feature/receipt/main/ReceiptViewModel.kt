@@ -33,7 +33,10 @@ class ReceiptViewModel @Inject constructor(
 ) {
 
     fun bindCamera(lifecycleOwner: LifecycleOwner, surfaceProvider: Preview.SurfaceProvider) {
-        viewModelScope.launch { cameraManager.bindCamera(lifecycleOwner, surfaceProvider) }
+        intent {
+            runCatching { cameraManager.bindCamera(lifecycleOwner, surfaceProvider) }
+                .onFailure { postSideEffect(ReceiptSideEffect.ShowCaptureError) }
+        }
     }
 
     override fun handleIntent(action: ReceiptIntent) {
