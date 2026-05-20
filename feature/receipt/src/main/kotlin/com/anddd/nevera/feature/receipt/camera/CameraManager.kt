@@ -3,6 +3,7 @@ package com.anddd.nevera.feature.receipt.camera
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Matrix
+import android.net.Uri
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -13,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.suspendCancellableCoroutine
+import java.io.File
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -58,20 +60,22 @@ class CameraManager @Inject constructor(
                 }
                 provider.unbindAll()
                 provider.bindToLifecycle(lifecycleOwner, selector, preview, imageCapture)
+            }.onSuccess {
+                continuation.resume(Unit)
+            }.onFailure {
+                continuation.resumeWithException(it)
             }
-                .onSuccess { continuation.resume(Unit) }
-                .onFailure { continuation.resumeWithException(it) }
         }, ContextCompat.getMainExecutor(context))
     }
 
-    suspend fun takePicture(): Bitmap = suspendCancellableCoroutine { continuation ->
+    suspend fun takePicture(): Uri = suspendCancellableCoroutine { continuation ->
         imageCapture.takePicture(
             ContextCompat.getMainExecutor(context),
             object : ImageCapture.OnImageCapturedCallback() {
                 override fun onCaptureSuccess(image: ImageProxy) {
-                    val bitmap = image.toBitmapCorrected()
+                    val uri = image.toBitmapCorrected().saveToTempFile()
                     image.close()
-                    continuation.resume(bitmap)
+                    continuation.resume(uri)
                 }
 
                 override fun onError(exception: ImageCaptureException) {
@@ -87,6 +91,14 @@ class CameraManager @Inject constructor(
         if (rotation == 0) return bitmap
         val matrix = Matrix().apply { postRotate(rotation.toFloat()) }
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
+
+    // cacheDir 사용: 업로드 완료 후 시스템이 자동으로 정리하는 임시 저장소
+    private fun Bitmap.saveToTempFile(): Uri {
+        val dir = File(context.cacheDir, "receipt_captures").also { it.mkdirs() }
+        val file = File(dir, "capture_${System.currentTimeMillis()}.jpg")
+        file.outputStream().use { compress(Bitmap.CompressFormat.JPEG, 95, it) }
+        return Uri.fromFile(file)
     }
 
     fun release() {
