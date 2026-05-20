@@ -15,8 +15,8 @@ internal object AppBarDefault {
     val actionSpacing = NeveraTheme.spacing.gap4
     val iconButtonSize = NeveraTheme.iconSize.large
     val iconSize = NeveraTheme.iconSize.medium
-    val logoWidth = 100.dp
-    val logoHeight = 32.dp
+    val logoWidth = 81.dp
+    val logoHeight = 36.dp
     val titleHorizontalGap = 46.dp
     val textActionHorizontalPadding = NeveraTheme.spacing.padding4
     val textActionVerticalPadding = NeveraTheme.spacing.padding8
