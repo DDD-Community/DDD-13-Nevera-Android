@@ -27,8 +27,8 @@ import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.receipt.R
 
-// TODO :: NeveraTheme.iconSize 에는 정의되어 있지 않은 사이즈, 문의 필요
 private val ShutterButtonSize = 60.dp
+private val CameraControlIconSize = 48.dp
 
 @Composable
 internal fun CameraControls(
@@ -49,8 +49,7 @@ internal fun CameraControls(
         verticalArrangement = Arrangement.spacedBy(NeveraTheme.spacing.gap16),
     ) {
         Text(
-            text = stringResource(R.string.receipt_hint_line1) + "\n" +
-                stringResource(R.string.receipt_hint_line2),
+            text = stringResource(R.string.receipt_hint_combined),
             style = NeveraTheme.typography.bodySmall,
             color = Color.White,
             textAlign = TextAlign.Center,
@@ -72,9 +71,9 @@ internal fun CameraControls(
             ) {
                 Icon(
                     painter = NeveraIcons.ReceiptGallery,
-                    contentDescription = "갤러리",
+                    contentDescription = stringResource(R.string.receipt_gallery_icon_description),
                     tint = Color.Unspecified,
-                    modifier = Modifier.size(NeveraTheme.iconSize.xxLarge),
+                    modifier = Modifier.size(CameraControlIconSize),
                 )
             }
 
@@ -92,9 +91,9 @@ internal fun CameraControls(
             ) {
                 Icon(
                     painter = NeveraIcons.ReceiptCameraSwap,
-                    contentDescription = "카메라 전환",
+                    contentDescription = stringResource(R.string.receipt_camera_swap_icon_description),
                     tint = Color.White,
-                    modifier = Modifier.size(NeveraTheme.iconSize.xxLarge),
+                    modifier = Modifier.size(CameraControlIconSize),
                 )
             }
         }

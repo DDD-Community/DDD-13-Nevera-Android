@@ -8,7 +8,8 @@ import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.anddd.nevera.feature.receipt.R
 import com.anddd.nevera.feature.receipt.main.model.ReceiptIntent
 import com.anddd.nevera.feature.receipt.main.model.ReceiptMode
 import com.anddd.nevera.feature.receipt.main.model.ReceiptSideEffect
@@ -50,7 +51,7 @@ fun ReceiptScreen(
                 context.openAppSettings()
             }
             ReceiptSideEffect.ShowCaptureError ->
-                Toast.makeText(context, "촬영에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context.getString(R.string.receipt_capture_error), Toast.LENGTH_SHORT).show()
         }
     }
 
