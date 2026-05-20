@@ -35,7 +35,7 @@ object NeveraIcons {
     val NavHome: Painter
         @Composable get() = painterResource(R.drawable.ic_house)
     val NavHomeFilled: Painter
-        @Composable get() = painterResource(R.drawable.ic_house_fiiled)
+        @Composable get() = painterResource(R.drawable.ic_house_filled)
     val NavFridge: Painter
         @Composable get() = painterResource(R.drawable.ic_fridge)
     val NavFridgeFilled: Painter
