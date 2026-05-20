@@ -17,6 +17,7 @@ import com.anddd.nevera.feature.receipt.main.navigation.GALLERY_MODE_VALUE
 import com.anddd.nevera.feature.receipt.main.navigation.RECEIPT_INITIAL_MODE_ARG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 import org.orbitmvi.orbit.syntax.Syntax
 import javax.inject.Inject
 
@@ -35,7 +36,10 @@ class ReceiptViewModel @Inject constructor(
     fun bindCamera(lifecycleOwner: LifecycleOwner, surfaceProvider: Preview.SurfaceProvider) {
         intent {
             runCatching { cameraManager.bindCamera(lifecycleOwner, surfaceProvider) }
-                .onFailure { postSideEffect(ReceiptSideEffect.ShowCaptureError) }
+                .onFailure { e ->
+                    if (e is CancellationException) throw e
+                    postSideEffect(ReceiptSideEffect.ShowCaptureError)
+                }
         }
     }
 
@@ -82,7 +86,10 @@ class ReceiptViewModel @Inject constructor(
     private fun onTakePicture() = intent {
         runCatching { cameraManager.takePicture() }
             .onSuccess { applyMutation(ReceiptMutation.CaptureSuccess(it)) }
-            .onFailure { postSideEffect(ReceiptSideEffect.ShowCaptureError) }
+            .onFailure { e ->
+                if (e is CancellationException) throw e
+                postSideEffect(ReceiptSideEffect.ShowCaptureError)
+            }
     }
 
     private fun onLoadGalleryImages() = intent {
