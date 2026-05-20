@@ -38,9 +38,7 @@ internal fun SignupContent(
 ) {
     val isEmailValid = uiState.emailValidation is EmailValidationResult.Valid
     val isPasswordValid = uiState.passwordValidation is PasswordValidationResult.Valid
-    val canSignup = uiState.isEmailVerified &&
-        isPasswordValid &&
-        uiState.isPasswordMatched
+    val canSignup = uiState.isEmailVerified && isPasswordValid && uiState.isPasswordMatched
 
     Scaffold(
         topBar = {
