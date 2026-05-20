@@ -24,41 +24,29 @@ import com.anddd.nevera.core.designsystem.component.appbar.NeveraAppBarNavigatio
 import com.anddd.nevera.core.designsystem.component.button.NeveraFilledButton
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.domain.model.validation.EmailValidationResult
-import com.anddd.nevera.domain.model.validation.PasswordValidationError
 import com.anddd.nevera.domain.model.validation.PasswordValidationResult
 import com.anddd.nevera.feature.auth.R
 import com.anddd.nevera.feature.auth.signup.model.AuthCodeDescription
 import com.anddd.nevera.feature.auth.signup.model.AuthCodeSectionError
 import com.anddd.nevera.feature.auth.signup.model.SignupIntent
+import com.anddd.nevera.feature.auth.signup.model.SignupUiState
 
 @Composable
 internal fun SignupContent(
-    email: String,
-    password: String,
-    confirmPassword: String,
-    authCode: String,
-    emailValidation: EmailValidationResult = EmailValidationResult.Empty,
-    passwordValidation: PasswordValidationResult = PasswordValidationResult.Empty,
-    isPasswordMatched: Boolean,
-    isEmailRequestSent: Boolean,
-    isEmailVerified: Boolean,
-    authCodeSectionError: AuthCodeSectionError = AuthCodeSectionError.None,
-    authCodeDescription: AuthCodeDescription = AuthCodeDescription.None,
-    timerState: CountDownTimer.State,
-    onNavigateBack: () -> Unit,
+    uiState: SignupUiState,
     onIntent: (SignupIntent) -> Unit,
 ) {
-    val isEmailValid = emailValidation is EmailValidationResult.Valid
-    val isPasswordValid = passwordValidation is PasswordValidationResult.Valid
-    val canSignup = isEmailVerified &&
+    val isEmailValid = uiState.emailValidation is EmailValidationResult.Valid
+    val isPasswordValid = uiState.passwordValidation is PasswordValidationResult.Valid
+    val canSignup = uiState.isEmailVerified &&
         isPasswordValid &&
-        isPasswordMatched
+        uiState.isPasswordMatched
 
     Scaffold(
         topBar = {
             NeveraAppBar(
                 title = stringResource(R.string.signup_title),
-                navigation = NeveraAppBarNavigation.Back(onClick = onNavigateBack),
+                navigation = NeveraAppBarNavigation.Back(onClick = { onIntent(SignupIntent.NavigateBack) }),
             )
         }
     ) { innerPadding ->
@@ -77,32 +65,32 @@ internal fun SignupContent(
             ) {
                 Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap20))
 
-                val isTimerCanResend = when (timerState) {
-                    is CountDownTimer.State.Active -> timerState.canResend
+                val isTimerCanResend = when (uiState.timerState) {
+                    is CountDownTimer.State.Active -> uiState.timerState.canResend
                     CountDownTimer.State.Expired -> true
                     CountDownTimer.State.Idle -> false
                 }
-                val canResend = isEmailRequestSent && !isEmailVerified && isTimerCanResend
+                val canResend = uiState.isEmailRequestSent && !uiState.isEmailVerified && isTimerCanResend
 
                 EmailSection(
-                    email = email,
-                    emailValidation = emailValidation,
-                    isEmailRequestSent = isEmailRequestSent,
-                    isEmailVerified = isEmailVerified,
+                    email = uiState.email,
+                    emailValidation = uiState.emailValidation,
+                    isEmailRequestSent = uiState.isEmailRequestSent,
+                    isEmailVerified = uiState.isEmailVerified,
                     isEmailValid = isEmailValid,
                     canResend = canResend,
                     onEmailChange = { onIntent(SignupIntent.EmailChanged(it)) },
                     onRequestEmailVerification = { onIntent(SignupIntent.RequestEmailVerification) },
                 )
 
-                if (isEmailRequestSent) {
+                if (uiState.isEmailRequestSent) {
                     Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap24))
                     AuthCodeSection(
-                        authCode = authCode,
-                        isEmailVerified = isEmailVerified,
-                        authCodeSectionError = authCodeSectionError,
-                        authCodeDescription = authCodeDescription,
-                        timerState = timerState,
+                        authCode = uiState.authCode,
+                        isEmailVerified = uiState.isEmailVerified,
+                        authCodeSectionError = uiState.authCodeSectionError,
+                        authCodeDescription = uiState.authCodeDescription,
+                        timerState = uiState.timerState,
                         onAuthCodeChange = { onIntent(SignupIntent.AuthCodeChanged(it)) },
                         onVerifyAuthCode = { onIntent(SignupIntent.VerifyAuthCode) },
                     )
@@ -111,19 +99,19 @@ internal fun SignupContent(
                 Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap24))
 
                 PasswordSection(
-                    password = password,
-                    passwordValidation = passwordValidation,
+                    password = uiState.password,
+                    passwordValidation = uiState.passwordValidation,
                     isPasswordValid = isPasswordValid,
-                    enabled = isEmailVerified,
+                    enabled = uiState.isEmailVerified,
                     onPasswordChange = { onIntent(SignupIntent.PasswordChanged(it)) },
                 )
 
                 Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap24))
 
                 ConfirmPasswordSection(
-                    confirmPassword = confirmPassword,
-                    isPasswordMatched = isPasswordMatched,
-                    enabled = isEmailVerified && isPasswordValid,
+                    confirmPassword = uiState.confirmPassword,
+                    isPasswordMatched = uiState.isPasswordMatched,
+                    enabled = uiState.isEmailVerified && isPasswordValid,
                     onConfirmPasswordChange = { onIntent(SignupIntent.ConfirmPasswordChanged(it)) },
                 )
 
@@ -147,19 +135,7 @@ internal fun SignupContent(
 private fun SignupContentPreview() {
     NeveraTheme {
         SignupContent(
-            email = "",
-            password = "",
-            confirmPassword = "",
-            authCode = "",
-            emailValidation = EmailValidationResult.Empty,
-            passwordValidation = PasswordValidationResult.Empty,
-            isPasswordMatched = false,
-            isEmailRequestSent = false,
-            isEmailVerified = false,
-            authCodeSectionError = AuthCodeSectionError.None,
-            authCodeDescription = AuthCodeDescription.None,
-            timerState = CountDownTimer.State.Idle,
-            onNavigateBack = {},
+            uiState = SignupUiState(),
             onIntent = {},
         )
     }
@@ -170,21 +146,20 @@ private fun SignupContentPreview() {
 private fun SignupContentErrorPreview() {
     NeveraTheme {
         SignupContent(
-            email = "invalid-email",
-            password = "1234",
-            confirmPassword = "5678",
-            authCode = "000000",
-            emailValidation = EmailValidationResult.InvalidFormat,
-            passwordValidation = PasswordValidationResult.Invalid(
-                listOf(PasswordValidationError.TooShort(minLength = 8))
+            uiState = SignupUiState(
+                email = "invalid-email",
+                password = "1234",
+                confirmPassword = "5678",
+                authCode = "000000",
+                emailValidation = EmailValidationResult.InvalidFormat,
+                passwordValidation = PasswordValidationResult.Invalid(emptyList()),
+                isPasswordMatched = false,
+                isEmailRequestSent = true,
+                isEmailVerified = false,
+                authCodeSectionError = AuthCodeSectionError.InvalidCode,
+                authCodeDescription = AuthCodeDescription.InvalidCode(remainingSeconds = 90),
+                timerState = CountDownTimer.State.Active(remainingSeconds = 90, canResend = false),
             ),
-            isPasswordMatched = false,
-            isEmailRequestSent = true,
-            isEmailVerified = false,
-            authCodeSectionError = AuthCodeSectionError.InvalidCode,
-            authCodeDescription = AuthCodeDescription.InvalidCode(remainingSeconds = 90),
-            timerState = CountDownTimer.State.Active(remainingSeconds = 90, canResend = false),
-            onNavigateBack = {},
             onIntent = {},
         )
     }
@@ -195,19 +170,13 @@ private fun SignupContentErrorPreview() {
 private fun SignupContentAuthCodePreview() {
     NeveraTheme {
         SignupContent(
-            email = "test@example.com",
-            password = "",
-            confirmPassword = "",
-            authCode = "",
-            emailValidation = EmailValidationResult.Valid,
-            passwordValidation = PasswordValidationResult.Empty,
-            isPasswordMatched = false,
-            isEmailRequestSent = true,
-            isEmailVerified = false,
-            authCodeSectionError = AuthCodeSectionError.None,
-            authCodeDescription = AuthCodeDescription.Timer(remainingSeconds = 150),
-            timerState = CountDownTimer.State.Active(remainingSeconds = 150, canResend = false),
-            onNavigateBack = {},
+            uiState = SignupUiState(
+                email = "test@example.com",
+                emailValidation = EmailValidationResult.Valid,
+                isEmailRequestSent = true,
+                authCodeDescription = AuthCodeDescription.Timer(remainingSeconds = 150),
+                timerState = CountDownTimer.State.Active(remainingSeconds = 150, canResend = false),
+            ),
             onIntent = {},
         )
     }
@@ -218,19 +187,18 @@ private fun SignupContentAuthCodePreview() {
 private fun SignupContentCompletePreview() {
     NeveraTheme {
         SignupContent(
-            email = "test@example.com",
-            password = "Password1!",
-            confirmPassword = "Password1!",
-            authCode = "123456",
-            emailValidation = EmailValidationResult.Valid,
-            passwordValidation = PasswordValidationResult.Valid,
-            isPasswordMatched = true,
-            isEmailRequestSent = true,
-            isEmailVerified = true,
-            authCodeSectionError = AuthCodeSectionError.None,
-            authCodeDescription = AuthCodeDescription.Verified,
-            timerState = CountDownTimer.State.Idle,
-            onNavigateBack = {},
+            uiState = SignupUiState(
+                email = "test@example.com",
+                password = "Password1!",
+                confirmPassword = "Password1!",
+                authCode = "123456",
+                emailValidation = EmailValidationResult.Valid,
+                passwordValidation = PasswordValidationResult.Valid,
+                isPasswordMatched = true,
+                isEmailRequestSent = true,
+                isEmailVerified = true,
+                authCodeDescription = AuthCodeDescription.Verified,
+            ),
             onIntent = {},
         )
     }

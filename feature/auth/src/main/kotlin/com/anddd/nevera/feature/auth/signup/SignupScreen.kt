@@ -47,19 +47,7 @@ fun SignupScreen(
 
     Box {
         SignupContent(
-            email = uiState.email,
-            password = uiState.password,
-            confirmPassword = uiState.confirmPassword,
-            authCode = uiState.authCode,
-            emailValidation = uiState.emailValidation,
-            passwordValidation = uiState.passwordValidation,
-            isPasswordMatched = uiState.isPasswordMatched,
-            isEmailRequestSent = uiState.isEmailRequestSent,
-            isEmailVerified = uiState.isEmailVerified,
-            authCodeSectionError = uiState.authCodeSectionError,
-            authCodeDescription = uiState.authCodeDescription,
-            timerState = uiState.timerState,
-            onNavigateBack = onNavigateToLogin,
+            uiState = uiState,
             onIntent = viewModel::handleIntent,
         )
         if (uiState.isLoading) {
