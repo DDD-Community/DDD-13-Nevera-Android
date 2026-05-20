@@ -47,7 +47,6 @@
     <string name="signup_toast_verify_not_found">인증 요청 내역이 없습니다</string>
     <string name="signup_toast_email_not_verified">이메일 인증을 완료해주세요</string>
     <string name="signup_toast_unverified_email">이메일 인증이 완료되지 않았습니다</string>
-    <string name="signup_toast_auth_not_found">인증 요청 내역이 없습니다</string>
     <string name="signup_toast_signup_failed">회원가입에 실패했습니다</string>
 
     <!-- Login -->
