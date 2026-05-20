@@ -11,9 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
+import com.anddd.nevera.feature.receipt.R
 
 // gray/20 → gray/40 → gray/20, 세로 방향 (Figma 스펙)
 private val GalleryPlaceholderBrush = Brush.verticalGradient(
@@ -43,7 +45,7 @@ internal fun GalleryImageCell(
         if (uri != null) {
             AsyncImage(
                 model = uri,
-                contentDescription = null,
+                contentDescription = stringResource(R.string.receipt_gallery_image_description),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),
             )
