@@ -60,10 +60,22 @@ fun rememberGalleryPermissionState(): PermissionState {
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { result ->
-        val fullGranted = result[Manifest.permission.READ_MEDIA_IMAGES] == true
-        val partialGranted = result[Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED] == true
-        hasPermission = fullGranted || partialGranted
-        isPartialAccess = !fullGranted && partialGranted
+        when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE -> {
+                val fullGranted = result[Manifest.permission.READ_MEDIA_IMAGES] == true
+                val partialGranted = result[Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED] == true
+                isPartialAccess = !fullGranted && partialGranted
+                hasPermission = fullGranted || partialGranted
+            }
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
+                isPartialAccess = false
+                hasPermission = result[Manifest.permission.READ_MEDIA_IMAGES] == true
+            }
+            else -> {
+                isPartialAccess = false
+                hasPermission = result[Manifest.permission.READ_EXTERNAL_STORAGE] == true
+            }
+        }
         if (!hasPermission) isDenied = true
     }
 
