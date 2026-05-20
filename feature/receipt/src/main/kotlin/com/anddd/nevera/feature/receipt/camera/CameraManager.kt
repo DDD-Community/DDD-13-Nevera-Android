@@ -51,6 +51,7 @@ class CameraManager @Inject constructor(
         selector: CameraSelector,
     ) = suspendCancellableCoroutine { continuation ->
         val future = ProcessCameraProvider.getInstance(context)
+        continuation.invokeOnCancellation { future.cancel(true) }
         future.addListener({
             runCatching {
                 val provider = future.get()
@@ -103,5 +104,7 @@ class CameraManager @Inject constructor(
 
     fun release() {
         cameraProvider?.unbindAll()
+        currentLifecycleOwner = null
+        currentSurfaceProvider = null
     }
 }
