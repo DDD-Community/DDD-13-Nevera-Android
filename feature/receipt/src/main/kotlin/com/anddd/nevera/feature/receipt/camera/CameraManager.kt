@@ -13,7 +13,9 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -69,21 +71,31 @@ class CameraManager @Inject constructor(
         }, ContextCompat.getMainExecutor(context))
     }
 
-    suspend fun takePicture(): Uri = suspendCancellableCoroutine { continuation ->
-        imageCapture.takePicture(
-            ContextCompat.getMainExecutor(context),
-            object : ImageCapture.OnImageCapturedCallback() {
-                override fun onCaptureSuccess(image: ImageProxy) {
-                    val uri = image.toBitmapCorrected().saveToTempFile()
-                    image.close()
-                    continuation.resume(uri)
-                }
+    suspend fun takePicture(): Uri {
+        val bitmap = suspendCancellableCoroutine { continuation ->
+            imageCapture.takePicture(
+                ContextCompat.getMainExecutor(context),
+                object : ImageCapture.OnImageCapturedCallback() {
+                    override fun onCaptureSuccess(image: ImageProxy) {
+                        try {
+                            val bitmap = image.toBitmapCorrected()
+                            if (continuation.isActive) continuation.resume(bitmap)
+                        } catch (e: Exception) {
+                            if (continuation.isActive) continuation.resumeWithException(e)
+                        } finally {
+                            image.close()
+                        }
+                    }
 
-                override fun onError(exception: ImageCaptureException) {
-                    continuation.resumeWithException(exception)
-                }
-            },
-        )
+                    override fun onError(exception: ImageCaptureException) {
+                        if (continuation.isActive) continuation.resumeWithException(exception)
+                    }
+                },
+            )
+        }
+        return withContext(Dispatchers.IO) {
+            bitmap.saveToTempFile()
+        }
     }
 
     private fun ImageProxy.toBitmapCorrected(): Bitmap {
