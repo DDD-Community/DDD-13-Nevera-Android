@@ -4,5 +4,5 @@ import com.anddd.nevera.core.mvi.NeveraMutation
 
 sealed interface HomeMutation : NeveraMutation {
     data object Loading : HomeMutation
-    data object LoadComplete : HomeMutation
+    data class LoadComplete(val wishUiModel: WishUiModel) : HomeMutation
 }
