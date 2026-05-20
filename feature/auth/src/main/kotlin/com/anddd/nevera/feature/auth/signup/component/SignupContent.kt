@@ -45,7 +45,6 @@ internal fun SignupContent(
     authCodeSectionError: AuthCodeSectionError = AuthCodeSectionError.None,
     authCodeDescription: AuthCodeDescription = AuthCodeDescription.None,
     timerState: CountDownTimer.State,
-    isLoading: Boolean,
     onNavigateBack: () -> Unit,
     onIntent: (SignupIntent) -> Unit,
 ) {
@@ -104,7 +103,6 @@ internal fun SignupContent(
                         authCodeSectionError = authCodeSectionError,
                         authCodeDescription = authCodeDescription,
                         timerState = timerState,
-                        isLoading = isLoading,
                         onAuthCodeChange = { onIntent(SignupIntent.AuthCodeChanged(it)) },
                         onVerifyAuthCode = { onIntent(SignupIntent.VerifyAuthCode) },
                     )
@@ -161,7 +159,6 @@ private fun SignupContentPreview() {
             authCodeSectionError = AuthCodeSectionError.None,
             authCodeDescription = AuthCodeDescription.None,
             timerState = CountDownTimer.State.Idle,
-            isLoading = false,
             onNavigateBack = {},
             onIntent = {},
         )
@@ -187,7 +184,6 @@ private fun SignupContentErrorPreview() {
             authCodeSectionError = AuthCodeSectionError.InvalidCode,
             authCodeDescription = AuthCodeDescription.InvalidCode(remainingSeconds = 90),
             timerState = CountDownTimer.State.Active(remainingSeconds = 90, canResend = false),
-            isLoading = false,
             onNavigateBack = {},
             onIntent = {},
         )
@@ -211,7 +207,6 @@ private fun SignupContentAuthCodePreview() {
             authCodeSectionError = AuthCodeSectionError.None,
             authCodeDescription = AuthCodeDescription.Timer(remainingSeconds = 150),
             timerState = CountDownTimer.State.Active(remainingSeconds = 150, canResend = false),
-            isLoading = false,
             onNavigateBack = {},
             onIntent = {},
         )
@@ -235,7 +230,6 @@ private fun SignupContentCompletePreview() {
             authCodeSectionError = AuthCodeSectionError.None,
             authCodeDescription = AuthCodeDescription.Verified,
             timerState = CountDownTimer.State.Idle,
-            isLoading = false,
             onNavigateBack = {},
             onIntent = {},
         )

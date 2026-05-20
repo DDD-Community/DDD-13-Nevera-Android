@@ -33,7 +33,6 @@ internal fun AuthCodeSection(
     authCodeSectionError: AuthCodeSectionError,
     authCodeDescription: AuthCodeDescription,
     timerState: CountDownTimer.State,
-    isLoading: Boolean,
     onAuthCodeChange: (String) -> Unit,
     onVerifyAuthCode: () -> Unit,
 ) {
@@ -62,7 +61,7 @@ internal fun AuthCodeSection(
             NeveraTextField(
                 value = authCode,
                 onValueChange = onAuthCodeChange,
-                enabled = !isEmailVerified && !isLoading,
+                enabled = !isEmailVerified,
                 modifier = Modifier.weight(1f),
                 config = NeveraTextFieldConfig(
                     placeholder = stringResource(R.string.signup_placeholder_auth_code),
@@ -74,7 +73,7 @@ internal fun AuthCodeSection(
             NeveraOutlinedButton(
                 label = stringResource(R.string.signup_btn_verify_auth),
                 onClick = onVerifyAuthCode,
-                enabled = !isEmailVerified && !isTimerExpired && !isLoading,
+                enabled = !isEmailVerified && !isTimerExpired,
                 size = NeveraButtonSize.Small,
                 shape = RoundedCornerShape(NeveraRadius.max),
             )
@@ -110,7 +109,6 @@ private fun AuthCodeSectionActivePreview() {
             authCodeSectionError = AuthCodeSectionError.None,
             authCodeDescription = AuthCodeDescription.Timer(remainingSeconds = 150),
             timerState = CountDownTimer.State.Active(remainingSeconds = 150, canResend = false),
-            isLoading = false,
             onAuthCodeChange = {},
             onVerifyAuthCode = {},
         )
@@ -127,7 +125,6 @@ private fun AuthCodeSectionExpiredPreview() {
             authCodeSectionError = AuthCodeSectionError.None,
             authCodeDescription = AuthCodeDescription.Expired,
             timerState = CountDownTimer.State.Expired,
-            isLoading = false,
             onAuthCodeChange = {},
             onVerifyAuthCode = {},
         )
@@ -144,7 +141,6 @@ private fun AuthCodeSectionVerifiedPreview() {
             authCodeSectionError = AuthCodeSectionError.None,
             authCodeDescription = AuthCodeDescription.Verified,
             timerState = CountDownTimer.State.Idle,
-            isLoading = false,
             onAuthCodeChange = {},
             onVerifyAuthCode = {},
         )
@@ -161,7 +157,6 @@ private fun AuthCodeSectionErrorPreview() {
             authCodeSectionError = AuthCodeSectionError.InvalidCode,
             authCodeDescription = AuthCodeDescription.InvalidCode(remainingSeconds = 90),
             timerState = CountDownTimer.State.Active(remainingSeconds = 90, canResend = true),
-            isLoading = false,
             onAuthCodeChange = {},
             onVerifyAuthCode = {},
         )

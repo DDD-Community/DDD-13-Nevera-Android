@@ -59,7 +59,6 @@ fun SignupScreen(
             authCodeSectionError = uiState.authCodeSectionError,
             authCodeDescription = uiState.authCodeDescription,
             timerState = uiState.timerState,
-            isLoading = uiState.isLoading,
             onNavigateBack = onNavigateToLogin,
             onIntent = viewModel::handleIntent,
         )
