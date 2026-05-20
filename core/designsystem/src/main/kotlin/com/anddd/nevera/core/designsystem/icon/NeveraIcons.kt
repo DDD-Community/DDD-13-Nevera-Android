@@ -32,4 +32,16 @@ object NeveraIcons {
         @Composable get() = painterResource(R.drawable.ic_textfield_eyes)
     val EyeOff: Painter
         @Composable get() = painterResource(R.drawable.ic_textfield_eyes_off)
+    val NavHome: Painter
+        @Composable get() = painterResource(R.drawable.ic_house)
+    val NavHomeFilled: Painter
+        @Composable get() = painterResource(R.drawable.ic_house_fiiled)
+    val NavFridge: Painter
+        @Composable get() = painterResource(R.drawable.ic_fridge)
+    val NavFridgeFilled: Painter
+        @Composable get() = painterResource(R.drawable.ic_fridge_filled)
+    val NavMy: Painter
+        @Composable get() = painterResource(R.drawable.ic_user)
+    val NavMyFilled: Painter
+        @Composable get() = painterResource(R.drawable.ic_user_filled)
 }
