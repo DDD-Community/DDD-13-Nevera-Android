@@ -51,7 +51,6 @@ internal fun SignupContent(
     val isEmailValid = emailValidation == EmailValidationResult.Valid
     val isPasswordValid = passwordValidation is PasswordValidationResult.Valid
     val canSignup = isEmailVerified &&
-        !isLoading &&
         isPasswordValid &&
         isPasswordMatched &&
         confirmPassword.isNotBlank()
