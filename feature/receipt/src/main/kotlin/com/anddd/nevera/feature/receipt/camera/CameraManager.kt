@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -71,15 +72,15 @@ class CameraManager @Inject constructor(
         }, ContextCompat.getMainExecutor(context))
     }
 
-    suspend fun takePicture(): Uri {
-        val bitmap = suspendCancellableCoroutine { continuation ->
+    suspend fun takePicture(): Uri = withContext(Dispatchers.IO) {
+        suspendCancellableCoroutine { continuation ->
             imageCapture.takePicture(
-                ContextCompat.getMainExecutor(context),
+                Dispatchers.IO.asExecutor(),
                 object : ImageCapture.OnImageCapturedCallback() {
                     override fun onCaptureSuccess(image: ImageProxy) {
                         try {
-                            val bitmap = image.toBitmapCorrected()
-                            if (continuation.isActive) continuation.resume(bitmap)
+                            val uri = image.toBitmapCorrected().saveToTempFile()
+                            if (continuation.isActive) continuation.resume(uri)
                         } catch (e: Exception) {
                             if (continuation.isActive) continuation.resumeWithException(e)
                         } finally {
@@ -92,9 +93,6 @@ class CameraManager @Inject constructor(
                     }
                 },
             )
-        }
-        return withContext(Dispatchers.IO) {
-            bitmap.saveToTempFile()
         }
     }
 

@@ -4,7 +4,6 @@ import android.net.Uri
 import androidx.camera.core.Preview
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewModelScope
 import com.anddd.nevera.core.mvi.NeveraViewModel
 import com.anddd.nevera.feature.receipt.camera.CameraManager
 import com.anddd.nevera.feature.receipt.gallery.GalleryManager
@@ -16,7 +15,6 @@ import com.anddd.nevera.feature.receipt.main.model.ReceiptUiState
 import com.anddd.nevera.feature.receipt.main.navigation.GALLERY_MODE_VALUE
 import com.anddd.nevera.feature.receipt.main.navigation.RECEIPT_INITIAL_MODE_ARG
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 import org.orbitmvi.orbit.syntax.Syntax
 import javax.inject.Inject
