@@ -87,7 +87,6 @@ internal fun SignupContent(
                     Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap24))
                     AuthCodeSection(
                         authCode = uiState.authCode,
-                        isEmailVerified = uiState.isEmailVerified,
                         authCodeSectionError = uiState.authCodeSectionError,
                         authCodeDescription = uiState.authCodeDescription,
                         timerState = uiState.timerState,

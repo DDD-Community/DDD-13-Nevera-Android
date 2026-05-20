@@ -29,7 +29,6 @@ import com.anddd.nevera.feature.auth.signup.model.AuthCodeSectionError
 @Composable
 internal fun AuthCodeSection(
     authCode: String,
-    isEmailVerified: Boolean,
     authCodeSectionError: AuthCodeSectionError,
     authCodeDescription: AuthCodeDescription,
     timerState: CountDownTimer.State,
@@ -44,7 +43,7 @@ internal fun AuthCodeSection(
     val isTimerExpired = timerState is CountDownTimer.State.Expired
 
     val authCodeFieldState = when {
-        isEmailVerified -> NeveraTextFieldState.Positive
+        authCodeDescription is AuthCodeDescription.Verified -> NeveraTextFieldState.Positive
         isFieldError || isNotFound || isEmailAlreadyRegistered ||
             isTimerExpired || isServerExpired -> NeveraTextFieldState.Negative
         else -> NeveraTextFieldState.Normal
@@ -61,7 +60,7 @@ internal fun AuthCodeSection(
             NeveraTextField(
                 value = authCode,
                 onValueChange = onAuthCodeChange,
-                enabled = !isEmailVerified,
+                enabled = authCodeDescription !is AuthCodeDescription.Verified,
                 modifier = Modifier.weight(1f),
                 config = NeveraTextFieldConfig(
                     placeholder = stringResource(R.string.signup_placeholder_auth_code),
@@ -73,7 +72,7 @@ internal fun AuthCodeSection(
             NeveraOutlinedButton(
                 label = stringResource(R.string.signup_btn_verify_auth),
                 onClick = onVerifyAuthCode,
-                enabled = !isEmailVerified && !isTimerExpired,
+                enabled = authCodeDescription !is AuthCodeDescription.Verified && !isTimerExpired,
                 size = NeveraButtonSize.Small,
                 shape = RoundedCornerShape(NeveraRadius.max),
             )
@@ -105,7 +104,6 @@ private fun AuthCodeSectionActivePreview() {
     NeveraTheme {
         AuthCodeSection(
             authCode = "",
-            isEmailVerified = false,
             authCodeSectionError = AuthCodeSectionError.None,
             authCodeDescription = AuthCodeDescription.Timer(remainingSeconds = 150),
             timerState = CountDownTimer.State.Active(remainingSeconds = 150, canResend = false),
@@ -121,7 +119,6 @@ private fun AuthCodeSectionExpiredPreview() {
     NeveraTheme {
         AuthCodeSection(
             authCode = "",
-            isEmailVerified = false,
             authCodeSectionError = AuthCodeSectionError.None,
             authCodeDescription = AuthCodeDescription.Expired,
             timerState = CountDownTimer.State.Expired,
@@ -137,7 +134,6 @@ private fun AuthCodeSectionVerifiedPreview() {
     NeveraTheme {
         AuthCodeSection(
             authCode = "123456",
-            isEmailVerified = true,
             authCodeSectionError = AuthCodeSectionError.None,
             authCodeDescription = AuthCodeDescription.Verified,
             timerState = CountDownTimer.State.Idle,
@@ -153,7 +149,6 @@ private fun AuthCodeSectionErrorPreview() {
     NeveraTheme {
         AuthCodeSection(
             authCode = "000000",
-            isEmailVerified = false,
             authCodeSectionError = AuthCodeSectionError.InvalidCode,
             authCodeDescription = AuthCodeDescription.InvalidCode(remainingSeconds = 90),
             timerState = CountDownTimer.State.Active(remainingSeconds = 90, canResend = true),
