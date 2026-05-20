@@ -17,7 +17,7 @@ internal fun FieldDescription(text: String, state: NeveraTextFieldState) {
         NeveraTextFieldState.Normal -> NeveraTheme.colors.textQuaternary
         NeveraTextFieldState.Negative -> NeveraTheme.colors.statusNegativeStrong
     }
-    Spacer(modifier = Modifier.height(NeveraTheme.spacing.padding4))
+    Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap4))
     Text(
         text = text,
         style = NeveraTheme.typography.captionLarge,
