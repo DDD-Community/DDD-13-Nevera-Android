@@ -87,11 +87,12 @@ internal fun CameraControls(
                     .clip(CircleShape)
                     .background(Color.White)
                     .semantics { contentDescription = shutterDescription }
-                    .clickable(onClick = { if (hasCameraPermission) onTakePicture() }),
+                    .clickable(enabled = hasCameraPermission, onClick = onTakePicture),
             )
 
             IconButton(
-                onClick = { if (hasCameraPermission) onSwapCamera() },
+                enabled = hasCameraPermission,
+                onClick = onSwapCamera,
                 modifier = Modifier.clip(CircleShape)
             ) {
                 Icon(
