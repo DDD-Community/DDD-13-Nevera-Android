@@ -44,17 +44,23 @@ internal fun SignupUiState.withAuthCodeDescription(): SignupUiState {
     val activeTimer = timerState as? CountDownTimer.State.Active
     val remainingSeconds = activeTimer?.remainingSeconds ?: 0
     val description = when {
+        // 이메일 인증 완료?
         isEmailVerified -> AuthCodeDescription.Verified
-        authCodeSectionError == AuthCodeSectionError.EmailAlreadyRegistered ->
+        // 이미 가입된 이메일?
+        authCodeSectionError is AuthCodeSectionError.EmailAlreadyRegistered ->
             AuthCodeDescription.EmailAlreadyRegistered
-        authCodeSectionError == AuthCodeSectionError.NotFound -> AuthCodeDescription.NotFound
+        // 인증 요청 없음?
+        authCodeSectionError is AuthCodeSectionError.NotFound -> AuthCodeDescription.NotFound
+        // 코드 불일치 + 타이머 진행 중?
         // 오류 문구 + 남은 시간을 함께 표시 — Active 분기보다 먼저 평가해야 가려지지 않음
-        authCodeSectionError == AuthCodeSectionError.InvalidCode && activeTimer != null ->
+        authCodeSectionError is AuthCodeSectionError.InvalidCode && activeTimer != null ->
             AuthCodeDescription.InvalidCode(remainingSeconds)
-        timerState is CountDownTimer.State.Active -> AuthCodeDescription.Timer(remainingSeconds)
-        // 클라이언트 타이머 만료와 서버 측 만료 모두 동일 UI로 처리
-        isTimerExpired || authCodeSectionError == AuthCodeSectionError.ServerExpired ->
+        // 타이머 만료 OR 서버 만료?
+        // 클라이언트 타이머 만료와 서버 측 만료 모두 동일 UI로 처리 — Active보다 먼저 평가해야 가려지지 않음
+        isTimerExpired || authCodeSectionError is AuthCodeSectionError.ServerExpired ->
             AuthCodeDescription.Expired
+        // 타이머 진행 중?
+        timerState is CountDownTimer.State.Active -> AuthCodeDescription.Timer(remainingSeconds)
         else -> AuthCodeDescription.None
     }
     return copy(authCodeDescription = description)
