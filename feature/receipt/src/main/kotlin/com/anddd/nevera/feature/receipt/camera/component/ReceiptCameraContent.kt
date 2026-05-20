@@ -32,16 +32,16 @@ internal fun ReceiptCameraContent(
 
     Column(modifier = modifier.fillMaxSize()) {
         Box(modifier = Modifier.weight(1f)) {
-            AndroidView(
-                factory = { ctx ->
-                    PreviewView(ctx).also { previewView ->
-                        onBindCamera(lifecycleOwner, previewView.surfaceProvider)
-                    }
-                },
-                modifier = Modifier.fillMaxSize(),
-            )
-
-            if (!hasCameraPermission) {
+            if (hasCameraPermission) {
+                AndroidView(
+                    factory = { ctx ->
+                        PreviewView(ctx).also { previewView ->
+                            onBindCamera(lifecycleOwner, previewView.surfaceProvider)
+                        }
+                    },
+                    modifier = Modifier.fillMaxSize(),
+                )
+            } else {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
