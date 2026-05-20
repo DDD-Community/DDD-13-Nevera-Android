@@ -36,10 +36,10 @@ internal fun AuthCodeSection(
     onAuthCodeChange: (String) -> Unit,
     onVerifyAuthCode: () -> Unit,
 ) {
-    val isFieldError = authCodeSectionError == AuthCodeSectionError.InvalidCode
-    val isServerExpired = authCodeSectionError == AuthCodeSectionError.ServerExpired
-    val isNotFound = authCodeSectionError == AuthCodeSectionError.NotFound
-    val isEmailAlreadyRegistered = authCodeSectionError == AuthCodeSectionError.EmailAlreadyRegistered
+    val isFieldError = authCodeSectionError is AuthCodeSectionError.InvalidCode
+    val isServerExpired = authCodeSectionError is AuthCodeSectionError.ServerExpired
+    val isNotFound = authCodeSectionError is AuthCodeSectionError.NotFound
+    val isEmailAlreadyRegistered = authCodeSectionError is AuthCodeSectionError.EmailAlreadyRegistered
 
     val isTimerExpired = timerState is CountDownTimer.State.Expired
 

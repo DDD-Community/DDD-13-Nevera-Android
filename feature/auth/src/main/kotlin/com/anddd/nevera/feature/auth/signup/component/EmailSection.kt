@@ -35,12 +35,12 @@ internal fun EmailSection(
 ) {
     val emailFieldState = when {
         isEmailRequestSent -> NeveraTextFieldState.Positive
-        emailValidation == EmailValidationResult.InvalidFormat -> NeveraTextFieldState.Negative
+        emailValidation is EmailValidationResult.InvalidFormat -> NeveraTextFieldState.Negative
         else -> NeveraTextFieldState.Normal
     }
     val emailDescription: String? = when {
         isEmailRequestSent -> stringResource(R.string.signup_email_sent)
-        emailValidation == EmailValidationResult.InvalidFormat -> stringResource(R.string.signup_email_invalid)
+        emailValidation is EmailValidationResult.InvalidFormat -> stringResource(R.string.signup_email_invalid)
         else -> null
     }
     val isButtonEnabled = when {

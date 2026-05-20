@@ -126,7 +126,7 @@ class SignupViewModel @Inject constructor(
     private fun requestEmailVerification() = intent {
         val requestedEmail = state.email
         val emailResult = validateEmailUseCase(requestedEmail)
-        if (emailResult != EmailValidationResult.Valid) {
+        if (emailResult !is EmailValidationResult.Valid) {
             resetCountdownTimer()
             applyMutation(SignupMutation.EmailChanged(requestedEmail, emailResult))
             return@intent
@@ -262,7 +262,7 @@ class SignupViewModel @Inject constructor(
         password: String,
         confirmPassword: String
     ): Boolean {
-        val isEmailValid = validateEmailUseCase(email) == EmailValidationResult.Valid
+        val isEmailValid = validateEmailUseCase(email) is EmailValidationResult.Valid
         val isPasswordValid = validatePasswordUseCase(password) is PasswordValidationResult.Valid
         val isConfirmPasswordEntered = confirmPassword.isNotBlank()
         val isPasswordMatched = password == confirmPassword
