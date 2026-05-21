@@ -98,8 +98,7 @@ private fun CategoryItem(
     onClick: () -> Unit,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
             .selectable(
                 selected = isSelected,
                 onClick = onClick,
