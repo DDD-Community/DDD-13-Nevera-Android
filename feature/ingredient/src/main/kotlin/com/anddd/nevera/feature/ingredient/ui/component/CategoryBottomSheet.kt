@@ -100,18 +100,17 @@ private fun CategoryItem(
         modifier = Modifier.fillMaxWidth()
             .clickable(onClick = onClick)
             .padding(horizontal = NeveraTheme.spacing.padding20)
-            .heightIn(min = 60.dp),
+            .heightIn(min = 56.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
-            modifier = Modifier.size(40.dp)
-                .background(NeveraTheme.colors.surfaceSecondary, CircleShape),
+            modifier = Modifier.background(NeveraTheme.colors.surfaceSecondary, CircleShape),
             contentAlignment = Alignment.Center,
         ) {
             Image(
                 painter = painterResource(category.iconRes()),
                 contentDescription = null,
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(NeveraTheme.iconSize.large),
                 contentScale = ContentScale.Fit,
             )
         }

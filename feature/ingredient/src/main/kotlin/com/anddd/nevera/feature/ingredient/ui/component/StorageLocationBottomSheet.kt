@@ -91,15 +91,13 @@ private fun StorageLocationItem(
             .fillMaxWidth()
             .clickable(onClick = onClick)
             .padding(horizontal = NeveraTheme.spacing.padding20)
-            .heightIn(min = 60.dp),
+            .heightIn(min = 48.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = location.displayName(),
             style = NeveraTheme.typography.bodyLarge,
-            fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal,
-            color = if (isSelected) NeveraTheme.colors.primaryNormal
-                    else NeveraTheme.colors.textPrimary,
+            color = NeveraTheme.colors.textSecondary,
             modifier = Modifier.weight(1f),
         )
 
