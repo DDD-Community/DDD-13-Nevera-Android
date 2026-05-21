@@ -10,6 +10,7 @@ import kotlinx.coroutines.sync.withLock
 import okhttp3.Interceptor
 import okhttp3.Response
 import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
 /**
@@ -75,7 +76,7 @@ internal class AuthInterceptor @Inject constructor(
                     try {
                         val response = refreshDataSource.get().refresh(refreshToken)
                         val newTokenResult = response.result
-                            ?: throw IllegalStateException("Refresh response has no result")
+                            ?: throw IOException("Token refresh response has no result")
                         tokenDataSource.get().setTokens(newTokenResult.accessToken, newTokenResult.refreshToken)
 
                         return@withLock chain.proceed(
@@ -88,7 +89,7 @@ internal class AuthInterceptor @Inject constructor(
                             tokenDataSource.get().clearLoginInfo()
                             sessionEventBus.emitSessionExpired()
                         }
-                        throw e
+                        throw IOException("Token refresh failed: HTTP ${e.code()}", e)
                     }
                 } else {
                     return@withLock response
