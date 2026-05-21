@@ -34,4 +34,6 @@ object NeveraIcons {
         @Composable get() = painterResource(R.drawable.ic_textfield_eyes)
     val EyeOff: Painter
         @Composable get() = painterResource(R.drawable.ic_textfield_eyes_off)
+    val CirclePlus: Painter
+        @Composable get() = painterResource(R.drawable.ic_circle_plus)
 }

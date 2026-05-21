@@ -3,6 +3,8 @@ package com.anddd.nevera.feature.main.home.component
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,17 +22,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.main.R
 
 private val RescuerSize = 130.dp
 private val ProgressBarHeight = 8.dp
+private val BorderWidth = 1.dp
+private val BorderDashPathSize = 6.dp
+private val BorderDashPathEmptySize = 6.dp
+private val AddWishButtonHeight = 34.dp
 
 @Composable
 fun WishBanner(
@@ -38,6 +50,7 @@ fun WishBanner(
     wish: String,
     savedMoney: Int,
     goalMoney: Int,
+    onCreateWish: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier.fillMaxWidth()) {
@@ -60,8 +73,11 @@ fun WishBanner(
                 modifier = Modifier.padding(NeveraTheme.spacing.padding8)
             )
             Spacer(modifier = Modifier.height(NeveraTheme.spacing.padding8))
-            WishCard(wish = wish, savedMoney = savedMoney, goalMoney = goalMoney)
-            // TODO EmptyWishCard Impl
+            if (wish.isEmpty()) {
+                EmptyWishCard(onCreateWish = onCreateWish)
+            } else {
+                WishCard(wish = wish, savedMoney = savedMoney, goalMoney = goalMoney)
+            }
         }
     }
 }
@@ -81,7 +97,7 @@ private fun WishCard(
         modifier = modifier
             .fillMaxWidth()
             .background(NeveraTheme.colors.surfacePrimary)
-            .border(1.dp, NeveraTheme.colors.borderNormal, cardShape)
+            .border(BorderWidth, NeveraTheme.colors.borderNormal, cardShape)
             .padding(NeveraTheme.spacing.padding16),
     ) {
         Row(verticalAlignment = Alignment.Bottom) {
@@ -104,7 +120,7 @@ private fun WishCard(
                 .fillMaxWidth()
                 .height(ProgressBarHeight)
                 .clip(RoundedCornerShape(NeveraTheme.radius.max)),
-            color = NeveraTheme.colors.primaryNormal,
+            color = NeveraTheme.colors.primaryWeak,
             trackColor = NeveraTheme.colors.surfaceSecondary,
             drawStopIndicator = {},
         )
@@ -135,6 +151,64 @@ private fun WishCard(
     }
 }
 
+@Composable
+private fun EmptyWishCard(
+    onCreateWish: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val borderColor = NeveraTheme.colors.borderStrong
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(NeveraTheme.colors.surfacePrimary)
+            .drawBehind {
+                drawRoundRect(
+                    color = borderColor,
+                    style = Stroke(
+                        width = BorderWidth.toPx(),
+                        pathEffect = PathEffect.dashPathEffect(
+                            intervals = floatArrayOf(BorderDashPathSize.toPx(), BorderDashPathEmptySize.toPx()),
+                            phase = 0f
+                        ),
+                    ),
+                    cornerRadius = CornerRadius(NeveraTheme.radius.large.toPx()),
+                )
+            }
+            .padding(vertical = NeveraTheme.spacing.padding32),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(NeveraTheme.spacing.gap16),
+    ) {
+        Text(
+            text = "아직 나의 절약 목표가 없어요",
+            style = NeveraTheme.typography.titleSmall,
+            color = NeveraTheme.colors.textCaption,
+        )
+        Row(
+            modifier = Modifier
+                .clip(RoundedCornerShape(NeveraTheme.radius.max))
+                .background(NeveraTheme.colors.textPrimary)
+                .clickable(onClick = onCreateWish)
+                .padding(horizontal = NeveraTheme.spacing.padding8)
+                .height(AddWishButtonHeight),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Image(
+                painter = NeveraIcons.CirclePlus,
+                contentDescription = "Add Wish",
+                modifier = Modifier.size(NeveraTheme.iconSize.xSmall),
+                colorFilter = ColorFilter.tint(color = NeveraTheme.colors.textInverse)
+            )
+            Text(
+                text = "위시 만들기",
+                style = NeveraTheme.typography.titleXSmall,
+                color = NeveraTheme.colors.textInverse,
+                modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding6)
+            )
+        }
+    }
+}
+
 @Preview(
     name = "WishBanner",
     showBackground = true,
@@ -146,8 +220,27 @@ private fun WishBannerPreview() {
         WishBanner(
             nickname = "김푸드",
             wish = "제주도 여행",
-            savedMoney = 0,
+            savedMoney = 240000,
             goalMoney = 480000,
+            onCreateWish = {},
+        )
+    }
+}
+
+@Preview(
+    name = "WishBanner - Empty",
+    showBackground = true,
+    widthDp = 360,
+)
+@Composable
+private fun WishBannerEmptyPreview() {
+    NeveraTheme {
+        WishBanner(
+            nickname = "김푸드",
+            wish = "",
+            savedMoney = 0,
+            goalMoney = 0,
+            onCreateWish = {},
         )
     }
 }

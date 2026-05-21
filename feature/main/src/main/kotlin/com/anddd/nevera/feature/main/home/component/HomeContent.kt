@@ -45,6 +45,7 @@ internal fun HomeContent(
                     wish = uiState.wishUiModel.wish,
                     savedMoney = uiState.wishUiModel.savedMoney,
                     goalMoney = uiState.wishUiModel.goalMoney,
+                    onCreateWish = {},
                     modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding20),
                 )
             }
