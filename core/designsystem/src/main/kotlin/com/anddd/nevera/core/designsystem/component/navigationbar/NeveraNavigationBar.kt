@@ -13,8 +13,9 @@ import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
 @Composable
-fun NeveraNavigationBar(
-    items: List<NeveraNavigationBarItem>,
+fun <T> NeveraNavigationBar(
+    items: List<NeveraNavigationBarItem<T>>,
+    onItemClick: (T) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -28,11 +29,14 @@ fun NeveraNavigationBar(
         items.forEach { item ->
             NavigationBarItem(
                 item = item,
+                onClick = { onItemClick(item.tag) },
                 modifier = Modifier.weight(1f),
             )
         }
     }
 }
+
+private enum class PreviewTab { HOME, FRIDGE, MY_PAGE }
 
 @Preview(
     name = "NeveraNavigationBar",
@@ -45,24 +49,25 @@ private fun NeveraNavigationBarPreview() {
         NeveraNavigationBar(
             items = listOf(
                 NeveraNavigationBarItem(
+                    tag = PreviewTab.HOME,
                     selectedIcon = NeveraIcons.NavHomeFilled,
                     unselectedIcon = NeveraIcons.NavHome,
                     selected = true,
-                    onClick = {},
                 ),
                 NeveraNavigationBarItem(
+                    tag = PreviewTab.FRIDGE,
                     selectedIcon = NeveraIcons.NavFridgeFilled,
                     unselectedIcon = NeveraIcons.NavFridge,
                     selected = false,
-                    onClick = {},
                 ),
                 NeveraNavigationBarItem(
+                    tag = PreviewTab.MY_PAGE,
                     selectedIcon = NeveraIcons.NavMyFilled,
                     unselectedIcon = NeveraIcons.NavMy,
                     selected = false,
-                    onClick = {},
                 ),
             ),
+            onItemClick = {},
         )
     }
 }

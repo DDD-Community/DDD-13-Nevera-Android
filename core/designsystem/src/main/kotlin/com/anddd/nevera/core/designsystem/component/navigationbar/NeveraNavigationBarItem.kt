@@ -11,22 +11,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 
-data class NeveraNavigationBarItem(
+data class NeveraNavigationBarItem<T>(
+    val tag: T,
     val selectedIcon: Painter,
     val unselectedIcon: Painter,
     val selected: Boolean,
-    val onClick: () -> Unit,
 )
 
 @Composable
-internal fun NavigationBarItem(
-    item: NeveraNavigationBarItem,
+internal fun <T> NavigationBarItem(
+    item: NeveraNavigationBarItem<T>,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier
             .height(NeveraNavigationBarDefault.iconHeight)
-            .clickable(onClick = item.onClick),
+            .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Icon(
