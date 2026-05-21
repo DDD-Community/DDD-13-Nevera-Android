@@ -67,9 +67,10 @@ fun NeveraActionBottomSheet(
         NeveraFilledButton(
             label = confirmLabel,
             onClick = onConfirm,
-            modifier = Modifier.fillMaxWidth()
-                .padding(NeveraTheme.spacing.padding16)
-                .navigationBarsPadding(),
+            modifier = Modifier
+                .navigationBarsPadding()
+                .fillMaxWidth()
+                .padding(NeveraTheme.spacing.padding16),
         )
     }
 }
