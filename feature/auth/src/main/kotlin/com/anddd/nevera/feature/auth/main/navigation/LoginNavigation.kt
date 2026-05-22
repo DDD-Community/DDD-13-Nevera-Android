@@ -4,15 +4,17 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.anddd.nevera.feature.auth.main.LoginScreen
 import com.anddd.nevera.feature.auth.main.google.GoogleAuthClient
+import kotlinx.serialization.Serializable
 
-const val LOGIN_ROUTE = "login"
+@Serializable
+data object LoginRoute
 
 fun NavGraphBuilder.loginScreen(
     googleAuthClient: GoogleAuthClient,
     onNavigateToHome: () -> Unit,
     onNavigateToSignup: () -> Unit,
 ) {
-    composable(route = LOGIN_ROUTE) {
+    composable<LoginRoute> {
         LoginScreen(
             googleAuthClient = googleAuthClient,
             onNavigateToHome = onNavigateToHome,

@@ -14,6 +14,7 @@ class NeveraAndroidApplicationPlugin : Plugin<Project> {
             pluginManager.apply("com.google.firebase.crashlytics")
             pluginManager.apply("nevera.android.hilt")
             pluginManager.apply("nevera.test.android")
+            pluginManager.apply("org.jetbrains.kotlin.plugin.serialization")
             configureCompose()
 
             configure<ApplicationExtension> {

@@ -12,18 +12,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.auth.main.google.GoogleAuthClient
-import com.anddd.nevera.feature.auth.main.navigation.LOGIN_ROUTE
+import com.anddd.nevera.feature.auth.main.navigation.LoginRoute
 import com.anddd.nevera.feature.auth.main.navigation.loginScreen
-import com.anddd.nevera.feature.auth.signup.navigation.SIGNUP_ROUTE
+import com.anddd.nevera.feature.auth.signup.navigation.SignupRoute
 import com.anddd.nevera.feature.auth.signup.navigation.signupScreen
-import com.anddd.nevera.feature.main.home.navigation.HOME_ROUTE
+import com.anddd.nevera.feature.main.home.navigation.HomeRoute
 import com.anddd.nevera.feature.main.home.navigation.homeScreen
-import com.anddd.nevera.feature.mypage.appinfo.navigation.APP_INFO_ROUTE
+import com.anddd.nevera.feature.mypage.appinfo.navigation.AppInfoRoute
 import com.anddd.nevera.feature.mypage.appinfo.navigation.appInfoScreen
 import com.anddd.nevera.feature.mypage.main.navigation.myPageScreen
-import com.anddd.nevera.feature.mypage.settingaccount.navigation.SETTING_ACCOUNT_ROUTE
+import com.anddd.nevera.feature.mypage.settingaccount.navigation.SettingAccountRoute
 import com.anddd.nevera.feature.mypage.settingaccount.navigation.settingAccountScreen
-import com.anddd.nevera.feature.splash.main.navigation.SPLASH_ROUTE
+import com.anddd.nevera.feature.splash.main.navigation.SplashRoute
 import com.anddd.nevera.feature.splash.main.navigation.splashScreen
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -44,28 +44,28 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { _ ->
                     NavHost(
                         navController = navController,
-                        startDestination = SPLASH_ROUTE
+                        startDestination = SplashRoute
                     ) {
                         splashScreen(
                             onNavigateToLogin = {
-                                navController.navigate(LOGIN_ROUTE) {
-                                    popUpTo(SPLASH_ROUTE) { inclusive = true }
+                                navController.navigate(LoginRoute) {
+                                    popUpTo<SplashRoute> { inclusive = true }
                                 }
                             },
                             onNavigateToHome = {
-                                navController.navigate(HOME_ROUTE) {
-                                    popUpTo(SPLASH_ROUTE) { inclusive = true }
+                                navController.navigate(HomeRoute) {
+                                    popUpTo<SplashRoute> { inclusive = true }
                                 }
                             }
                         )
                         loginScreen(
                             onNavigateToHome = {
-                                navController.navigate(HOME_ROUTE) {
-                                    popUpTo(LOGIN_ROUTE) { inclusive = true }
+                                navController.navigate(HomeRoute) {
+                                    popUpTo<LoginRoute> { inclusive = true }
                                 }
                             },
                             onNavigateToSignup = {
-                                navController.navigate(SIGNUP_ROUTE)
+                                navController.navigate(SignupRoute)
                             },
                             googleAuthClient = googleAuthClient,
                         )
@@ -77,10 +77,10 @@ class MainActivity : ComponentActivity() {
                         homeScreen()
                         myPageScreen(
                             onNavigateToAppInfo = {
-                                navController.navigate(APP_INFO_ROUTE)
+                                navController.navigate(AppInfoRoute)
                             },
                             onNavigateToAccountSetting = {
-                                navController.navigate(SETTING_ACCOUNT_ROUTE)
+                                navController.navigate(SettingAccountRoute)
                             }
                         )
                         appInfoScreen(
@@ -93,8 +93,8 @@ class MainActivity : ComponentActivity() {
                                 navController.popBackStack()
                             },
                             onNavigateToLogin = {
-                                navController.navigate(LOGIN_ROUTE) {
-                                    popUpTo(HOME_ROUTE) { inclusive = true }
+                                navController.navigate(LoginRoute) {
+                                    popUpTo<HomeRoute> { inclusive = true }
                                 }
                             }
                         )

@@ -3,11 +3,13 @@ package com.anddd.nevera.feature.main.home.navigation
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.anddd.nevera.feature.main.home.HomeScreen
+import kotlinx.serialization.Serializable
 
-const val HOME_ROUTE = "home"
+@Serializable
+data object HomeRoute
 
 fun NavGraphBuilder.homeScreen() {
-    composable(route = HOME_ROUTE) {
+    composable<HomeRoute> {
         HomeScreen()
     }
 }
