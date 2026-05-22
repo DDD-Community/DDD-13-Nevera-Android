@@ -79,7 +79,7 @@ fun NeveraQuantityStepper(
                 painter = painterResource(R.drawable.ic_stepper_minus_active),
                 contentDescription = stringResource(R.string.nevera_stepper_decrease),
                 tint = if (canDecrease) NeveraTheme.colors.iconPrimary
-                       else NeveraTheme.colors.iconDisabled,
+                else NeveraTheme.colors.iconDisabled,
                 modifier = Modifier.size(NeveraTheme.iconSize.xxSmall),
             )
         }
@@ -101,7 +101,7 @@ fun NeveraQuantityStepper(
                 painter = painterResource(R.drawable.ic_stepper_plus_active),
                 contentDescription = stringResource(R.string.nevera_stepper_increase),
                 tint = if (canIncrease) NeveraTheme.colors.iconPrimary
-                       else NeveraTheme.colors.iconDisabled,
+                else NeveraTheme.colors.iconDisabled,
                 modifier = Modifier.size(NeveraTheme.iconSize.xxSmall),
             )
         }
