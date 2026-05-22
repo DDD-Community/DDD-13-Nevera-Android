@@ -47,6 +47,7 @@ dependencies {
     implementation(project(":feature:auth"))
     implementation(project(":feature:main"))
     implementation(project(":feature:mypage"))
+    implementation(project(":feature:ingredient"))
 
     implementation(project(":data"))
 
