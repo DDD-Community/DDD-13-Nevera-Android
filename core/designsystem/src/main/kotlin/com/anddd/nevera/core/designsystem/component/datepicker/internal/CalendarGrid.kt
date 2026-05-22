@@ -3,6 +3,7 @@ package com.anddd.nevera.core.designsystem.component.datepicker.internal
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.semantics.Role
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -85,14 +86,14 @@ private fun DayCell(
                     Modifier.border(1.dp, NeveraTheme.colors.primaryNormal, CircleShape)
                 else Modifier,
             )
-            .clickable { onClick(date) },
+            .clickable(role = Role.Button) { onClick(date) },
         contentAlignment = Alignment.Center,
     ) {
         Text(
             text = date.dayOfMonth.toString(),
             style = NeveraTheme.typography.bodySmall,
             color = when {
-                isSelected -> Color.White
+                isSelected -> NeveraTheme.colors.surfacePrimary
                 isToday -> NeveraTheme.colors.primaryNormal
                 else -> NeveraTheme.colors.textPrimary
             },

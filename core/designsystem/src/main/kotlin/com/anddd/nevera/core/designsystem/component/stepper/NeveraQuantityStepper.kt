@@ -45,8 +45,9 @@ fun NeveraQuantityStepper(
     minQuantity: Int = 1,
     maxQuantity: Int = 999,
 ) {
-    val canDecrease = quantity > minQuantity
-    val canIncrease = quantity < maxQuantity
+    val safeQuantity = quantity.coerceIn(minQuantity, maxQuantity)
+    val canDecrease = safeQuantity > minQuantity
+    val canIncrease = safeQuantity < maxQuantity
 
     Row(
         modifier = modifier.height(36.dp)
@@ -73,7 +74,7 @@ fun NeveraQuantityStepper(
         }
 
         Text(
-            text = quantity.toString(),
+            text = safeQuantity.toString(),
             modifier = Modifier.widthIn(min = 18.dp),
             style = NeveraTheme.typography.titleSmall,
             color = NeveraTheme.colors.textTertiary,

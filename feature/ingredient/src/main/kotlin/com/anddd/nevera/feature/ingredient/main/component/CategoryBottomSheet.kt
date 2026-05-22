@@ -114,7 +114,7 @@ private fun CategoryItem(
         ) {
             Image(
                 painter = painterResource(category.iconRes()),
-                contentDescription = null,
+                contentDescription = "",
                 modifier = Modifier.size(NeveraTheme.iconSize.large),
                 contentScale = ContentScale.Fit,
             )

@@ -19,6 +19,9 @@ import com.anddd.nevera.core.designsystem.R
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import java.time.LocalDate
 
+private val DialogButtonsRowHeight = 60.dp
+private val DialogButtonHeight = 48.dp
+
 @Composable
 internal fun DialogButtons(
     tempSelected: LocalDate?,
@@ -26,20 +29,21 @@ internal fun DialogButtons(
     onConfirm: () -> Unit,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth()
-            .height(60.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(DialogButtonsRowHeight)
             .padding(
-                start = 12.dp,
-                top = 4.dp,
-                end = 12.dp,
-                bottom = 8.dp
+                start = NeveraTheme.spacing.padding12,
+                top = NeveraTheme.spacing.padding4,
+                end = NeveraTheme.spacing.padding12,
+                bottom = NeveraTheme.spacing.padding8,
             ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End,
     ) {
         TextButton(
             onClick = onDismiss,
-            modifier = Modifier.height(48.dp)
+            modifier = Modifier.height(DialogButtonHeight)
         ) {
             Text(
                 text = stringResource(R.string.nevera_date_picker_dismiss),
@@ -54,7 +58,7 @@ internal fun DialogButtons(
             Text(
                 text = stringResource(R.string.nevera_date_picker_confirm),
                 color = if (tempSelected != null) NeveraTheme.colors.primaryNormal
-                        else NeveraTheme.colors.textDisabled,
+                else NeveraTheme.colors.textDisabled,
             )
         }
     }
