@@ -6,14 +6,8 @@ import com.anddd.nevera.feature.main.home.HomeScreen
 
 const val HOME_ROUTE = "home"
 
-fun NavGraphBuilder.homeScreen(
-    onNavigateToLogin: () -> Unit,
-    onNavigateToMyPage: () -> Unit,
-) {
+fun NavGraphBuilder.homeScreen() {
     composable(route = HOME_ROUTE) {
-        HomeScreen(
-            onNavigateToLogin = onNavigateToLogin,
-            onNavigateToMyPage = onNavigateToMyPage,
-        )
+        HomeScreen()
     }
 }
