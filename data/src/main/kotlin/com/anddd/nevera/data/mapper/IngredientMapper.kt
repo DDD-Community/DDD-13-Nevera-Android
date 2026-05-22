@@ -8,15 +8,15 @@ import com.anddd.nevera.domain.model.ingredient.StorageLocation
  * 매핑 실패 시 [FoodCategory.Other] 반환
  */
 internal fun String.toFoodCategory(): FoodCategory = when (this) {
-    "VEGETABLE"           -> FoodCategory.Vegetable
-    "FRUIT"               -> FoodCategory.Fruit
-    "MEAT", "EGG"         -> FoodCategory.MeatEgg
-    "SEAFOOD"             -> FoodCategory.Seafood
-    "DAIRY"               -> FoodCategory.Dairy
-    "SAUCE", "SEASONING"  -> FoodCategory.Sauce
-    "BEVERAGE"            -> FoodCategory.Beverage
+    "VEGETABLE" -> FoodCategory.Vegetable
+    "FRUIT" -> FoodCategory.Fruit
+    "MEAT", "EGG" -> FoodCategory.MeatEgg
+    "SEAFOOD" -> FoodCategory.Seafood
+    "DAIRY" -> FoodCategory.Dairy
+    "SAUCE", "SEASONING" -> FoodCategory.Sauce
+    "BEVERAGE" -> FoodCategory.Beverage
     "CANDRY", "PROCESSED" -> FoodCategory.Processed
-    else                  -> FoodCategory.Other
+    else -> FoodCategory.Other
 }
 
 /**
@@ -24,7 +24,7 @@ internal fun String.toFoodCategory(): FoodCategory = when (this) {
  * 매핑 실패 시 [StorageLocation.Pantry] 반환
  */
 internal fun String.toStorageLocation(): StorageLocation = when (this) {
-    "FRIDGE"  -> StorageLocation.Fridge
+    "FRIDGE" -> StorageLocation.Fridge
     "FREEZER" -> StorageLocation.Freezer
-    else      -> StorageLocation.Pantry
+    else -> StorageLocation.Pantry
 }
