@@ -11,14 +11,14 @@ import com.anddd.nevera.domain.model.ingredient.FoodCategory
 fun FoodCategory.displayName(): String = stringResource(
     when (this) {
         FoodCategory.Vegetable -> R.string.ingredient_category_vegetable
-        FoodCategory.Fruit     -> R.string.ingredient_category_fruit
-        FoodCategory.MeatEgg   -> R.string.ingredient_category_meat_egg
-        FoodCategory.Seafood   -> R.string.ingredient_category_seafood
-        FoodCategory.Dairy     -> R.string.ingredient_category_dairy
-        FoodCategory.Sauce     -> R.string.ingredient_category_sauce
-        FoodCategory.Beverage  -> R.string.ingredient_category_beverage
+        FoodCategory.Fruit -> R.string.ingredient_category_fruit
+        FoodCategory.MeatEgg -> R.string.ingredient_category_meat_egg
+        FoodCategory.Seafood -> R.string.ingredient_category_seafood
+        FoodCategory.Dairy -> R.string.ingredient_category_dairy
+        FoodCategory.Sauce -> R.string.ingredient_category_sauce
+        FoodCategory.Beverage -> R.string.ingredient_category_beverage
         FoodCategory.Processed -> R.string.ingredient_category_processed
-        FoodCategory.Other     -> R.string.ingredient_category_other
+        FoodCategory.Other -> R.string.ingredient_category_other
     }
 )
 
@@ -26,12 +26,12 @@ fun FoodCategory.displayName(): String = stringResource(
 @DrawableRes
 fun FoodCategory.iconRes(): Int = when (this) {
     FoodCategory.Vegetable -> R.drawable.img_listcell_vegetable
-    FoodCategory.Fruit     -> R.drawable.img_listcell_fruit
-    FoodCategory.MeatEgg   -> R.drawable.img_listcell_meat
-    FoodCategory.Seafood   -> R.drawable.img_listcell_seafood
-    FoodCategory.Dairy     -> R.drawable.img_listcell_dairy
-    FoodCategory.Sauce     -> R.drawable.img_listcell_sauce
-    FoodCategory.Beverage  -> R.drawable.img_listcell_beverage
+    FoodCategory.Fruit -> R.drawable.img_listcell_fruit
+    FoodCategory.MeatEgg -> R.drawable.img_listcell_meat
+    FoodCategory.Seafood -> R.drawable.img_listcell_seafood
+    FoodCategory.Dairy -> R.drawable.img_listcell_dairy
+    FoodCategory.Sauce -> R.drawable.img_listcell_sauce
+    FoodCategory.Beverage -> R.drawable.img_listcell_beverage
     FoodCategory.Processed -> R.drawable.img_listcell_processed
-    FoodCategory.Other     -> R.drawable.img_listcell_etc
+    FoodCategory.Other -> R.drawable.img_listcell_etc
 }

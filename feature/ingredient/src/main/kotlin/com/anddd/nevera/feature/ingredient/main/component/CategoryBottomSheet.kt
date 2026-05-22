@@ -133,7 +133,7 @@ private fun CategoryItem(
             painter = NeveraIcons.Check,
             contentDescription = null,
             tint = if (isSelected) NeveraTheme.colors.primaryNormal
-                   else NeveraTheme.colors.iconDisabled,
+            else NeveraTheme.colors.iconDisabled,
             modifier = Modifier.size(NeveraTheme.iconSize.medium),
         )
     }

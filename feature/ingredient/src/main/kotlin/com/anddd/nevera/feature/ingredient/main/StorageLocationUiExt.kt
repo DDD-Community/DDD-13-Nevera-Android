@@ -9,8 +9,8 @@ import com.anddd.nevera.domain.model.ingredient.StorageLocation
 @Composable
 fun StorageLocation.displayName(): String = stringResource(
     when (this) {
-        StorageLocation.Fridge  -> R.string.ingredient_storage_location_fridge
+        StorageLocation.Fridge -> R.string.ingredient_storage_location_fridge
         StorageLocation.Freezer -> R.string.ingredient_storage_location_freezer
-        StorageLocation.Pantry  -> R.string.ingredient_storage_location_pantry
+        StorageLocation.Pantry -> R.string.ingredient_storage_location_pantry
     }
 )

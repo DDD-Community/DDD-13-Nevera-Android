@@ -7,9 +7,9 @@ package com.anddd.nevera.domain.model.ingredient
  * @see com.anddd.nevera.feature.ingredient.main.displayName
  */
 sealed interface StorageLocation {
-    data object Fridge  : StorageLocation
+    data object Fridge : StorageLocation
     data object Freezer : StorageLocation
-    data object Pantry  : StorageLocation
+    data object Pantry : StorageLocation
 
     companion object {
         /** 화면에 표시할 모든 보관 방법 목록 (선언 순서 유지) */
@@ -20,9 +20,9 @@ sealed interface StorageLocation {
          * 매핑 실패 시 [Pantry] 반환
          */
         fun fromApiValue(apiValue: String): StorageLocation = when (apiValue) {
-            "FRIDGE"  -> Fridge
+            "FRIDGE" -> Fridge
             "FREEZER" -> Freezer
-            else      -> Pantry
+            else -> Pantry
         }
     }
 }

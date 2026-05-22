@@ -29,15 +29,15 @@ sealed interface FoodCategory {
          * 매핑 실패 시 [Other] 반환
          */
         fun fromApiValue(apiValue: String): FoodCategory = when (apiValue) {
-            "VEGETABLE"           -> Vegetable
-            "FRUIT"               -> Fruit
-            "MEAT", "EGG"         -> MeatEgg
-            "SEAFOOD"             -> Seafood
-            "DAIRY"               -> Dairy
-            "SAUCE", "SEASONING"  -> Sauce
-            "BEVERAGE"            -> Beverage
+            "VEGETABLE" -> Vegetable
+            "FRUIT" -> Fruit
+            "MEAT", "EGG" -> MeatEgg
+            "SEAFOOD" -> Seafood
+            "DAIRY" -> Dairy
+            "SAUCE", "SEASONING" -> Sauce
+            "BEVERAGE" -> Beverage
             "CANDRY", "PROCESSED" -> Processed
-            else                  -> Other
+            else -> Other
         }
     }
 }
