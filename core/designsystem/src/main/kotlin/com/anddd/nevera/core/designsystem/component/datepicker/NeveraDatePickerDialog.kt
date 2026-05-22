@@ -110,7 +110,7 @@ fun NeveraDatePickerDialog(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
+@Preview(showBackground = true, locale = "ko")
 @Composable
 private fun NeveraDatePickerDialogSelectedPreview() {
     NeveraTheme {
@@ -123,7 +123,7 @@ private fun NeveraDatePickerDialogSelectedPreview() {
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
+@Preview(showBackground = true, locale = "ko")
 @Composable
 private fun NeveraDatePickerDialogEmptyPreview() {
     NeveraTheme {
