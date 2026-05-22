@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -20,7 +21,7 @@ import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import java.time.LocalDate
 
 private val DialogButtonsRowHeight = 60.dp
-private val DialogButtonHeight = 48.dp
+private val DialogButtonMinWidth = 57.dp
 
 @Composable
 internal fun DialogButtons(
@@ -43,22 +44,24 @@ internal fun DialogButtons(
     ) {
         TextButton(
             onClick = onDismiss,
-            modifier = Modifier.height(DialogButtonHeight)
+            modifier = Modifier.widthIn(min = DialogButtonMinWidth)
         ) {
             Text(
                 text = stringResource(R.string.nevera_date_picker_dismiss),
                 color = NeveraTheme.colors.primaryNormal,
+                style = NeveraTheme.typography.titleXSmall
             )
         }
-        Spacer(Modifier.width(NeveraTheme.spacing.gap4))
+        Spacer(Modifier.width(NeveraTheme.spacing.gap8))
         TextButton(
             onClick = onConfirm,
             enabled = tempSelected != null,
+            modifier = Modifier.widthIn(min = DialogButtonMinWidth)
         ) {
             Text(
                 text = stringResource(R.string.nevera_date_picker_confirm),
-                color = if (tempSelected != null) NeveraTheme.colors.primaryNormal
-                else NeveraTheme.colors.textDisabled,
+                color = NeveraTheme.colors.primaryNormal,
+                style = NeveraTheme.typography.titleXSmall
             )
         }
     }
