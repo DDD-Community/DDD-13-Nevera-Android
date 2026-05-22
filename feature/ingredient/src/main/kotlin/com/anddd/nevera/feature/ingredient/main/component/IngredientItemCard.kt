@@ -57,10 +57,13 @@ import java.time.format.DateTimeFormatter
  * OCR 분석 결과 또는 직접 추가한 식재료 항목을 표시하고 수정할 수 있는 카드 컴포넌트입니다.
  * 상태 관리는 호출 측에서 담당하며, 변경 사항은 [onItemChanged] 콜백으로 전달됩니다.
  *
- * @param item              현재 식재료 모델
- * @param onItemChanged     필드 변경 시 업데이트된 모델 전달
+ * 이름 편집 UI는 디자이너와 추가 논의 후 개선 예정입니다.
+ * 현재는 임시로 AlertDialog를 통해 이름을 수정합니다.
+ *
+ * @param item               현재 식재료 모델
+ * @param onItemChanged      필드 변경 시 업데이트된 모델 전달
  * @param onSelectionChanged 체크박스 토글 콜백
- * @param modifier          외부 Modifier
+ * @param modifier           외부 Modifier
  */
 @Composable
 fun IngredientItemCard(
@@ -349,6 +352,11 @@ private fun ExpiryDateRow(
     }
 }
 
+/**
+ * 식재료 이름 편집 다이얼로그
+ *
+ * TODO: 디자이너와 추가 논의 후 인라인 편집 방식으로 개선 예정
+ */
 @Composable
 private fun NameEditDialog(
     currentName: String,
