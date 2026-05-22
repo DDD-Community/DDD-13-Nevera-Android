@@ -1,58 +1,48 @@
 package com.anddd.nevera.feature.main.home
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.anddd.nevera.core.common.onFailure
-import com.anddd.nevera.core.common.onSuccess
-import com.anddd.nevera.domain.model.auth.LogoutError
-import com.anddd.nevera.domain.usecase.auth.LogoutUseCase
-import com.anddd.nevera.domain.usecase.auth.WithdrawUseCase
-import com.anddd.nevera.feature.main.BuildConfig
+import com.anddd.nevera.core.mvi.NeveraViewModel
+import com.anddd.nevera.feature.main.home.model.HomeIntent
+import com.anddd.nevera.feature.main.home.model.HomeMutation
 import com.anddd.nevera.feature.main.home.model.HomeSideEffect
 import com.anddd.nevera.feature.main.home.model.HomeUiState
+import com.anddd.nevera.feature.main.home.model.WishUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.launch
-import timber.log.Timber
+import kotlinx.coroutines.delay
+import org.orbitmvi.orbit.syntax.Syntax
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val logoutUseCase: LogoutUseCase,
-    private val withdrawUseCase: WithdrawUseCase,
-) : ViewModel() {
+) : NeveraViewModel<HomeUiState, HomeSideEffect, HomeIntent, HomeMutation>(HomeUiState()) {
 
-    private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Success)
-    val uiState: StateFlow<HomeUiState> = _uiState
-
-    private val _sideEffect = Channel<HomeSideEffect>(Channel.BUFFERED)
-    val sideEffect = _sideEffect.receiveAsFlow()
-
-    fun logout() {
-        viewModelScope.launch {
-            logoutUseCase(BuildConfig.DEBUG)
-                .onSuccess {
-                    _sideEffect.send(HomeSideEffect.NavigateToLogin)
-                }.onFailure {
-                    if (it is LogoutError.TokenNotFound) {
-                        Timber.e(it.serverMessage ?: "토큰을 찾을 수 없습니다.")
-                    }
-                    _sideEffect.send(HomeSideEffect.ShowError("로그아웃에 실패했습니다."))
-                }
-        }
+    init {
+        load()
     }
 
-    fun withdraw() {
-        viewModelScope.launch {
-            withdrawUseCase()
-                .onSuccess {
-                    _sideEffect.send(HomeSideEffect.NavigateToLogin)
-                }.onFailure {
-                    _sideEffect.send(HomeSideEffect.ShowError("회원 탈퇴에 실패했습니다."))
-                }
+    override fun handleIntent(action: HomeIntent) {}
+
+    private fun load() = intent {
+        applyMutation(HomeMutation.Loading)
+        delay(500L)
+        // TODO: UseCase로 초기 데이터 로드
+        applyMutation(
+            HomeMutation.LoadComplete(
+                wishUiModel = WishUiModel(
+                    nickname = "김푸드",
+                    wish = "제주도 여행",
+                    savedMoney = 12000,
+                    goalMoney = 480000,
+                )
+            )
+        )
+    }
+
+    override suspend fun Syntax<HomeUiState, HomeSideEffect>.applyMutation(mutation: HomeMutation) {
+        when (mutation) {
+            HomeMutation.Loading -> reduce { state.copy(isLoading = true) }
+            is HomeMutation.LoadComplete -> reduce {
+                state.copy(isLoading = false, wishUiModel = mutation.wishUiModel)
+            }
         }
     }
 }
