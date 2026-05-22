@@ -61,12 +61,12 @@ fun NeveraQuantityStepper(
 
     Row(
         modifier = modifier.height(StepperDimension.Height)
+            .padding(NeveraTheme.spacing.padding4)
             .border(
                 width = 1.dp,
                 color = NeveraTheme.colors.borderNormal,
                 shape = RoundedCornerShape(NeveraTheme.radius.small),
-            )
-            .padding(NeveraTheme.spacing.padding4),
+            ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         StepperIconButton(
