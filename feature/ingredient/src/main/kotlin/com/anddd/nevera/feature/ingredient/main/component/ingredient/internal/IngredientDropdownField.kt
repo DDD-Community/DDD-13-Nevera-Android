@@ -21,6 +21,13 @@ import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.ingredient.R
 
+/**
+ * 드롭다운 선택 필드 행 (카테고리 / 보관 방법 공통)
+ *
+ * 레이블 + 선택 영역(배경 surfaceSecondary) + ChevronDown 아이콘으로 구성됩니다.
+ * [value]가 null이면 "선택" placeholder를 dim 색상으로 표시합니다.
+ * 탭 시 [onClick]을 호출하며, 바텀시트 표시 여부는 호출 측에서 관리합니다.
+ */
 @Composable
 internal fun IngredientDropdownField(
     @StringRes labelResId: Int,
@@ -28,16 +35,14 @@ internal fun IngredientDropdownField(
     onClick: () -> Unit,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
             .padding(horizontal = NeveraTheme.spacing.padding16),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IngredientFieldLabel(labelResId)
         Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap8))
         Row(
-            modifier = Modifier
-                .weight(1f)
+            modifier = Modifier.weight(1f)
                 .clip(RoundedCornerShape(NeveraTheme.radius.small))
                 .background(NeveraTheme.colors.surfaceSecondary)
                 .clickable(onClick = onClick)
@@ -49,16 +54,16 @@ internal fun IngredientDropdownField(
         ) {
             Text(
                 text = value ?: stringResource(R.string.ingredient_item_placeholder_select),
-                style = NeveraTheme.typography.bodyMedium,
-                color = if (value != null) NeveraTheme.colors.textPrimary
-                        else NeveraTheme.colors.textTertiary,
                 modifier = Modifier.weight(1f),
+                color = if (value != null) NeveraTheme.colors.textPrimary
+                else NeveraTheme.colors.textTertiary,
+                style = NeveraTheme.typography.bodyMedium,
             )
             Icon(
                 painter = NeveraIcons.ChevronSmallDown,
                 contentDescription = null,
-                tint = NeveraTheme.colors.iconSecondary,
                 modifier = Modifier.size(NeveraTheme.iconSize.small),
+                tint = NeveraTheme.colors.iconSecondary,
             )
         }
     }

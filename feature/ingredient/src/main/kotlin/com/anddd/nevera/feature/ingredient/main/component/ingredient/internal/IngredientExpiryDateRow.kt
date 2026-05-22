@@ -23,6 +23,13 @@ import com.anddd.nevera.feature.ingredient.R
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+/**
+ * 유통기한 선택 필드 행
+ *
+ * 레이블 + 날짜 영역(배경 surfaceSecondary) + ChevronRight 아이콘으로 구성됩니다.
+ * [expiryDate]가 null이면 "날짜 선택" placeholder를 dim 색상으로 표시합니다.
+ * 탭 시 [onClick]을 호출하며, [NeveraDatePickerDialog] 표시 여부는 호출 측에서 관리합니다.
+ */
 @Composable
 internal fun IngredientExpiryDateRow(
     expiryDate: LocalDate?,
@@ -51,18 +58,17 @@ internal fun IngredientExpiryDateRow(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = expiryDate?.format(dateFormatter)
-                       ?: stringResource(R.string.ingredient_item_placeholder_date),
-                style = NeveraTheme.typography.bodyMedium,
-                color = if (expiryDate != null) NeveraTheme.colors.textPrimary
-                        else NeveraTheme.colors.textTertiary,
+                text = expiryDate?.format(dateFormatter) ?: stringResource(R.string.ingredient_item_placeholder_date),
                 modifier = Modifier.weight(1f),
+                color = if (expiryDate != null) NeveraTheme.colors.textPrimary
+                else NeveraTheme.colors.textTertiary,
+                style = NeveraTheme.typography.bodyMedium,
             )
             Icon(
                 painter = NeveraIcons.ChevronSmallRight,
                 contentDescription = null,
-                tint = NeveraTheme.colors.iconSecondary,
                 modifier = Modifier.size(NeveraTheme.iconSize.small),
+                tint = NeveraTheme.colors.iconSecondary,
             )
         }
     }

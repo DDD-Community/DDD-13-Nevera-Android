@@ -17,14 +17,19 @@ import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextFieldSuf
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.ingredient.R
 
+/**
+ * 금액 필드 행
+ *
+ * 레이블(금액) + 숫자 전용 [NeveraTextField] + "원" suffix로 구성됩니다.
+ * 0 입력 또는 빈 값은 0으로 처리됩니다.
+ */
 @Composable
 internal fun IngredientCostField(
     cost: Int,
     onCostChanged: (Int) -> Unit,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
             .padding(horizontal = NeveraTheme.spacing.padding16),
         verticalAlignment = Alignment.CenterVertically,
     ) {

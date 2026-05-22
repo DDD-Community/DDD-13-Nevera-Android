@@ -25,6 +25,12 @@ import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.ingredient.R
 
+/**
+ * 카드 헤더 행
+ *
+ * 원형 체크박스 + 식재료명(말줄임) + 편집 아이콘으로 구성됩니다.
+ * 식재료명~편집 아이콘 영역 하단에 border 라인이 표시됩니다.
+ */
 @Composable
 internal fun IngredientHeaderRow(
     name: String,
@@ -33,8 +39,7 @@ internal fun IngredientHeaderRow(
     onEditClick: () -> Unit,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
             .heightIn(IngredientItemCardDimension.HeaderHeight)
             .padding(horizontal = NeveraTheme.spacing.gap16),
         verticalAlignment = Alignment.CenterVertically,
@@ -45,8 +50,7 @@ internal fun IngredientHeaderRow(
                 else R.drawable.ic_checkbox_check_disabled_24
             ),
             contentDescription = null,
-            modifier = Modifier
-                .size(NeveraTheme.iconSize.medium)
+            modifier = Modifier.size(NeveraTheme.iconSize.medium)
                 .toggleable(
                     value = isSelected,
                     role = Role.Checkbox,
@@ -56,8 +60,7 @@ internal fun IngredientHeaderRow(
         Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap12))
         val borderColor = NeveraTheme.colors.borderNormal
         Row(
-            modifier = Modifier
-                .weight(1f)
+            modifier = Modifier.weight(1f)
                 .heightIn(IngredientItemCardDimension.NameRowHeight)
                 .drawBehind {
                     drawLine(
@@ -71,11 +74,11 @@ internal fun IngredientHeaderRow(
         ) {
             Text(
                 text = name,
-                style = NeveraTheme.typography.titleLarge,
-                color = NeveraTheme.colors.textSecondary,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f),
+                color = NeveraTheme.colors.textSecondary,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
+                style = NeveraTheme.typography.titleLarge,
             )
             IconButton(
                 onClick = onEditClick,
