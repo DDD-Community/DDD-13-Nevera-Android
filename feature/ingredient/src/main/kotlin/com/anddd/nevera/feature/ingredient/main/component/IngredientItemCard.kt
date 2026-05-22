@@ -38,6 +38,7 @@ import com.anddd.nevera.core.designsystem.component.datepicker.NeveraDatePickerD
 import com.anddd.nevera.core.designsystem.component.stepper.NeveraQuantityStepper
 import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextField
 import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextFieldConfig
+import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextFieldSuffix
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.core.designsystem.ui.theme.shadow.NeveraShadow
@@ -134,16 +135,11 @@ fun IngredientItemCard(
                     },
                     modifier = Modifier.weight(1f),
                     useIcon = false,
+                    suffix = { NeveraTextFieldSuffix(stringResource(R.string.ingredient_item_cost_unit)) },
                     config = NeveraTextFieldConfig(
                         placeholder = "0",
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     ),
-                )
-                Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap4))
-                Text(
-                    text = stringResource(R.string.ingredient_item_cost_unit),
-                    style = NeveraTheme.typography.bodyMedium,
-                    color = NeveraTheme.colors.textPrimary,
                 )
             }
 
