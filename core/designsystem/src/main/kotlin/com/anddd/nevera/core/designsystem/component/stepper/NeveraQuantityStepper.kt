@@ -29,9 +29,10 @@ import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
  * 수량 조절 Stepper (Stateless)
  * 상태 관리는 호출 측에서 담당
  *
- * @param quantity    현재 수량
- * @param onDecrease  감소 버튼 탭 콜백
- * @param onIncrease  증가 버튼 탭 콜백
+ * @param quantity    현재 수량 — 호출 측에서 [minQuantity]..[maxQuantity] 범위를 보장해야 함.
+ *                    범위를 벗어난 값이 전달되면 해당 방향 버튼이 비활성화되어 콜백이 호출되지 않음.
+ * @param onDecrease  감소 버튼 탭 콜백 — [quantity] > [minQuantity] 일 때만 호출됨
+ * @param onIncrease  증가 버튼 탭 콜백 — [quantity] < [maxQuantity] 일 때만 호출됨
  * @param modifier    외부 Modifier
  * @param minQuantity 최솟값 (기본 1) — 이 값 이하면 감소 버튼 비활성
  * @param maxQuantity 최댓값 (기본 999) — 이 값 이상이면 증가 버튼 비활성
@@ -45,9 +46,8 @@ fun NeveraQuantityStepper(
     minQuantity: Int = 1,
     maxQuantity: Int = 999,
 ) {
-    val safeQuantity = quantity.coerceIn(minQuantity, maxQuantity)
-    val canDecrease = safeQuantity > minQuantity
-    val canIncrease = safeQuantity < maxQuantity
+    val canDecrease = quantity > minQuantity
+    val canIncrease = quantity < maxQuantity
 
     Row(
         modifier = modifier.height(36.dp)
@@ -74,7 +74,7 @@ fun NeveraQuantityStepper(
         }
 
         Text(
-            text = safeQuantity.toString(),
+            text = quantity.toString(),
             modifier = Modifier.widthIn(min = 18.dp),
             style = NeveraTheme.typography.titleSmall,
             color = NeveraTheme.colors.textTertiary,
