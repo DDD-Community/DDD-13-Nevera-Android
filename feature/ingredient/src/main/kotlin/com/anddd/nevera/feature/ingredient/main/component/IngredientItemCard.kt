@@ -60,7 +60,9 @@ import java.time.format.DateTimeFormatter
 private object IngredientItemCardDimension {
     val HeaderHeight = 67.dp
     val NameRowHeight = 35.dp
+    val QuantityRowHeight = 48.dp
     val BorderStrokeWidth = 1.dp
+    val FieldLabelWidth = 96.dp
 }
 
 /**
@@ -98,67 +100,35 @@ fun IngredientItemCard(
         color = NeveraTheme.colors.surfacePrimary,
         shape = RoundedCornerShape(NeveraTheme.radius.medium),
     ) {
-        Column {
+        Column(
+            modifier = Modifier.padding(bottom = NeveraTheme.spacing.gap16),
+        ) {
             // 헤더: 체크박스 + 식재료명 + 편집 아이콘
-            HeaderRow(
+            IngredientHeaderRow(
                 name = item.name,
                 isSelected = item.isSelected,
                 onSelectionChanged = onSelectionChanged,
                 onEditClick = { showNameEditDialog = true },
             )
 
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = NeveraTheme.spacing.padding8),
-                color = NeveraTheme.colors.dividerNormal,
-            )
-
             // 수량
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                FieldLabel(R.string.ingredient_item_label_quantity)
-                Spacer(modifier = Modifier.weight(1f))
-                NeveraQuantityStepper(
-                    quantity = item.quantity,
-                    onDecrease = {
-                        onItemChanged(item.copy(quantity = (item.quantity - 1).coerceAtLeast(1)))
-                    },
-                    onIncrease = {
-                        onItemChanged(item.copy(quantity = item.quantity + 1))
-                    },
-                )
-            }
+            IngredientQuantityField(
+                quantity = item.quantity,
+                onQuantityChanged = { onItemChanged(item.copy(quantity = it)) },
+            )
 
             Spacer(modifier = Modifier.size(NeveraTheme.spacing.gap8))
 
             // 금액
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                FieldLabel(R.string.ingredient_item_label_cost)
-                Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap8))
-                NeveraTextField(
-                    value = item.cost.takeIf { it > 0 }?.toString() ?: "",
-                    onValueChange = { input ->
-                        val cost = input.filter { it.isDigit() }.toIntOrNull() ?: 0
-                        onItemChanged(item.copy(cost = cost))
-                    },
-                    modifier = Modifier.weight(1f),
-                    useIcon = false,
-                    suffix = { NeveraTextFieldSuffix(stringResource(R.string.ingredient_item_cost_unit)) },
-                    config = NeveraTextFieldConfig(
-                        placeholder = "0",
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    ),
-                )
-            }
+            IngredientCostField(
+                cost = item.cost,
+                onCostChanged = { onItemChanged(item.copy(cost = it)) },
+            )
 
             Spacer(modifier = Modifier.size(NeveraTheme.spacing.gap8))
 
             // 카테고리
-            DropdownField(
+            IngredientDropdownField(
                 labelResId = R.string.ingredient_item_label_category,
                 value = item.category?.displayName(),
                 onClick = { showCategorySheet = true },
@@ -167,7 +137,7 @@ fun IngredientItemCard(
             Spacer(modifier = Modifier.size(NeveraTheme.spacing.gap8))
 
             // 보관 방법
-            DropdownField(
+            IngredientDropdownField(
                 labelResId = R.string.ingredient_item_label_location,
                 value = item.location?.displayName(),
                 onClick = { showLocationSheet = true },
@@ -176,7 +146,7 @@ fun IngredientItemCard(
             Spacer(modifier = Modifier.size(NeveraTheme.spacing.gap8))
 
             // 유통기한
-            ExpiryDateRow(
+            IngredientExpiryDateRow(
                 expiryDate = item.expiryDate,
                 onClick = { showDatePicker = true },
             )
@@ -218,7 +188,7 @@ fun IngredientItemCard(
     }
 
     if (showNameEditDialog) {
-        NameEditDialog(
+        IngredientNameEditDialog(
             currentName = item.name,
             onConfirm = { newName ->
                 if (newName.isNotBlank()) onItemChanged(item.copy(name = newName.trim()))
@@ -230,7 +200,7 @@ fun IngredientItemCard(
 }
 
 @Composable
-private fun HeaderRow(
+private fun IngredientHeaderRow(
     name: String,
     isSelected: Boolean,
     onSelectionChanged: (Boolean) -> Unit,
@@ -294,25 +264,80 @@ private fun HeaderRow(
 }
 
 @Composable
-private fun FieldLabel(@StringRes resId: Int) {
+private fun IngredientQuantityField(
+    quantity: Int,
+    onQuantityChanged: (Int) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(IngredientItemCardDimension.QuantityRowHeight)
+            .padding(horizontal = NeveraTheme.spacing.padding16),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        IngredientFieldLabel(R.string.ingredient_item_label_quantity)
+        Spacer(modifier = Modifier.weight(1f))
+        NeveraQuantityStepper(
+            quantity = quantity,
+            onDecrease = { onQuantityChanged((quantity - 1).coerceAtLeast(1)) },
+            onIncrease = { onQuantityChanged(quantity + 1) },
+        )
+    }
+}
+
+@Composable
+private fun IngredientCostField(
+    cost: Int,
+    onCostChanged: (Int) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = NeveraTheme.spacing.padding16),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        IngredientFieldLabel(R.string.ingredient_item_label_cost)
+        Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap8))
+        NeveraTextField(
+            value = cost.takeIf { it > 0 }?.toString() ?: "0",
+            onValueChange = { input ->
+                val newCost = input.filter { it.isDigit() }.toIntOrNull() ?: 0
+                onCostChanged(newCost)
+            },
+            modifier = Modifier.weight(1f),
+            useIcon = false,
+            suffix = { NeveraTextFieldSuffix(stringResource(R.string.ingredient_item_cost_unit)) },
+            config = NeveraTextFieldConfig(
+                placeholder = "0",
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            ),
+        )
+    }
+}
+
+@Composable
+private fun IngredientFieldLabel(@StringRes resId: Int) {
     Text(
         text = stringResource(resId),
-        style = NeveraTheme.typography.bodyMedium,
-        color = NeveraTheme.colors.textSecondary,
+        style = NeveraTheme.typography.titleXSmall,
+        color = NeveraTheme.colors.textCaption,
+        modifier = Modifier.width(IngredientItemCardDimension.FieldLabelWidth),
     )
 }
 
 @Composable
-private fun DropdownField(
+private fun IngredientDropdownField(
     @StringRes labelResId: Int,
     value: String?,
     onClick: () -> Unit,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = NeveraTheme.spacing.padding16),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        FieldLabel(labelResId)
+        IngredientFieldLabel(labelResId)
         Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap8))
         Row(
             modifier = Modifier
@@ -344,17 +369,19 @@ private fun DropdownField(
 }
 
 @Composable
-private fun ExpiryDateRow(
+private fun IngredientExpiryDateRow(
     expiryDate: LocalDate?,
     onClick: () -> Unit,
 ) {
     val dateFormatter = remember { DateTimeFormatter.ofPattern("yyyy.MM.dd") }
 
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = NeveraTheme.spacing.padding16),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        FieldLabel(R.string.ingredient_item_label_expiry)
+        IngredientFieldLabel(R.string.ingredient_item_label_expiry)
         Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap8))
         Row(
             modifier = Modifier
@@ -392,7 +419,7 @@ private fun ExpiryDateRow(
  * TODO: 디자이너와 추가 논의 후 인라인 편집 방식으로 개선 예정
  */
 @Composable
-private fun NameEditDialog(
+private fun IngredientNameEditDialog(
     currentName: String,
     onConfirm: (String) -> Unit,
     onDismiss: () -> Unit,
