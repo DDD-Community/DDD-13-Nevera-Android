@@ -23,21 +23,5 @@ sealed interface FoodCategory {
         val entries: List<FoodCategory> = listOf(
             Vegetable, Fruit, MeatEgg, Seafood, Dairy, Sauce, Beverage, Processed, Other,
         )
-
-        /**
-         * API 응답 category 값 → FoodCategory 변환
-         * 매핑 실패 시 [Other] 반환
-         */
-        fun fromApiValue(apiValue: String): FoodCategory = when (apiValue) {
-            "VEGETABLE" -> Vegetable
-            "FRUIT" -> Fruit
-            "MEAT", "EGG" -> MeatEgg
-            "SEAFOOD" -> Seafood
-            "DAIRY" -> Dairy
-            "SAUCE", "SEASONING" -> Sauce
-            "BEVERAGE" -> Beverage
-            "CANDRY", "PROCESSED" -> Processed
-            else -> Other
-        }
     }
 }

@@ -14,15 +14,5 @@ sealed interface StorageLocation {
     companion object {
         /** 화면에 표시할 모든 보관 방법 목록 (선언 순서 유지) */
         val entries: List<StorageLocation> = listOf(Fridge, Freezer, Pantry)
-
-        /**
-         * API 응답 location 값 → StorageLocation 변환
-         * 매핑 실패 시 [Pantry] 반환
-         */
-        fun fromApiValue(apiValue: String): StorageLocation = when (apiValue) {
-            "FRIDGE" -> Fridge
-            "FREEZER" -> Freezer
-            else -> Pantry
-        }
     }
 }
