@@ -4,12 +4,15 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -89,9 +92,7 @@ fun IngredientItemCard(
         color = NeveraTheme.colors.surfacePrimary,
         shape = RoundedCornerShape(NeveraTheme.radius.medium),
     ) {
-        Column(
-            modifier = Modifier.padding(NeveraTheme.spacing.padding16),
-        ) {
+        Column {
             // 헤더: 체크박스 + 식재료명 + 편집 아이콘
             HeaderRow(
                 name = item.name,
@@ -230,7 +231,9 @@ private fun HeaderRow(
     onEditClick: () -> Unit,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
+            .heightIn(67.dp)
+            .padding(horizontal = NeveraTheme.spacing.gap16),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
@@ -239,30 +242,44 @@ private fun HeaderRow(
                 else R.drawable.ic_checkbox_check_disabled_24
             ),
             contentDescription = null,
-            modifier = Modifier
-                .size(24.dp)
+            modifier = Modifier.size(NeveraTheme.iconSize.medium)
                 .toggleable(
                     value = isSelected,
                     role = Role.Checkbox,
                     onValueChange = onSelectionChanged,
                 ),
         )
-        Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap8))
-        Text(
-            text = name,
-            style = NeveraTheme.typography.titleSmall,
-            color = NeveraTheme.colors.textPrimary,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(1f),
-        )
-        IconButton(onClick = onEditClick) {
-            Icon(
-                painter = NeveraIcons.Edit,
-                contentDescription = stringResource(R.string.ingredient_item_edit_icon_description),
-                tint = NeveraTheme.colors.iconSecondary,
-                modifier = Modifier.size(NeveraTheme.iconSize.medium),
+        Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap12))
+        val borderColor = NeveraTheme.colors.borderNormal
+        Row(
+            modifier = Modifier
+                .weight(1f)
+                .drawBehind {
+                    drawLine(
+                        color = borderColor,
+                        start = Offset(0f, size.height),
+                        end = Offset(size.width, size.height),
+                        strokeWidth = 1.dp.toPx(),
+                    )
+                },
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = name,
+                style = NeveraTheme.typography.titleLarge,
+                color = NeveraTheme.colors.textSecondary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f),
             )
+            IconButton(onClick = onEditClick) {
+                Icon(
+                    painter = NeveraIcons.Edit,
+                    contentDescription = stringResource(R.string.ingredient_item_edit_icon_description),
+                    tint = NeveraTheme.colors.iconCaption,
+                    modifier = Modifier.size(NeveraTheme.iconSize.medium),
+                )
+            }
         }
     }
 }
