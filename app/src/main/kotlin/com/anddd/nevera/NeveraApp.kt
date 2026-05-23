@@ -17,10 +17,8 @@ import com.anddd.nevera.core.designsystem.component.navigationbar.NeveraNavigati
 import com.anddd.nevera.core.designsystem.component.navigationbar.NeveraNavigationBarItem
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.feature.auth.main.google.GoogleAuthClient
-import com.anddd.nevera.feature.auth.main.navigation.LoginRoute
-import com.anddd.nevera.feature.auth.main.navigation.loginScreen
-import com.anddd.nevera.feature.auth.signup.navigation.SignupRoute
-import com.anddd.nevera.feature.auth.signup.navigation.signupScreen
+import com.anddd.nevera.feature.auth.navigation.AuthRoute
+import com.anddd.nevera.feature.auth.navigation.authNavGraph
 import com.anddd.nevera.feature.main.home.navigation.HomeRoute
 import com.anddd.nevera.feature.mypage.appinfo.navigation.AppInfoRoute
 import com.anddd.nevera.feature.mypage.appinfo.navigation.appInfoScreen
@@ -81,7 +79,7 @@ fun NeveraApp(googleAuthClient: GoogleAuthClient) {
         ) {
             splashScreen(
                 onNavigateToLogin = {
-                    navController.navigate(LoginRoute) {
+                    navController.navigate(AuthRoute) {
                         popUpTo<SplashRoute> { inclusive = true }
                     }
                 },
@@ -91,20 +89,13 @@ fun NeveraApp(googleAuthClient: GoogleAuthClient) {
                     }
                 },
             )
-            loginScreen(
+            authNavGraph(
                 googleAuthClient = googleAuthClient,
+                navController = navController,
                 onNavigateToHome = {
                     navController.navigate(MainRoute) {
-                        popUpTo<LoginRoute> { inclusive = true }
+                        popUpTo<AuthRoute> { inclusive = true }
                     }
-                },
-                onNavigateToSignup = {
-                    navController.navigate(SignupRoute)
-                },
-            )
-            signupScreen(
-                onNavigateToLogin = {
-                    navController.popBackStack()
                 }
             )
             mainNavGraph(
@@ -125,7 +116,7 @@ fun NeveraApp(googleAuthClient: GoogleAuthClient) {
                     navController.popBackStack()
                 },
                 onNavigateToLogin = {
-                    navController.navigate(LoginRoute) {
+                    navController.navigate(AuthRoute) {
                         popUpTo<MainRoute> { inclusive = true }
                     }
                 },
