@@ -62,7 +62,6 @@ fun NeveraApp(googleAuthClient: GoogleAuthClient) {
 }
 
 
-@Suppress("UNCHECKED_CAST")
 private fun NavDestination?.matchesRoute(routeClass: KClass<*>): Boolean {
     return this?.hasRoute(routeClass) == true
 }

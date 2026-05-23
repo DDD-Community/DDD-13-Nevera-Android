@@ -8,19 +8,12 @@ import com.anddd.nevera.feature.main.home.navigation.HomeRoute
 import com.anddd.nevera.feature.mypage.navigation.MyPageRoute
 import kotlin.reflect.KClass
 
-enum class TopLevelDestination(
-    val route: Any,
-    val routeClass: KClass<*>,
-) {
-    Home(
-        route = HomeRoute,
-        routeClass = HomeRoute::class,
-    ),
+enum class TopLevelDestination(val route: Any) {    // TODO Any 타입
+    Home(route = HomeRoute),
     // Todo 냉장고 추가
-    MyPage(
-        route = MyPageRoute,
-        routeClass = MyPageRoute::class
-    )
+    MyPage(route = MyPageRoute);
+
+    val routeClass: KClass<*> get() = route::class
 }
 
 @Composable

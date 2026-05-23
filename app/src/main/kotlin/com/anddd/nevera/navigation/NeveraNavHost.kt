@@ -47,7 +47,7 @@ fun NeveraNavHost(
             navController = navController,
             onNavigateToHome = {
                 navController.navigate(HomeRoute) {
-                    popUpTo(SplashRoute) { inclusive = true }
+                    popUpTo(AuthGraphRoute) { inclusive = true }
                 }
             }
         )
@@ -60,5 +60,6 @@ fun NeveraNavHost(
                 }
             }
         )
+        // FridgeNavGraph()
     }
 }
