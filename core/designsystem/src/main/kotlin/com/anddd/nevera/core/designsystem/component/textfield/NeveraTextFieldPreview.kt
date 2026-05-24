@@ -493,6 +493,8 @@ private fun PreviewNeveraTextField_TrailingIcon_Negative_LongText() {
     }
 }
 
+// endregion
+
 // region — NeveraTextField (disabled + 텍스트 말줄임)
 
 @Preview(name = "NeveraTextField - disabled + trailingIcon + Long Text (ellipsis)", showBackground = true, widthDp = 360)
@@ -508,7 +510,7 @@ private fun PreviewNeveraTextField_Disabled_TrailingIcon_LongText() {
                     painter = NeveraIcons.Search,
                     contentDescription = "검색",
                     modifier = Modifier.size(NeveraTheme.iconSize.medium),
-                    tint = NeveraTheme.colors.iconPrimary,
+                    tint = NeveraTheme.colors.iconDisabled,
                 )
             },
             config = NeveraTextFieldConfig(
@@ -532,7 +534,7 @@ private fun PreviewNeveraTextField_Disabled_TrailingIcon_Positive_LongText() {
                     painter = NeveraIcons.Search,
                     contentDescription = "검색",
                     modifier = Modifier.size(NeveraTheme.iconSize.medium),
-                    tint = NeveraTheme.colors.iconPrimary,
+                    tint = NeveraTheme.colors.iconDisabled,
                 )
             },
             config = NeveraTextFieldConfig(
@@ -557,7 +559,7 @@ private fun PreviewNeveraTextField_Disabled_TrailingIcon_Negative_LongText() {
                     painter = NeveraIcons.Search,
                     contentDescription = "검색",
                     modifier = Modifier.size(NeveraTheme.iconSize.medium),
-                    tint = NeveraTheme.colors.iconPrimary,
+                    tint = NeveraTheme.colors.iconDisabled,
                 )
             },
             config = NeveraTextFieldConfig(
