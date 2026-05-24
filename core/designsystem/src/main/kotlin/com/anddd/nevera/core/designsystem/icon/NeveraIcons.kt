@@ -48,6 +48,14 @@ object NeveraIcons {
         @Composable get() = painterResource(R.drawable.ic_user)
     val NavMyFilled: Painter
         @Composable get() = painterResource(R.drawable.ic_user_filled)
+    val ChevronSmallLeft: Painter
+        @Composable get() = painterResource(R.drawable.ic_chevron_left_small)
+    val ChevronSmallUp: Painter
+        @Composable get() = painterResource(R.drawable.ic_chevron_up_small)
+    val ChevronSmallRight: Painter
+        @Composable get() = painterResource(R.drawable.ic_chevron_right_small)
+    val ChevronSmallDown: Painter
+        @Composable get() = painterResource(R.drawable.ic_chevron_down_small)
     val CircleHelp: Painter
         @Composable get() = painterResource(R.drawable.ic_circle_help)
     val EmptyStateWarning: Painter
