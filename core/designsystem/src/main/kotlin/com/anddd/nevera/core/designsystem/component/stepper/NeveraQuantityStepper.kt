@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.annotation.DrawableRes
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -68,19 +69,12 @@ fun NeveraQuantityStepper(
             ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        IconButton(
+        StepperIconButton(
             onClick = onDecrease,
-            modifier = Modifier.size(StepperDimension.ButtonSize),
             enabled = canDecrease,
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_stepper_minus_active),
-                contentDescription = stringResource(R.string.nevera_stepper_decrease),
-                tint = if (canDecrease) NeveraTheme.colors.iconPrimary
-                else NeveraTheme.colors.iconDisabled,
-                modifier = Modifier.size(NeveraTheme.iconSize.xxSmall),
-            )
-        }
+            iconRes = R.drawable.ic_stepper_minus_active,
+            contentDescription = stringResource(R.string.nevera_stepper_decrease),
+        )
 
         Text(
             text = quantity.toString(),
@@ -90,19 +84,34 @@ fun NeveraQuantityStepper(
             textAlign = TextAlign.Center,
         )
 
-        IconButton(
+        StepperIconButton(
             onClick = onIncrease,
-            modifier = Modifier.size(StepperDimension.ButtonSize),
             enabled = canIncrease,
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_stepper_plus_active),
-                contentDescription = stringResource(R.string.nevera_stepper_increase),
-                tint = if (canIncrease) NeveraTheme.colors.iconPrimary
-                else NeveraTheme.colors.iconDisabled,
-                modifier = Modifier.size(NeveraTheme.iconSize.xxSmall),
-            )
-        }
+            iconRes = R.drawable.ic_stepper_plus_active,
+            contentDescription = stringResource(R.string.nevera_stepper_increase),
+        )
+    }
+}
+
+@Composable
+private fun StepperIconButton(
+    onClick: () -> Unit,
+    enabled: Boolean,
+    @DrawableRes iconRes: Int,
+    contentDescription: String,
+) {
+    IconButton(
+        onClick = onClick,
+        modifier = Modifier.size(StepperDimension.ButtonSize),
+        enabled = enabled,
+    ) {
+        Icon(
+            painter = painterResource(iconRes),
+            contentDescription = contentDescription,
+            tint = if (enabled) NeveraTheme.colors.iconPrimary
+            else NeveraTheme.colors.iconDisabled,
+            modifier = Modifier.size(NeveraTheme.iconSize.xxSmall),
+        )
     }
 }
 

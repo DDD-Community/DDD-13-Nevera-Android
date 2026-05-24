@@ -73,7 +73,8 @@ fun NeveraDatePickerDialog(
     DatePickerDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
-            TextButton(
+            DatePickerButton(
+                text = stringResource(R.string.nevera_date_picker_confirm),
                 onClick = {
                     datePickerState.selectedDateMillis?.let { millis ->
                         onDateSelected(
@@ -85,26 +86,34 @@ fun NeveraDatePickerDialog(
                     onDismiss()
                 },
                 enabled = datePickerState.selectedDateMillis != null,
-            ) {
-                Text(
-                    text = stringResource(R.string.nevera_date_picker_confirm),
-                    color = NeveraTheme.colors.primaryNormal,
-                )
-            }
+            )
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(
-                    text = stringResource(R.string.nevera_date_picker_dismiss),
-                    color = NeveraTheme.colors.primaryNormal,
-                )
-            }
+            DatePickerButton(
+                text = stringResource(R.string.nevera_date_picker_dismiss),
+                onClick = onDismiss,
+            )
         },
         colors = colors,
     ) {
         DatePicker(
             state = datePickerState,
             colors = colors,
+        )
+    }
+}
+
+@Composable
+private fun DatePickerButton(
+    text: String,
+    onClick: () -> Unit,
+    enabled: Boolean = true,
+) {
+    TextButton(onClick = onClick, enabled = enabled) {
+        Text(
+            text = text,
+            color = NeveraTheme.colors.primaryNormal,
+            style = NeveraTheme.typography.titleSmall,
         )
     }
 }
