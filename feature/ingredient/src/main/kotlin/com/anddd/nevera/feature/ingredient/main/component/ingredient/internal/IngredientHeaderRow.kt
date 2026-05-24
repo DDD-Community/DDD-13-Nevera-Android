@@ -1,7 +1,6 @@
 package com.anddd.nevera.feature.ingredient.main.component.ingredient.internal
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,17 +11,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextField
+import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextFieldConfig
+import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextFieldType
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.ingredient.R
@@ -60,41 +58,30 @@ internal fun IngredientHeaderRow(
                 ),
         )
         Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap12))
-        val borderColor = NeveraTheme.colors.borderNormal
-        Row(
-            modifier = Modifier.weight(1f)
-                .heightIn(IngredientItemCardDimension.NameRowHeight)
-                .drawBehind {
-                    drawLine(
-                        color = borderColor,
-                        start = Offset(0f, size.height),
-                        end = Offset(size.width, size.height),
-                        strokeWidth = IngredientItemCardDimension.BorderStrokeWidth.toPx(),
+        NeveraTextField(
+            value = name,
+            onValueChange = {},
+            modifier = Modifier.weight(1f),
+            enabled = isSelected,
+            useIcon = false,
+            trailingIcon = {
+                IconButton(
+                    onClick = onEditClick,
+                    modifier = Modifier.size(NeveraTheme.iconSize.xLarge),
+                ) {
+                    Icon(
+                        painter = NeveraIcons.Edit,
+                        contentDescription = stringResource(R.string.ingredient_item_edit_icon_description),
+                        modifier = Modifier.size(NeveraTheme.iconSize.medium),
+                        tint = NeveraTheme.colors.iconCaption,
                     )
-                },
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = name,
-                modifier = Modifier.weight(1f),
-                color = if (isSelected) NeveraTheme.colors.textSecondary
-                else NeveraTheme.colors.textDisabled,
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1,
-                style = NeveraTheme.typography.titleLarge,
-            )
-            IconButton(
-                onClick = onEditClick,
-                modifier = Modifier.size(NeveraTheme.iconSize.xLarge),
-            ) {
-                Icon(
-                    painter = NeveraIcons.Edit,
-                    contentDescription = stringResource(R.string.ingredient_item_edit_icon_description),
-                    modifier = Modifier.size(NeveraTheme.iconSize.medium),
-                    tint = NeveraTheme.colors.iconCaption,
-                )
-            }
-        }
+                }
+            },
+            config = NeveraTextFieldConfig(
+                type = NeveraTextFieldType.Underline,
+                singleLine = true,
+            ),
+        )
     }
 }
 
