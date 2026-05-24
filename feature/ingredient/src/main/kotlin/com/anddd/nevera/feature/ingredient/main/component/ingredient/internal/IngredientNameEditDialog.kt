@@ -27,7 +27,7 @@ internal fun IngredientNameEditDialog(
     onConfirm: (String) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    var editingName by remember { mutableStateOf(currentName) }
+    var editingName by remember(currentName) { mutableStateOf(currentName) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
