@@ -39,7 +39,8 @@ internal fun IngredientCostField(
         NeveraTextField(
             value = cost.takeIf { it > 0 }?.toString() ?: "0",
             onValueChange = { input ->
-                val newCost = input.filter { it.isDigit() }.toIntOrNull() ?: 0
+                val filtered = input.filter { it.isDigit() }.take(9) // Int 오버플로우 방지
+                val newCost = filtered.toIntOrNull() ?: 0
                 onCostChanged(newCost)
             },
             modifier = Modifier.weight(1f),
