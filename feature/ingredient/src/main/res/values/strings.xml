@@ -29,7 +29,7 @@
     <string name="ingredient_item_edit_name_placeholder">식재료 이름을 입력해주세요</string>
     <string name="ingredient_item_edit_confirm">확인</string>
     <string name="ingredient_item_edit_dismiss">취소</string>
-    <string name="ingredient_item_edit_icon_description">식재료 이름 편집</string>
+    <string name="ingredient_item_edit_icon_description">식재료 이름 수정</string>
     <string name="ingredient_item_label_quantity">수량</string>
     <string name="ingredient_item_label_cost">금액</string>
     <string name="ingredient_item_label_category">카테고리</string>
