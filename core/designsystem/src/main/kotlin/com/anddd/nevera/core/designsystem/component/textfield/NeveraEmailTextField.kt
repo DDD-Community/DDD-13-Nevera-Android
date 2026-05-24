@@ -85,7 +85,6 @@ fun NeveraEmailTextField(
         modifier = modifier,
         enabled = enabled,
         useIcon = useIcon,
-        isPassword = false,
         autoMoveCursor = autoMoveCursor,
         suffix = suffix,
         keyboardActions = keyboardActions,

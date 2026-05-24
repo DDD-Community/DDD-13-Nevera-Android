@@ -1,9 +1,13 @@
 package com.anddd.nevera.core.designsystem.component.textfield
 
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
 // region — NeveraTextField (일반)
@@ -149,6 +153,127 @@ private fun PreviewNeveraTextField_Disabled_WithSuffix() {
             enabled = false,
             suffix = { NeveraTextFieldSuffix("원") },
             config = NeveraTextFieldConfig(heading = "금액"),
+        )
+    }
+}
+
+// endregion
+
+// region — NeveraTextField (trailingIcon)
+
+@Preview(name = "NeveraTextField - trailingIcon Search (empty)", showBackground = true, widthDp = 360)
+@Composable
+private fun PreviewNeveraTextField_TrailingIcon_Search_Empty() {
+    NeveraTheme {
+        NeveraTextField(
+            value = "",
+            onValueChange = {},
+            trailingIcon = {
+                Icon(
+                    painter = NeveraIcons.Search,
+                    contentDescription = "검색",
+                    modifier = Modifier.size(NeveraTheme.iconSize.medium),
+                    tint = NeveraTheme.colors.iconPrimary,
+                )
+            },
+            config = NeveraTextFieldConfig(
+                placeholder = "검색어를 입력하세요",
+            ),
+        )
+    }
+}
+
+@Preview(name = "NeveraTextField - trailingIcon Search (filled)", showBackground = true, widthDp = 360)
+@Composable
+private fun PreviewNeveraTextField_TrailingIcon_Search_Filled() {
+    NeveraTheme {
+        NeveraTextField(
+            value = "냉장고 속 재료",
+            onValueChange = {},
+            trailingIcon = {
+                Icon(
+                    painter = NeveraIcons.Search,
+                    contentDescription = "검색",
+                    modifier = Modifier.size(NeveraTheme.iconSize.medium),
+                    tint = NeveraTheme.colors.iconPrimary,
+                )
+            },
+            config = NeveraTextFieldConfig(
+                heading = "검색",
+                placeholder = "검색어를 입력하세요",
+            ),
+        )
+    }
+}
+
+@Preview(name = "NeveraTextField - trailingIcon Search (disabled)", showBackground = true, widthDp = 360)
+@Composable
+private fun PreviewNeveraTextField_TrailingIcon_Search_Disabled() {
+    NeveraTheme {
+        NeveraTextField(
+            value = "냉장고 속 재료",
+            onValueChange = {},
+            enabled = false,
+            trailingIcon = {
+                Icon(
+                    painter = NeveraIcons.Search,
+                    contentDescription = "검색",
+                    modifier = Modifier.size(NeveraTheme.iconSize.medium),
+                    tint = NeveraTheme.colors.iconDisabled,
+                )
+            },
+            config = NeveraTextFieldConfig(
+                heading = "검색",
+                placeholder = "검색어를 입력하세요",
+            ),
+        )
+    }
+}
+
+@Preview(name = "NeveraTextField - trailingIcon Search (positive)", showBackground = true, widthDp = 360)
+@Composable
+private fun PreviewNeveraTextField_TrailingIcon_Search_Positive() {
+    NeveraTheme {
+        NeveraTextField(
+            value = "냉장고 속 재료",
+            onValueChange = {},
+            trailingIcon = {
+                Icon(
+                    painter = NeveraIcons.Search,
+                    contentDescription = "검색",
+                    modifier = Modifier.size(NeveraTheme.iconSize.medium),
+                    tint = NeveraTheme.colors.iconPrimary,
+                )
+            },
+            config = NeveraTextFieldConfig(
+                heading = "검색",
+                state = NeveraTextFieldState.Positive,
+                description = "검색 가능한 재료입니다",
+            ),
+        )
+    }
+}
+
+@Preview(name = "NeveraTextField - trailingIcon Search (negative)", showBackground = true, widthDp = 360)
+@Composable
+private fun PreviewNeveraTextField_TrailingIcon_Search_Negative() {
+    NeveraTheme {
+        NeveraTextField(
+            value = "ㅁㄴㅇ",
+            onValueChange = {},
+            trailingIcon = {
+                Icon(
+                    painter = NeveraIcons.Search,
+                    contentDescription = "검색",
+                    modifier = Modifier.size(NeveraTheme.iconSize.medium),
+                    tint = NeveraTheme.colors.iconPrimary,
+                )
+            },
+            config = NeveraTextFieldConfig(
+                heading = "검색",
+                state = NeveraTextFieldState.Negative,
+                description = "검색 결과가 없습니다",
+            ),
         )
     }
 }

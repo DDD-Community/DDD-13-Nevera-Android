@@ -2,9 +2,7 @@ package com.anddd.nevera.core.designsystem.component.textfield.internal
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -17,25 +15,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -62,8 +55,9 @@ import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
  *
  * @param textFieldValue 커서·선택 정보를 포함한 현재 입력 상태. String 오버로드에서는 내부 관리됨.
  * @param onTextFieldValueChange 입력 상태(텍스트·커서·선택) 변경 콜백
- * @param useIcon true이면 state에 따라 check/warning 아이콘, 비밀번호 필드에서 eye 아이콘을 trailing에 표시
- * @param isPassword true이면 eye 아이콘 토글과 [PasswordVisualTransformation] 적용
+ * @param useIcon true이면 state에 따라 check/warning 아이콘을 trailing에 표시
+ * @param visualTransformation 텍스트 시각 변환. 비밀번호 필드는 [PasswordVisualTransformation]을 전달한다.
+ * @param trailingIcon trailing 영역에 삽입할 슬롯 람다. check/warning 아이콘 우측에 렌더링된다. null이면 미표시.
  * @param autoMoveCursor 포커스 기반 자동 커서 이동 정책 활성화 여부
  * @param suffix trailing 영역 우측에 렌더링할 추가 컨텐츠. NeveraTextFieldSuffix 활용 권장.
  */
@@ -74,7 +68,8 @@ internal fun NeveraBaseTextField(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     useIcon: Boolean = true,
-    isPassword: Boolean = false,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    trailingIcon: (@Composable () -> Unit)? = null,
     autoMoveCursor: Boolean = true,
     suffix: (@Composable () -> Unit)? = null,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
@@ -83,7 +78,6 @@ internal fun NeveraBaseTextField(
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
     val isActive = textFieldValue.text.isNotEmpty()
-    var eyeVisible by rememberSaveable { mutableStateOf(false) }
 
     AutoMoveCursorEffect(
         enabled = autoMoveCursor,
@@ -91,11 +85,6 @@ internal fun NeveraBaseTextField(
         textFieldValue = textFieldValue,
         onTextFieldValueChange = onTextFieldValueChange,
     )
-
-    val visualTransformation = when {
-        isPassword && !eyeVisible -> PasswordVisualTransformation()
-        else -> VisualTransformation.None
-    }
 
     val borderColor = NeveraTextFieldColors.borderColor(
         type = config.type,
@@ -190,11 +179,8 @@ internal fun NeveraBaseTextField(
                         state = config.state,
                         isActive = isActive,
                         useIcon = useIcon,
-                        isPassword = isPassword,
-                        eyeVisible = eyeVisible,
-                        enabled = enabled,
                         negativeColor = config.negativeColor,
-                        onEyeIconClick = { eyeVisible = !eyeVisible },
+                        trailingIcon = trailingIcon,
                     )
                     suffix?.invoke()
                 }
@@ -218,19 +204,14 @@ private fun TrailingIcons(
     state: NeveraTextFieldState,
     isActive: Boolean,
     useIcon: Boolean,
-    isPassword: Boolean,
-    eyeVisible: Boolean,
-    enabled: Boolean,
     negativeColor: Color,
-    onEyeIconClick: () -> Unit,
+    trailingIcon: (@Composable () -> Unit)?,
 ) {
     val showCheckIcon = useIcon && state == NeveraTextFieldState.Positive && isActive
     val showWarningIcon = useIcon && state == NeveraTextFieldState.Negative
-    val showEyeIcon = useIcon && isPassword
-    if (!showCheckIcon && !showWarningIcon && !showEyeIcon) return
+    if (!showCheckIcon && !showWarningIcon && trailingIcon == null) return
 
     val stateIconColor = NeveraTextFieldColors.stateIconColor(state, negativeColor)
-    val eyeIconColor = NeveraTextFieldColors.eyeIconColor(enabled)
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(NeveraTheme.spacing.gap4),
@@ -252,26 +233,7 @@ private fun TrailingIcons(
                 tint = stateIconColor,
             )
         }
-        if (showEyeIcon) {
-            // IconButton은 Material3 최소 터치 타겟(48dp)을 강제해 필드 높이를 팽창시키므로 Box+clickable로 대체.
-            Box(
-                modifier = Modifier
-                    .size(NeveraTheme.iconSize.medium)
-                    .clip(CircleShape)
-                    .clickable(
-                        enabled = enabled,
-                        onClick = onEyeIconClick,
-                    ),
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(
-                    painter = if (eyeVisible) NeveraIcons.EyeOff else NeveraIcons.Eye,
-                    contentDescription = if (eyeVisible) "비밀번호 숨기기" else "비밀번호 표시",
-                    modifier = Modifier.size(NeveraTheme.iconSize.medium),
-                    tint = eyeIconColor,
-                )
-            }
-        }
+        trailingIcon?.invoke()
     }
 }
 
