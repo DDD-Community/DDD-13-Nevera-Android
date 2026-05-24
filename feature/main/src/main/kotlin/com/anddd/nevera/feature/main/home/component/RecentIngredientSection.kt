@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,23 +36,34 @@ private val TabContainerPadding = 4.dp
 private val TabHeight = 44.dp
 private val EmptyIconSize = 64.dp
 
-@Composable
-fun RecentIngredientSection(
+fun LazyListScope.recentIngredientSection(
     selectedTab: IngredientFilterTab,
     onTabSelected: (IngredientFilterTab) -> Unit,
     onHelpClick: () -> Unit,
-    modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier) {
-        RecentIngredientSectionHeader(onHelpClick = onHelpClick)
+    item(key = "ingredient_header") {
+        RecentIngredientSectionHeader(
+            onHelpClick = onHelpClick,
+            modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding20),
+        )
+    }
+    item(key = "ingredient_header_spacer") {
         Spacer(Modifier.height(NeveraTheme.spacing.gap16))
+    }
+    item(key = "ingredient_tab") {
         IngredientFilterTabRow(
             selectedTab = selectedTab,
             onTabSelected = onTabSelected,
+            modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding20),
         )
+    }
+    item(key = "ingredient_tab_spacer") {
         Spacer(Modifier.height(NeveraTheme.spacing.gap20))
+    }
+    item(key = "ingredient_empty") {
         IngredientEmptyContent()
     }
+    // 향후: items(ingredients, key = { it.id }) { IngredientItem(it) }
 }
 
 @Composable
@@ -182,12 +195,13 @@ private fun IngredientEmptyContent(
 @Composable
 private fun RecentIngredientSectionRescuePreview() {
     NeveraTheme {
-        RecentIngredientSection(
-            selectedTab = IngredientFilterTab.Rescue,
-            onTabSelected = {},
-            onHelpClick = {},
-            modifier = Modifier.padding(20.dp),
-        )
+        LazyColumn {
+            recentIngredientSection(
+                selectedTab = IngredientFilterTab.Rescue,
+                onTabSelected = {},
+                onHelpClick = {},
+            )
+        }
     }
 }
 
@@ -199,11 +213,12 @@ private fun RecentIngredientSectionRescuePreview() {
 @Composable
 private fun RecentIngredientSectionDisposalPreview() {
     NeveraTheme {
-        RecentIngredientSection(
-            selectedTab = IngredientFilterTab.Disposal,
-            onTabSelected = {},
-            onHelpClick = {},
-            modifier = Modifier.padding(20.dp),
-        )
+        LazyColumn {
+            recentIngredientSection(
+                selectedTab = IngredientFilterTab.Disposal,
+                onTabSelected = {},
+                onHelpClick = {},
+            )
+        }
     }
 }

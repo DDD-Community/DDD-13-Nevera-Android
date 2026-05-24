@@ -1,12 +1,12 @@
 package com.anddd.nevera.feature.main.home.component
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -49,42 +49,52 @@ internal fun HomeContent(
                 .fillMaxSize()
                 .padding(innerPadding),
         ) {
-            // TODO replace Column with LazyColumn
-            Column(modifier = Modifier.fillMaxWidth()) {
-                WishBanner(
-                    nickname = uiState.wishUiModel.nickname,
-                    wish = uiState.wishUiModel.wish,
-                    savedMoney = uiState.wishUiModel.savedMoney,
-                    goalMoney = uiState.wishUiModel.goalMoney,
-                    onCreateWish = {},
-                    modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding20),
-                )
-                Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap16))
-                RescueDisposalCostCard(
-                    rescueAmount = uiState.rescueDisposalCostUiModel.rescueAmount,
-                    disposalAmount = uiState.rescueDisposalCostUiModel.rescueAmount,
-                    modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding20),
-                )
-                Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap20))
-                HorizontalDivider(
-                    modifier = Modifier.fillMaxWidth(),
-                    thickness = HorizontalDividerHeight,
-                    color = NeveraTheme.colors.dividerNormal
-                )
-                Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap20))
-                RecentIngredientSection(
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                item(key = "wish_banner") {
+                    WishBanner(
+                        nickname = uiState.wishUiModel.nickname,
+                        wish = uiState.wishUiModel.wish,
+                        savedMoney = uiState.wishUiModel.savedMoney,
+                        goalMoney = uiState.wishUiModel.goalMoney,
+                        onCreateWish = {},
+                        modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding20),
+                    )
+                }
+                item(key = "wish_banner_spacer") {
+                    Spacer(Modifier.height(NeveraTheme.spacing.gap16))
+                }
+                item(key = "cost_card") {
+                    RescueDisposalCostCard(
+                        rescueAmount = uiState.rescueDisposalCostUiModel.rescueAmount,
+                        disposalAmount = uiState.rescueDisposalCostUiModel.disposalAmount,
+                        modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding20),
+                    )
+                }
+                item(key = "cost_card_spacer") {
+                    Spacer(Modifier.height(NeveraTheme.spacing.gap20))
+                }
+                item(key = "divider") {
+                    HorizontalDivider(
+                        modifier = Modifier.fillMaxWidth(),
+                        thickness = HorizontalDividerHeight,
+                        color = NeveraTheme.colors.dividerNormal,
+                    )
+                }
+                item(key = "divider_spacer") {
+                    Spacer(Modifier.height(NeveraTheme.spacing.gap20))
+                }
+                recentIngredientSection(
                     selectedTab = uiState.ingredientFilterTab,
                     onTabSelected = { tab ->
                         onIntent(HomeIntent.RecentIngredientTabClick(tab))
                     },
                     onHelpClick = {},
-                    modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding20),
                 )
             }
-        }
 
-        if (uiState.isLoading) {
-            LoadingContent()
+            if (uiState.isLoading) {
+                LoadingContent()
+            }
         }
     }
 }
