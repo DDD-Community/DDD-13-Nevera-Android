@@ -2,19 +2,25 @@ package com.anddd.nevera.feature.main.home.component
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.component.appbar.NeveraAppBarAction
 import com.anddd.nevera.core.designsystem.component.appbar.NeveraLogoAppBar
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.core.ui.component.LoadingContent
 import com.anddd.nevera.feature.main.home.model.HomeUiState
+
+private val HorizontalDividerHeight = 8.dp
 
 @Composable
 internal fun HomeContent(
@@ -47,6 +53,18 @@ internal fun HomeContent(
                     goalMoney = uiState.wishUiModel.goalMoney,
                     onCreateWish = {},
                     modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding20),
+                )
+                Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap16))
+                RescueDisposalCostCard(
+                    rescueAmount = uiState.rescueDisposalCostUiModel.rescueAmount,
+                    disposalAmount = uiState.rescueDisposalCostUiModel.rescueAmount,
+                    modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding20),
+                )
+                Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap20))
+                HorizontalDivider(
+                    modifier = Modifier.fillMaxWidth(),
+                    thickness = HorizontalDividerHeight,
+                    color = NeveraTheme.colors.dividerNormal
                 )
             }
         }
