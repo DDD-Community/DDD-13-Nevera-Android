@@ -39,4 +39,9 @@
     <string name="ingredient_item_placeholder_select">선택</string>
     <string name="ingredient_item_placeholder_date">날짜 선택</string>
     <string name="ingredient_item_cost_unit">원</string>
+
+    <!-- OcrScanningDialog -->
+    <string name="ocr_scanning_title">영수증을 읽는 중...</string>
+    <string name="ocr_scanning_close_description">취소</string>
+
 </resources>
