@@ -420,6 +420,159 @@ private fun PreviewNeveraTextField_Underline_Negative() {
 
 // endregion
 
+// region — NeveraTextField (trailingIcon + 텍스트 말줄임)
+
+@Preview(name = "NeveraTextField - trailingIcon + Long Text (ellipsis)", showBackground = true, widthDp = 360)
+@Composable
+private fun PreviewNeveraTextField_TrailingIcon_LongText() {
+    NeveraTheme {
+        NeveraTextField(
+            value = "냉장고에 남은 재료로 만들 수 있는 요리를 검색합니다",
+            onValueChange = {},
+            trailingIcon = {
+                Icon(
+                    painter = NeveraIcons.Search,
+                    contentDescription = "검색",
+                    modifier = Modifier.size(NeveraTheme.iconSize.medium),
+                    tint = NeveraTheme.colors.iconPrimary,
+                )
+            },
+            config = NeveraTextFieldConfig(
+                heading = "검색",
+                placeholder = "검색어를 입력하세요",
+            ),
+        )
+    }
+}
+
+@Preview(name = "NeveraTextField - trailingIcon + Positive icon + Long Text (ellipsis)", showBackground = true, widthDp = 360)
+@Composable
+private fun PreviewNeveraTextField_TrailingIcon_Positive_LongText() {
+    NeveraTheme {
+        NeveraTextField(
+            value = "냉장고에 남은 재료로 만들 수 있는 요리를 검색합니다",
+            onValueChange = {},
+            trailingIcon = {
+                Icon(
+                    painter = NeveraIcons.Search,
+                    contentDescription = "검색",
+                    modifier = Modifier.size(NeveraTheme.iconSize.medium),
+                    tint = NeveraTheme.colors.iconPrimary,
+                )
+            },
+            config = NeveraTextFieldConfig(
+                heading = "검색",
+                state = NeveraTextFieldState.Positive,
+                description = "검색 가능한 재료입니다",
+            ),
+        )
+    }
+}
+
+@Preview(name = "NeveraTextField - trailingIcon + Warning icon + Long Text (ellipsis)", showBackground = true, widthDp = 360)
+@Composable
+private fun PreviewNeveraTextField_TrailingIcon_Negative_LongText() {
+    NeveraTheme {
+        NeveraTextField(
+            value = "냉장고에 남은 재료로 만들 수 있는 요리를 검색합니다",
+            onValueChange = {},
+            trailingIcon = {
+                Icon(
+                    painter = NeveraIcons.Search,
+                    contentDescription = "검색",
+                    modifier = Modifier.size(NeveraTheme.iconSize.medium),
+                    tint = NeveraTheme.colors.iconPrimary,
+                )
+            },
+            config = NeveraTextFieldConfig(
+                heading = "검색",
+                state = NeveraTextFieldState.Negative,
+                description = "검색 결과가 없습니다",
+            ),
+        )
+    }
+}
+
+// endregion
+
+// region — NeveraTextField (disabled + 텍스트 말줄임)
+
+@Preview(name = "NeveraTextField - disabled + trailingIcon + Long Text (ellipsis)", showBackground = true, widthDp = 360)
+@Composable
+private fun PreviewNeveraTextField_Disabled_TrailingIcon_LongText() {
+    NeveraTheme {
+        NeveraTextField(
+            value = "냉장고에 남은 재료로 만들 수 있는 요리를 검색합니다",
+            onValueChange = {},
+            enabled = false,
+            trailingIcon = {
+                Icon(
+                    painter = NeveraIcons.Search,
+                    contentDescription = "검색",
+                    modifier = Modifier.size(NeveraTheme.iconSize.medium),
+                    tint = NeveraTheme.colors.iconDisabled,
+                )
+            },
+            config = NeveraTextFieldConfig(
+                heading = "검색",
+                placeholder = "검색어를 입력하세요",
+            ),
+        )
+    }
+}
+
+@Preview(name = "NeveraTextField - disabled + trailingIcon + Positive icon + Long Text (ellipsis)", showBackground = true, widthDp = 360)
+@Composable
+private fun PreviewNeveraTextField_Disabled_TrailingIcon_Positive_LongText() {
+    NeveraTheme {
+        NeveraTextField(
+            value = "냉장고에 남은 재료로 만들 수 있는 요리를 검색합니다",
+            onValueChange = {},
+            enabled = false,
+            trailingIcon = {
+                Icon(
+                    painter = NeveraIcons.Search,
+                    contentDescription = "검색",
+                    modifier = Modifier.size(NeveraTheme.iconSize.medium),
+                    tint = NeveraTheme.colors.iconDisabled,
+                )
+            },
+            config = NeveraTextFieldConfig(
+                heading = "검색",
+                state = NeveraTextFieldState.Positive,
+                description = "검색 가능한 재료입니다",
+            ),
+        )
+    }
+}
+
+@Preview(name = "NeveraTextField - disabled + trailingIcon + Warning icon + Long Text (ellipsis)", showBackground = true, widthDp = 360)
+@Composable
+private fun PreviewNeveraTextField_Disabled_TrailingIcon_Negative_LongText() {
+    NeveraTheme {
+        NeveraTextField(
+            value = "냉장고에 남은 재료로 만들 수 있는 요리를 검색합니다",
+            onValueChange = {},
+            enabled = false,
+            trailingIcon = {
+                Icon(
+                    painter = NeveraIcons.Search,
+                    contentDescription = "검색",
+                    modifier = Modifier.size(NeveraTheme.iconSize.medium),
+                    tint = NeveraTheme.colors.iconDisabled,
+                )
+            },
+            config = NeveraTextFieldConfig(
+                heading = "검색",
+                state = NeveraTextFieldState.Negative,
+                description = "검색 결과가 없습니다",
+            ),
+        )
+    }
+}
+
+// endregion
+
 // region — PreviewParameterProvider
 
 private class NeveraTextFieldConfigProvider : PreviewParameterProvider<NeveraTextFieldConfig> {
