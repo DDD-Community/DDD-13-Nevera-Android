@@ -56,7 +56,6 @@ fun OcrErrorScreen(
         Column(
             modifier = Modifier.fillMaxWidth()
                 .weight(1f)
-                .padding(NeveraTheme.spacing.padding20)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
