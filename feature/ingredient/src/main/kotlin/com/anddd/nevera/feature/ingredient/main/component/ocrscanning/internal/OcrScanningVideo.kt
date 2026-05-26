@@ -78,7 +78,7 @@ internal fun OcrScanningVideo(
     } else {
         val context = LocalContext.current
 
-        val player = remember(uri) {
+        val player = remember(uri, repeatMode, playWhenReady) {
             ExoPlayer.Builder(context).build().apply {
                 setMediaItem(MediaItem.fromUri(uri))
                 // playWhenReady·repeatMode를 prepare() 전에 설정해야

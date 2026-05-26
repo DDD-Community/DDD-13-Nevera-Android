@@ -1,11 +1,5 @@
 package com.anddd.nevera.feature.ingredient.main.component.ocrscanning
 
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,7 +15,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,12 +44,14 @@ private val OcrScanningVideoSize = 160.dp
  * Back 버튼으로는 닫히지 않습니다.
  *
  * @param videoResId `res/raw/`의 mp4 리소스 ID — 반복 재생
+ * @param progress OCR 진행률 (0f..1f) — 외부에서 주입
  * @param onDismiss 닫기(X) 버튼 탭 시 호출
  * @param dismissOnClickOutside Dialog 바깥 터치로 닫힘 여부 (기본값: false)
  */
 @Composable
 fun OcrScanningDialog(
     videoResId: Int,
+    progress: Float,
     onDismiss: () -> Unit,
     dismissOnClickOutside: Boolean = false,
 ) {
@@ -111,18 +106,6 @@ fun OcrScanningDialog(
 
                     Spacer(Modifier.height(NeveraTheme.spacing.gap16))
 
-                    // 테스트 애니메이션 ) 0f→1f 반복 (LinearEasing) — 왼쪽부터 오른쪽으로 흘러가다 리셋
-                    val infiniteTransition = rememberInfiniteTransition(label = "ocr_progress")
-                    val progress by infiniteTransition.animateFloat(
-                        initialValue = 0f,
-                        targetValue = 2f,
-                        animationSpec = infiniteRepeatable(
-                            animation = tween(durationMillis = 1500, easing = LinearEasing),
-                            repeatMode = RepeatMode.Restart,
-                        ),
-                        label = "ocr_progress_value",
-                    )
-
                     LinearProgressIndicator(
                         progress = { progress },
                         modifier = Modifier.fillMaxWidth()
@@ -161,6 +144,7 @@ private fun OcrScanningDialogPreview() {
     NeveraTheme {
         OcrScanningDialog(
             videoResId = R.raw.illust_loading,
+            progress = 0.4f,
             onDismiss = {},
         )
     }
