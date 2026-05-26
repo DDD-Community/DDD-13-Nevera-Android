@@ -58,9 +58,8 @@
     <string name="ingredient_register_failed">등록 중 오류가 발생했어요</string>
 
     <!-- RegisterSuccessScreen -->
-    <string name="register_success_title_line1">나의 냉장고에</string>
-    <string name="register_success_title_line2">식재료를 등록했어요!</string>
-    <string name="register_success_saving_prefix">식재료를 모두 구조하면 </string>
+    <string name="register_success_title">나의 냉장고에\n식재료를 등록했어요!</string>
+    <string name="register_success_saving_prefix">"식재료를 모두 구조하면 "</string>
     <string name="register_success_saving_suffix">을 절약할 수 있어요</string>
     <string name="register_success_button">나의 냉장고 보기</string>
     <string name="register_success_close_description">닫기</string>
