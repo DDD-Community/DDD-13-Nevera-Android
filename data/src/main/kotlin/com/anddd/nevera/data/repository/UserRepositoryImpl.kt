@@ -4,24 +4,8 @@ import com.anddd.nevera.core.common.NeveraResult
 import com.anddd.nevera.core.common.map
 import com.anddd.nevera.core.network.auth.ApiCallExecutor
 import com.anddd.nevera.data.datasource.UserRemoteDataSource
-import com.anddd.nevera.data.mapper.error.toEmailRequestError
-import com.anddd.nevera.data.mapper.error.toEmailVerifyError
-import com.anddd.nevera.data.mapper.error.toGoogleLoginError
-import com.anddd.nevera.data.mapper.error.toLoginError
-import com.anddd.nevera.data.mapper.error.toLogoutError
 import com.anddd.nevera.data.mapper.error.toProfileError
-import com.anddd.nevera.data.mapper.error.toSignupError
-import com.anddd.nevera.data.mapper.error.toWithdrawError
 import com.anddd.nevera.data.mapper.toDomain
-import com.anddd.nevera.domain.model.auth.EmailRequestError
-import com.anddd.nevera.domain.model.auth.EmailVerifyError
-import com.anddd.nevera.domain.model.auth.GoogleLoginError
-import com.anddd.nevera.domain.model.auth.LoginError
-import com.anddd.nevera.domain.model.auth.LoginResult
-import com.anddd.nevera.domain.model.auth.LogoutError
-import com.anddd.nevera.domain.model.auth.SignupError
-import com.anddd.nevera.domain.model.auth.WithdrawError
-import com.anddd.nevera.domain.model.common.MessageResult
 import com.anddd.nevera.domain.model.user.Profile
 import com.anddd.nevera.domain.model.user.ProfileError
 import com.anddd.nevera.domain.repository.UserRepository
@@ -31,78 +15,6 @@ internal class UserRepositoryImpl @Inject constructor(
     private val userRemoteDataSource: UserRemoteDataSource,
     private val apiCall: ApiCallExecutor,
 ) : UserRepository {
-
-    override suspend fun loginWithEmail(
-        email: String,
-        password: String,
-    ): NeveraResult<LoginResult, LoginError> {
-        return apiCall {
-            userRemoteDataSource.loginWithEmail(email, password)
-        }.map(
-            transformSuccess = { it.toDomain() },
-            transformFailure = { it.toLoginError() },
-        )
-    }
-
-    override suspend fun signup(
-        email: String,
-        password: String,
-    ): NeveraResult<MessageResult, SignupError> {
-        return apiCall {
-            userRemoteDataSource.signup(email, password)
-        }.map(
-            transformSuccess = { it.toDomain() },
-            transformFailure = { it.toSignupError() }
-        )
-    }
-
-    override suspend fun loginWithGoogle(idToken: String): NeveraResult<LoginResult, GoogleLoginError> {
-        return apiCall {
-            userRemoteDataSource.loginWithGoogle(idToken)
-        }.map(
-            transformSuccess = { it.toDomain() },
-            transformFailure = { it.toGoogleLoginError() }
-        )
-    }
-
-    override suspend fun emailRequest(email: String): NeveraResult<MessageResult, EmailRequestError> {
-        return apiCall {
-            userRemoteDataSource.emailRequest(email)
-        }.map(
-            transformSuccess = { it.toDomain() },
-            transformFailure = { it.toEmailRequestError() }
-        )
-    }
-
-    override suspend fun emailVerify(
-        email: String,
-        authCode: String,
-    ): NeveraResult<MessageResult, EmailVerifyError> {
-        return apiCall {
-            userRemoteDataSource.emailVerify(email, authCode)
-        }.map(
-            transformSuccess = { it.toDomain() },
-            transformFailure = { it.toEmailVerifyError() }
-        )
-    }
-
-    override suspend fun logout(): NeveraResult<MessageResult, LogoutError> {
-        return apiCall {
-            userRemoteDataSource.logout()
-        }.map(
-            transformSuccess = { it.toDomain() },
-            transformFailure = { it.toLogoutError() }
-        )
-    }
-
-    override suspend fun withdraw(): NeveraResult<MessageResult, WithdrawError> {
-        return apiCall {
-            userRemoteDataSource.withdraw()
-        }.map(
-            transformSuccess = { it.toDomain() },
-            transformFailure = { it.toWithdrawError() },
-        )
-    }
 
     override suspend fun getProfile(): NeveraResult<Profile, ProfileError> {
         return apiCall {

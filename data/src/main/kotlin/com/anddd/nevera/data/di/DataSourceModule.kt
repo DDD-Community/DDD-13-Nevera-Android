@@ -1,6 +1,8 @@
 package com.anddd.nevera.data.di
 
 import com.anddd.nevera.data.datasource.AndroidKeyStoreProvider
+import com.anddd.nevera.data.datasource.AuthRemoteDataSource
+import com.anddd.nevera.data.datasource.AuthRemoteDataSourceImpl
 import com.anddd.nevera.data.datasource.FcmTokenLocalDataSource
 import com.anddd.nevera.data.datasource.FcmTokenLocalDataSourceImpl
 import com.anddd.nevera.data.datasource.FcmTokenRemoteDataSource
@@ -31,6 +33,10 @@ internal abstract class DataSourceModule {
     @Binds
     @Singleton
     abstract fun bindTokenDataSource(impl: TokenDataSourceImpl): TokenDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthRemoteDataSource(impl: AuthRemoteDataSourceImpl): AuthRemoteDataSource
 
     @Binds
     @Singleton
