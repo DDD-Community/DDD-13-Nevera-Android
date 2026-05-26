@@ -1,6 +1,8 @@
 package com.anddd.nevera.data.di
 
 import com.anddd.nevera.data.datasource.AndroidKeyStoreProvider
+import com.anddd.nevera.data.datasource.OcrDataSource
+import com.anddd.nevera.data.datasource.OcrDataSourceImpl
 import com.anddd.nevera.data.datasource.FcmTokenLocalDataSource
 import com.anddd.nevera.data.datasource.FcmTokenLocalDataSourceImpl
 import com.anddd.nevera.data.datasource.FirebaseFcmTokenProvider
@@ -51,4 +53,8 @@ internal abstract class DataSourceModule {
     @Binds
     @Singleton
     abstract fun bindFcmTokenProvider(impl: FirebaseFcmTokenProvider): FcmTokenProvider
+
+    @Binds
+    @Singleton
+    abstract fun bindOcrDataSource(impl: OcrDataSourceImpl): OcrDataSource
 }
