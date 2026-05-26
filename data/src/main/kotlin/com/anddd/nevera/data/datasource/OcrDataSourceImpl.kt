@@ -25,7 +25,7 @@ internal class OcrDataSourceImpl @Inject constructor(
         val bytes = compressImageForOcr(imageUri)
         val requestBody = bytes.toRequestBody("image/jpeg".toMediaType())
         val part = MultipartBody.Part.createFormData(
-            name = "image",
+            name = "file",
             filename = "ocr_image.jpg",
             body = requestBody,
         )

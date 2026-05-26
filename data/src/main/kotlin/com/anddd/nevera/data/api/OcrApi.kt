@@ -24,6 +24,6 @@ internal interface OcrApi {
     @Multipart
     @POST("api/v1/ocr/extract")
     suspend fun extractIngredients(
-        @Part image: MultipartBody.Part,
+        @Part file: MultipartBody.Part,
     ): ApiResponse<List<OcrIngredientDto>>
 }
