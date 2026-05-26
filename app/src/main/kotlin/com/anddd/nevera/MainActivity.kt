@@ -21,6 +21,7 @@ import com.anddd.nevera.feature.main.home.navigation.homeScreen
 import com.anddd.nevera.feature.mypage.appinfo.navigation.APP_INFO_ROUTE
 import com.anddd.nevera.feature.mypage.appinfo.navigation.appInfoScreen
 import com.anddd.nevera.feature.mypage.main.navigation.myPageScreen
+import com.anddd.nevera.feature.ingredient.main.navigation.ingredientNavGraph
 import com.anddd.nevera.feature.mypage.settingaccount.navigation.SETTING_ACCOUNT_ROUTE
 import com.anddd.nevera.feature.mypage.settingaccount.navigation.settingAccountScreen
 import com.anddd.nevera.feature.splash.main.navigation.SPLASH_ROUTE
@@ -97,6 +98,14 @@ class MainActivity : ComponentActivity() {
                                     popUpTo(HOME_ROUTE) { inclusive = true }
                                 }
                             }
+                        )
+                        ingredientNavGraph(
+                            navController = navController,
+                            onNavigateToHome = {
+                                navController.navigate(HOME_ROUTE) {
+                                    popUpTo(HOME_ROUTE) { inclusive = false }
+                                }
+                            },
                         )
                     }
                 }
