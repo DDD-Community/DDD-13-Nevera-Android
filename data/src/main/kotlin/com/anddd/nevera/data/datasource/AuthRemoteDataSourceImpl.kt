@@ -1,7 +1,7 @@
 package com.anddd.nevera.data.datasource
 
 import com.anddd.nevera.core.network.model.ApiResponse
-import com.anddd.nevera.data.api.UserApi
+import com.anddd.nevera.data.api.AuthApi
 import com.anddd.nevera.data.model.auth.EmailRequest
 import com.anddd.nevera.data.model.auth.MessageResponse
 import com.anddd.nevera.data.model.auth.TokenResponse
@@ -11,16 +11,16 @@ import com.anddd.nevera.data.model.auth.SignupRequest
 import com.anddd.nevera.data.model.auth.SnsLoginRequest
 import javax.inject.Inject
 
-internal class UserDataSourceImpl @Inject constructor(
-    private val userApi: UserApi
-) : UserDataSource {
+internal class AuthRemoteDataSourceImpl @Inject constructor(
+    private val authApi: AuthApi
+) : AuthRemoteDataSource {
 
     override suspend fun loginWithEmail(
         email: String,
         password: String
     ): ApiResponse<TokenResponse> {
         val request = LoginRequest(email, password)
-        return userApi.login(request)
+        return authApi.login(request)
     }
 
     override suspend fun signup(
@@ -28,17 +28,17 @@ internal class UserDataSourceImpl @Inject constructor(
         password: String,
     ): ApiResponse<MessageResponse> {
         val request = SignupRequest(email, password)
-        return userApi.signup(request)
+        return authApi.signup(request)
     }
 
     override suspend fun loginWithGoogle(idToken: String): ApiResponse<TokenResponse> {
         val request = SnsLoginRequest(idToken)
-        return userApi.googleLogin(request)
+        return authApi.googleLogin(request)
     }
 
     override suspend fun emailRequest(email: String): ApiResponse<MessageResponse> {
         val request = EmailRequest(email)
-        return userApi.emailRequest(request)
+        return authApi.emailRequest(request)
     }
 
     override suspend fun emailVerify(
@@ -46,14 +46,14 @@ internal class UserDataSourceImpl @Inject constructor(
         authCode: String
     ): ApiResponse<MessageResponse> {
         val request = EmailVerifyRequest(email, authCode)
-        return userApi.emailVerify(request)
+        return authApi.emailVerify(request)
     }
 
     override suspend fun logout(): ApiResponse<MessageResponse> {
-        return userApi.logout()
+        return authApi.logout()
     }
 
     override suspend fun withdraw(): ApiResponse<MessageResponse> {
-        return userApi.withdraw()
+        return authApi.withdraw()
     }
 }

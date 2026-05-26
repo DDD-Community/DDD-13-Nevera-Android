@@ -11,8 +11,8 @@ import com.anddd.nevera.data.datasource.TokenDataSourceImpl
 import com.anddd.nevera.data.datasource.RefreshDataSource
 import com.anddd.nevera.data.datasource.RefreshDataSourceImpl
 import com.anddd.nevera.data.datasource.TokenDataSource
-import com.anddd.nevera.data.datasource.UserDataSourceImpl
-import com.anddd.nevera.data.datasource.UserDataSource
+import com.anddd.nevera.data.datasource.AuthRemoteDataSourceImpl
+import com.anddd.nevera.data.datasource.AuthRemoteDataSource
 import com.anddd.nevera.domain.repository.FcmTokenProvider
 import dagger.Binds
 import dagger.Module
@@ -34,7 +34,7 @@ internal abstract class DataSourceModule {
 
     @Binds
     @Singleton
-    abstract fun bindUserDataSource(impl: UserDataSourceImpl): UserDataSource
+    abstract fun bindAuthRemoteDataSource(impl: AuthRemoteDataSourceImpl): AuthRemoteDataSource
 
     @Binds
     @Singleton
