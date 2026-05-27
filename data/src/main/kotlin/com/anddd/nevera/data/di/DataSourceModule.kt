@@ -13,6 +13,8 @@ import com.anddd.nevera.data.datasource.RefreshDataSourceImpl
 import com.anddd.nevera.data.datasource.TokenDataSource
 import com.anddd.nevera.data.datasource.AuthRemoteDataSourceImpl
 import com.anddd.nevera.data.datasource.AuthRemoteDataSource
+import com.anddd.nevera.data.datasource.HomeRemoteDataSource
+import com.anddd.nevera.data.datasource.HomeRemoteDataSourceImpl
 import com.anddd.nevera.domain.repository.FcmTokenProvider
 import dagger.Binds
 import dagger.Module
@@ -51,4 +53,8 @@ internal abstract class DataSourceModule {
     @Binds
     @Singleton
     abstract fun bindFcmTokenProvider(impl: FirebaseFcmTokenProvider): FcmTokenProvider
+
+    @Binds
+    @Singleton
+    abstract fun bindHomeRemoteDataSource(impl: HomeRemoteDataSourceImpl): HomeRemoteDataSource
 }

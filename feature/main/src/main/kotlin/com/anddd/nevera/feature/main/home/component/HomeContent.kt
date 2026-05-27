@@ -1,8 +1,8 @@
 package com.anddd.nevera.feature.main.home.component
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -66,10 +66,8 @@ internal fun HomeContent(
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 item(key = "wish_banner") {
                     WishBanner(
-                        nickname = uiState.wishUiModel.nickname,
-                        wish = uiState.wishUiModel.wish,
-                        savedMoney = uiState.wishUiModel.savedMoney,
-                        goalMoney = uiState.wishUiModel.goalMoney,
+                        nickname = uiState.profile.nickname,
+                        wish = uiState.wish,
                         onCreateWish = {},
                         modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding20),
                     )
@@ -79,8 +77,8 @@ internal fun HomeContent(
                 }
                 item(key = "cost_card") {
                     RescueDisposalCostCard(
-                        rescueAmount = uiState.rescueDisposalCostUiModel.rescueAmount,
-                        disposalAmount = uiState.rescueDisposalCostUiModel.disposalAmount,
+                        rescueAmount = uiState.savings.rescuedAmount,
+                        disposalAmount = uiState.savings.dispositionAmount,
                         modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding20),
                     )
                 }

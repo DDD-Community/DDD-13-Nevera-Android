@@ -1,19 +1,24 @@
 package com.anddd.nevera.feature.main.home
 
+import com.anddd.nevera.core.common.onFailure
+import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.core.mvi.NeveraViewModel
+import com.anddd.nevera.domain.usecase.home.GetHomeSummaryUseCase
 import com.anddd.nevera.feature.main.home.model.HomeIntent
 import com.anddd.nevera.feature.main.home.model.HomeMutation
+import com.anddd.nevera.feature.main.home.model.HomeProfileUiModel
+import com.anddd.nevera.feature.main.home.model.HomeSavingsUiModel
 import com.anddd.nevera.feature.main.home.model.HomeSideEffect
 import com.anddd.nevera.feature.main.home.model.HomeUiState
+import com.anddd.nevera.feature.main.home.model.HomeWishUiModel
 import com.anddd.nevera.feature.main.home.model.IngredientFilterTab
-import com.anddd.nevera.feature.main.home.model.WishUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.syntax.Syntax
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    private val getHomeSummary: GetHomeSummaryUseCase,
 ) : NeveraViewModel<HomeUiState, HomeSideEffect, HomeIntent, HomeMutation>(HomeUiState()) {
 
     init {
@@ -29,18 +34,37 @@ class HomeViewModel @Inject constructor(
 
     private fun load() = intent {
         applyMutation(HomeMutation.Loading)
-        delay(500L)
-        // TODO: UseCase로 초기 데이터 로드
-        applyMutation(
-            HomeMutation.LoadComplete(
-                wishUiModel = WishUiModel(
-                    nickname = "김푸드",
-                    wish = "제주도 여행",
-                    savedMoney = 12000,
-                    goalMoney = 480000,
+        getHomeSummary()
+            .onSuccess { summary ->
+                applyMutation(HomeMutation.ShowProfile(HomeProfileUiModel(summary.nickname)))
+                summary.wish?.let { wish ->
+                    applyMutation(
+                        HomeMutation.ShowWish(
+                            HomeWishUiModel(
+                                name = wish.name,
+                                goalAmount = wish.goalAmount,
+                                accumulatedAmount = wish.accumulatedAmount,
+                                remainingAmount = wish.remainingAmount,
+                                isAchieved = wish.isAchieved
+                            )
+                        )
+                    )
+                } ?: run {
+                    applyMutation(HomeMutation.ShowEmptyWish)
+                }
+                applyMutation(
+                    HomeMutation.ShowSavings(
+                        HomeSavingsUiModel(
+                            rescuedAmount = summary.rescuedAmount,
+                            dispositionAmount = summary.dispositionAmount,
+                        )
+                    )
                 )
-            )
-        )
+            }
+            .onFailure {
+                // TODO 네트워크 에러 처리
+            }
+        applyMutation(HomeMutation.LoadComplete)
     }
 
     private fun onRecentIngredientTabClick(tab: IngredientFilterTab) = intent {
@@ -51,13 +75,16 @@ class HomeViewModel @Inject constructor(
         when (mutation) {
             HomeMutation.Loading -> reduce { state.copy(isLoading = true) }
 
-            is HomeMutation.LoadComplete -> reduce {
-                state.copy(isLoading = false, wishUiModel = mutation.wishUiModel)
-            }
+            HomeMutation.LoadComplete -> reduce { state.copy(isLoading = false) }
 
             is HomeMutation.SetRecentIngredientFilterTab -> reduce {
                 state.copy(ingredientFilterTab = mutation.tab)
             }
+
+            is HomeMutation.ShowProfile -> reduce { state.copy(profile = mutation.profile) }
+            is HomeMutation.ShowWish -> reduce { state.copy(wish = mutation.wish) }
+            HomeMutation.ShowEmptyWish -> reduce { state.copy(wish = null) }
+            is HomeMutation.ShowSavings -> reduce { state.copy(savings = mutation.savings) }
         }
     }
 }
