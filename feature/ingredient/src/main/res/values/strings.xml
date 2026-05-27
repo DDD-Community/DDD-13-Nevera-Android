@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- CategoryBottomSheet -->
+    <string name="ingredient_category_title">카테고리</string>
+    <string name="ingredient_category_confirm">확인</string>
+
+    <!-- FoodCategory displayName -->
+    <string name="ingredient_category_vegetable">채소</string>
+    <string name="ingredient_category_fruit">과일</string>
+    <string name="ingredient_category_meat_egg">육류/계란</string>
+    <string name="ingredient_category_seafood">해산물</string>
+    <string name="ingredient_category_dairy">유제품</string>
+    <string name="ingredient_category_sauce">소스/양념</string>
+    <string name="ingredient_category_beverage">음료</string>
+    <string name="ingredient_category_processed">가공식품</string>
+    <string name="ingredient_category_other">기타</string>
+
+    <!-- StorageLocationBottomSheet -->
+    <string name="ingredient_storage_location_title">보관 방법</string>
+    <string name="ingredient_storage_location_confirm">확인</string>
+
+    <!-- StorageLocation displayName -->
+    <string name="ingredient_storage_location_fridge">냉장</string>
+    <string name="ingredient_storage_location_freezer">냉동</string>
+    <string name="ingredient_storage_location_pantry">실온</string>
+
+    <!-- IngredientItemCard -->
+    <string name="ingredient_item_edit_name">식재료 이름 수정</string>
+    <string name="ingredient_item_edit_name_placeholder">식재료 이름을 입력해주세요</string>
+    <string name="ingredient_item_edit_confirm">확인</string>
+    <string name="ingredient_item_edit_dismiss">취소</string>
+    <string name="ingredient_item_edit_icon_description">식재료 이름 수정</string>
+    <string name="ingredient_item_checkbox_description">식재료 선택</string>
+    <string name="ingredient_item_label_quantity">수량</string>
+    <string name="ingredient_item_label_cost">금액</string>
+    <string name="ingredient_item_label_category">카테고리</string>
+    <string name="ingredient_item_label_location">보관 방법</string>
+    <string name="ingredient_item_label_expiry">유통기한</string>
+    <string name="ingredient_item_placeholder_select">선택</string>
+    <string name="ingredient_item_placeholder_date">날짜 선택</string>
+    <string name="ingredient_item_cost_unit">원</string>
+
+    <!-- OcrScanningDialog -->
+    <string name="ocr_scanning_title">영수증을 읽는 중...</string>
+    <string name="ocr_scanning_close_description">취소</string>
+
+    <!-- OcrErrorScreen -->
+    <string name="ocr_error_title">이런! 식재료를 인식하지 못했어요</string>
+    <string name="ocr_error_subtitle">글자와 이미지가 잘 보이도록 다시 시도해주세요</string>
+    <string name="ocr_error_tip_header">이렇게 해보세요!</string>
+    <string name="ocr_error_tip_1">밝고 그림자가 없는 곳에서 촬영해주세요</string>
+    <string name="ocr_error_tip_2">영수증은 구겨지지 않게 펼쳐서 올려주세요</string>
+    <string name="ocr_error_tip_3">내용 전체가 화면 안에 들어오게 맞춰주세요</string>
+    <string name="ocr_error_retry">다시 시도하기</string>
+</resources>

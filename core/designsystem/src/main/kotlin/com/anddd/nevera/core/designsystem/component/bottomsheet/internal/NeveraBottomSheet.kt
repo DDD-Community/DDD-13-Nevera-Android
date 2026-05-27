@@ -7,6 +7,7 @@ import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
+import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
 
 /**
@@ -29,6 +30,7 @@ internal fun NeveraBottomSheet(
         modifier = modifier,
         sheetState = sheetState,
         shape = shape,
+        containerColor = NeveraTheme.colors.surfacePrimary,
         dragHandle = dragHandle,
         content = content,
     )

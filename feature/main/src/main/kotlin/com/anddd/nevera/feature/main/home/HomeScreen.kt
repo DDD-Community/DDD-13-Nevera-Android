@@ -24,6 +24,7 @@ fun HomeScreen(
     }
 
     HomeContent(
-        uiState = state
+        uiState = state,
+        onIntent = viewModel::handleIntent
     )
 }

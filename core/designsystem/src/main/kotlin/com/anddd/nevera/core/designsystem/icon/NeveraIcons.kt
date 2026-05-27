@@ -27,13 +27,13 @@ object NeveraIcons {
     val LogoAppBar: Painter
         @Composable get() = ColorPainter(NeveraTheme.colors.primaryNormal)
     val Check: Painter
-        @Composable get() = painterResource(R.drawable.ic_textfield_check)
+        @Composable get() = painterResource(R.drawable.ic_check)
     val Warning: Painter
-        @Composable get() = painterResource(R.drawable.ic_textfield_warning)
+        @Composable get() = painterResource(R.drawable.ic_warning)
     val Eye: Painter
-        @Composable get() = painterResource(R.drawable.ic_textfield_eyes)
+        @Composable get() = painterResource(R.drawable.ic_eyes)
     val EyeOff: Painter
-        @Composable get() = painterResource(R.drawable.ic_textfield_eyes_off)
+        @Composable get() = painterResource(R.drawable.ic_eyes_off)
     val CirclePlus: Painter
         @Composable get() = painterResource(R.drawable.ic_circle_plus)
     val NavHome: Painter
@@ -56,4 +56,20 @@ object NeveraIcons {
         @Composable get() = painterResource(R.drawable.ic_receipt_cameraswap_white)
     val ReceiptGallery: Painter
         @Composable get() = painterResource(R.drawable.ic_receipt_gallery)
+    val ChevronSmallLeft: Painter
+        @Composable get() = painterResource(R.drawable.ic_chevron_left_small)
+    val ChevronSmallUp: Painter
+        @Composable get() = painterResource(R.drawable.ic_chevron_up_small)
+    val ChevronSmallRight: Painter
+        @Composable get() = painterResource(R.drawable.ic_chevron_right_small)
+    val ChevronSmallDown: Painter
+        @Composable get() = painterResource(R.drawable.ic_chevron_down_small)
+    val Edit: Painter
+        @Composable get() = painterResource(R.drawable.ic_edit_pencil)
+    val CircleHelp: Painter
+        @Composable get() = painterResource(R.drawable.ic_circle_help)
+    val EmptyStateWarning: Painter
+        @Composable get() = painterResource(R.drawable.ic_empty_state_warning)
+    val IllustLighting: Painter
+        @Composable get() = painterResource(R.drawable.ic_illust_lighting)
 }

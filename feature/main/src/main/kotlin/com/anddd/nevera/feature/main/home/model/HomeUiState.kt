@@ -10,4 +10,6 @@ data class HomeUiState(
         savedMoney = 0,
         goalMoney = 0,
     ),
+    val rescueDisposalCostUiModel: RescueDisposalCostUiModel = RescueDisposalCostUiModel(),
+    val ingredientFilterTab: IngredientFilterTab = IngredientFilterTab.Rescue,
 ) : NeveraState

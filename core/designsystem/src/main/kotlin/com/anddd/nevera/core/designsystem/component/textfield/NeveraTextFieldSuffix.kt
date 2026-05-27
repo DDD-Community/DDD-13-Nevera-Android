@@ -28,8 +28,8 @@ fun NeveraTextFieldSuffix(
 ) {
     Text(
         text = text,
-        modifier = modifier.padding(start = NeveraTheme.spacing.padding4),
-        style = NeveraTheme.typography.titleLarge,
+        modifier = modifier.padding(start = NeveraTheme.spacing.padding8),
+        style = NeveraTheme.typography.bodyLarge,
         color = NeveraTheme.colors.textQuaternary,
     )
 }

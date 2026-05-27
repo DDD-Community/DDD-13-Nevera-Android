@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Home AppBar -->
+    <string name="home_notification_icon_description">알림</string>
+
+    <!-- Home Cost Card -->
+    <string name="home_cost_rescue_label">구조 금액</string>
+    <string name="home_cost_disposal_label">폐기 금액</string>
+
+    <!-- Home Wish Banner -->
+    <string name="home_wish_banner_greeting">%1$s님!\n함께 식재료를 구조해요</string>
+    <string name="home_wish_amount_format">%1$,d원</string>
+    <string name="home_wish_amount_separator">/</string>
+    <string name="home_wish_remaining_amount">까지 %1$,d원 남았어요</string>
+    <string name="home_wish_flag_icon_description">wish flag</string>
+
+    <!-- Home Wish Empty Card -->
+    <string name="home_wish_empty_description">아직 나의 절약 목표가 없어요</string>
+    <string name="home_wish_add_icon_description">Add Wish</string>
+    <string name="home_wish_create_button">위시 만들기</string>
+
+    <!-- Home FAB -->
+    <string name="home_fab_label">식재료</string>
+
+    <!-- Home Recent Ingredient Section -->
+    <string name="home_ingredient_section_title">최근 나의 식재료</string>
+    <string name="home_ingredient_section_help_description">도움말</string>
+    <string name="home_ingredient_tab_rescue">구조</string>
+    <string name="home_ingredient_tab_disposal">폐기</string>
+    <string name="home_ingredient_empty_message">아직 나의 식재료가 없어요</string>
+</resources>

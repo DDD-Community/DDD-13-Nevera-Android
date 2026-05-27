@@ -1,17 +1,30 @@
 package com.anddd.nevera.core.designsystem.component.textfield
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import com.anddd.nevera.core.designsystem.component.textfield.internal.NeveraBaseTextField
+import com.anddd.nevera.core.designsystem.component.textfield.internal.NeveraTextFieldColors
+import com.anddd.nevera.core.designsystem.icon.NeveraIcons
+import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
 /**
  * 비밀번호 입력 전용 텍스트 필드 — String 오버로드.
@@ -80,13 +93,37 @@ fun NeveraPasswordTextField(
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     config: NeveraTextFieldConfig = NeveraTextFieldConfig(),
 ) {
+    var eyeVisible by rememberSaveable { mutableStateOf(false) }
+    val visualTransformation = if (eyeVisible) VisualTransformation.None else PasswordVisualTransformation()
+    val trailingIconSlot: (@Composable () -> Unit)? = if (useIcon) {
+        {
+            val eyeIconColor = NeveraTextFieldColors.eyeIconColor(enabled)
+            // IconButton은 Material3 최소 터치 타겟(48dp)을 강제해 필드 높이를 팽창시키므로 Box+clickable로 대체.
+            Box(
+                modifier = Modifier
+                    .size(NeveraTheme.iconSize.medium)
+                    .clip(CircleShape)
+                    .clickable(enabled = enabled) { eyeVisible = !eyeVisible },
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    painter = if (eyeVisible) NeveraIcons.EyeOff else NeveraIcons.Eye,
+                    contentDescription = if (eyeVisible) "비밀번호 숨기기" else "비밀번호 표시",
+                    modifier = Modifier.size(NeveraTheme.iconSize.medium),
+                    tint = eyeIconColor,
+                )
+            }
+        }
+    } else null
+
     NeveraBaseTextField(
         textFieldValue = value,
         onTextFieldValueChange = onValueChange,
         modifier = modifier,
         enabled = enabled,
         useIcon = useIcon,
-        isPassword = true,
+        visualTransformation = visualTransformation,
+        trailingIcon = trailingIconSlot,
         autoMoveCursor = autoMoveCursor,
         suffix = suffix,
         keyboardActions = keyboardActions,

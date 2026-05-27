@@ -25,6 +25,7 @@ import com.anddd.nevera.core.designsystem.component.textfield.internal.NeveraBas
  * @param onValueChange 텍스트 변경 시 호출되는 콜백
  * @param enabled false일 경우 입력 및 포커스가 불가능한 비활성 상태로 표시됨
  * @param useIcon true이면 state에 따라 check/warning 아이콘을 trailing에 표시
+ * @param trailingIcon trailing 영역에 표시할 슬롯 람다. null이면 미표시.
  * @param suffix trailing 영역 우측에 렌더링할 추가 컨텐츠. 예: `{ NeveraTextFieldSuffix("원") }`
  * @param config 타입, 상태, 레이블, 플레이스홀더 등 외관 설정을 담은 [NeveraTextFieldConfig]
  */
@@ -35,6 +36,7 @@ fun NeveraTextField(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     useIcon: Boolean = true,
+    trailingIcon: (@Composable () -> Unit)? = null,
     suffix: (@Composable () -> Unit)? = null,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     config: NeveraTextFieldConfig = NeveraTextFieldConfig(),
@@ -60,6 +62,7 @@ fun NeveraTextField(
         modifier = modifier,
         enabled = enabled,
         useIcon = useIcon,
+        trailingIcon = trailingIcon,
         autoMoveCursor = true,
         suffix = suffix,
         keyboardActions = keyboardActions,
@@ -79,6 +82,7 @@ fun NeveraTextField(
  * @param modifier 레이아웃 수정을 위한 [Modifier]
  * @param enabled false일 경우 입력 및 포커스가 불가능한 비활성 상태로 표시됨
  * @param useIcon true이면 state에 따라 check/warning 아이콘을 trailing에 표시
+ * @param trailingIcon trailing 영역에 표시할 슬롯 람다. null이면 미표시.
  * @param autoMoveCursor true로 설정하면 포커스 기반 자동 커서 이동 정책을 적용한다 (기본 false)
  * @param suffix trailing 영역 우측에 렌더링할 추가 컨텐츠. 예: `{ NeveraTextFieldSuffix("원") }`
  * @param config 타입, 상태, 레이블, 플레이스홀더 등 외관 설정을 담은 [NeveraTextFieldConfig]
@@ -90,6 +94,7 @@ fun NeveraTextField(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     useIcon: Boolean = true,
+    trailingIcon: (@Composable () -> Unit)? = null,
     autoMoveCursor: Boolean = false,
     suffix: (@Composable () -> Unit)? = null,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
@@ -101,7 +106,7 @@ fun NeveraTextField(
         modifier = modifier,
         enabled = enabled,
         useIcon = useIcon,
-        isPassword = false,
+        trailingIcon = trailingIcon,
         autoMoveCursor = autoMoveCursor,
         suffix = suffix,
         keyboardActions = keyboardActions,
