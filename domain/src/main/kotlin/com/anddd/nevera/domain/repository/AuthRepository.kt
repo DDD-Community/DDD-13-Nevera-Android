@@ -12,7 +12,7 @@ import com.anddd.nevera.domain.model.auth.SignupError
 import com.anddd.nevera.domain.model.auth.WithdrawError
 import com.anddd.nevera.domain.model.common.MessageResult
 
-interface UserRepository {
+interface AuthRepository {
     suspend fun loginWithEmail(email: String, password: String): NeveraResult<LoginResult, LoginError>
     suspend fun signup(
         email: String,

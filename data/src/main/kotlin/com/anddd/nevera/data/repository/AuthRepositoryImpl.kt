@@ -3,7 +3,7 @@ package com.anddd.nevera.data.repository
 import com.anddd.nevera.core.common.NeveraResult
 import com.anddd.nevera.core.common.map
 import com.anddd.nevera.core.network.auth.ApiCallExecutor
-import com.anddd.nevera.data.datasource.UserDataSource
+import com.anddd.nevera.data.datasource.AuthRemoteDataSource
 import com.anddd.nevera.data.mapper.error.toEmailRequestError
 import com.anddd.nevera.data.mapper.error.toEmailVerifyError
 import com.anddd.nevera.data.mapper.error.toGoogleLoginError
@@ -21,13 +21,13 @@ import com.anddd.nevera.domain.model.auth.LogoutError
 import com.anddd.nevera.domain.model.auth.SignupError
 import com.anddd.nevera.domain.model.auth.WithdrawError
 import com.anddd.nevera.domain.model.common.MessageResult
-import com.anddd.nevera.domain.repository.UserRepository
+import com.anddd.nevera.domain.repository.AuthRepository
 import javax.inject.Inject
 
-internal class UserRepositoryImpl @Inject constructor(
-    private val authDataSource: UserDataSource,
+internal class AuthRepositoryImpl @Inject constructor(
+    private val authDataSource: AuthRemoteDataSource,
     private val apiCall: ApiCallExecutor
-) : UserRepository {
+) : AuthRepository {
 
     override suspend fun loginWithEmail(
         email: String,

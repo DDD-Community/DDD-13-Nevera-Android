@@ -8,18 +8,18 @@ import com.anddd.nevera.domain.model.common.MessageResult
 import com.anddd.nevera.domain.scheduler.FcmSyncScheduler
 import com.anddd.nevera.domain.repository.FcmTokenRepository
 import com.anddd.nevera.domain.repository.TokenRepository
-import com.anddd.nevera.domain.repository.UserRepository
+import com.anddd.nevera.domain.repository.AuthRepository
 import javax.inject.Inject
 
 class WithdrawUseCase @Inject constructor(
-    private val userRepository: UserRepository,
+    private val authRepository: AuthRepository,
     private val tokenRepository: TokenRepository,
     private val fcmTokenRepository: FcmTokenRepository,
     private val fcmSyncScheduler: FcmSyncScheduler,
 ) {
 
     suspend operator fun invoke(): NeveraResult<MessageResult, WithdrawError> {
-        return userRepository.withdraw()
+        return authRepository.withdraw()
             .onSuccess {
                 clearSession()
             }
