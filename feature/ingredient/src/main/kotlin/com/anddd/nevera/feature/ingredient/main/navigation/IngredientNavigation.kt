@@ -26,14 +26,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object IngredientGraphRoute
 
-/**
- * imageUri 프로퍼티명은 IngredientViewModel.savedStateHandle["imageUri"] 와 일치해야 합니다.
- */
 @Serializable
 internal data class IngredientRoute(val imageUri: String)
-
-/** IngredientViewModel에서 savedStateHandle[ARG_IMAGE_URI]로 접근하는 키 이름과 동일 */
-internal const val ARG_IMAGE_URI = "imageUri"
 
 // ─── NavController 확장 ───────────────────────────────────────────────────────
 

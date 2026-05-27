@@ -133,7 +133,7 @@ fun IngredientScreen(
                         uiState = uiState,
                         scannedImageUri = viewModel.imageUri,
                         onIntent = viewModel::handleIntent,
-                        onImageClick = { viewModel.imageUri?.let(onNavigateToPhotoDetail) },
+                        onImageClick = { onNavigateToPhotoDetail(viewModel.imageUri) },
                         modifier = Modifier.fillMaxSize(),
                     )
                     if (uiState.phase is IngredientPhase.Registering) {

@@ -19,7 +19,8 @@ import com.anddd.nevera.feature.ingredient.main.model.IngredientPhase
 import com.anddd.nevera.feature.ingredient.main.model.IngredientSideEffect
 import com.anddd.nevera.feature.ingredient.main.model.IngredientUiModel
 import com.anddd.nevera.feature.ingredient.main.model.IngredientUiState
-import com.anddd.nevera.feature.ingredient.main.navigation.ARG_IMAGE_URI
+import androidx.navigation.toRoute
+import com.anddd.nevera.feature.ingredient.main.navigation.IngredientRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import org.orbitmvi.orbit.syntax.Syntax
@@ -35,7 +36,7 @@ class IngredientViewModel @Inject constructor(
 ) {
 
     /** 영수증 캡처 이미지 URI — OCR API 호출 시 사용 */
-    val imageUri: String? = savedStateHandle[ARG_IMAGE_URI]
+    val imageUri: String = savedStateHandle.toRoute<IngredientRoute>().imageUri
 
     private var scanJob: Job? = null
 
@@ -57,16 +58,8 @@ class IngredientViewModel @Inject constructor(
     // ── 스캔 시작 ──────────────────────────────────────────────────────────────
     private fun startScan() {
         scanJob?.cancel()
-        val uri = imageUri
-        if (uri == null) {
-            intent {
-                applyMutation(ScanFailed)
-                postSideEffect(IngredientSideEffect.NavigateToOcrError)
-            }
-            return
-        }
         scanJob = intent {
-            ocrScanner.scan(uri).collect { event ->
+            ocrScanner.scan(imageUri).collect { event ->
                 when (event) {
                     is OcrScanEvent.Progress -> applyMutation(ProgressUpdated(event.value))
                     is OcrScanEvent.Completed -> applyMutation(ScanCompleted(event.items.toUiModels()))
