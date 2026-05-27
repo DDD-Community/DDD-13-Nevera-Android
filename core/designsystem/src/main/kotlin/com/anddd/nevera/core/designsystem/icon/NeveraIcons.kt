@@ -48,6 +48,14 @@ object NeveraIcons {
         @Composable get() = painterResource(R.drawable.ic_user)
     val NavMyFilled: Painter
         @Composable get() = painterResource(R.drawable.ic_user_filled)
+    val ReceiptCameraWhite: Painter
+        @Composable get() = painterResource(R.drawable.ic_receipt_camera_white)
+    val ReceiptCloseWhite: Painter
+        @Composable get() = painterResource(R.drawable.ic_receipt_close_white)
+    val ReceiptCameraSwap: Painter
+        @Composable get() = painterResource(R.drawable.ic_receipt_cameraswap_white)
+    val ReceiptGallery: Painter
+        @Composable get() = painterResource(R.drawable.ic_receipt_gallery)
     val ChevronSmallLeft: Painter
         @Composable get() = painterResource(R.drawable.ic_chevron_left_small)
     val ChevronSmallUp: Painter
@@ -58,6 +66,10 @@ object NeveraIcons {
         @Composable get() = painterResource(R.drawable.ic_chevron_down_small)
     val Edit: Painter
         @Composable get() = painterResource(R.drawable.ic_edit_pencil)
+    val CircleHelp: Painter
+        @Composable get() = painterResource(R.drawable.ic_circle_help)
+    val EmptyStateWarning: Painter
+        @Composable get() = painterResource(R.drawable.ic_empty_state_warning)
     val IllustLighting: Painter
         @Composable get() = painterResource(R.drawable.ic_illust_lighting)
 }

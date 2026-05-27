@@ -40,6 +40,7 @@ coil = "3.4.0"
 # WorkManager
 workManager = "2.10.1"
 mockk = "1.13.13"
+camerax = "1.6.1"
 hiltWork = "1.2.0"
 
 [libraries]
@@ -92,6 +93,10 @@ work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version
 hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltWork" }
 hilt-work-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltWork" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+androidx-camera-core = { group = "androidx.camera", name = "camera-core", version.ref = "camerax" }
+androidx-camera-camera2 = { group = "androidx.camera", name = "camera-camera2", version.ref = "camerax" }
+androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "camerax" }
+androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "camerax" }
 
 orbit-core = { group = "org.orbit-mvi", name = "orbit-core", version.ref = "orbitMvi" }
 orbit-viewmodel = { group = "org.orbit-mvi", name = "orbit-viewmodel", version.ref = "orbitMvi" }

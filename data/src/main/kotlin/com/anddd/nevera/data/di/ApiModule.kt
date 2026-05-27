@@ -2,6 +2,7 @@ package com.anddd.nevera.data.di
 
 import com.anddd.nevera.core.network.di.RefreshApi
 import com.anddd.nevera.core.network.di.RefreshRetrofit
+import com.anddd.nevera.data.api.AuthApi
 import com.anddd.nevera.data.api.NotificationApi
 import com.anddd.nevera.data.api.OcrApi
 import com.anddd.nevera.data.api.UserApi
@@ -18,14 +19,20 @@ internal object ApiModule {
 
     @Provides
     @Singleton
-    fun provideUserApi(retrofit: Retrofit): UserApi {
-        return retrofit.create(UserApi::class.java)
+    fun provideAuthApi(retrofit: Retrofit): AuthApi {
+        return retrofit.create(AuthApi::class.java)
     }
 
     @Provides
     @Singleton
     @RefreshApi
-    fun provideRefreshUserApi(@RefreshRetrofit retrofit: Retrofit): UserApi {
+    fun provideRefreshAuthApi(@RefreshRetrofit retrofit: Retrofit): AuthApi {
+        return retrofit.create(AuthApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserApi(retrofit: Retrofit): UserApi {
         return retrofit.create(UserApi::class.java)
     }
 

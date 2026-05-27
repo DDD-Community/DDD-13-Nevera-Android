@@ -6,7 +6,7 @@ import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.domain.model.auth.LoginError
 import com.anddd.nevera.domain.model.auth.LoginProvider
 import com.anddd.nevera.domain.repository.TokenRepository
-import com.anddd.nevera.domain.repository.UserRepository
+import com.anddd.nevera.domain.repository.AuthRepository
 import javax.inject.Inject
 
 /**
@@ -16,12 +16,12 @@ import javax.inject.Inject
  * 이 UseCase에서 두 Repository를 함께 orchestrate한다.
  */
 class EmailLoginUseCase @Inject constructor(
-    private val userRepository: UserRepository,
+    private val authRepository: AuthRepository,
     private val tokenRepository: TokenRepository,
 ) {
 
     suspend operator fun invoke(email: String, password: String): NeveraResult<Unit, LoginError> {
-        return userRepository.loginWithEmail(email, password)
+        return authRepository.loginWithEmail(email, password)
             .onSuccess { result ->
                 tokenRepository.setLoginInfo(
                     accessToken = result.accessToken,
