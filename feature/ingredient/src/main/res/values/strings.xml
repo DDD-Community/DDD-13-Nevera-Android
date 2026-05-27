@@ -52,4 +52,22 @@
     <string name="ocr_error_tip_2">영수증은 구겨지지 않게 펼쳐서 올려주세요</string>
     <string name="ocr_error_tip_3">내용 전체가 화면 안에 들어오게 맞춰주세요</string>
     <string name="ocr_error_retry">다시 시도하기</string>
+
+    <!-- OcrCaptureScreen -->
+    <string name="ocr_capture_scan_title">영수증 스캔</string>
+    <string name="ocr_capture_switch_to_camera">카메라 모드</string>
+    <string name="ocr_capture_hint_line1">영수증이 잘 보일 수 있도록</string>
+    <string name="ocr_capture_hint_line2">종이가 구겨지지 않게 평평하게 펴주세요</string>
+    <string name="ocr_capture_hint_combined">영수증이 잘 보일 수 있도록\n종이가 구겨지지 않게 평평하게 펴주세요</string>
+    <string name="ocr_capture_permission_dialog_title">기기의 권한이 꺼져있어요</string>
+    <string name="ocr_capture_permission_dialog_subtitle">설정에서 권한을 허용해주세요</string>
+    <string name="ocr_capture_permission_dialog_positive">설정으로 이동</string>
+    <string name="ocr_capture_permission_dialog_negative">닫기</string>
+    <string name="ocr_capture_gallery_partial_access">현재 선택한 사진만 사용할 수 있어요.</string>
+    <string name="ocr_capture_gallery_partial_access_select">추가</string>
+    <string name="ocr_capture_error">촬영에 실패했습니다.</string>
+    <string name="ocr_capture_gallery_icon_description">갤러리</string>
+    <string name="ocr_capture_camera_swap_icon_description">카메라 전환</string>
+    <string name="ocr_capture_shutter_icon_description">사진 촬영</string>
+    <string name="ocr_capture_gallery_image_description">영수증 사진 선택</string>
 </resources>
