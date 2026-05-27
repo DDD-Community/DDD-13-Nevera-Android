@@ -101,12 +101,10 @@ private fun IngredientFilterTabRow(
     onTabSelected: (IngredientFilterTab) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val containerShape = RoundedCornerShape(NeveraTheme.radius.medium)
-
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(containerShape)
+            .clip(RoundedCornerShape(NeveraTheme.radius.medium))
             .background(NeveraTheme.colors.surfaceSecondary)
             .padding(TabContainerPadding),
     ) {
