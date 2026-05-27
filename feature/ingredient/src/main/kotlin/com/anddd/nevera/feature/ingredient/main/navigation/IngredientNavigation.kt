@@ -14,7 +14,11 @@ import com.anddd.nevera.feature.ingredient.ocrcapture.navigation.OcrCaptureRoute
 import com.anddd.nevera.feature.ingredient.ocrerror.OcrErrorScreen
 import com.anddd.nevera.feature.ingredient.ocrerror.navigation.OcrErrorRoute
 import com.anddd.nevera.feature.ingredient.photodetail.PhotoDetailScreen
+import com.anddd.nevera.feature.ingredient.photodetail.navigation.PhotoDetailRoute
+import com.anddd.nevera.feature.ingredient.photodetail.navigation.navigateToPhotoDetail
 import com.anddd.nevera.feature.ingredient.registersuccess.RegisterSuccessScreen
+import com.anddd.nevera.feature.ingredient.registersuccess.navigation.RegisterSuccessRoute
+import com.anddd.nevera.feature.ingredient.registersuccess.navigation.navigateToRegisterSuccess
 import kotlinx.serialization.Serializable
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
@@ -30,12 +34,6 @@ internal data class IngredientRoute(val imageUri: String)
 
 /** IngredientViewModel에서 savedStateHandle[ARG_IMAGE_URI]로 접근하는 키 이름과 동일 */
 internal const val ARG_IMAGE_URI = "imageUri"
-
-@Serializable
-internal data class RegisterSuccessRoute(val totalCost: Int)
-
-@Serializable
-internal data class PhotoDetailRoute(val imageUri: String)
 
 // ─── NavController 확장 ───────────────────────────────────────────────────────
 
@@ -82,13 +80,13 @@ fun NavGraphBuilder.ingredientNavGraph(
                 onNavigateToError = { navController.navigate(OcrErrorRoute) },
                 // 등록 완료 → RegisterSuccessScreen으로 이동, Ingredient 스택 제거
                 onNavigateToSuccess = { totalCost ->
-                    navController.navigate(RegisterSuccessRoute(totalCost)) {
+                    navController.navigateToRegisterSuccess(totalCost) {
                         popUpTo<IngredientRoute> { inclusive = true }
                     }
                 },
                 // 영수증 썸네일 탭 → PhotoDetailScreen으로 이동
                 onNavigateToPhotoDetail = { imageUri ->
-                    navController.navigate(PhotoDetailRoute(imageUri))
+                    navController.navigateToPhotoDetail(imageUri)
                 },
             )
         }
