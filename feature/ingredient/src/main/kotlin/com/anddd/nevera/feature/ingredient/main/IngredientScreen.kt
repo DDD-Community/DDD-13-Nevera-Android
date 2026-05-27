@@ -12,6 +12,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 fun IngredientScreen(
     onNavigateBack: () -> Unit,
+    onNavigateToError: () -> Unit,
     viewModel: IngredientViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -22,6 +23,7 @@ fun IngredientScreen(
             is IngredientSideEffect.ShowToast ->
                 Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
             IngredientSideEffect.NavigateBack -> onNavigateBack()
+            IngredientSideEffect.NavigateToOcrError -> onNavigateToError()
         }
     }
 
