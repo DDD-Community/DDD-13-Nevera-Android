@@ -53,7 +53,6 @@ internal fun MyPageContent(
                 .padding(innerPadding),
         ) {
             Column {
-                // TODO: 실데이터 연결 시 uiState에서 주입
                 ProfileContent(profile = uiState.profile)
 
                 Box(

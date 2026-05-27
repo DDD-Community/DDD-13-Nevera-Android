@@ -45,6 +45,7 @@ private val BorderWidth = 1.dp
 private val BorderDashPathSize = 6.dp
 private val BorderDashPathEmptySize = 6.dp
 private val AddWishButtonHeight = 34.dp
+private val WishBottomPadding = 2.dp
 
 @Composable
 internal fun WishBanner(
@@ -119,13 +120,13 @@ private fun WishCard(
                 text = stringResource(R.string.home_wish_amount_separator),
                 style = NeveraTheme.typography.bodySmall,
                 color = NeveraTheme.colors.textCaption,
-                modifier = Modifier.padding(bottom = 2.dp),
+                modifier = Modifier.padding(bottom = WishBottomPadding),
             )
             Text(
                 text = stringResource(R.string.home_wish_amount_format, goalMoney),
                 style = NeveraTheme.typography.bodySmall,
                 color = NeveraTheme.colors.textCaption,
-                modifier = Modifier.padding(bottom = 2.dp),
+                modifier = Modifier.padding(bottom = WishBottomPadding),
             )
         }
         Spacer(Modifier.height(NeveraTheme.spacing.gap12))

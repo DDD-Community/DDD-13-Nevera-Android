@@ -18,11 +18,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.anddd.nevera.core.designsystem.component.dialog.NeveraConfirmDialog
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.splash.R
 import com.anddd.nevera.feature.splash.main.model.SplashIntent
 import com.anddd.nevera.feature.splash.main.model.SplashSideEffect
+import com.anddd.nevera.infra.permission.AppPermission
+import com.anddd.nevera.infra.permission.PermissionRequester
 import org.orbitmvi.orbit.compose.collectSideEffect
 
 private val LogoWidth = 222.dp
@@ -34,12 +37,25 @@ fun SplashScreen(
     onNavigateToHome: () -> Unit,
     viewModel: SplashViewModel = hiltViewModel()
 ) {
-    NotificationPermissionRequester(
-        onPermissionFlowCompleted = {
-            val startTime = SystemClock.elapsedRealtime()
-            viewModel.handleIntent(SplashIntent.StartAutoLogin(startTime))
-        },
-    )
+    val startAutoLogin = {
+        val startTime = SystemClock.elapsedRealtime()
+        viewModel.handleIntent(SplashIntent.StartAutoLogin(startTime))
+    }
+
+    PermissionRequester(
+        permission = AppPermission.Notification,
+        onGranted = startAutoLogin,
+        onDenied = startAutoLogin,
+    ) { onConfirm, onDismiss ->
+        NeveraConfirmDialog(
+            title = stringResource(R.string.notification_permission_rationale_title),
+            subtitle = stringResource(R.string.notification_permission_rationale_message),
+            negative = stringResource(R.string.notification_permission_rationale_dismiss),
+            positive = stringResource(R.string.notification_permission_rationale_confirm),
+            onNegative = onDismiss,
+            onPositive = onConfirm,
+        )
+    }
 
     viewModel.collectSideEffect { effect ->
         when (effect) {

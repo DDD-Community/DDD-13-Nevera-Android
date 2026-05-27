@@ -62,4 +62,6 @@ object NeveraIcons {
         @Composable get() = painterResource(R.drawable.ic_circle_help)
     val EmptyStateWarning: Painter
         @Composable get() = painterResource(R.drawable.ic_empty_state_warning)
+    val IllustLighting: Painter
+        @Composable get() = painterResource(R.drawable.ic_illust_lighting)
 }

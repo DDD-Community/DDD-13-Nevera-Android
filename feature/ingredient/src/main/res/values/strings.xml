@@ -39,4 +39,17 @@
     <string name="ingredient_item_placeholder_select">선택</string>
     <string name="ingredient_item_placeholder_date">날짜 선택</string>
     <string name="ingredient_item_cost_unit">원</string>
+
+    <!-- OcrScanningDialog -->
+    <string name="ocr_scanning_title">영수증을 읽는 중...</string>
+    <string name="ocr_scanning_close_description">취소</string>
+
+    <!-- OcrErrorScreen -->
+    <string name="ocr_error_title">이런! 식재료를 인식하지 못했어요</string>
+    <string name="ocr_error_subtitle">글자와 이미지가 잘 보이도록 다시 시도해주세요</string>
+    <string name="ocr_error_tip_header">이렇게 해보세요!</string>
+    <string name="ocr_error_tip_1">밝고 그림자가 없는 곳에서 촬영해주세요</string>
+    <string name="ocr_error_tip_2">영수증은 구겨지지 않게 펼쳐서 올려주세요</string>
+    <string name="ocr_error_tip_3">내용 전체가 화면 안에 들어오게 맞춰주세요</string>
+    <string name="ocr_error_retry">다시 시도하기</string>
 </resources>

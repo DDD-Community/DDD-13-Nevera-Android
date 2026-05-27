@@ -1,6 +1,5 @@
 package com.anddd.nevera.domain.repository
 
-import com.anddd.nevera.core.common.NetworkError
 import com.anddd.nevera.core.common.NeveraResult
 import com.anddd.nevera.domain.model.auth.EmailRequestError
 import com.anddd.nevera.domain.model.auth.EmailVerifyError

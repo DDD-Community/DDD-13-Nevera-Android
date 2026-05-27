@@ -5,11 +5,13 @@ import com.anddd.nevera.data.repository.AuthRepositoryImpl
 import com.anddd.nevera.data.repository.FcmTokenRepositoryImpl
 import com.anddd.nevera.data.repository.HomeRepositoryImpl
 import com.anddd.nevera.data.repository.TokenRepositoryImpl
+import com.anddd.nevera.data.repository.UserRepositoryImpl
 import com.anddd.nevera.domain.repository.AppInfoRepository
 import com.anddd.nevera.domain.repository.AuthRepository
 import com.anddd.nevera.domain.repository.FcmTokenRepository
 import com.anddd.nevera.domain.repository.HomeRepository
 import com.anddd.nevera.domain.repository.TokenRepository
+import com.anddd.nevera.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -27,6 +29,10 @@ internal abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindAuthRepository(impl: AuthRepositoryImpl): AuthRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindUserRepository(impl: UserRepositoryImpl): UserRepository
 
     @Binds
     @Singleton

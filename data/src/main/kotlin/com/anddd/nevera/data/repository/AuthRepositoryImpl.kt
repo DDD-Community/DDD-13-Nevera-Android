@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 internal class AuthRepositoryImpl @Inject constructor(
     private val authDataSource: AuthRemoteDataSource,
-    private val apiCall: ApiCallExecutor
+    private val apiCall: ApiCallExecutor,
 ) : AuthRepository {
 
     override suspend fun loginWithEmail(
@@ -49,7 +49,7 @@ internal class AuthRepositoryImpl @Inject constructor(
             authDataSource.signup(email, password)
         }.map(
             transformSuccess = { it.toDomain() },
-            transformFailure = { it.toSignupError() }
+            transformFailure = { it.toSignupError() },
         )
     }
 
@@ -58,7 +58,7 @@ internal class AuthRepositoryImpl @Inject constructor(
             authDataSource.loginWithGoogle(idToken)
         }.map(
             transformSuccess = { it.toDomain() },
-            transformFailure = { it.toGoogleLoginError() }
+            transformFailure = { it.toGoogleLoginError() },
         )
     }
 
@@ -67,7 +67,7 @@ internal class AuthRepositoryImpl @Inject constructor(
             authDataSource.emailRequest(email)
         }.map(
             transformSuccess = { it.toDomain() },
-            transformFailure = { it.toEmailRequestError() }
+            transformFailure = { it.toEmailRequestError() },
         )
     }
 
@@ -79,7 +79,7 @@ internal class AuthRepositoryImpl @Inject constructor(
             authDataSource.emailVerify(email, authCode)
         }.map(
             transformSuccess = { it.toDomain() },
-            transformFailure = { it.toEmailVerifyError() }
+            transformFailure = { it.toEmailVerifyError() },
         )
     }
 
@@ -88,7 +88,7 @@ internal class AuthRepositoryImpl @Inject constructor(
             authDataSource.logout()
         }.map(
             transformSuccess = { it.toDomain() },
-            transformFailure = { it.toLogoutError() }
+            transformFailure = { it.toLogoutError() },
         )
     }
 
