@@ -1,0 +1,30 @@
+package com.anddd.nevera.data.repository
+
+import com.anddd.nevera.core.common.NeveraResult
+import com.anddd.nevera.core.common.map
+import com.anddd.nevera.core.network.auth.ApiCallExecutor
+import com.anddd.nevera.data.datasource.IngredientRemoteDataSource
+import com.anddd.nevera.data.mapper.error.toCommonError
+import com.anddd.nevera.data.mapper.toDomain
+import com.anddd.nevera.domain.model.common.CommonError
+import com.anddd.nevera.domain.model.ingredient.Ingredient
+import com.anddd.nevera.domain.repository.IngredientRepository
+import javax.inject.Inject
+
+internal class IngredientRepositoryImpl @Inject constructor(
+    private val remoteDataSource: IngredientRemoteDataSource,
+    private val apiCall: ApiCallExecutor,
+) : IngredientRepository {
+
+    override suspend fun getRescuedIngredients(
+        offset: Int,
+        limit: Int,
+    ): NeveraResult<List<Ingredient>, CommonError> {
+        return apiCall {
+            remoteDataSource.getRescuedIngredients(offset, limit)
+        }.map(
+            transformSuccess = { list -> list.map { it.toDomain() } },
+            transformFailure = { it.toCommonError() },
+        )
+    }
+}

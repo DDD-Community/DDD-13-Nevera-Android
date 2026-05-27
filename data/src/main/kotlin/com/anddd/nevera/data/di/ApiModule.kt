@@ -4,6 +4,7 @@ import com.anddd.nevera.core.network.di.RefreshApi
 import com.anddd.nevera.core.network.di.RefreshRetrofit
 import com.anddd.nevera.data.api.AuthApi
 import com.anddd.nevera.data.api.HomeApi
+import com.anddd.nevera.data.api.IngredientApi
 import com.anddd.nevera.data.api.NotificationApi
 import com.anddd.nevera.data.api.UserApi
 import dagger.Module
@@ -46,6 +47,12 @@ internal object ApiModule {
     @Singleton
     fun provideHomeApi(retrofit: Retrofit): HomeApi {
         return retrofit.create(HomeApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideIngredientApi(retrofit: Retrofit): IngredientApi {
+        return retrofit.create(IngredientApi::class.java)
     }
 
 }
