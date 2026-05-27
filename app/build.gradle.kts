@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.hilt.work)
     implementation(libs.timber)
     implementation(platform(libs.firebase.bom))
