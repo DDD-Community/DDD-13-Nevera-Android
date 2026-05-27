@@ -1,6 +1,8 @@
 package com.anddd.nevera.infra.permission
 
 import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
@@ -21,7 +23,7 @@ fun PermissionRequester(
     rationaleContent: @Composable (onConfirm: () -> Unit, onDismiss: () -> Unit) -> Unit,
 ) {
     val context = LocalContext.current
-    val activity = context as? Activity ?: run {
+    val activity = context.findActivity() ?: run {
         Timber.w("PermissionRequester requires Activity context")
         LaunchedEffect(Unit) { onDenied() }
         return
@@ -54,4 +56,10 @@ fun PermissionRequester(
         }
         rationaleContent(onConfirm, onDismiss)
     }
+}
+
+private tailrec fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }
