@@ -9,6 +9,8 @@ import androidx.navigation.compose.NavHost
 import com.anddd.nevera.feature.auth.main.google.GoogleAuthClient
 import com.anddd.nevera.feature.auth.navigation.AuthGraphRoute
 import com.anddd.nevera.feature.auth.navigation.authNavGraph
+import com.anddd.nevera.feature.ingredient.main.navigation.IngredientGraphRoute
+import com.anddd.nevera.feature.ingredient.main.navigation.ingredientNavGraph
 import com.anddd.nevera.feature.main.home.navigation.HomeRoute
 import com.anddd.nevera.feature.main.home.navigation.homeScreen
 import com.anddd.nevera.feature.mypage.navigation.myPageNavGraph
@@ -60,6 +62,13 @@ fun NeveraNavHost(
                 }
             }
         )
-        // FridgeNavGraph()
+        ingredientNavGraph(
+            navController = navController,
+            onNavigateToHome = {
+                navController.navigate(HomeRoute) {
+                    popUpTo(IngredientGraphRoute) { inclusive = true }
+                }
+            }
+        )
     }
 }

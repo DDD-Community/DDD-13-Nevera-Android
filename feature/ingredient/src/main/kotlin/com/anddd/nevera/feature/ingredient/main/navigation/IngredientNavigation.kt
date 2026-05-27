@@ -1,38 +1,103 @@
 package com.anddd.nevera.feature.ingredient.main.navigation
 
 import android.net.Uri
+import androidx.core.net.toUri
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
+import androidx.navigation.navOptions
+import androidx.navigation.navigation
+import androidx.navigation.toRoute
 import com.anddd.nevera.feature.ingredient.main.IngredientScreen
+import com.anddd.nevera.feature.ingredient.ocrcapture.OcrCaptureScreen
+import com.anddd.nevera.feature.ingredient.ocrcapture.navigation.OcrCaptureRoute
+import com.anddd.nevera.feature.ingredient.ocrerror.OcrErrorScreen
+import com.anddd.nevera.feature.ingredient.ocrerror.navigation.OcrErrorRoute
+import kotlinx.serialization.Serializable
 
-const val INGREDIENT_ROUTE = "ingredient"
+// ─── Routes ───────────────────────────────────────────────────────────────────
+
+@Serializable
+data object IngredientGraphRoute
+
+/**
+ * imageUri 프로퍼티명은 IngredientViewModel.savedStateHandle["imageUri"] 와 일치해야 합니다.
+ */
+@Serializable
+internal data class IngredientRoute(val imageUri: String)
+
+/** IngredientViewModel에서 savedStateHandle[ARG_IMAGE_URI]로 접근하는 키 이름과 동일 */
 internal const val ARG_IMAGE_URI = "imageUri"
+
+// ─── NavController 확장 ───────────────────────────────────────────────────────
 
 /**
  * 영수증 캡처 화면 → 식재료 등록 화면 이동
  *
  * @param imageUri 캡처된 영수증 이미지 URI (multipart API 호출에 사용)
  */
-fun NavController.navigateToIngredient(imageUri: String) {
-    navigate("$INGREDIENT_ROUTE?$ARG_IMAGE_URI=${Uri.encode(imageUri)}")
+internal fun NavController.navigateToIngredient(
+    imageUri: Uri,
+    builder: androidx.navigation.NavOptionsBuilder.() -> Unit = {},
+) {
+    navigate(
+        route = IngredientRoute(imageUri.toString()),
+        navOptions = navOptions(builder)
+    )
 }
 
-/**
- * TODO :: IngredientScreen 개발 완료 이후 MainActivity NavHost에 호출 필요.
- * 지금은 viewModel에서 uri 검증때문에 크래시 발생 가능
- */
-fun NavGraphBuilder.ingredientScreen(
-    onNavigateBack: () -> Unit,
+// ─── 그래프 ────────────────────────────────────────────────────────────────────
+
+fun NavGraphBuilder.ingredientNavGraph(
+    navController: NavController,
+    onNavigateToHome: () -> Unit, // 식재료 등록 완료화면에서 사용예정.
 ) {
-    composable(
-        route = "$INGREDIENT_ROUTE?$ARG_IMAGE_URI={$ARG_IMAGE_URI}",
-        arguments = listOf(
-            navArgument(ARG_IMAGE_URI) { type = NavType.StringType },
-        ),
-    ) {
-        IngredientScreen(onNavigateBack = onNavigateBack)
+    navigation<IngredientGraphRoute>(startDestination = OcrCaptureRoute()) {
+        composable<OcrCaptureRoute> {
+            OcrCaptureScreen(
+                // X 버튼 → 이전 화면으로 복귀
+                onNavigateBack = { navController.popBackStack() },
+                // 촬영/갤러리 선택 완료 → IngredientScreen으로 이동, OcrCaptureScreen은 스택에서 제거
+                onNavigateToResult = { uri: Uri ->
+                    navController.navigateToIngredient(uri) {
+                        popUpTo<OcrCaptureRoute> { inclusive = true }
+                    }
+                },
+            )
+        }
+
+        composable<IngredientRoute> {
+            IngredientScreen(
+                // 뒤로가기 → 이전 화면으로 복귀
+                onNavigateBack = { navController.popBackStack() },
+                // OCR 인식 실패 → OcrErrorScreen으로 이동
+                onNavigateToError = { navController.navigate(OcrErrorRoute) },
+            )
+        }
+
+        composable<OcrErrorRoute> {
+            OcrErrorScreen(
+                // 다시 시도 → 동일 imageUri로 IngredientScreen 새 인스턴스 생성 (기존 인스턴스 제거)
+                onRetry = {
+                    val imageUri = runCatching {
+                        navController.previousBackStackEntry?.toRoute<IngredientRoute>()?.imageUri
+                    }.getOrNull()
+
+                    if (imageUri == null) {
+                        navController.popBackStack()
+                    } else {
+                        navController.navigateToIngredient(imageUri.toUri()) {
+                            popUpTo<IngredientRoute> { inclusive = true }
+                        }
+                    }
+                },
+                // X 버튼 → OcrCaptureScreen 새 인스턴스로 이동, Ingredient·OcrError 스택 제거
+                onClose = {
+                    navController.navigate(OcrCaptureRoute()) {
+                        popUpTo<IngredientRoute> { inclusive = true }
+                    }
+                },
+            )
+        }
     }
 }
