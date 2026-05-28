@@ -6,6 +6,7 @@ import com.anddd.nevera.core.mvi.NeveraViewModel
 import com.anddd.nevera.domain.usecase.home.GetHomeSummaryUseCase
 import com.anddd.nevera.domain.usecase.ingredient.GetDisposedIngredientsUseCase
 import com.anddd.nevera.domain.usecase.ingredient.GetRescuedIngredientsUseCase
+import com.anddd.nevera.domain.usecase.user.UpdateNicknameUseCase
 import com.anddd.nevera.feature.main.home.model.HomeIntent
 import com.anddd.nevera.feature.main.home.model.HomeMutation
 import com.anddd.nevera.feature.main.home.model.HomeProfileUiModel
@@ -29,6 +30,7 @@ class HomeViewModel @Inject constructor(
     private val getHomeSummary: GetHomeSummaryUseCase,
     private val getRescuedIngredients: GetRescuedIngredientsUseCase,
     private val getDisposedIngredients: GetDisposedIngredientsUseCase,
+    private val updateNickname: UpdateNicknameUseCase,
 ) : NeveraViewModel<HomeUiState, HomeSideEffect, HomeIntent, HomeMutation>(HomeUiState()) {
 
     private companion object {
@@ -180,9 +182,14 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun onConfirmNickname(nickname: String) = intent {
-        // TODO: 닉네임 저장 API 호출
-        applyMutation(HomeMutation.UpdateNickname(nickname))
-        applyMutation(HomeMutation.ShowGreetingBottomSheet)
+        updateNickname(nickname)
+            .onSuccess { profile ->
+                applyMutation(HomeMutation.UpdateNickname(profile.nickname))
+                applyMutation(HomeMutation.ShowGreetingBottomSheet)
+            }
+            .onFailure {
+                // TODO: 닉네임 업데이트 에러 처리
+            }
     }
 
     private fun onDismissGreeting() = intent {
