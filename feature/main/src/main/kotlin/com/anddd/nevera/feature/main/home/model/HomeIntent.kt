@@ -5,4 +5,5 @@ import com.anddd.nevera.core.mvi.NeveraIntent
 sealed interface HomeIntent : NeveraIntent {
     data class RecentIngredientTabClick(val tab: IngredientFilterTab) : HomeIntent
     data object AddIngredientClick : HomeIntent
+    data class LoadMoreIngredients(val tab: IngredientFilterTab) : HomeIntent
 }

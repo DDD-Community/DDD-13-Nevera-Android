@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
@@ -34,6 +35,8 @@ internal fun HomeContent(
     uiState: HomeUiState,
     onIntent: (HomeIntent) -> Unit,
 ) {
+    val listState = rememberLazyListState()
+
     Scaffold(
         topBar = {
             NeveraLogoAppBar(
@@ -63,7 +66,10 @@ internal fun HomeContent(
                 .fillMaxSize()
                 .padding(innerPadding),
         ) {
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(
+                state = listState,
+                modifier = Modifier.fillMaxSize(),
+            ) {
                 item(key = "wish_banner") {
                     WishBanner(
                         nickname = uiState.profile.nickname,
@@ -98,10 +104,13 @@ internal fun HomeContent(
                 recentIngredientSection(
                     selectedTab = uiState.ingredientFilterTab,
                     rescuedIngredients = uiState.rescuedIngredients,
+                    disposalIngredients = uiState.disposalIngredients,
+                    listState = listState,
                     onTabSelected = { tab ->
                         onIntent(HomeIntent.RecentIngredientTabClick(tab))
                     },
                     onHelpClick = {},
+                    onLoadMore = { onIntent(HomeIntent.LoadMoreIngredients(uiState.ingredientFilterTab)) },
                 )
             }
 
