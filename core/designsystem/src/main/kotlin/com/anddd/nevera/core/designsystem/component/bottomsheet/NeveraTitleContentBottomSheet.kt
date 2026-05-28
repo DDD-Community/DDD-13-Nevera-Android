@@ -39,8 +39,8 @@ fun NeveraTitleContentBottomSheet(
 ) {
     val scope = rememberCoroutineScope()
     val dismiss: () -> Unit = {
-        scope.launch { sheetState.hide() }.invokeOnCompletion {
-            if (!sheetState.isVisible) onDismissRequest()
+        scope.launch { sheetState.hide() }.invokeOnCompletion { cause ->
+            if (cause == null && !sheetState.isVisible) onDismissRequest()
         }
     }
 
