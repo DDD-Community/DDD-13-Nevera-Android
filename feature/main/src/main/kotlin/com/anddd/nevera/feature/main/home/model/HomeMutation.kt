@@ -10,5 +10,23 @@ sealed interface HomeMutation : NeveraMutation {
     data class ShowWish(val wish: HomeWishUiModel) : HomeMutation
     data object ShowEmptyWish : HomeMutation
     data class ShowSavings(val savings: HomeSavingsUiModel) : HomeMutation
-    data class ShowRescuedIngredients(val ingredients: List<IngredientUiModel>) : HomeMutation
+    data class ShowRescuedIngredients(
+        val ingredients: List<IngredientUiModel>,
+        val hasMore: Boolean,
+    ) : HomeMutation
+    data object LoadingMoreRescuedIngredients : HomeMutation
+    data class AppendRescuedIngredients(
+        val ingredients: List<IngredientUiModel>,
+        val hasMore: Boolean,
+    ) : HomeMutation
+
+    data class ShowDisposalIngredients(
+        val ingredients: List<IngredientUiModel>,
+        val hasMore: Boolean,
+    ) : HomeMutation
+    data object LoadingMoreDisposalIngredients : HomeMutation
+    data class AppendDisposalIngredients(
+        val ingredients: List<IngredientUiModel>,
+        val hasMore: Boolean,
+    ) : HomeMutation
 }

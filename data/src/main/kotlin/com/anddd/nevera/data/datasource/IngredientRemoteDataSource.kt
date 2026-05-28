@@ -1,6 +1,7 @@
 package com.anddd.nevera.data.datasource
 
 import com.anddd.nevera.core.network.model.ApiResponse
+import com.anddd.nevera.data.model.ingredient.DisposedIngredientResponse
 import com.anddd.nevera.data.model.ingredient.IngredientResponse
 
 internal interface IngredientRemoteDataSource {
@@ -8,4 +9,9 @@ internal interface IngredientRemoteDataSource {
         offset: Int,
         limit: Int,
     ): ApiResponse<List<IngredientResponse>>
+
+    suspend fun getDisposedIngredients(
+        offset: Int,
+        limit: Int,
+    ): ApiResponse<List<DisposedIngredientResponse>>
 }

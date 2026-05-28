@@ -9,4 +9,9 @@ interface IngredientRepository {
         offset: Int,
         limit: Int,
     ): NeveraResult<List<Ingredient>, CommonError>
+
+    suspend fun getDisposedIngredients(
+        offset: Int,
+        limit: Int,
+    ): NeveraResult<List<Ingredient>, CommonError>
 }

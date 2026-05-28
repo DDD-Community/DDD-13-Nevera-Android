@@ -27,4 +27,16 @@ internal class IngredientRepositoryImpl @Inject constructor(
             transformFailure = { it.toCommonError() },
         )
     }
+
+    override suspend fun getDisposedIngredients(
+        offset: Int,
+        limit: Int,
+    ): NeveraResult<List<Ingredient>, CommonError> {
+        return apiCall {
+            remoteDataSource.getDisposedIngredients(offset, limit)
+        }.map(
+            transformSuccess = { list -> list.map { it.toDomain() } },
+            transformFailure = { it.toCommonError() },
+        )
+    }
 }
