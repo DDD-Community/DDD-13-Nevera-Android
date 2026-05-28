@@ -19,4 +19,9 @@ data class OcrIngredient(
     val quantity: Int,
     val expiryDate: LocalDate?,
     val cost: Int,
-)
+) {
+    companion object {
+        val DEFAULT_CATEGORY = FoodCategory.Other
+        val DEFAULT_LOCATION = StorageLocation.Pantry
+    }
+}
