@@ -48,6 +48,14 @@ object NeveraIcons {
         @Composable get() = painterResource(R.drawable.ic_user)
     val NavMyFilled: Painter
         @Composable get() = painterResource(R.drawable.ic_user_filled)
+    val OcrCaptureCameraWhite: Painter
+        @Composable get() = painterResource(R.drawable.ic_ocr_capture_camera_white)
+    val OcrCaptureCloseWhite: Painter
+        @Composable get() = painterResource(R.drawable.ic_ocr_capture_close_white)
+    val OcrCaptureCameraSwap: Painter
+        @Composable get() = painterResource(R.drawable.ic_ocr_capture_cameraswap_white)
+    val OcrCaptureGallery: Painter
+        @Composable get() = painterResource(R.drawable.ic_ocr_capture_gallery)
     val ChevronSmallLeft: Painter
         @Composable get() = painterResource(R.drawable.ic_chevron_left_small)
     val ChevronSmallUp: Painter
