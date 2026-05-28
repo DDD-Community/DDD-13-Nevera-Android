@@ -35,4 +35,10 @@
     <string name="home_set_nickname_placeholder">예: 김식구</string>
     <string name="home_set_nickname_description">(한글+영문+숫자 조합 2~6자)</string>
     <string name="home_set_nickname_cta">시작하기</string>
+
+    <!-- Home Greeting Bottom Sheet -->
+    <string name="home_greeting_title">식구에 오신 걸 환영해요!</string>
+    <string name="home_greeting_subtitle">식재료를 구조하고 절약한 금액으로\n원하는 것을 이뤄보세요</string>
+    <string name="home_greeting_primary">위시 만들기</string>
+    <string name="home_greeting_skip">건너뛰기</string>
 </resources>

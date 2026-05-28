@@ -50,6 +50,9 @@ class HomeViewModel @Inject constructor(
             is HomeIntent.LoadMoreIngredients -> loadMoreIngredients(intent.tab)
 
             is HomeIntent.UpdateNicknameClick -> onConfirmNickname(intent.nickname)
+
+            HomeIntent.GreetingCreateWishClick -> onDismissGreeting() // TODO: 위시 생성 화면 이동
+            HomeIntent.GreetingSkipClick -> onDismissGreeting()
         }
     }
 
@@ -179,6 +182,11 @@ class HomeViewModel @Inject constructor(
     private fun onConfirmNickname(nickname: String) = intent {
         // TODO: 닉네임 저장 API 호출
         applyMutation(HomeMutation.UpdateNickname(nickname))
+        applyMutation(HomeMutation.ShowGreetingBottomSheet)
+    }
+
+    private fun onDismissGreeting() = intent {
+        applyMutation(HomeMutation.HideGreetingBottomSheet)
     }
 
     override suspend fun Syntax<HomeUiState, HomeSideEffect>.applyMutation(mutation: HomeMutation) {
@@ -254,6 +262,14 @@ class HomeViewModel @Inject constructor(
                     profile = state.profile.copy(nickname = mutation.nickname),
                     isShowSetNicknameBottomSheet = false,
                 )
+            }
+
+            HomeMutation.ShowGreetingBottomSheet -> reduce {
+                state.copy(isShowGreetingBottomSheet = true)
+            }
+
+            HomeMutation.HideGreetingBottomSheet -> reduce {
+                state.copy(isShowGreetingBottomSheet = false)
             }
         }
     }

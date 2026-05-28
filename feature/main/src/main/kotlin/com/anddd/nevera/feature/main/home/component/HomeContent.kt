@@ -119,6 +119,12 @@ internal fun HomeContent(
                     onNicknameConfirmed = { nickname -> onIntent(HomeIntent.UpdateNicknameClick(nickname)) },
                 )
             }
+            if (uiState.isShowGreetingBottomSheet) {
+                GreetingBottomSheet(
+                    onCreateWishClick = { onIntent(HomeIntent.GreetingCreateWishClick) },
+                    onSkipClick = { onIntent(HomeIntent.GreetingSkipClick) },
+                )
+            }
             if (uiState.isLoading) {
                 LoadingContent()
             }
