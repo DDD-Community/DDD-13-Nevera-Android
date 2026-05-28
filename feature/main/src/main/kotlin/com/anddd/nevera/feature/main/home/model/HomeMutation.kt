@@ -4,17 +4,26 @@ import com.anddd.nevera.core.mvi.NeveraMutation
 
 sealed interface HomeMutation : NeveraMutation {
     data object Loading : HomeMutation
+
     data object LoadComplete : HomeMutation
+
     data class SetRecentIngredientFilterTab(val tab: IngredientFilterTab) : HomeMutation
+
     data class ShowProfile(val profile: HomeProfileUiModel) : HomeMutation
+
     data class ShowWish(val wish: HomeWishUiModel) : HomeMutation
+
     data object ShowEmptyWish : HomeMutation
+
     data class ShowSavings(val savings: HomeSavingsUiModel) : HomeMutation
+
     data class ShowRescuedIngredients(
         val ingredients: List<IngredientUiModel>,
         val hasMore: Boolean,
     ) : HomeMutation
+
     data object LoadingMoreRescuedIngredients : HomeMutation
+
     data class AppendRescuedIngredients(
         val ingredients: List<IngredientUiModel>,
         val hasMore: Boolean,
@@ -24,9 +33,19 @@ sealed interface HomeMutation : NeveraMutation {
         val ingredients: List<IngredientUiModel>,
         val hasMore: Boolean,
     ) : HomeMutation
+
     data object LoadingMoreDisposalIngredients : HomeMutation
+
     data class AppendDisposalIngredients(
         val ingredients: List<IngredientUiModel>,
         val hasMore: Boolean,
     ) : HomeMutation
+
+    data object ShowSetNicknameBottomSheet : HomeMutation
+
+    data class UpdateNickname(val nickname: String) : HomeMutation
+
+    data object ShowGreetingBottomSheet : HomeMutation
+
+    data object HideGreetingBottomSheet : HomeMutation
 }

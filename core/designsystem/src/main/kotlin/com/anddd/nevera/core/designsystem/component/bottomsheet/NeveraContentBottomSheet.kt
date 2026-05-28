@@ -31,6 +31,7 @@ fun NeveraContentBottomSheet(
     title: String,
     subtitle: String,
     cta: String,
+    ctaEnabled: Boolean = true,
     onCtaClick: () -> Unit,
     onDismissRequest: (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit = {},
@@ -59,6 +60,7 @@ fun NeveraContentBottomSheet(
                 .fillMaxWidth()
                 .padding(NeveraTheme.spacing.padding16),
             color = NeveraButtonColor.Primary,
+            enabled = ctaEnabled,
         )
     }
 }
