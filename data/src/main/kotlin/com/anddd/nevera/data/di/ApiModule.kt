@@ -6,7 +6,6 @@ import com.anddd.nevera.data.api.AuthApi
 import com.anddd.nevera.data.api.HomeApi
 import com.anddd.nevera.data.api.IngredientApi
 import com.anddd.nevera.data.api.NotificationApi
-import com.anddd.nevera.data.api.OcrApi
 import com.anddd.nevera.data.api.UserApi
 import dagger.Module
 import dagger.Provides
@@ -48,12 +47,6 @@ internal object ApiModule {
     @Singleton
     fun provideHomeApi(retrofit: Retrofit): HomeApi {
         return retrofit.create(HomeApi::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideOcrApi(retrofit: Retrofit): OcrApi {
-        return retrofit.create(OcrApi::class.java)
     }
 
     @Provides

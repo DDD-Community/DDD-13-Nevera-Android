@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import com.anddd.nevera.core.network.model.ApiResponse
-import com.anddd.nevera.data.api.OcrApi
+import com.anddd.nevera.data.api.IngredientApi
 import com.anddd.nevera.data.model.ingredient.OcrIngredientDto
 import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.MediaType.Companion.toMediaType
@@ -17,7 +17,7 @@ import kotlin.math.max
 import kotlin.math.roundToInt
 
 internal class OcrDataSourceImpl @Inject constructor(
-    private val ocrApi: OcrApi,
+    private val ingredientApi: IngredientApi,
     @param:ApplicationContext private val context: Context,
 ) : OcrDataSource {
 
@@ -29,7 +29,7 @@ internal class OcrDataSourceImpl @Inject constructor(
             filename = "ocr_image.jpg",
             body = requestBody,
         )
-        return ocrApi.extractIngredients(part)
+        return ingredientApi.extractIngredients(part)
     }
 
     private fun compressImageForOcr(imageUri: String): ByteArray {
