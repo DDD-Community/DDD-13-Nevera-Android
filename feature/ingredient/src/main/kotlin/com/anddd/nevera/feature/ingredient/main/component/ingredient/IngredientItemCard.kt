@@ -37,7 +37,6 @@ import java.time.LocalDate
  *
  * @param item               현재 식재료 모델
  * @param onSelectionChanged 체크박스 토글 콜백
- * @param onNameEditClick    이름 편집 아이콘 탭 → 부모가 다이얼로그 표시
  * @param onQuantityChanged  수량 변경 값 전달
  * @param onCostChanged      금액 변경 값 전달
  * @param onCategoryClick    카테고리 탭 → 부모가 바텀시트 표시
@@ -49,7 +48,6 @@ import java.time.LocalDate
 fun IngredientItemCard(
     item: IngredientUiModel,
     onSelectionChanged: (Boolean) -> Unit,
-    onNameEditClick: () -> Unit,
     onQuantityChanged: (Int) -> Unit,
     onCostChanged: (Int) -> Unit,
     onCategoryClick: () -> Unit,
@@ -71,7 +69,6 @@ fun IngredientItemCard(
                 name = item.name,
                 isSelected = item.isSelected,
                 onSelectionChanged = onSelectionChanged,
-                onEditClick = onNameEditClick,
             )
 
             IngredientQuantityField(
@@ -131,7 +128,6 @@ private fun IngredientItemCardSelectedPreview() {
                     isSelected = true,
                 ),
                 onSelectionChanged = {},
-                onNameEditClick = {},
                 onQuantityChanged = {},
                 onCostChanged = {},
                 onCategoryClick = {},
@@ -161,7 +157,6 @@ private fun IngredientItemCardUnselectedPreview() {
                     isSelected = false,
                 ),
                 onSelectionChanged = {},
-                onNameEditClick = {},
                 onQuantityChanged = {},
                 onCostChanged = {},
                 onCategoryClick = {},

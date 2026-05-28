@@ -49,7 +49,6 @@ import com.anddd.nevera.domain.model.ingredient.FoodCategory
 import com.anddd.nevera.domain.model.ingredient.StorageLocation
 import com.anddd.nevera.feature.ingredient.R
 import com.anddd.nevera.feature.ingredient.main.component.ingredient.IngredientItemCard
-import com.anddd.nevera.feature.ingredient.main.component.ingredient.internal.IngredientNameEditDialog
 import com.anddd.nevera.feature.ingredient.main.model.IngredientIntent
 import com.anddd.nevera.feature.ingredient.main.model.IngredientUiModel
 import com.anddd.nevera.feature.ingredient.main.model.IngredientUiState
@@ -64,7 +63,6 @@ private val SectionDividerHeight = 8.dp
 // ─── 바텀시트 / 다이얼로그 상태 ───────────────────────────────────────────────
 private sealed interface IngredientEditState {
     data object None : IngredientEditState
-    data class EditingName(val itemId: String) : IngredientEditState
     data class EditingCategory(val itemId: String) : IngredientEditState
     data class EditingLocation(val itemId: String) : IngredientEditState
     data class EditingDate(val itemId: String) : IngredientEditState
@@ -125,9 +123,6 @@ internal fun IngredientContent(
                         onSelectionChanged = { isSelected ->
                             onIntent(IngredientIntent.UpdateItem(item.copy(isSelected = isSelected)))
                         },
-                        onNameEditClick = {
-                            editState = IngredientEditState.EditingName(item.id)
-                        },
                         onQuantityChanged = { qty ->
                             onIntent(IngredientIntent.UpdateItem(item.copy(quantity = qty)))
                         },
@@ -181,17 +176,6 @@ internal fun IngredientContent(
 
         // 바텀시트 / 다이얼로그
         when (val state = editState) {
-            is IngredientEditState.EditingName -> {
-                val item = uiState.items.find { it.id == state.itemId } ?: return@Box
-                IngredientNameEditDialog(
-                    currentName = item.name,
-                    onConfirm = { newName ->
-                        onIntent(IngredientIntent.UpdateItem(item.copy(name = newName)))
-                        editState = IngredientEditState.None
-                    },
-                    onDismiss = { editState = IngredientEditState.None },
-                )
-            }
             is IngredientEditState.EditingCategory -> {
                 val item = uiState.items.find { it.id == state.itemId } ?: return@Box
                 CategoryBottomSheet(
