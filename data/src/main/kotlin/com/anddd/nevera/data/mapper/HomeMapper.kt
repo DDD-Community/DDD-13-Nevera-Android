@@ -19,5 +19,5 @@ internal fun HomeSummaryResponse.toDomain(): HomeSummary = HomeSummary(
         )
     } else null,
     rescuedAmount = totalConsumed,
-    dispositionAmount = totalWasted,
+    disposalAmount = totalWasted,
 )

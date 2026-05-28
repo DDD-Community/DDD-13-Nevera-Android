@@ -78,7 +78,7 @@ class HomeViewModel @Inject constructor(
                     HomeMutation.ShowSavings(
                         HomeSavingsUiModel(
                             rescuedAmount = summary.rescuedAmount,
-                            dispositionAmount = summary.dispositionAmount,
+                            disposalAmount = summary.disposalAmount,
                         )
                     )
                 )

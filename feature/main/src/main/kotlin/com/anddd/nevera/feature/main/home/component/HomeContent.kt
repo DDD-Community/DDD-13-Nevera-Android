@@ -84,7 +84,7 @@ internal fun HomeContent(
                 item(key = "cost_card") {
                     RescueDisposalCostCard(
                         rescueAmount = uiState.savings.rescuedAmount,
-                        disposalAmount = uiState.savings.dispositionAmount,
+                        disposalAmount = uiState.savings.disposalAmount,
                         modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding20),
                     )
                 }

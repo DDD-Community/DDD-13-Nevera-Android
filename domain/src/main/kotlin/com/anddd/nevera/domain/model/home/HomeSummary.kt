@@ -4,7 +4,7 @@ data class HomeSummary(
     val nickname: String,
     val wish: HomeWish?,
     val rescuedAmount: Int,
-    val dispositionAmount: Int,
+    val disposalAmount: Int,
 )
 
 data class HomeWish(

@@ -6,7 +6,7 @@ data class HomeUiState(
     val isLoading: Boolean = false,
     val profile: HomeProfileUiModel = HomeProfileUiModel(nickname = ""),
     val wish: HomeWishUiModel? = null,
-    val savings: HomeSavingsUiModel = HomeSavingsUiModel(rescuedAmount = 0, dispositionAmount = 0),
+    val savings: HomeSavingsUiModel = HomeSavingsUiModel(rescuedAmount = 0, disposalAmount = 0),
     val ingredientFilterTab: IngredientFilterTab = IngredientFilterTab.Rescue,
     val rescuedIngredients: PaginatedListState<IngredientUiModel> = PaginatedListState(),
     val disposalIngredients: PaginatedListState<IngredientUiModel> = PaginatedListState(),
