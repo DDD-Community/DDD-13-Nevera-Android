@@ -32,7 +32,7 @@ class HomeViewModel @Inject constructor(
 ) : NeveraViewModel<HomeUiState, HomeSideEffect, HomeIntent, HomeMutation>(HomeUiState()) {
 
     private companion object {
-        const val INGREDIENT_PAGENATION_LIMIT = 10
+        const val INGREDIENT_PAGINATION_LIMIT = 10
     }
 
     private val loadMoreMutex = Mutex()
@@ -54,8 +54,8 @@ class HomeViewModel @Inject constructor(
 
         val (summaryResult, rescuedResult, disposalResult) = coroutineScope {
             val summaryDeferred = async { getHomeSummary() }
-            val rescuedDeferred = async { getRescuedIngredients() }
-            val disposalDeferred = async { getDisposedIngredients() }
+            val rescuedDeferred = async { getRescuedIngredients(limit = INGREDIENT_PAGINATION_LIMIT) }
+            val disposalDeferred = async { getDisposedIngredients(limit = INGREDIENT_PAGINATION_LIMIT) }
             Triple(summaryDeferred.await(), rescuedDeferred.await(), disposalDeferred.await())
         }
 
@@ -92,7 +92,7 @@ class HomeViewModel @Inject constructor(
                 applyMutation(
                     HomeMutation.ShowRescuedIngredients(
                         ingredients = ingredients.toUiModel(),
-                        hasMore = ingredients.size == INGREDIENT_PAGENATION_LIMIT,
+                        hasMore = ingredients.size == INGREDIENT_PAGINATION_LIMIT,
                     )
                 )
             }
@@ -105,7 +105,7 @@ class HomeViewModel @Inject constructor(
                 applyMutation(
                     HomeMutation.ShowDisposalIngredients(
                         ingredients = ingredients.toUiModel(),
-                        hasMore = ingredients.size == INGREDIENT_PAGENATION_LIMIT,
+                        hasMore = ingredients.size == INGREDIENT_PAGINATION_LIMIT,
                     )
                 )
             }
@@ -126,12 +126,12 @@ class HomeViewModel @Inject constructor(
 
                     applyMutation(HomeMutation.LoadingMoreRescuedIngredients)
 
-                    getRescuedIngredients(offset = paginatedState.currentOffset, limit = INGREDIENT_PAGENATION_LIMIT)
+                    getRescuedIngredients(offset = paginatedState.currentOffset, limit = INGREDIENT_PAGINATION_LIMIT)
                         .onSuccess { ingredients ->
                             applyMutation(
                                 HomeMutation.AppendRescuedIngredients(
                                     ingredients = ingredients.toUiModel(),
-                                    hasMore = ingredients.size == INGREDIENT_PAGENATION_LIMIT,
+                                    hasMore = ingredients.size == INGREDIENT_PAGINATION_LIMIT,
                                 )
                             )
                         }
@@ -146,12 +146,12 @@ class HomeViewModel @Inject constructor(
 
                     applyMutation(HomeMutation.LoadingMoreDisposalIngredients)
 
-                    getDisposedIngredients(offset = paginatedState.currentOffset, limit = INGREDIENT_PAGENATION_LIMIT)
+                    getDisposedIngredients(offset = paginatedState.currentOffset, limit = INGREDIENT_PAGINATION_LIMIT)
                         .onSuccess { ingredients ->
                             applyMutation(
                                 HomeMutation.AppendDisposalIngredients(
                                     ingredients = ingredients.toUiModel(),
-                                    hasMore = ingredients.size == INGREDIENT_PAGENATION_LIMIT,
+                                    hasMore = ingredients.size == INGREDIENT_PAGINATION_LIMIT,
                                 )
                             )
                         }
