@@ -19,7 +19,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 fun OcrCaptureScreen(
     onNavigateBack: () -> Unit,
-    onNavigateToResult: (Uri) -> Unit,
+    onNavigateToResult: (Uri, OcrCaptureMode) -> Unit,
     viewModel: OcrCaptureViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -43,7 +43,7 @@ fun OcrCaptureScreen(
     viewModel.collectSideEffect { effect ->
         when (effect) {
             OcrCaptureSideEffect.NavigateBack -> onNavigateBack()
-            is OcrCaptureSideEffect.NavigateToResult -> onNavigateToResult(effect.uri)
+            is OcrCaptureSideEffect.NavigateToResult -> onNavigateToResult(effect.uri, effect.mode)
             OcrCaptureSideEffect.OpenCameraSettings -> {
                 cameraPermissionState.clearDenied()
                 context.openAppSettings()

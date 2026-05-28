@@ -11,7 +11,7 @@ import com.anddd.nevera.feature.auth.navigation.AuthGraphRoute
 import com.anddd.nevera.feature.auth.navigation.authNavGraph
 import com.anddd.nevera.feature.ingredient.main.navigation.IngredientGraphRoute
 import com.anddd.nevera.feature.ingredient.main.navigation.ingredientNavGraph
-import com.anddd.nevera.feature.ingredient.main.navigation.navigateToIngredientCapture
+import com.anddd.nevera.feature.ingredient.ocrcapture.navigation.navigateToIngredientCapture
 import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureMode
 import com.anddd.nevera.feature.main.home.navigation.HomeRoute
 import com.anddd.nevera.feature.main.home.navigation.homeScreen
