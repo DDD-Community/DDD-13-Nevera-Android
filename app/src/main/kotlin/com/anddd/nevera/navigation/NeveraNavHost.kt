@@ -11,6 +11,8 @@ import com.anddd.nevera.feature.auth.navigation.AuthGraphRoute
 import com.anddd.nevera.feature.auth.navigation.authNavGraph
 import com.anddd.nevera.feature.ingredient.main.navigation.IngredientGraphRoute
 import com.anddd.nevera.feature.ingredient.main.navigation.ingredientNavGraph
+import com.anddd.nevera.feature.ingredient.main.navigation.navigateToOcrCaptureCamera
+import com.anddd.nevera.feature.ingredient.main.navigation.navigateToOcrCaptureGallery
 import com.anddd.nevera.feature.main.home.navigation.HomeRoute
 import com.anddd.nevera.feature.main.home.navigation.homeScreen
 import com.anddd.nevera.feature.mypage.navigation.myPageNavGraph
@@ -53,7 +55,10 @@ fun NeveraNavHost(
                 }
             }
         )
-        homeScreen()
+        homeScreen(
+            onNavigateToCamera = { navController.navigateToOcrCaptureCamera() },
+            onNavigateToGallery = { navController.navigateToOcrCaptureGallery() },
+        )
         myPageNavGraph(
             navController = navController,
             onNavigateToLogin = {

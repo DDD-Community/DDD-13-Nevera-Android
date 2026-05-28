@@ -10,6 +10,7 @@ import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.anddd.nevera.feature.ingredient.main.IngredientScreen
 import com.anddd.nevera.feature.ingredient.ocrcapture.OcrCaptureScreen
+import com.anddd.nevera.feature.ingredient.ocrcapture.navigation.GALLERY_MODE_VALUE
 import com.anddd.nevera.feature.ingredient.ocrcapture.navigation.OcrCaptureRoute
 import com.anddd.nevera.feature.ingredient.ocrerror.OcrErrorScreen
 import com.anddd.nevera.feature.ingredient.ocrerror.navigation.OcrErrorRoute
@@ -30,6 +31,24 @@ internal data class IngredientRoute(val imageUri: String)
 internal const val ARG_IMAGE_URI = "imageUri"
 
 // ─── NavController 확장 ───────────────────────────────────────────────────────
+
+/**
+ * 홈 화면 → 영수증 촬영(카메라) 모드로 진입
+ */
+fun NavController.navigateToOcrCaptureCamera(
+    builder: androidx.navigation.NavOptionsBuilder.() -> Unit = {},
+) {
+    navigate(IngredientGraphRoute, androidx.navigation.navOptions(builder))
+}
+
+/**
+ * 홈 화면 → 온라인 주문내역(갤러리) 모드로 진입
+ */
+fun NavController.navigateToOcrCaptureGallery(
+    builder: androidx.navigation.NavOptionsBuilder.() -> Unit = {},
+) {
+    navigate(OcrCaptureRoute(GALLERY_MODE_VALUE), androidx.navigation.navOptions(builder))
+}
 
 /**
  * 영수증 캡처 화면 → 식재료 등록 화면 이동
