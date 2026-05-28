@@ -1,6 +1,8 @@
 package com.anddd.nevera.feature.ingredient.ocrcapture
 
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
@@ -80,7 +82,8 @@ private fun DarkNavigationBarEffect() {
     val view = LocalView.current
     if (!view.isInEditMode) {
         DisposableEffect(Unit) {
-            val activity = view.context as ComponentActivity
+            val activity = view.context.findActivity() as? ComponentActivity
+                ?: return@DisposableEffect onDispose { }
             activity.enableEdgeToEdge(
                 navigationBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT),
             )
@@ -89,6 +92,12 @@ private fun DarkNavigationBarEffect() {
             }
         }
     }
+}
+
+private tailrec fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }
 
 private fun Context.openAppSettings() {

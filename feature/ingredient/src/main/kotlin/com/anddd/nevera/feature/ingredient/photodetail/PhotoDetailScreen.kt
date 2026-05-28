@@ -1,5 +1,8 @@
 package com.anddd.nevera.feature.ingredient.photodetail
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.BackHandler
@@ -19,7 +22,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
@@ -86,7 +88,8 @@ private fun DarkNavigationBarEffect() {
     val view = LocalView.current
     if (!view.isInEditMode) {
         DisposableEffect(Unit) {
-            val activity = view.context as ComponentActivity
+            val activity = view.context.findActivity() as? ComponentActivity
+                ?: return@DisposableEffect onDispose { }
             activity.enableEdgeToEdge(
                 navigationBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT),
             )
@@ -117,6 +120,12 @@ private fun TopGradientOverlay() {
                 ),
             ),
     )
+}
+
+private tailrec fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }
 
 // ─── Preview ──────────────────────────────────────────────────────────────────
