@@ -90,7 +90,7 @@ private fun CaptureModeMenuItem(
     ) {
         Icon(
             painter = icon,
-            contentDescription = label,
+            contentDescription = null,
             tint = Color.Unspecified,
             modifier = Modifier.size(NeveraTheme.iconSize.large),
         )
