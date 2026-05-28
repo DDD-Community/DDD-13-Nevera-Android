@@ -5,6 +5,7 @@ import androidx.navigation.navOptions
 import kotlinx.serialization.Serializable
 
 internal const val OCR_CAPTURE_INITIAL_MODE_ARG = "initialMode"
+internal const val CAMERA_MODE_VALUE = "camera"
 internal const val GALLERY_MODE_VALUE = "gallery"
 
 @Serializable

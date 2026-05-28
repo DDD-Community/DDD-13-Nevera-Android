@@ -10,6 +10,9 @@ import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.anddd.nevera.feature.ingredient.main.IngredientScreen
 import com.anddd.nevera.feature.ingredient.ocrcapture.OcrCaptureScreen
+import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureMode
+import com.anddd.nevera.feature.ingredient.ocrcapture.navigation.CAMERA_MODE_VALUE
+import com.anddd.nevera.feature.ingredient.ocrcapture.navigation.GALLERY_MODE_VALUE
 import com.anddd.nevera.feature.ingredient.ocrcapture.navigation.OcrCaptureRoute
 import com.anddd.nevera.feature.ingredient.ocrerror.OcrErrorScreen
 import com.anddd.nevera.feature.ingredient.ocrerror.navigation.OcrErrorRoute
@@ -30,6 +33,22 @@ data object IngredientGraphRoute
 internal data class IngredientRoute(val imageUri: String)
 
 // ─── NavController 확장 ───────────────────────────────────────────────────────
+
+/**
+ * 홈 화면 FAB → 캡처 모드 선택 후 OcrCaptureScreen 진입
+ *
+ * @param mode 카메라 또는 갤러리 모드
+ */
+fun NavController.navigateToIngredientCapture(
+    mode: OcrCaptureMode = OcrCaptureMode.Camera,
+    builder: androidx.navigation.NavOptionsBuilder.() -> Unit = {},
+) {
+    val modeValue = when (mode) {
+        OcrCaptureMode.Camera -> CAMERA_MODE_VALUE
+        OcrCaptureMode.Gallery -> GALLERY_MODE_VALUE
+    }
+    navigate(OcrCaptureRoute(modeValue), navOptions(builder))
+}
 
 /**
  * 영수증 캡처 화면 → 식재료 등록 화면 이동

@@ -23,7 +23,7 @@ class HomeViewModel @Inject constructor(
     override fun handleIntent(intent: HomeIntent) {
         when (intent) {
             is HomeIntent.RecentIngredientTabClick -> onRecentIngredientTabClick(intent.tab)
-            HomeIntent.AddIngredientClick -> Unit // TODO: 식재료 추가 화면 이동
+            HomeIntent.AddIngredientClick -> onAddIngredientClick()
         }
     }
 
@@ -41,6 +41,10 @@ class HomeViewModel @Inject constructor(
                 )
             )
         )
+    }
+
+    private fun onAddIngredientClick() = intent {
+        postSideEffect(HomeSideEffect.ShowCaptureModeDialog)
     }
 
     private fun onRecentIngredientTabClick(tab: IngredientFilterTab) = intent {

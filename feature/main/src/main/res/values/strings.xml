@@ -19,6 +19,11 @@
     <string name="home_wish_add_icon_description">Add Wish</string>
     <string name="home_wish_create_button">위시 만들기</string>
 
+    <!-- Home Capture Mode Dialog -->
+    <string name="home_capture_mode_title">식재료 등록 방법을 선택해주세요</string>
+    <string name="home_capture_mode_camera">카메라로 촬영</string>
+    <string name="home_capture_mode_gallery">갤러리에서 선택</string>
+
     <!-- Home FAB -->
     <string name="home_fab_label">식재료</string>
 
