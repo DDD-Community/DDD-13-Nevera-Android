@@ -6,16 +6,18 @@ import com.anddd.nevera.domain.model.home.HomeWish
 
 internal fun HomeSummaryResponse.toDomain(): HomeSummary = HomeSummary(
     nickname = nickname,
-    wish = wishId?.let {
+    wish = if (wishId != null && wishName != null && wishAmount != null &&
+        accumulated != null && remaining != null && achieved != null
+    ) {
         HomeWish(
-            id = it,
-            name = wishName ?: "",
-            goalAmount = wishAmount ?: 0,
-            accumulatedAmount = accumulated ?: 0,
-            remainingAmount = remaining ?: 0,
-            isAchieved = achieved ?: false,
+            id = wishId,
+            name = wishName,
+            goalAmount = wishAmount,
+            accumulatedAmount = accumulated,
+            remainingAmount = remaining,
+            isAchieved = achieved,
         )
-    },
+    } else null,
     rescuedAmount = totalConsumed,
     dispositionAmount = totalWasted,
 )
