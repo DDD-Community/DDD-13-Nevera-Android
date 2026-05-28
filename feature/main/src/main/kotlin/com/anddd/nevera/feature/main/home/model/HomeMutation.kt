@@ -31,6 +31,5 @@ sealed interface HomeMutation : NeveraMutation {
     ) : HomeMutation
 
     data object ShowSetNicknameBottomSheet : HomeMutation
-    data object HideSetNicknameBottomSheet : HomeMutation
     data class UpdateNickname(val nickname: String) : HomeMutation
 }

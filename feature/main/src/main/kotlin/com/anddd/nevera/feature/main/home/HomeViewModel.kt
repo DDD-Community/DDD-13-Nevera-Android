@@ -49,8 +49,6 @@ class HomeViewModel @Inject constructor(
 
             is HomeIntent.LoadMoreIngredients -> loadMoreIngredients(intent.tab)
 
-            HomeIntent.DismissSetNicknameBottomSheet -> onDismissSetNicknameBottomSheet()
-
             is HomeIntent.UpdateNicknameClick -> onConfirmNickname(intent.nickname)
         }
     }
@@ -178,10 +176,6 @@ class HomeViewModel @Inject constructor(
         applyMutation(HomeMutation.SetRecentIngredientFilterTab(tab))
     }
 
-    private fun onDismissSetNicknameBottomSheet() = intent {
-        applyMutation(HomeMutation.HideSetNicknameBottomSheet)
-    }
-
     private fun onConfirmNickname(nickname: String) = intent {
         // TODO: 닉네임 저장 API 호출
         applyMutation(HomeMutation.UpdateNickname(nickname))
@@ -253,10 +247,6 @@ class HomeViewModel @Inject constructor(
 
             HomeMutation.ShowSetNicknameBottomSheet -> reduce {
                 state.copy(isShowSetNicknameBottomSheet = true)
-            }
-
-            HomeMutation.HideSetNicknameBottomSheet -> reduce {
-                state.copy(isShowSetNicknameBottomSheet = false)
             }
 
             is HomeMutation.UpdateNickname -> reduce {
