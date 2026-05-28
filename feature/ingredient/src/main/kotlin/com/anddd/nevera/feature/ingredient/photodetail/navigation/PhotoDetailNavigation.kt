@@ -1,6 +1,7 @@
 package com.anddd.nevera.feature.ingredient.photodetail.navigation
 
 import androidx.navigation.NavController
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.navOptions
 import kotlinx.serialization.Serializable
 
@@ -9,7 +10,7 @@ internal data class PhotoDetailRoute(val imageUri: String)
 
 internal fun NavController.navigateToPhotoDetail(
     imageUri: String,
-    builder: androidx.navigation.NavOptionsBuilder.() -> Unit = {},
+    builder: NavOptionsBuilder.() -> Unit = {},
 ) {
     navigate(PhotoDetailRoute(imageUri), navOptions(builder))
 }
