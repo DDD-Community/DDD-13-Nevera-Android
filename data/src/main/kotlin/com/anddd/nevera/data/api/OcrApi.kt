@@ -18,7 +18,7 @@ internal interface OcrApi {
     /**
      * 영수증 / 이커머스 이미지 OCR 분석
      *
-     * Request  : form-data, key = "image", value = 이미지 파일
+     * Request  : form-data, key = "file", value = 이미지 파일
      * Response : ApiResponse<List<OcrIngredientDto>>
      */
     @Multipart
