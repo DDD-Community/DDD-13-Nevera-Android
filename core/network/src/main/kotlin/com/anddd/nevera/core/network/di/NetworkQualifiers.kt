@@ -20,5 +20,9 @@ annotation class RefreshApi
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
+annotation class OcrExtractOkHttpClient
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
 annotation class OcrExtractRetrofit
 
