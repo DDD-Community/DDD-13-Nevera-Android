@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,6 +54,7 @@ internal fun WishBanner(
     nickname: String,
     wish: HomeWishUiModel?,
     onCreateWish: () -> Unit,
+    onEditWish: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier.fillMaxWidth()) {
@@ -79,7 +82,8 @@ internal fun WishBanner(
                     wish = it.name,
                     savedMoney = it.accumulatedAmount,
                     goalMoney = it.goalAmount,
-                    remainingMoney = it.remainingAmount
+                    remainingMoney = it.remainingAmount,
+                    onClick = onEditWish,
                 )
             } ?: run {
                 EmptyWishCard(onCreateWish = onCreateWish)
@@ -94,6 +98,7 @@ private fun WishCard(
     savedMoney: Int,
     goalMoney: Int,
     remainingMoney: Int,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val progress = if (goalMoney > 0) (savedMoney.toFloat() / goalMoney).coerceIn(0f, 1f) else 0f
@@ -105,6 +110,11 @@ private fun WishCard(
             .fillMaxWidth()
             .background(NeveraTheme.colors.surfacePrimary)
             .border(BorderWidth, NeveraTheme.colors.borderNormal, cardShape)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onClick,
+            )
             .padding(NeveraTheme.spacing.padding16),
     ) {
         Row(
@@ -236,6 +246,7 @@ private fun WishBannerWithWishPreview() {
         WishBanner(
             nickname = "닉네임",
             wish = HomeWishUiModel(
+                id = 1L,
                 name = "새 맥북",
                 goalAmount = 2000000,
                 accumulatedAmount = 1200000,
@@ -243,6 +254,7 @@ private fun WishBannerWithWishPreview() {
                 isAchieved = false,
             ),
             onCreateWish = {},
+            onEditWish = {},
         )
     }
 }
@@ -258,6 +270,7 @@ private fun WishBannerAchievedPreview() {
         WishBanner(
             nickname = "닉네임",
             wish = HomeWishUiModel(
+                id = 1L,
                 name = "새 맥북",
                 goalAmount = 2000000,
                 accumulatedAmount = 2000000,
@@ -265,6 +278,7 @@ private fun WishBannerAchievedPreview() {
                 isAchieved = true,
             ),
             onCreateWish = {},
+            onEditWish = {},
         )
     }
 }
@@ -281,6 +295,7 @@ private fun WishBannerEmptyPreview() {
             nickname = "닉네임",
             wish = null,
             onCreateWish = {},
+            onEditWish = {},
         )
     }
 }

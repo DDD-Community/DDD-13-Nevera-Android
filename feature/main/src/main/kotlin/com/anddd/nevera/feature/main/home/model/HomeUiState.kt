@@ -13,4 +13,5 @@ data class HomeUiState(
     val isShowSetNicknameBottomSheet: Boolean = false,
     val isShowGreetingBottomSheet: Boolean = false,
     val isShowCreateWishBottomSheet: Boolean = false,
+    val isShowUpdateWishBottomSheet: Boolean = false,
 ) : NeveraState
