@@ -34,9 +34,9 @@ version: 0.3.0
 
 | 표기 | 변환 규칙 | 예시 (`[my, page]`) | 사용처 |
 |---|---|---|---|
-| `{name}` | 단어 이어 붙이기, 전체 소문자 | `mypage` | 모듈 디렉토리명 · 패키지명 · settings include · app dependency · route 값 |
+| `{name}` | 단어 이어 붙이기, 전체 소문자 | `mypage` | 모듈 디렉토리명 · 패키지명 · settings include · app dependency |
 | `{Name}` | PascalCase (각 단어 첫 글자 대문자) | `MyPage` | 클래스명 접두사 (Screen, ViewModel, Content 등) |
-| `{NAME}` | UPPER_SNAKE_CASE (단어를 `_`로 연결) | `MY_PAGE` | route 상수명 (`MY_PAGE_ROUTE`) |
+| `{NAME}` | UPPER_SNAKE_CASE (단어를 `_`로 연결) | `MY_PAGE` | (현재 기본 템플릿에서 미사용, 필요 시 커스텀 상수에 활용) |
 | `{camelName}` | camelCase (첫 단어 소문자, 이후 PascalCase) | `myPage` | Navigation 확장 함수명 |
 
 단일 단어(예: `profile`)이면: `{name}`=`profile` / `{Name}`=`Profile` / `{NAME}`=`PROFILE` / `{camelName}`=`profile`
@@ -341,7 +341,7 @@ package com.anddd.nevera.feature.{name}.main
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.anddd.nevera.feature.{name}.main.component.{Name}Content
 import com.anddd.nevera.feature.{name}.main.model.{Name}SideEffect
 import org.orbitmvi.orbit.compose.collectAsState
@@ -380,13 +380,15 @@ package com.anddd.nevera.feature.{name}.main.navigation
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.anddd.nevera.feature.{name}.main.{Name}Screen
+import kotlinx.serialization.Serializable
 
-const val {NAME}_ROUTE = "{name}"
+@Serializable
+data object {Name}Route
 
 fun NavGraphBuilder.{camelName}Screen(
     onNavigateBack: () -> Unit,
 ) {
-    composable(route = {NAME}_ROUTE) {
+    composable<{Name}Route> {
         {Name}Screen(onNavigateBack = onNavigateBack)
     }
 }
