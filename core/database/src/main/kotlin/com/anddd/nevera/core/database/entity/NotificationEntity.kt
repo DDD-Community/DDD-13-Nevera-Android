@@ -1,9 +1,13 @@
 package com.anddd.nevera.core.database.entity
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "notifications")
+@Entity(
+    tableName = "notifications",
+    indices = [Index(value = ["receivedAt"])],
+)
 data class NotificationEntity(
     @PrimaryKey val id: String,
     val type: String,
