@@ -29,7 +29,7 @@ private fun wishNameFieldState(value: String): NeveraTextFieldState = when {
 
 private fun goalAmountFieldState(value: String): NeveraTextFieldState = when {
     value.isEmpty() -> NeveraTextFieldState.Normal
-    value.length <= 10 -> NeveraTextFieldState.Positive
+    (value.toLongOrNull() ?: 0L) > 0L && value.length <= 10 -> NeveraTextFieldState.Positive
     else -> NeveraTextFieldState.Negative
 }
 
@@ -85,7 +85,8 @@ internal fun WishFormBottomSheet(
             if (step == 1) {
                 step = 2
             } else {
-                onWishSaved(wishName, goalAmount.toLongOrNull() ?: 0L)
+                val amount = goalAmount.toLongOrNull() ?: return@NeveraStepContentBottomSheet
+                onWishSaved(wishName, amount)
             }
         },
         onDismissRequest = onDismissRequest,
