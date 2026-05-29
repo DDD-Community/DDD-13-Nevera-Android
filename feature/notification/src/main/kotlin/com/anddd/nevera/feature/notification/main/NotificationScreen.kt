@@ -43,6 +43,7 @@ import com.anddd.nevera.feature.notification.main.model.NotificationItemUiModel
 import com.anddd.nevera.feature.notification.main.model.NotificationSideEffect
 import com.anddd.nevera.feature.notification.main.model.NotificationType
 import com.anddd.nevera.feature.notification.main.model.NotificationUiState
+import com.anddd.nevera.core.ui.component.LoadingContent
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 import java.util.concurrent.TimeUnit
@@ -83,10 +84,15 @@ fun NotificationScreen(
         }
     }
 
-    NotificationContent(
-        uiState = uiState,
-        onIntent = viewModel::handleIntent,
-    )
+    Box(modifier = Modifier.fillMaxSize()) {
+        NotificationContent(
+            uiState = uiState,
+            onIntent = viewModel::handleIntent,
+        )
+        if (uiState.isLoading) {
+            LoadingContent()
+        }
+    }
 }
 
 @Composable
