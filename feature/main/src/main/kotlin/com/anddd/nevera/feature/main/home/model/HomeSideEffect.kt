@@ -7,4 +7,5 @@ sealed interface HomeSideEffect : NeveraSideEffect {
     data object ShowCaptureModeBottomSheet : HomeSideEffect
     data object ShowWishCreatedToast : HomeSideEffect
     data object ShowWishUpdatedToast : HomeSideEffect
+    data object NavigateToNotification : HomeSideEffect
 }

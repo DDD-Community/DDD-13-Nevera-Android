@@ -23,6 +23,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 fun HomeScreen(
     onNavigateToCamera: () -> Unit,
     onNavigateToGallery: () -> Unit,
+    onNavigateToNotification: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -44,6 +45,8 @@ fun HomeScreen(
 
             HomeSideEffect.ShowWishUpdatedToast ->
                 Toast.makeText(context, wishUpdatedMessage, Toast.LENGTH_SHORT).show()
+
+            HomeSideEffect.NavigateToNotification -> onNavigateToNotification()
         }
     }
 

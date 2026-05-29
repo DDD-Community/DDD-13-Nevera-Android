@@ -73,6 +73,10 @@ class HomeViewModel @Inject constructor(
             is HomeIntent.UpdateWishConfirmed -> onUpdateWishConfirmed(intent.id, intent.name, intent.goalAmount)
 
             HomeIntent.UpdateWishDismissed -> onDismissUpdateWish()
+
+            HomeIntent.NotificationIconClicked -> intent {
+                postSideEffect(HomeSideEffect.NavigateToNotification)
+            }
         }
     }
 

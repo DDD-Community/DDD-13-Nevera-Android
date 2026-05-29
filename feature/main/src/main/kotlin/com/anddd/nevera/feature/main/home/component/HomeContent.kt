@@ -44,7 +44,7 @@ internal fun HomeContent(
                     NeveraAppBarAction.Icons.Item(
                         painter = NeveraIcons.Bell,
                         contentDescription = stringResource(R.string.home_notification_icon_description),
-                        onClick = {},
+                        onClick = { onIntent(HomeIntent.NotificationIconClicked) },
                     ),
                 ),
             )

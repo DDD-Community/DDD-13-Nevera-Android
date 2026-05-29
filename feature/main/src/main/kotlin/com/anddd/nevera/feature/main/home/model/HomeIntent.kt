@@ -14,4 +14,5 @@ sealed interface HomeIntent : NeveraIntent {
     data object WishEditClick : HomeIntent
     data class UpdateWishConfirmed(val id: Long, val name: String, val goalAmount: Long) : HomeIntent
     data object UpdateWishDismissed : HomeIntent
+    data object NotificationIconClicked : HomeIntent
 }
