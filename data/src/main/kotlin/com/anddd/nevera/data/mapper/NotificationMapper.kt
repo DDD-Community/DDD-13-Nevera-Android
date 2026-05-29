@@ -11,7 +11,9 @@ internal fun NotificationListResponse.toDomain(): AppNotification = AppNotificat
     type = type.toAppNotificationType(),
     title = message,
     subtitle = null,
-    createdAt = ZonedDateTime.parse(createdAt).toInstant().toEpochMilli(),
+    createdAt = runCatching {
+        ZonedDateTime.parse(createdAt).toInstant().toEpochMilli()
+    }.getOrElse { System.currentTimeMillis() },
     isRead = false,
     deeplink = deeplink,
 )
@@ -21,7 +23,9 @@ internal fun NotificationListResponse.toEntity(): NotificationEntity = Notificat
     type = type,
     title = message,
     subtitle = null,
-    createdAt = ZonedDateTime.parse(createdAt).toInstant().toEpochMilli(),
+    createdAt = runCatching {
+        ZonedDateTime.parse(createdAt).toInstant().toEpochMilli()
+    }.getOrElse { System.currentTimeMillis() },
     isRead = false,
     deeplink = deeplink,
 )
