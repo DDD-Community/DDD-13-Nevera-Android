@@ -31,9 +31,6 @@ import com.anddd.nevera.feature.notification.main.model.NotificationItemUiModel
 import com.anddd.nevera.feature.notification.main.model.NotificationType
 import java.util.concurrent.TimeUnit
 
-private object NotificationConstants {
-    const val UnreadBackgroundAlpha = 0.07f
-}
 
 @Composable
 internal fun NotificationItemRow(
