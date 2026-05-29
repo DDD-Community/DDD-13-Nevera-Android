@@ -51,6 +51,7 @@ dependencies {
     implementation(project(":feature:ingredient"))
     implementation(project(":feature:fridge"))
 
+    implementation(project(":domain"))
     implementation(project(":data"))
 
     implementation(libs.androidx.core.ktx)
@@ -61,6 +62,7 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.hilt.work)
+    implementation(libs.hilt.navigation.compose)
     implementation(libs.timber)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)

@@ -71,7 +71,7 @@ internal fun NotificationItemRow(
                     color = NeveraTheme.colors.textSecondary,
                 )
                 Text(
-                    text = formatRelativeTime(item.receivedAt),
+                    text = formatRelativeTime(item.createdAt),
                     style = NeveraTheme.typography.captionMedium,
                     color = NeveraTheme.colors.textSecondary,
                 )
@@ -100,7 +100,7 @@ internal fun NotificationItemRow(
 
 @Composable
 private fun NotificationType.labelResId(): Int = when (this) {
-    NotificationType.EXPIRY_DATE -> R.string.notification_type_expiry_date
+    NotificationType.DEFAULT -> R.string.notification_type_default
 }
 
 private fun formatRelativeTime(epochMillis: Long): String {
@@ -122,10 +122,10 @@ private fun NotificationItemRowUnreadPreview() {
         NotificationItemRow(
             item = NotificationItemUiModel(
                 id = "1",
-                type = NotificationType.EXPIRY_DATE,
+                type = NotificationType.DEFAULT,
                 title = "삼겹살(12,000)이 내일까지예요",
                 subtitle = "오늘 저녁은 [제육볶음] 어떠세요?",
-                receivedAt = System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(59),
+                createdAt = System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(59),
                 isRead = false,
                 deeplink = "nevera://detail/101",
             ),
@@ -141,10 +141,10 @@ private fun NotificationItemRowReadPreview() {
         NotificationItemRow(
             item = NotificationItemUiModel(
                 id = "2",
-                type = NotificationType.EXPIRY_DATE,
+                type = NotificationType.DEFAULT,
                 title = "삼겹살(12,000)이 내일까지예요",
                 subtitle = "오늘 저녁은 [제육볶음] 어떠세요?",
-                receivedAt = System.currentTimeMillis() - TimeUnit.HOURS.toMillis(23),
+                createdAt = System.currentTimeMillis() - TimeUnit.HOURS.toMillis(23),
                 isRead = true,
                 deeplink = "nevera://detail/102",
             ),

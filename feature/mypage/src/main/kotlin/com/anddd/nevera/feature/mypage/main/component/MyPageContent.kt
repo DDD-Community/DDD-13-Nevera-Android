@@ -38,7 +38,7 @@ internal fun MyPageContent(
                 title = stringResource(MyPageR.string.mypage_title),
                 action = NeveraAppBarAction.Icons.of(
                     NeveraAppBarAction.Icons.Item(
-                        painter = NeveraIcons.Bell,
+                        painter = if (uiState.hasUnreadNotification) NeveraIcons.BellOn else NeveraIcons.Bell,
                         contentDescription = stringResource(MyPageR.string.mypage_notification_icon_desc),
                         onClick = { onIntent(MyPageIntent.NotificationIconClicked) },
                     )

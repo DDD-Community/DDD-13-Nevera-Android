@@ -1,11 +1,11 @@
 package com.anddd.nevera.domain.usecase.notification
 
 import com.anddd.nevera.domain.repository.NotificationRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class MarkNotificationAsReadUseCase @Inject constructor(
+class ObserveUnreadNotificationUseCase @Inject constructor(
     private val notificationRepository: NotificationRepository,
 ) {
-    suspend operator fun invoke(id: String) =
-        notificationRepository.markAsRead(id)
+    operator fun invoke(): Flow<Boolean> = notificationRepository.hasUnread()
 }

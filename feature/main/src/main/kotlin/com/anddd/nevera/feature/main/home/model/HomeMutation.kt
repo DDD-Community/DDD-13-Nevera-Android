@@ -56,4 +56,6 @@ sealed interface HomeMutation : NeveraMutation {
     data object ShowUpdateWishBottomSheet : HomeMutation
 
     data object HideUpdateWishBottomSheet : HomeMutation
+
+    data class BadgeUpdated(val hasUnread: Boolean) : HomeMutation
 }

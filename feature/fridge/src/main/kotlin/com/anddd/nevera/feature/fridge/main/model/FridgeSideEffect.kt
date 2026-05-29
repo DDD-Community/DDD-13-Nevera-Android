@@ -6,4 +6,6 @@ sealed interface FridgeSideEffect : NeveraSideEffect {
     data class ShowToast(val message: String) : FridgeSideEffect
 
     data object ShowCaptureModeBottomSheet : FridgeSideEffect
+
+    data object NavigateToNotification : FridgeSideEffect
 }

@@ -11,11 +11,13 @@ data object FridgeRoute
 fun NavGraphBuilder.fridgeScreen(
     onNavigateToCamera: () -> Unit,
     onNavigateToGallery: () -> Unit,
+    onNavigateToNotification: () -> Unit,
 ) {
     composable<FridgeRoute> {
         FridgeScreen(
             onNavigateToCamera = onNavigateToCamera,
             onNavigateToGallery = onNavigateToGallery,
+            onNavigateToNotification = onNavigateToNotification,
         )
     }
 }

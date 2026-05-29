@@ -26,8 +26,10 @@ import com.anddd.nevera.feature.splash.main.navigation.splashScreen
 fun NeveraNavHost(
     navController: NavHostController,
     googleAuthClient: GoogleAuthClient,
-    modifier: Modifier = Modifier
+    onDeeplink: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
+
     NavHost(
         navController = navController,
         startDestination = SplashRoute,
@@ -76,6 +78,9 @@ fun NeveraNavHost(
             onNavigateToGallery = {
                 navController.navigateToIngredientCapture(OcrCaptureMode.Gallery)
             },
+            onNavigateToNotification = {
+                navController.navigate(NotificationRoute) { launchSingleTop = true }
+            },
         )
         myPageNavGraph(
             navController = navController,
@@ -98,6 +103,7 @@ fun NeveraNavHost(
         )
         notificationScreen(
             onBack = { navController.popBackStack() },
+            onDeeplink = onDeeplink,
         )
     }
 }

@@ -4,6 +4,7 @@ import com.anddd.nevera.core.mvi.NeveraState
 
 data class HomeUiState(
     val isLoading: Boolean = false,
+    val hasUnreadNotification: Boolean = false,
     val profile: HomeProfileUiModel = HomeProfileUiModel(nickname = ""),
     val wish: HomeWishUiModel? = null,
     val savings: HomeSavingsUiModel = HomeSavingsUiModel(rescuedAmount = 0, disposalAmount = 0),

@@ -8,14 +8,19 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import timber.log.Timber
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.net.toUri
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
+import androidx.work.ExistingWorkPolicy
+import androidx.work.WorkManager
+import com.anddd.nevera.domain.model.notification.AppNotificationType
 import com.anddd.nevera.domain.scheduler.FcmSyncScheduler
+import com.anddd.nevera.infra.notification.worker.NotificationSaveWorker
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
+import java.time.ZonedDateTime
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -30,36 +35,62 @@ class NeveraMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
-        var type = NotificationType.from(remoteMessage.data[NOTIFICATION_TYPE])
+        val id = remoteMessage.data[NOTIFICATION_ID]
+        val type = NotificationType.from(remoteMessage.data[NOTIFICATION_TYPE])
         val title = remoteMessage.data[NOTIFICATION_TITLE]
-        val body = remoteMessage.data[NOTIFICATION_BODY]
+        val message = remoteMessage.data[NOTIFICATION_MESSAGE]
         val deepLink = remoteMessage.data[NOTIFICATION_DEEPLINK] ?: DEFAULT_DEEP_LINK
-
-        // TODO :: 현재 type과 deepLink가 전달되고 있지 않은 상황, 임시로 type을 default로 설정합니다.
-        if (type == NotificationType.UNKNOWN && BuildConfig.DEBUG) {
-            Timber.e("unknown type, $remoteMessage")
-            type = NotificationType.DEFAULT
-        }
+        val createdAt = remoteMessage.data[NOTIFICATION_CREATED_AT]
 
         when (type) {
-            NotificationType.DEFAULT -> {
-                showNotification(
-                    title = title,
-                    body = body,
-                    type = type,
-                    deepLink = deepLink,
-                )
-            }
-            NotificationType.UNKNOWN -> {
-                Timber.e("알 수 없는 알림 타입 수신, type: ${remoteMessage.data[NOTIFICATION_TYPE]}")
-            }
+            NotificationType.DEFAULT -> handleDefaultNotification(
+                id = id,
+                title = title,
+                message = message,
+                createdAt = createdAt,
+                deepLink = deepLink,
+            )
+            NotificationType.UNKNOWN -> handleUnknownNotification(remoteMessage.data[NOTIFICATION_TYPE])
         }
+    }
+
+    private fun handleDefaultNotification(
+        id: String?,
+        title: String?,
+        message: String?,
+        createdAt: String?,
+        deepLink: String,
+    ) {
+        if (id == null) {
+            Timber.d("페이로드에 id가 미포함되어 알림을 건너뜁니다")
+            return
+        }
+
+        enqueueNotificationSave(
+            id = id,
+            type = AppNotificationType.DEFAULT,
+            title = title.orEmpty(),
+            subtitle = message,
+            createdAt = createdAt.toEpochMilliOrNow(),
+            deeplink = deepLink,
+        )
+
+        showNotification(
+            title = title,
+            body = message,
+            notificationId = id.toNotificationId(NotificationType.DEFAULT),
+            deepLink = deepLink,
+        )
+    }
+
+    private fun handleUnknownNotification(type: String?) {
+        Timber.e("알 수 없는 알림 타입 수신, type: $type")
     }
 
     private fun showNotification(
         title: String?,
         body: String?,
-        type: NotificationType,
+        notificationId: Int,
         deepLink: String,
     ) {
         if (!canNotify()) {
@@ -67,14 +98,14 @@ class NeveraMessagingService : FirebaseMessagingService() {
             return
         }
 
-        val pendingIntent = createPendingIntent(type, deepLink)
+        val pendingIntent = createPendingIntent(notificationId, deepLink)
         val notification = buildNotification(title, body, pendingIntent)
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(type.ordinal, notification)
+        notificationManager.notify(notificationId, notification)
     }
 
     private fun createPendingIntent(
-        type: NotificationType,
+        requestCode: Int,
         deepLink: String,
     ): PendingIntent {
         val intent = Intent(Intent.ACTION_VIEW, deepLink.toUri()).apply {
@@ -83,7 +114,7 @@ class NeveraMessagingService : FirebaseMessagingService() {
 
         return PendingIntent.getActivity(
             this,
-            type.ordinal,
+            requestCode,
             intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
@@ -107,6 +138,45 @@ class NeveraMessagingService : FirebaseMessagingService() {
             .build()
     }
 
+    private fun String.toNotificationId(type: NotificationType): Int =
+        toIntOrNull() ?: hashCode()
+
+    private fun enqueueNotificationSave(
+        id: String,
+        type: AppNotificationType,
+        title: String,
+        subtitle: String?,
+        createdAt: Long,
+        deeplink: String,
+    ) {
+        WorkManager.getInstance(this).enqueueUniqueWork(
+            NotificationSaveWorker.uniqueWorkName(id),
+            ExistingWorkPolicy.KEEP,
+            NotificationSaveWorker.createRequest(
+                id = id,
+                type = type,
+                title = title,
+                subtitle = subtitle,
+                createdAt = createdAt,
+                deeplink = deeplink,
+            ),
+        )
+    }
+
+    private fun String?.toEpochMilliOrNow(): Long {
+        if (this == null) {
+            Timber.w("FCM createdAt이 누락되어 현재 시각으로 대체합니다.")
+            return System.currentTimeMillis()
+        }
+
+        return runCatching {
+            ZonedDateTime.parse(this).toInstant().toEpochMilli()
+        }.getOrElse { exception ->
+            Timber.w(exception, "FCM createdAt 파싱에 실패하여 현재 시각으로 대체합니다. createdAt=$this")
+            System.currentTimeMillis()
+        }
+    }
+
     private fun canNotify(): Boolean {
         if (!NotificationManagerCompat.from(this).areNotificationsEnabled()) {
             return false
@@ -120,11 +190,12 @@ class NeveraMessagingService : FirebaseMessagingService() {
     }
 
     companion object {
-        private const val TAG = "NeveraMessagingService"
+        private const val NOTIFICATION_ID = "id"
         private const val NOTIFICATION_TYPE = "type"
         private const val NOTIFICATION_TITLE = "title"
-        private const val NOTIFICATION_BODY = "body"
+        private const val NOTIFICATION_MESSAGE = "message"
         private const val NOTIFICATION_DEEPLINK = "deepLink"
+        private const val NOTIFICATION_CREATED_AT = "createdAt"
         private const val DEFAULT_DEEP_LINK = "nevera://"
     }
 }

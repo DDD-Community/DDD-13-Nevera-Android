@@ -1,6 +1,8 @@
 package com.anddd.nevera.feature.fridge.main
 
 import com.anddd.nevera.core.mvi.NeveraViewModel
+import com.anddd.nevera.domain.usecase.notification.MarkAllNotificationsAsReadUseCase
+import com.anddd.nevera.domain.usecase.notification.ObserveUnreadNotificationUseCase
 import com.anddd.nevera.feature.fridge.main.model.FridgeIntent
 import com.anddd.nevera.feature.fridge.main.model.FridgeMutation
 import com.anddd.nevera.feature.fridge.main.model.FridgeSideEffect
@@ -13,10 +15,14 @@ import org.orbitmvi.orbit.syntax.Syntax
 import javax.inject.Inject
 
 @HiltViewModel
-class FridgeViewModel @Inject constructor() :
+class FridgeViewModel @Inject constructor(
+    private val observeUnreadNotification: ObserveUnreadNotificationUseCase,
+    private val markAllNotificationsAsRead: MarkAllNotificationsAsReadUseCase,
+) :
     NeveraViewModel<FridgeUiState, FridgeSideEffect, FridgeIntent, FridgeMutation>(FridgeUiState()) {
 
     init {
+        observeBadge()
         handleIntent(FridgeIntent.Load)
     }
 
@@ -31,6 +37,8 @@ class FridgeViewModel @Inject constructor() :
             FridgeIntent.AddIngredientClick -> addIngredient()
 
             is FridgeIntent.SelectSortOrder -> selectSortOrder(intent.order)
+
+            FridgeIntent.NotificationIconClicked -> navigateToNotification()
         }
     }
 
@@ -50,6 +58,17 @@ class FridgeViewModel @Inject constructor() :
 
     private fun selectSortOrder(order: IngredientSortOrder) = intent {
         applyMutation(FridgeMutation.SelectSortOrder(order))
+    }
+
+    private fun observeBadge() = intent {
+        observeUnreadNotification().collect { hasUnread ->
+            applyMutation(FridgeMutation.BadgeUpdated(hasUnread))
+        }
+    }
+
+    private fun navigateToNotification() = intent {
+        markAllNotificationsAsRead()
+        postSideEffect(FridgeSideEffect.NavigateToNotification)
     }
 
     private fun selectCategoryFilter(filter: CategoryFilter) = intent {
@@ -76,6 +95,8 @@ class FridgeViewModel @Inject constructor() :
             }
 
             is FridgeMutation.SelectSortOrder -> reduce { state.copy(selectedSortOrder = mutation.order) }
+
+            is FridgeMutation.BadgeUpdated -> reduce { state.copy(hasUnreadNotification = mutation.hasUnread) }
         }
     }
 }

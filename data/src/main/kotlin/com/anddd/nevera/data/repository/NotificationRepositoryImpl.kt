@@ -1,31 +1,51 @@
 package com.anddd.nevera.data.repository
 
-import com.anddd.nevera.core.common.NeveraResult
-import com.anddd.nevera.core.common.map
-import com.anddd.nevera.core.network.auth.ApiCallExecutor
-import com.anddd.nevera.data.datasource.NotificationRemoteDataSource
-import com.anddd.nevera.data.mapper.error.toCommonError
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
+import com.anddd.nevera.data.datasource.NotificationLocalDataSource
+import com.anddd.nevera.data.datasource.NotificationRemoteMediator
 import com.anddd.nevera.data.mapper.toDomain
-import com.anddd.nevera.domain.model.common.CommonError
+import com.anddd.nevera.data.mapper.toEntity
 import com.anddd.nevera.domain.model.notification.AppNotification
 import com.anddd.nevera.domain.repository.NotificationRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
+@OptIn(ExperimentalPagingApi::class)
 internal class NotificationRepositoryImpl @Inject constructor(
-    private val notificationRemoteDataSource: NotificationRemoteDataSource,
-    private val apiCall: ApiCallExecutor,
+    private val remoteMediator: NotificationRemoteMediator,
+    private val localDataSource: NotificationLocalDataSource,
 ) : NotificationRepository {
 
-    override suspend fun getNotifications(offset: Int): NeveraResult<List<AppNotification>, CommonError> =
-        apiCall {
-            notificationRemoteDataSource.getNotifications(offset)
-        }.map(
-            transformSuccess = { list -> list.map { it.toDomain() } },
-            transformFailure = { it.toCommonError() },
-        )
+    override fun getNotifications(): Flow<PagingData<AppNotification>> =
+        Pager(
+            config = PagingConfig(
+                pageSize = PAGE_SIZE,
+                enablePlaceholders = false,
+            ),
+            remoteMediator = remoteMediator,
+            pagingSourceFactory = { localDataSource.getPagingSource() },
+        ).flow.map { pagingData -> pagingData.map { it.toDomain() } }
 
-    override suspend fun markAsRead(id: String): NeveraResult<Unit, CommonError> {
-        // TODO: PR2 - Room DB 연동 후 실제 읽음 처리 구현
-        return NeveraResult.Success(Unit)
+    override fun hasUnread(): Flow<Boolean> = localDataSource.hasUnread()
+
+    override suspend fun insert(notification: AppNotification) {
+        localDataSource.insert(notification.toEntity())
+    }
+
+    override suspend fun markAsRead(id: String) {
+        localDataSource.markAsRead(id)
+    }
+
+    override suspend fun markAllAsRead() {
+        localDataSource.markAllAsRead()
+    }
+
+    companion object {
+        private const val PAGE_SIZE = 20
     }
 }

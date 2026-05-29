@@ -20,10 +20,12 @@ android {
 dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:network"))
-    // 실제 DB 로직을 생성할때 추가
-    // implementation(project(":core:database"))
+    implementation(project(":core:database"))
     implementation(project(":domain"))
     implementation(libs.coroutines.android)
     implementation(libs.datastore.preferences)
     implementation(libs.timber)
+    implementation(libs.paging.runtime)
+    implementation(libs.room.runtime)
+    implementation(libs.room.paging)
 }
