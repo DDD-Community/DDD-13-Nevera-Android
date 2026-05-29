@@ -59,17 +59,9 @@
     <string name="home_create_wish_step2_suffix">원</string>
     <string name="home_create_wish_step2_cta">위시 만들기</string>
     <string name="home_create_wish_back">이전</string>
-    <string name="home_create_wish_cancel_dialog_title">작성을 취소할까요?</string>
-    <string name="home_create_wish_cancel_dialog_subtitle">지금까지 내용들이 모두 삭제돼요</string>
-    <string name="home_create_wish_cancel_dialog_positive">작성 취소</string>
-    <string name="home_create_wish_cancel_dialog_negative">닫기</string>
 
     <!-- Home Update Wish Bottom Sheet -->
     <string name="home_update_wish_step2_cta">수정하기</string>
-    <string name="home_update_wish_cancel_dialog_title">수정을 취소할까요?</string>
-    <string name="home_update_wish_cancel_dialog_subtitle">수정한 내용이 저장되지 않아요</string>
-    <string name="home_update_wish_cancel_dialog_positive">수정 취소</string>
-    <string name="home_update_wish_cancel_dialog_negative">닫기</string>
 
     <!-- Home Greeting Bottom Sheet -->
     <string name="home_greeting_title">식구에 오신 걸 환영해요!</string>

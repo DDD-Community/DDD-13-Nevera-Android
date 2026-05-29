@@ -14,8 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import com.anddd.nevera.core.designsystem.component.bottomsheet.NeveraStepContentBottomSheet
-import com.anddd.nevera.core.designsystem.component.button.NeveraButtonColor
-import com.anddd.nevera.core.designsystem.component.dialog.NeveraConfirmDialog
 import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextField
 import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextFieldConfig
 import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextFieldState
@@ -41,10 +39,6 @@ internal fun WishFormBottomSheet(
     initialName: String,
     initialAmount: String,
     confirmLabel: String,
-    cancelDialogTitle: String,
-    cancelDialogSubtitle: String,
-    cancelDialogPositive: String,
-    cancelDialogNegative: String,
     onWishSaved: (name: String, goalAmount: Long) -> Unit,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
@@ -52,7 +46,6 @@ internal fun WishFormBottomSheet(
     var step by remember { mutableIntStateOf(1) }
     var wishName by remember { mutableStateOf(initialName) }
     var goalAmount by remember { mutableStateOf(initialAmount) }
-    var showCancelDialog by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val wishNameState = wishNameFieldState(wishName)
@@ -95,7 +88,7 @@ internal fun WishFormBottomSheet(
                 onWishSaved(wishName, goalAmount.toLongOrNull() ?: 0L)
             }
         },
-        onDismissRequest = { showCancelDialog = true },
+        onDismissRequest = onDismissRequest,
         modifier = modifier,
     ) {
         if (step == 1) {
@@ -129,20 +122,5 @@ internal fun WishFormBottomSheet(
                 ),
             )
         }
-    }
-
-    if (showCancelDialog) {
-        NeveraConfirmDialog(
-            title = cancelDialogTitle,
-            subtitle = cancelDialogSubtitle,
-            positive = cancelDialogPositive,
-            negative = cancelDialogNegative,
-            onPositive = {
-                showCancelDialog = false
-                onDismissRequest()
-            },
-            onNegative = { showCancelDialog = false },
-            negativeButtonColor = NeveraButtonColor.Secondary,
-        )
     }
 }

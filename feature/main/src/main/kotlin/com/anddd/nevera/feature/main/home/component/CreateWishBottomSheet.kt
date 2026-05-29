@@ -22,6 +22,7 @@ import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextFieldTyp
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.main.R
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun CreateWishBottomSheet(
@@ -33,10 +34,6 @@ internal fun CreateWishBottomSheet(
         initialName = "",
         initialAmount = "",
         confirmLabel = stringResource(R.string.home_create_wish_step2_cta),
-        cancelDialogTitle = stringResource(R.string.home_create_wish_cancel_dialog_title),
-        cancelDialogSubtitle = stringResource(R.string.home_create_wish_cancel_dialog_subtitle),
-        cancelDialogPositive = stringResource(R.string.home_create_wish_cancel_dialog_positive),
-        cancelDialogNegative = stringResource(R.string.home_create_wish_cancel_dialog_negative),
         onWishSaved = onWishCreated,
         onDismissRequest = onDismissRequest,
         modifier = modifier,
