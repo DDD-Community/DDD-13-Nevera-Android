@@ -1,6 +1,7 @@
 <resources>
     <string name="splash_subtitle">당신만의 식비 구조대</string>
     <string name="splash_logo_description">로고</string>
+    <string name="splash_illustration_description">스플래시 일러스트</string>
 
 
     <string name="notification_permission_rationale_title">알림 권한이 필요합니다</string>
