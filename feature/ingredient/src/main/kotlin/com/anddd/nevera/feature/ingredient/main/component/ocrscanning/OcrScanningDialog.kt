@@ -67,7 +67,12 @@ fun OcrScanningDialog(
     var messageStep by remember { mutableStateOf(OcrScanMessageStep.ReadingReceipt) }
 
     LaunchedEffect(Unit) {
-        OcrScanMessageStep.entries.drop(1).forEach { step ->
+        val steps = listOf(
+            OcrScanMessageStep.RecognizingIngredients,
+            OcrScanMessageStep.AnalyzingText,
+            OcrScanMessageStep.ScanningCarefully,
+        )
+        steps.forEach { step ->
             delay(OcrScanPresentationTimer.MESSAGE_INTERVAL_MS)
             messageStep = step
         }
