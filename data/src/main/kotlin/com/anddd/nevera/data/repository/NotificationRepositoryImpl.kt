@@ -24,6 +24,8 @@ internal class NotificationRepositoryImpl @Inject constructor(
             transformFailure = { it.toCommonError() },
         )
 
-    override suspend fun markAsRead(id: String): NeveraResult<Unit, CommonError> =
-        NeveraResult.Success(Unit)
+    override suspend fun markAsRead(id: String): NeveraResult<Unit, CommonError> {
+        // TODO: PR2 - Room DB 연동 후 실제 읽음 처리 구현
+        return NeveraResult.Success(Unit)
+    }
 }
