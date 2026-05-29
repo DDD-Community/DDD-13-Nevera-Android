@@ -48,6 +48,7 @@ dependencies {
     implementation(project(":feature:main"))
     implementation(project(":feature:mypage"))
     implementation(project(":feature:ingredient"))
+    implementation(project(":feature:fridge"))
 
     implementation(project(":data"))
 
