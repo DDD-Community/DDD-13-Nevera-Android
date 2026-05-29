@@ -97,7 +97,7 @@ fun NotificationScreen(
             pagingItems = pagingItems,
             onIntent = viewModel::handleIntent,
         )
-        if (uiState.isLoading) {
+        if (pagingItems.loadState.refresh is LoadState.Loading) {
             LoadingContent()
         }
     }

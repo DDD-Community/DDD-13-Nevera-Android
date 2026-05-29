@@ -4,7 +4,6 @@ import com.anddd.nevera.core.mvi.NeveraState
 
 data class NotificationUiState(
     val hasNotificationPermission: Boolean = true,
-    val isLoading: Boolean = false,
 ) : NeveraState
 
 data class NotificationItemUiModel(

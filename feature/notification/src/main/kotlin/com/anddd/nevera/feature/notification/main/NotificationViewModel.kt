@@ -69,8 +69,6 @@ class NotificationViewModel @Inject constructor(
         mutation: NotificationMutation,
     ) {
         when (mutation) {
-            NotificationMutation.Loading -> reduce { state.copy(isLoading = true) }
-            NotificationMutation.LoadComplete -> reduce { state.copy(isLoading = false) }
             is NotificationMutation.PermissionUpdated -> reduce {
                 state.copy(hasNotificationPermission = mutation.isGranted)
             }
