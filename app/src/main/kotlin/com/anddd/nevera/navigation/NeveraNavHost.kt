@@ -64,7 +64,14 @@ fun NeveraNavHost(
                 navController.navigateToIngredientCapture(OcrCaptureMode.Gallery)
             },
         )
-        fridgeScreen()
+        fridgeScreen(
+            onNavigateToCamera = {
+                navController.navigateToIngredientCapture(OcrCaptureMode.Camera)
+            },
+            onNavigateToGallery = {
+                navController.navigateToIngredientCapture(OcrCaptureMode.Gallery)
+            },
+        )
         myPageNavGraph(
             navController = navController,
             onNavigateToLogin = {

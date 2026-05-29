@@ -4,4 +4,6 @@ import com.anddd.nevera.core.mvi.NeveraSideEffect
 
 sealed interface FridgeSideEffect : NeveraSideEffect {
     data class ShowToast(val message: String) : FridgeSideEffect
+
+    data object ShowCaptureModeBottomSheet : FridgeSideEffect
 }

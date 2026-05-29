@@ -42,7 +42,7 @@ class FridgeViewModel @Inject constructor() :
     }
 
     private fun addIngredient() = intent {
-        // TODO: 식재료 추가 화면으로 이동
+        postSideEffect(FridgeSideEffect.ShowCaptureModeBottomSheet)
     }
 
     private fun selectCategoryFilter(filter: CategoryFilter) = intent {
