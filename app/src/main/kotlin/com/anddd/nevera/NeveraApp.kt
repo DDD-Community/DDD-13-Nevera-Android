@@ -8,11 +8,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.anddd.nevera.core.designsystem.component.navigationbar.NeveraNavigationBar
 import com.anddd.nevera.feature.auth.main.google.GoogleAuthClient
+import com.anddd.nevera.feature.main.home.navigation.HomeRoute
 import com.anddd.nevera.navigation.NeveraNavHost
 import com.anddd.nevera.navigation.TopLevelDestination
 import com.anddd.nevera.navigation.toNavigationBarItem
@@ -27,7 +28,7 @@ fun NeveraApp(googleAuthClient: GoogleAuthClient) {
 
     val topLevelDestinations = TopLevelDestination.entries
     val isTopLevel = topLevelDestinations.any { destination ->
-        currentDestination.matchesRoute(destination.routeClass)
+        currentDestination.matchesRoute(destination.screenRouteClass)
     }
 
     Scaffold(
@@ -37,12 +38,14 @@ fun NeveraApp(googleAuthClient: GoogleAuthClient) {
                 NeveraNavigationBar(
                     items = topLevelDestinations.map { destination ->
                         destination.toNavigationBarItem(
-                            selected = currentDestination.matchesRoute(destination.routeClass),
+                            selected = currentDestination?.hierarchy?.any {
+                                it.hasRoute(destination.routeClass)
+                            } == true,
                         )
                     },
                     onItemClick = { destination ->
                         navController.navigate(destination.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
+                            popUpTo<HomeRoute> {
                                 saveState = true
                             }
                             launchSingleTop = true
