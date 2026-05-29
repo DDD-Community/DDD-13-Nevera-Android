@@ -1,7 +1,9 @@
 package com.anddd.nevera.feature.notification.main
 
-import com.anddd.nevera.core.common.onFailure
-import com.anddd.nevera.core.common.onSuccess
+import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
 import com.anddd.nevera.core.mvi.NeveraViewModel
 import com.anddd.nevera.domain.model.notification.AppNotification
 import com.anddd.nevera.domain.model.notification.AppNotificationType
@@ -14,6 +16,8 @@ import com.anddd.nevera.feature.notification.main.model.NotificationSideEffect
 import com.anddd.nevera.feature.notification.main.model.NotificationType
 import com.anddd.nevera.feature.notification.main.model.NotificationUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import org.orbitmvi.orbit.syntax.Syntax
 import javax.inject.Inject
 
@@ -24,10 +28,10 @@ class NotificationViewModel @Inject constructor(
 ) : NeveraViewModel<NotificationUiState, NotificationSideEffect, NotificationIntent, NotificationMutation>(
     NotificationUiState()
 ) {
-
-    init {
-        loadNotifications()
-    }
+    val pagingFlow: Flow<PagingData<NotificationItemUiModel>> =
+        getNotificationsUseCase()
+            .map { pagingData -> pagingData.map { it.toUiModel() } }
+            .cachedIn(viewModelScope)
 
     override fun handleIntent(intent: NotificationIntent) {
         when (intent) {
@@ -38,29 +42,12 @@ class NotificationViewModel @Inject constructor(
         }
     }
 
-    private fun loadNotifications() = intent {
-        applyMutation(NotificationMutation.Loading)
-        getNotificationsUseCase()
-            .onSuccess { notifications ->
-                applyMutation(NotificationMutation.NotificationsLoaded(notifications.map { it.toUiModel() }))
-            }
-            .onFailure {
-                applyMutation(NotificationMutation.LoadComplete)
-            }
-    }
-
     private fun updatePermission(isGranted: Boolean) = intent {
         applyMutation(NotificationMutation.PermissionUpdated(isGranted))
     }
 
     private fun onNotificationClicked(id: String, deeplink: String) = intent {
         markNotificationAsReadUseCase(id)
-            .onSuccess {
-                applyMutation(NotificationMutation.NotificationRead(id))
-            }
-            .onFailure {
-                // TODO: PR2 - DB 연동 후 실패 시 에러 처리 추가
-            }
         postSideEffect(NotificationSideEffect.NavigateByDeeplink(deeplink))
     }
 
@@ -77,22 +64,12 @@ class NotificationViewModel @Inject constructor(
             is NotificationMutation.PermissionUpdated -> reduce {
                 state.copy(hasNotificationPermission = mutation.isGranted)
             }
-            is NotificationMutation.NotificationsLoaded -> reduce {
-                state.copy(notifications = mutation.items, isLoading = false)
-            }
-            is NotificationMutation.NotificationRead -> reduce {
-                state.copy(
-                    notifications = state.notifications.map { n ->
-                        if (n.id == mutation.id) n.copy(isRead = true) else n
-                    }
-                )
-            }
         }
     }
 }
 
-private fun AppNotification.toUiModel(): NotificationItemUiModel {
-    return NotificationItemUiModel(
+private fun AppNotification.toUiModel(): NotificationItemUiModel =
+    NotificationItemUiModel(
         id = id,
         type = when (type) {
             AppNotificationType.EXPIRY_DATE -> NotificationType.EXPIRY_DATE
@@ -103,4 +80,3 @@ private fun AppNotification.toUiModel(): NotificationItemUiModel {
         isRead = isRead,
         deeplink = deeplink,
     )
-}

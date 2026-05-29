@@ -1,14 +1,14 @@
 package com.anddd.nevera.domain.usecase.notification
 
-import com.anddd.nevera.core.common.NeveraResult
-import com.anddd.nevera.domain.model.common.CommonError
+import androidx.paging.PagingData
 import com.anddd.nevera.domain.model.notification.AppNotification
 import com.anddd.nevera.domain.repository.NotificationRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GetNotificationsUseCase @Inject constructor(
     private val notificationRepository: NotificationRepository,
 ) {
-    suspend operator fun invoke(offset: Int = 0): NeveraResult<List<AppNotification>, CommonError> =
-        notificationRepository.getNotifications(offset)
+    operator fun invoke(): Flow<PagingData<AppNotification>> =
+        notificationRepository.getNotifications()
 }

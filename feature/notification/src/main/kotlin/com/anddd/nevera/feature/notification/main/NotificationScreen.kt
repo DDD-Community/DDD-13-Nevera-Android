@@ -11,12 +11,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -31,9 +29,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.anddd.nevera.core.designsystem.component.appbar.NeveraAppBar
 import com.anddd.nevera.core.designsystem.component.appbar.NeveraAppBarNavigation
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
+import com.anddd.nevera.core.ui.component.LoadingContent
 import com.anddd.nevera.feature.notification.R
 import com.anddd.nevera.feature.notification.main.component.NotificationEmptyState
 import com.anddd.nevera.feature.notification.main.component.NotificationItemRow
@@ -43,10 +47,11 @@ import com.anddd.nevera.feature.notification.main.model.NotificationItemUiModel
 import com.anddd.nevera.feature.notification.main.model.NotificationSideEffect
 import com.anddd.nevera.feature.notification.main.model.NotificationType
 import com.anddd.nevera.feature.notification.main.model.NotificationUiState
-import com.anddd.nevera.core.ui.component.LoadingContent
+import kotlinx.coroutines.flow.flowOf
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 import java.util.concurrent.TimeUnit
+import androidx.compose.runtime.DisposableEffect
 
 private val NotificationFooterHeight = 84.dp
 
@@ -59,6 +64,7 @@ fun NotificationScreen(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val uiState = viewModel.collectAsState().value
+    val pagingItems = viewModel.pagingFlow.collectAsLazyPagingItems()
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -87,6 +93,7 @@ fun NotificationScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         NotificationContent(
             uiState = uiState,
+            pagingItems = pagingItems,
             onIntent = viewModel::handleIntent,
         )
         if (uiState.isLoading) {
@@ -98,9 +105,13 @@ fun NotificationScreen(
 @Composable
 private fun NotificationContent(
     uiState: NotificationUiState,
+    pagingItems: LazyPagingItems<NotificationItemUiModel>,
     onIntent: (NotificationIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val isEmpty = pagingItems.itemCount == 0 &&
+        pagingItems.loadState.refresh !is LoadState.Loading
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         containerColor = NeveraTheme.colors.backgroundPrimary,
@@ -131,7 +142,7 @@ private fun NotificationContent(
                 }
             }
 
-            if (uiState.notifications.isEmpty()) {
+            if (isEmpty) {
                 item {
                     NotificationEmptyState(
                         modifier = Modifier
@@ -140,10 +151,11 @@ private fun NotificationContent(
                     )
                 }
             } else {
-                itemsIndexed(
-                    items = uiState.notifications,
-                    key = { _, item -> item.id },
-                ) { index, item ->
+                items(
+                    count = pagingItems.itemCount,
+                    key = pagingItems.itemKey { it.id },
+                ) { index ->
+                    val item = pagingItems[index] ?: return@items
                     NotificationItemRow(
                         item = item,
                         onClick = {
@@ -155,7 +167,7 @@ private fun NotificationContent(
                             )
                         },
                     )
-                    if (index < uiState.notifications.lastIndex) {
+                    if (index < pagingItems.itemCount - 1) {
                         HorizontalDivider(
                             color = NeveraTheme.colors.dividerNormal,
                         )
@@ -183,7 +195,32 @@ private fun NotificationContent(
 }
 
 private class NotificationUiStateProvider : PreviewParameterProvider<NotificationUiState> {
-    private val sampleItems = listOf(
+    override val values = sequenceOf(
+        NotificationUiState(hasNotificationPermission = true),
+        NotificationUiState(hasNotificationPermission = false),
+    )
+}
+
+@Preview(name = "빈 상태 - 권한 있음")
+@Preview(name = "빈 상태 - 권한 없음")
+@Composable
+private fun NotificationContentPreview(
+    @PreviewParameter(NotificationUiStateProvider::class) uiState: NotificationUiState,
+) {
+    val pagingItems = flowOf(PagingData.empty<NotificationItemUiModel>()).collectAsLazyPagingItems()
+    NeveraTheme {
+        NotificationContent(
+            uiState = uiState,
+            pagingItems = pagingItems,
+            onIntent = {},
+        )
+    }
+}
+
+@Preview(name = "다크모드", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun NotificationContentDarkPreview() {
+    val sampleItems = listOf(
         NotificationItemUiModel(
             id = "1",
             type = NotificationType.EXPIRY_DATE,
@@ -193,60 +230,12 @@ private class NotificationUiStateProvider : PreviewParameterProvider<Notificatio
             isRead = false,
             deeplink = "nevera://detail/101",
         ),
-        NotificationItemUiModel(
-            id = "2",
-            type = NotificationType.EXPIRY_DATE,
-            title = "삼겹살(12,000)이 내일까지예요",
-            subtitle = "오늘 저녁은 [제육볶음] 어떠세요?",
-            receivedAt = System.currentTimeMillis() - TimeUnit.HOURS.toMillis(23),
-            isRead = true,
-            deeplink = "nevera://detail/102",
-        ),
     )
-
-    override val values = sequenceOf(
-        NotificationUiState(notifications = emptyList(), hasNotificationPermission = true),
-        NotificationUiState(notifications = emptyList(), hasNotificationPermission = false),
-        NotificationUiState(notifications = sampleItems, hasNotificationPermission = true),
-        NotificationUiState(notifications = sampleItems, hasNotificationPermission = false),
-    )
-}
-
-@Preview(name = "빈 상태 - 권한 있음")
-@Preview(name = "빈 상태 - 권한 없음")
-@Preview(name = "목록 - 권한 있음")
-@Preview(name = "목록 - 권한 없음")
-@Composable
-private fun NotificationContentPreview(
-    @PreviewParameter(NotificationUiStateProvider::class) uiState: NotificationUiState,
-) {
+    val pagingItems = flowOf(PagingData.from(sampleItems)).collectAsLazyPagingItems()
     NeveraTheme {
         NotificationContent(
-            uiState = uiState,
-            onIntent = {},
-        )
-    }
-}
-
-@Preview(name = "다크모드", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun NotificationContentDarkPreview() {
-    NeveraTheme {
-        NotificationContent(
-            uiState = NotificationUiState(
-                notifications = listOf(
-                    NotificationItemUiModel(
-                        id = "1",
-                        type = NotificationType.EXPIRY_DATE,
-                        title = "삼겹살(12,000)이 내일까지예요",
-                        subtitle = "오늘 저녁은 [제육볶음] 어떠세요?",
-                        receivedAt = System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(59),
-                        isRead = false,
-                        deeplink = "nevera://detail/101",
-                    ),
-                ),
-                hasNotificationPermission = false,
-            ),
+            uiState = NotificationUiState(hasNotificationPermission = false),
+            pagingItems = pagingItems,
             onIntent = {},
         )
     }
