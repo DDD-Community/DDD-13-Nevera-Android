@@ -26,13 +26,11 @@ class ExtractIngredientsUseCase @Inject constructor(
             }
         }
 
-        val progressOpened = CompletableDeferred<Unit>()
         val progressFailure = CompletableDeferred<OcrExtractError>()
         val progressJob = launch {
             ingredientRepository.observeOcrProgress(jobId).collect { event ->
                 when (event) {
-                    OcrProgressResult.Opened ->
-                        progressOpened.complete(Unit)
+                    OcrProgressResult.Opened -> Unit
 
                     is OcrProgressResult.Progress -> when (val result = event.result) {
                         is NeveraResult.Success ->
@@ -42,20 +40,6 @@ class ExtractIngredientsUseCase @Inject constructor(
                             progressFailure.complete(result.error)
                     }
                 }
-            }
-        }
-
-        when (val progressStart = select<ProgressStartResult> {
-            progressOpened.onAwait { ProgressStartResult.Opened }
-            progressFailure.onAwait { error ->
-                ProgressStartResult.Failed(error)
-            }
-        }) {
-            ProgressStartResult.Opened -> Unit
-            is ProgressStartResult.Failed -> {
-                progressJob.cancelAndJoin()
-                send(OcrExtractEvent.Failed(progressStart.error))
-                return@channelFlow
             }
         }
 
@@ -83,10 +67,5 @@ class ExtractIngredientsUseCase @Inject constructor(
                 }
             }
         }
-    }
-
-    private sealed interface ProgressStartResult {
-        data object Opened : ProgressStartResult
-        data class Failed(val error: OcrExtractError) : ProgressStartResult
     }
 }
