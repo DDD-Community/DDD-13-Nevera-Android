@@ -7,6 +7,7 @@ import com.anddd.nevera.data.api.HomeApi
 import com.anddd.nevera.data.api.IngredientApi
 import com.anddd.nevera.data.api.NotificationApi
 import com.anddd.nevera.data.api.UserApi
+import com.anddd.nevera.data.api.WishApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -55,4 +56,9 @@ internal object ApiModule {
         return retrofit.create(IngredientApi::class.java)
     }
 
+    @Provides
+    @Singleton
+    fun provideWishApi(retrofit: Retrofit): WishApi {
+        return retrofit.create(WishApi::class.java)
+    }
 }

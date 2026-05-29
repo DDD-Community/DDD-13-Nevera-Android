@@ -19,6 +19,8 @@ import com.anddd.nevera.data.datasource.HomeRemoteDataSource
 import com.anddd.nevera.data.datasource.HomeRemoteDataSourceImpl
 import com.anddd.nevera.data.datasource.IngredientRemoteDataSource
 import com.anddd.nevera.data.datasource.IngredientRemoteDataSourceImpl
+import com.anddd.nevera.data.datasource.WishRemoteDataSource
+import com.anddd.nevera.data.datasource.WishRemoteDataSourceImpl
 import com.anddd.nevera.domain.repository.FcmTokenProvider
 import dagger.Binds
 import dagger.Module
@@ -69,4 +71,8 @@ internal abstract class DataSourceModule {
     @Binds
     @Singleton
     abstract fun bindIngredientRemoteDataSource(impl: IngredientRemoteDataSourceImpl): IngredientRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindWishRemoteDataSource(impl: WishRemoteDataSourceImpl): WishRemoteDataSource
 }

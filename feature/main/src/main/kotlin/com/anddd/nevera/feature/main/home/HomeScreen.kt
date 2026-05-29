@@ -9,7 +9,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.anddd.nevera.feature.main.R
 import com.anddd.nevera.feature.main.home.component.CaptureModeBottomSheet
 import com.anddd.nevera.feature.main.home.component.HomeContent
 import com.anddd.nevera.feature.main.home.model.HomeSideEffect
@@ -27,13 +29,22 @@ fun HomeScreen(
     val state = viewModel.collectAsState().value
     var showCaptureModeBottomSheet by remember { mutableStateOf(false) }
     val captureModeSheetState = rememberModalBottomSheetState()
+    val wishCreatedMessage = stringResource(R.string.home_wish_created_toast)
+    val wishUpdatedMessage = stringResource(R.string.home_wish_updated_toast)
 
     viewModel.collectSideEffect { effect ->
         when (effect) {
             is HomeSideEffect.ShowError ->
                 Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+
             HomeSideEffect.ShowCaptureModeDialog ->
                 showCaptureModeBottomSheet = true
+
+            HomeSideEffect.ShowWishCreatedToast ->
+                Toast.makeText(context, wishCreatedMessage, Toast.LENGTH_SHORT).show()
+
+            HomeSideEffect.ShowWishUpdatedToast ->
+                Toast.makeText(context, wishUpdatedMessage, Toast.LENGTH_SHORT).show()
         }
     }
 
