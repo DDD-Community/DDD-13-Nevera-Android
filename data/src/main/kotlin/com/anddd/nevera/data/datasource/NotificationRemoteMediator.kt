@@ -6,6 +6,7 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import com.anddd.nevera.core.database.entity.NotificationEntity
 import com.anddd.nevera.data.mapper.toEntity
+import kotlinx.coroutines.CancellationException
 import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
@@ -28,6 +29,8 @@ internal class NotificationRemoteMediator @Inject constructor(
             val items = response.result ?: emptyList()
             localDataSource.insertAllIgnoring(items.map { it.toEntity() })
             MediatorResult.Success(endOfPaginationReached = items.isEmpty())
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             MediatorResult.Error(e)
         }
