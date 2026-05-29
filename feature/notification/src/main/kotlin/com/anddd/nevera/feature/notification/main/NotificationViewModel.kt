@@ -31,6 +31,7 @@ class NotificationViewModel @Inject constructor(
 
     override fun handleIntent(intent: NotificationIntent) {
         when (intent) {
+            NotificationIntent.BackClicked -> intent { postSideEffect(NotificationSideEffect.NavigateBack) }
             is NotificationIntent.PermissionChecked -> updatePermission(intent.isGranted)
             is NotificationIntent.NotificationItemClicked -> onNotificationClicked(intent.item)
             NotificationIntent.EnableNotificationClicked -> onEnableNotificationClicked()

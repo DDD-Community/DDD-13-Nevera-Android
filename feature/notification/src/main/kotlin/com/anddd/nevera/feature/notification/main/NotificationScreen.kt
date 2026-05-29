@@ -84,7 +84,6 @@ fun NotificationScreen(
     NotificationContent(
         uiState = uiState,
         onIntent = viewModel::handleIntent,
-        onBack = onBack,
     )
 }
 
@@ -92,7 +91,6 @@ fun NotificationScreen(
 private fun NotificationContent(
     uiState: NotificationUiState,
     onIntent: (NotificationIntent) -> Unit,
-    onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -101,7 +99,9 @@ private fun NotificationContent(
         topBar = {
             NeveraAppBar(
                 title = stringResource(R.string.notification_title),
-                navigation = NeveraAppBarNavigation.Back(onClick = onBack),
+                navigation = NeveraAppBarNavigation.Back(
+                    onClick = { onIntent(NotificationIntent.BackClicked) }
+                ),
             )
         },
         contentWindowInsets = WindowInsets(0),
@@ -209,7 +209,6 @@ private fun NotificationContentPreview(
         NotificationContent(
             uiState = uiState,
             onIntent = {},
-            onBack = {},
         )
     }
 }
@@ -234,7 +233,6 @@ private fun NotificationContentDarkPreview() {
                 hasNotificationPermission = false,
             ),
             onIntent = {},
-            onBack = {},
         )
     }
 }
