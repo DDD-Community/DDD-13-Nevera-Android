@@ -21,6 +21,7 @@ import com.anddd.nevera.domain.model.ingredient.OcrIngredient
 import com.anddd.nevera.domain.model.ingredient.OcrProgressResult
 import com.anddd.nevera.domain.model.ingredient.RegisterIngredientError
 import com.anddd.nevera.domain.repository.IngredientRepository
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -51,6 +52,7 @@ internal class IngredientRepositoryImpl @Inject constructor(
                 }
             }
             .catch { throwable ->
+                if (throwable is CancellationException) throw throwable
                 emit(
                     OcrProgressResult.Progress(
                         NeveraResult.Failure(
