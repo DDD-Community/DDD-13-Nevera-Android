@@ -6,4 +6,6 @@
     <string name="notification_permission_banner_subtitle">설정에서 권한을 허용해주세요</string>
     <string name="notification_permission_banner_button">알림 켜기</string>
     <string name="notification_type_expiry_date">유통기한</string>
+    <string name="notification_error_message">알림을 불러오지 못했어요</string>
+    <string name="notification_error_retry">다시 시도</string>
 </resources>

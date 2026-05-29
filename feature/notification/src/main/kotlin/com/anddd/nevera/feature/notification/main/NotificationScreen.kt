@@ -40,6 +40,7 @@ import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.core.ui.component.LoadingContent
 import com.anddd.nevera.feature.notification.R
 import com.anddd.nevera.feature.notification.main.component.NotificationEmptyState
+import com.anddd.nevera.feature.notification.main.component.NotificationErrorState
 import com.anddd.nevera.feature.notification.main.component.NotificationItemRow
 import com.anddd.nevera.feature.notification.main.component.NotificationPermissionBanner
 import com.anddd.nevera.feature.notification.main.model.NotificationIntent
@@ -109,8 +110,11 @@ private fun NotificationContent(
     onIntent: (NotificationIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val refreshState = pagingItems.loadState.refresh
     val isEmpty = pagingItems.itemCount == 0 &&
-        pagingItems.loadState.refresh !is LoadState.Loading
+        refreshState !is LoadState.Loading &&
+        refreshState !is LoadState.Error
+    val isError = pagingItems.itemCount == 0 && refreshState is LoadState.Error
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -145,6 +149,15 @@ private fun NotificationContent(
             if (isEmpty) {
                 item {
                     NotificationEmptyState(
+                        modifier = Modifier
+                            .fillParentMaxSize()
+                            .wrapContentSize(Alignment.Center),
+                    )
+                }
+            } else if (isError) {
+                item {
+                    NotificationErrorState(
+                        onRetry = { pagingItems.retry() },
                         modifier = Modifier
                             .fillParentMaxSize()
                             .wrapContentSize(Alignment.Center),
