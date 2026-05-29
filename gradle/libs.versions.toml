@@ -42,7 +42,7 @@ workManager = "2.10.1"
 mockk = "1.13.13"
 camerax = "1.6.1"
 hiltWork = "1.2.0"
-paging = "3.3.6"
+paging = "3.5.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
