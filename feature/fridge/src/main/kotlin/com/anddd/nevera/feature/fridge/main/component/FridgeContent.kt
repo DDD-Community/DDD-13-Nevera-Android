@@ -1,10 +1,12 @@
 package com.anddd.nevera.feature.fridge.main.component
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,9 +17,11 @@ import com.anddd.nevera.core.designsystem.component.appbar.NeveraDisplayAppBar
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.core.ui.component.LoadingContent
+import com.anddd.nevera.domain.model.ingredient.StorageLocation
 import com.anddd.nevera.feature.fridge.R
 import com.anddd.nevera.feature.fridge.main.model.FridgeIntent
 import com.anddd.nevera.feature.fridge.main.model.FridgeUiState
+import com.anddd.nevera.feature.fridge.main.model.StorageLocationFilter
 
 @Composable
 internal fun FridgeContent(
@@ -39,11 +43,24 @@ internal fun FridgeContent(
                 ),
             )
         },
+        containerColor = NeveraTheme.colors.surfacePrimary,
         contentWindowInsets = WindowInsets(0),
     ) { innerPadding ->
-        Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                // TODO: UI 구현
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)) {
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                item {
+                    Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap16))
+                }
+                item {
+                    FridgeFilterTabRow(
+                        selectedFilter = uiState.selectedStorageFilter,
+                        onFilterSelected = { onIntent(FridgeIntent.SelectStorageFilter(it)) },
+                        modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding16),
+                    )
+                }
+                // TODO: 페이지네이션 아이템 목록
             }
             if (uiState.isLoading) {
                 LoadingContent()
@@ -58,6 +75,19 @@ private fun FridgeContentPreview() {
     NeveraTheme {
         FridgeContent(
             uiState = FridgeUiState(),
+            onIntent = {},
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360)
+@Composable
+private fun FridgeContentFridgeSelectedPreview() {
+    NeveraTheme {
+        FridgeContent(
+            uiState = FridgeUiState(
+                selectedStorageFilter = StorageLocationFilter.Specific(StorageLocation.Fridge),
+            ),
             onIntent = {},
         )
     }

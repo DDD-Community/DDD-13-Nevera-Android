@@ -4,5 +4,5 @@ import com.anddd.nevera.core.mvi.NeveraIntent
 
 sealed interface FridgeIntent : NeveraIntent {
     data object Load : FridgeIntent
-    data object Submit : FridgeIntent
+    data class SelectStorageFilter(val filter: StorageLocationFilter) : FridgeIntent
 }

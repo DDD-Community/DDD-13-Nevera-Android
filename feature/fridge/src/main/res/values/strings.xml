@@ -2,4 +2,8 @@
 <resources>
     <string name="fridge_title">나의 냉장고</string>
     <string name="fridge_notification_icon_desc">알림</string>
+    <string name="fridge_filter_all">전체</string>
+    <string name="fridge_filter_refrigerator">냉장</string>
+    <string name="fridge_filter_freezer">냉동</string>
+    <string name="fridge_filter_room_temp">실온</string>
 </resources>
