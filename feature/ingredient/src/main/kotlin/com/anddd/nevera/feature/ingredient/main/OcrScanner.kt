@@ -4,6 +4,7 @@ import com.anddd.nevera.core.common.onFailure
 import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.domain.model.ingredient.OcrIngredient
 import com.anddd.nevera.domain.usecase.ingredient.ExtractIngredientsUseCase
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
@@ -28,20 +29,19 @@ class OcrScanner @Inject constructor(
             }
         }
 
-        extractIngredientsUseCase(imageUri)
-            .onSuccess { ingredients ->
-                progressJob.cancel()
-                send(OcrScanEvent.Progress(1f))
-                delay(300L)
-                if (ingredients.isEmpty()) {
-                    send(OcrScanEvent.Failed)
-                } else {
-                    send(OcrScanEvent.Completed(ingredients))
-                }
-            }.onFailure {
-                progressJob.cancel()
+        extractIngredientsUseCase(imageUri).apply {
+            progressJob.cancelAndJoin()
+        }.onSuccess { ingredients ->
+            send(OcrScanEvent.Progress(1f))
+            delay(300L)
+            if (ingredients.isEmpty()) {
                 send(OcrScanEvent.Failed)
+            } else {
+                send(OcrScanEvent.Completed(ingredients))
             }
+        }.onFailure {
+            send(OcrScanEvent.Failed)
+        }
     }
 }
 
