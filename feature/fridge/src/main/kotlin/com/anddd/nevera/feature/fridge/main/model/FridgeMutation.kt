@@ -8,5 +8,8 @@ sealed interface FridgeMutation : NeveraMutation {
 
     data class SelectStorageFilter(val filter: StorageLocationFilter) : FridgeMutation
 
-    data class SelectCategoryFilter(val filter: CategoryFilter) : FridgeMutation
+    data class SelectCategoryFilter(
+        val storageFilter: StorageLocationFilter,
+        val categoryFilter: CategoryFilter,
+    ) : FridgeMutation
 }

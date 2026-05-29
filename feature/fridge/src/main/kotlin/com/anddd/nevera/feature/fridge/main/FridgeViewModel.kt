@@ -40,7 +40,12 @@ class FridgeViewModel @Inject constructor() :
     }
 
     private fun selectCategoryFilter(filter: CategoryFilter) = intent {
-        applyMutation(FridgeMutation.SelectCategoryFilter(filter))
+        applyMutation(
+            FridgeMutation.SelectCategoryFilter(
+                storageFilter = state.selectedStorageFilter,
+                categoryFilter = filter,
+            )
+        )
     }
 
     override suspend fun Syntax<FridgeUiState, FridgeSideEffect>.applyMutation(
@@ -51,7 +56,11 @@ class FridgeViewModel @Inject constructor() :
 
             is FridgeMutation.SelectStorageFilter -> reduce { state.copy(selectedStorageFilter = mutation.filter) }
 
-            is FridgeMutation.SelectCategoryFilter -> reduce { state.copy(selectedCategoryFilter = mutation.filter) }
+            is FridgeMutation.SelectCategoryFilter -> reduce {
+                state.copy(
+                    categoryFilters = state.categoryFilters + (mutation.storageFilter to mutation.categoryFilter),
+                )
+            }
         }
     }
 }
