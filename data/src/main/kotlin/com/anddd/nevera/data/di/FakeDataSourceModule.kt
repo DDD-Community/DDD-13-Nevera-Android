@@ -2,6 +2,8 @@ package com.anddd.nevera.data.di
 
 import com.anddd.nevera.data.datasource.AppInfoRemoteDataSource
 import com.anddd.nevera.data.datasource.FakeAppInfoRemoteDataSource
+import com.anddd.nevera.data.datasource.FakeNotificationRemoteDataSource
+import com.anddd.nevera.data.datasource.NotificationRemoteDataSource
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -16,4 +18,8 @@ internal abstract class FakeDataSourceModule {
     @Binds
     @Singleton
     abstract fun bindAppInfoRemoteDataSource(impl: FakeAppInfoRemoteDataSource): AppInfoRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindNotificationRemoteDataSource(impl: FakeNotificationRemoteDataSource): NotificationRemoteDataSource
 }
