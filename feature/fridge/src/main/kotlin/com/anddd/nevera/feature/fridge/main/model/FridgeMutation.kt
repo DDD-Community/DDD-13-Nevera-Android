@@ -14,4 +14,6 @@ sealed interface FridgeMutation : NeveraMutation {
     ) : FridgeMutation
 
     data class SelectSortOrder(val order: IngredientSortOrder) : FridgeMutation
+
+    data class BadgeUpdated(val hasUnread: Boolean) : FridgeMutation
 }

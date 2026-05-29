@@ -43,6 +43,7 @@ class NeveraMessagingService : FirebaseMessagingService() {
 
         when (type) {
             NotificationType.DEFAULT -> {
+                // TODO: FCM payload에 notificationId 추가 확정 후 notificationRepository.insert() 호출 추가
                 showNotification(
                     title = title,
                     body = body,

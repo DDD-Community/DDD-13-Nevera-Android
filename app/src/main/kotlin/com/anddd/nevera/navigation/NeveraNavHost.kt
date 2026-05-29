@@ -81,6 +81,9 @@ fun NeveraNavHost(
             onNavigateToGallery = {
                 navController.navigateToIngredientCapture(OcrCaptureMode.Gallery)
             },
+            onNavigateToNotification = {
+                navController.navigate(NotificationRoute) { launchSingleTop = true }
+            },
         )
         myPageNavGraph(
             navController = navController,

@@ -21,6 +21,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 fun FridgeScreen(
     onNavigateToCamera: () -> Unit,
     onNavigateToGallery: () -> Unit,
+    onNavigateToNotification: () -> Unit,
     viewModel: FridgeViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -34,6 +35,7 @@ fun FridgeScreen(
                 Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
             FridgeSideEffect.ShowCaptureModeBottomSheet ->
                 showCaptureModeBottomSheet = true
+            FridgeSideEffect.NavigateToNotification -> onNavigateToNotification()
         }
     }
 

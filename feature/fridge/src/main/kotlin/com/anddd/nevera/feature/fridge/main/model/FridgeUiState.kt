@@ -4,6 +4,7 @@ import com.anddd.nevera.core.mvi.NeveraState
 
 data class FridgeUiState(
     val isLoading: Boolean = false,
+    val hasUnreadNotification: Boolean = false,
     val selectedStorageFilter: StorageLocationFilter = StorageLocationFilter.All,
     val categoryFilters: Map<StorageLocationFilter, CategoryFilter> = emptyMap(),
     val totalCount: Int = 0,

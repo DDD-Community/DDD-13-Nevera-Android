@@ -41,9 +41,9 @@ internal fun FridgeContent(
                 title = stringResource(R.string.fridge_title),
                 action = NeveraAppBarAction.Icons.of(
                     NeveraAppBarAction.Icons.Item(
-                        painter = NeveraIcons.Bell,
+                        painter = if (uiState.hasUnreadNotification) NeveraIcons.BellOn else NeveraIcons.Bell,
                         contentDescription = stringResource(R.string.fridge_notification_icon_desc),
-                        onClick = {},
+                        onClick = { onIntent(FridgeIntent.NotificationIconClicked) },
                     ),
                 ),
             )
