@@ -1,4 +1,4 @@
-package com.anddd.nevera.feature.main.home.component
+package com.anddd.nevera.core.ui.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -12,13 +12,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -28,13 +28,13 @@ import com.anddd.nevera.core.designsystem.component.bottomsheet.NeveraTitleConte
 import com.anddd.nevera.core.designsystem.component.button.NeveraButtonColor
 import com.anddd.nevera.core.designsystem.component.button.NeveraWeakButton
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
-import com.anddd.nevera.feature.main.R
+import com.anddd.nevera.core.ui.R
 
 private val MenuItemHeight = 69.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CaptureModeBottomSheet(
+fun ReceiptCaptureModeBottomSheet(
     sheetState: SheetState,
     onReceiptScan: () -> Unit,
     onOnlineCapture: () -> Unit,
@@ -42,23 +42,23 @@ fun CaptureModeBottomSheet(
 ) {
     NeveraTitleContentBottomSheet(
         sheetState = sheetState,
-        title = stringResource(R.string.home_capture_mode_title),
+        title = stringResource(R.string.receipt_capture_mode_title),
         onDismissRequest = onDismiss,
     ) { dismiss ->
-        CaptureModeMenuItem(
+        ReceiptCaptureModeMenuItem(
             icon = painterResource(R.drawable.img_receipt),
-            label = stringResource(R.string.home_capture_mode_camera),
-            subtitle = stringResource(R.string.home_capture_mode_camera_subtitle),
+            label = stringResource(R.string.receipt_capture_mode_camera),
+            subtitle = stringResource(R.string.receipt_capture_mode_camera_subtitle),
             onClick = onReceiptScan,
         )
-        CaptureModeMenuItem(
+        ReceiptCaptureModeMenuItem(
             icon = painterResource(R.drawable.img_orders),
-            label = stringResource(R.string.home_capture_mode_gallery),
-            subtitle = stringResource(R.string.home_capture_mode_gallery_subtitle),
+            label = stringResource(R.string.receipt_capture_mode_gallery),
+            subtitle = stringResource(R.string.receipt_capture_mode_gallery_subtitle),
             onClick = onOnlineCapture,
         )
         NeveraWeakButton(
-            label = stringResource(R.string.home_capture_mode_close),
+            label = stringResource(R.string.receipt_capture_mode_close),
             color = NeveraButtonColor.Secondary,
             onClick = dismiss,
             modifier = Modifier
@@ -70,7 +70,7 @@ fun CaptureModeBottomSheet(
 }
 
 @Composable
-private fun CaptureModeMenuItem(
+private fun ReceiptCaptureModeMenuItem(
     icon: Painter,
     label: String,
     subtitle: String,
@@ -113,30 +113,13 @@ private fun CaptureModeMenuItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true, widthDp = 360, heightDp = 720)
 @Composable
-private fun CaptureModeBottomSheetPreview() {
+private fun ReceiptCaptureModeBottomSheetPreview() {
     NeveraTheme {
-        CaptureModeBottomSheet(
+        ReceiptCaptureModeBottomSheet(
             sheetState = rememberModalBottomSheetState(),
             onReceiptScan = {},
             onOnlineCapture = {},
             onDismiss = {},
-        )
-    }
-}
-
-@Preview(
-    name = "CaptureModeMenuItem",
-    showBackground = true,
-    widthDp = 360,
-)
-@Composable
-private fun CaptureModeMenuItemPreview() {
-    NeveraTheme {
-        CaptureModeMenuItem(
-            icon = painterResource(R.drawable.img_orders),
-            label = "영수증 스캔",
-            subtitle = "종이 영수증 촬영해요",
-            onClick = {},
         )
     }
 }

@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
+import com.anddd.nevera.core.ui.component.EmptyContent
 import com.anddd.nevera.feature.main.R
 import com.anddd.nevera.feature.main.home.model.IngredientFilterTab
 import com.anddd.nevera.feature.main.home.model.IngredientFilterTabUiModel
@@ -43,7 +43,6 @@ import com.anddd.nevera.feature.main.home.model.toUiModel
 
 private val TabContainerPadding = 4.dp
 private val TabHeight = 44.dp
-private val EmptyIconSize = 64.dp
 private const val PREFETCH_THRESHOLD = 3
 
 fun LazyListScope.recentIngredientSection(
@@ -101,7 +100,10 @@ private fun LazyListScope.ingredientItems(
     }
     if (visibleIngredients.isEmpty()) {
         item(key = "ingredient_empty") {
-            IngredientEmptyContent()
+            EmptyContent(
+                message = stringResource(R.string.home_ingredient_empty_message),
+                modifier = Modifier.padding(vertical = NeveraTheme.spacing.padding40),
+            )
         }
     } else {
         items(items = visibleIngredients, key = { it.id }) { ingredient ->
@@ -207,30 +209,6 @@ private fun IngredientFilterTabItem(
             style = NeveraTheme.typography.titleXSmall,
             color = textColor,
             modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding4)
-        )
-    }
-}
-
-@Composable
-private fun IngredientEmptyContent(
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = NeveraTheme.spacing.padding40),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(NeveraTheme.spacing.gap16),
-    ) {
-        Image(
-            painter = NeveraIcons.EmptyStateWarning,
-            contentDescription = null,
-            modifier = Modifier.size(EmptyIconSize),
-        )
-        Text(
-            text = stringResource(R.string.home_ingredient_empty_message),
-            style = NeveraTheme.typography.titleSmall,
-            color = NeveraTheme.colors.textCaption,
         )
     }
 }

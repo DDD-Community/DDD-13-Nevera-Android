@@ -22,14 +22,6 @@
     <!-- Home FAB -->
     <string name="home_fab_label">식재료</string>
 
-    <!-- Home Capture Mode BottomSheet -->
-    <string name="home_capture_mode_title">어떻게 식재료를 등록할까요?</string>
-    <string name="home_capture_mode_camera">영수증 스캔</string>
-    <string name="home_capture_mode_camera_subtitle">종이 영수증 촬영해요</string>
-    <string name="home_capture_mode_gallery">온라인 주문내역 캡처</string>
-    <string name="home_capture_mode_gallery_subtitle">온라인 주문내역 이미지를 첨부해요</string>
-    <string name="home_capture_mode_close">닫기</string>
-
     <!-- Home Recent Ingredient Section -->
     <string name="home_ingredient_section_title">최근 나의 식재료</string>
     <string name="home_ingredient_section_help_description">도움말</string>

@@ -16,4 +16,8 @@
     <string name="fridge_category_beverage">음료</string>
     <string name="fridge_category_processed">가공식품</string>
     <string name="fridge_category_other">기타</string>
+    <string name="fridge_fab_label">식재료</string>
+    <string name="fridge_list_sort_expiry">유통기한순</string>
+    <string name="fridge_list_sort_latest">최신순</string>
+    <string name="fridge_list_empty_message">아직 등록한 식재료가 없어요</string>
 </resources>
