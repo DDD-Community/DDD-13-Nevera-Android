@@ -10,6 +10,8 @@ import com.anddd.nevera.domain.model.ingredient.StorageLocation
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
+private val KST_ZONE_ID = ZoneId.of("Asia/Seoul")
+
 /**
  * API 응답 category 값 → FoodCategory 변환
  * 매핑 실패 시 [FoodCategory.Other] 반환
@@ -91,7 +93,7 @@ internal fun OcrIngredient.toRequest(): RegisterIngredientRequest = RegisterIngr
     location = location.toApiString(),
     quantity = quantity,
     expirationDate = expiryDate
-        ?.atStartOfDay(ZoneId.of("Asia/Seoul"))
+        ?.atStartOfDay(KST_ZONE_ID)
         ?.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
     cost = cost,
 )
