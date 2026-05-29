@@ -21,6 +21,7 @@ object NetworkModule {
 
     private const val OKHTTP_TAG = "OkHttp"
     private const val TIMEOUT_SECONDS = 30L
+    private const val OCR_EXTRACT_READ_TIMEOUT_SECONDS = 300L
 
     private val loggingInterceptor: HttpLoggingInterceptor =
         HttpLoggingInterceptor { message ->
@@ -73,7 +74,7 @@ object NetworkModule {
             .addInterceptor(authInterceptor)
             .addInterceptor(loggingInterceptor)
             .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
-            .readTimeout(120, TimeUnit.SECONDS)
+            .readTimeout(OCR_EXTRACT_READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .writeTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .build()
 
