@@ -23,7 +23,9 @@ internal object DatabaseModule {
         context,
         AppDatabase::class.java,
         "nevera-db",
-    ).build()
+    )
+        .fallbackToDestructiveMigration()
+        .build()
 
     @Provides
     @Singleton
