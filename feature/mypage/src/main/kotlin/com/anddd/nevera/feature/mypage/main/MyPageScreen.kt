@@ -15,6 +15,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 fun MyPageScreen(
     onNavigateToAppInfo: () -> Unit,
     onNavigateToAccountSetting: () -> Unit,
+    onNavigateToNotification: () -> Unit,
     viewModel: MyPageViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -30,6 +31,8 @@ fun MyPageScreen(
             MyPageSideEffect.NavigateToAppInfo -> onNavigateToAppInfo()
 
             MyPageSideEffect.NavigateToAccountSetting -> onNavigateToAccountSetting()
+
+            MyPageSideEffect.NavigateToNotification -> onNavigateToNotification()
         }
     }
 

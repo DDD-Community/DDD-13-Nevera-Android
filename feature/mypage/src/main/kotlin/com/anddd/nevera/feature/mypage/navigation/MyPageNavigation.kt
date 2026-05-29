@@ -7,6 +7,7 @@ import androidx.navigation.navigation
 import com.anddd.nevera.feature.mypage.appinfo.AppInfoScreen
 import com.anddd.nevera.feature.mypage.main.MyPageScreen
 import com.anddd.nevera.feature.mypage.settingaccount.SettingAccountScreen
+import com.anddd.nevera.feature.notification.navigation.NotificationRoute
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -29,6 +30,7 @@ fun NavGraphBuilder.myPageNavGraph(
             MyPageScreen(
                 onNavigateToAppInfo = { navController.navigate(AppInfoRoute) },
                 onNavigateToAccountSetting = { navController.navigate(SettingAccountRoute) },
+                onNavigateToNotification = { navController.navigate(NotificationRoute) },
             )
         }
         composable<AppInfoRoute> {

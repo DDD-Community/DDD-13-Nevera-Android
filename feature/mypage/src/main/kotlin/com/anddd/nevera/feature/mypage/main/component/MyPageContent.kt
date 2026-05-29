@@ -40,7 +40,7 @@ internal fun MyPageContent(
                     NeveraAppBarAction.Icons.Item(
                         painter = NeveraIcons.Bell,
                         contentDescription = stringResource(MyPageR.string.mypage_notification_icon_desc),
-                        onClick = {},
+                        onClick = { onIntent(MyPageIntent.NotificationIconClicked) },
                     )
                 ),
             )
