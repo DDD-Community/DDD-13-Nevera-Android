@@ -36,6 +36,7 @@ internal fun OcrCaptureContent(
 ) {
     Scaffold(
         modifier = modifier,
+        containerColor = Color.Black,
         topBar = {
             NeveraAppBar(
                 modifier = Modifier.background(Color.Black),

@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,7 +19,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextField
 import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextFieldConfig
 import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextFieldType
-import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.ingredient.R
 
@@ -36,7 +33,6 @@ internal fun IngredientHeaderRow(
     name: String,
     isSelected: Boolean,
     onSelectionChanged: (Boolean) -> Unit,
-    onEditClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth()
@@ -64,19 +60,6 @@ internal fun IngredientHeaderRow(
             modifier = Modifier.weight(1f),
             enabled = isSelected,
             useIcon = false,
-            trailingIcon = {
-                IconButton(
-                    onClick = onEditClick,
-                    modifier = Modifier.size(NeveraTheme.iconSize.xLarge),
-                ) {
-                    Icon(
-                        painter = NeveraIcons.Edit,
-                        contentDescription = stringResource(R.string.ingredient_item_edit_icon_description),
-                        modifier = Modifier.size(NeveraTheme.iconSize.medium),
-                        tint = NeveraTheme.colors.iconCaption,
-                    )
-                }
-            },
             config = NeveraTextFieldConfig(
                 type = NeveraTextFieldType.Underline,
                 singleLine = true,
@@ -97,7 +80,6 @@ private fun IngredientHeaderRowSelectedPreview() {
             name = "아침에주스 ABC 주스, 18개입 과즙 음료",
             isSelected = true,
             onSelectionChanged = {},
-            onEditClick = {},
         )
     }
 }
@@ -114,7 +96,6 @@ private fun IngredientHeaderRowUnselectedPreview() {
             name = "롯데 핸디카페 초콜릿 다크",
             isSelected = false,
             onSelectionChanged = {},
-            onEditClick = {},
         )
     }
 }

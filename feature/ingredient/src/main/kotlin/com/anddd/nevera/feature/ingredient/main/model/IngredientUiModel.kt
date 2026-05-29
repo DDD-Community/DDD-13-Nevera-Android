@@ -38,6 +38,7 @@ data class IngredientUiModel(
             category = null,
             location = null,
             quantity = 1,
+            expiryDate = LocalDate.now().plusDays(7),
             cost = 0,
         )
     }
