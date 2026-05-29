@@ -5,6 +5,7 @@ import com.anddd.nevera.feature.fridge.main.model.FridgeIntent
 import com.anddd.nevera.feature.fridge.main.model.FridgeMutation
 import com.anddd.nevera.feature.fridge.main.model.FridgeSideEffect
 import com.anddd.nevera.feature.fridge.main.model.FridgeUiState
+import com.anddd.nevera.feature.fridge.main.model.CategoryFilter
 import com.anddd.nevera.feature.fridge.main.model.StorageLocationFilter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.orbitmvi.orbit.syntax.Syntax
@@ -21,7 +22,10 @@ class FridgeViewModel @Inject constructor() :
     override fun handleIntent(intent: FridgeIntent) {
         when (intent) {
             FridgeIntent.Load -> load()
+
             is FridgeIntent.SelectStorageFilter -> selectStorageFilter(intent.filter)
+
+            is FridgeIntent.SelectCategoryFilter -> selectCategoryFilter(intent.filter)
         }
     }
 
@@ -35,12 +39,19 @@ class FridgeViewModel @Inject constructor() :
         applyMutation(FridgeMutation.SelectStorageFilter(filter))
     }
 
+    private fun selectCategoryFilter(filter: CategoryFilter) = intent {
+        applyMutation(FridgeMutation.SelectCategoryFilter(filter))
+    }
+
     override suspend fun Syntax<FridgeUiState, FridgeSideEffect>.applyMutation(
         mutation: FridgeMutation,
     ) {
         when (mutation) {
             FridgeMutation.LoadSuccess -> reduce { state.copy(isLoading = false) }
+
             is FridgeMutation.SelectStorageFilter -> reduce { state.copy(selectedStorageFilter = mutation.filter) }
+
+            is FridgeMutation.SelectCategoryFilter -> reduce { state.copy(selectedCategoryFilter = mutation.filter) }
         }
     }
 }

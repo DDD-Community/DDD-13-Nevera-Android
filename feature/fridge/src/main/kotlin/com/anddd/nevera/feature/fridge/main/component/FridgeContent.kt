@@ -60,6 +60,15 @@ internal fun FridgeContent(
                         modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding16),
                     )
                 }
+                item {
+                    Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap16))
+                }
+                item {
+                    FridgeCategoryFilterRow(
+                        selectedFilter = uiState.selectedCategoryFilter,
+                        onFilterSelected = { onIntent(FridgeIntent.SelectCategoryFilter(it)) },
+                    )
+                }
                 // TODO: 페이지네이션 아이템 목록
             }
             if (uiState.isLoading) {

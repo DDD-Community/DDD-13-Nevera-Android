@@ -6,4 +6,14 @@
     <string name="fridge_filter_refrigerator">냉장</string>
     <string name="fridge_filter_freezer">냉동</string>
     <string name="fridge_filter_room_temp">실온</string>
+    <string name="fridge_category_all">전체</string>
+    <string name="fridge_category_vegetable">채소</string>
+    <string name="fridge_category_fruit">과일</string>
+    <string name="fridge_category_meat_egg">육류/계란</string>
+    <string name="fridge_category_seafood">해산물</string>
+    <string name="fridge_category_dairy">유제품</string>
+    <string name="fridge_category_sauce">소스/양념</string>
+    <string name="fridge_category_beverage">음료</string>
+    <string name="fridge_category_processed">가공식품</string>
+    <string name="fridge_category_other">기타</string>
 </resources>
