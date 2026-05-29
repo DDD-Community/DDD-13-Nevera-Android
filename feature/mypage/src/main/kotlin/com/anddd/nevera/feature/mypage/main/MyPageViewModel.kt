@@ -3,6 +3,8 @@ package com.anddd.nevera.feature.mypage.main
 import com.anddd.nevera.core.common.onFailure
 import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.core.mvi.NeveraViewModel
+import com.anddd.nevera.domain.usecase.notification.MarkAllNotificationsAsReadUseCase
+import com.anddd.nevera.domain.usecase.notification.ObserveUnreadNotificationUseCase
 import com.anddd.nevera.domain.usecase.user.GetUserProfileUseCase
 import com.anddd.nevera.feature.mypage.main.model.MyPageIntent
 import com.anddd.nevera.feature.mypage.main.model.MyPageMutation
@@ -17,6 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
     val getProfile: GetUserProfileUseCase,
+    private val observeUnreadNotification: ObserveUnreadNotificationUseCase,
+    private val markAllNotificationsAsRead: MarkAllNotificationsAsReadUseCase,
 ) : NeveraViewModel<MyPageUiState, MyPageSideEffect, MyPageIntent, MyPageMutation>(
     MyPageUiState(
         settingItems = listOf(
@@ -27,6 +31,7 @@ class MyPageViewModel @Inject constructor(
     ),
 ) {
     init {
+        observeBadge()
         load()
     }
 
@@ -37,7 +42,14 @@ class MyPageViewModel @Inject constructor(
         }
     }
 
+    private fun observeBadge() = intent {
+        observeUnreadNotification().collect { hasUnread ->
+            reduce { state.copy(hasUnreadNotification = hasUnread) }
+        }
+    }
+
     private fun onNotificationIconClick() = intent {
+        markAllNotificationsAsRead()
         postSideEffect(MyPageSideEffect.NavigateToNotification)
     }
 
@@ -70,6 +82,7 @@ class MyPageViewModel @Inject constructor(
             MyPageMutation.Loading -> reduce { state.copy(isLoading = true) }
             MyPageMutation.LoadComplete -> reduce { state.copy(isLoading = false) }
             is MyPageMutation.ShowProfile -> reduce { state.copy(profile = mutation.profile) }
+            is MyPageMutation.BadgeUpdated -> reduce { state.copy(hasUnreadNotification = mutation.hasUnread) }
         }
     }
 }

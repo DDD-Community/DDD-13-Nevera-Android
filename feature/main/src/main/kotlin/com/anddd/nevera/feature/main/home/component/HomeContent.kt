@@ -42,7 +42,7 @@ internal fun HomeContent(
             NeveraLogoAppBar(
                 action = NeveraAppBarAction.Icons.of(
                     NeveraAppBarAction.Icons.Item(
-                        painter = NeveraIcons.Bell,
+                        painter = if (uiState.hasUnreadNotification) NeveraIcons.BellOn else NeveraIcons.Bell,
                         contentDescription = stringResource(R.string.home_notification_icon_description),
                         onClick = { onIntent(HomeIntent.NotificationIconClicked) },
                     ),
