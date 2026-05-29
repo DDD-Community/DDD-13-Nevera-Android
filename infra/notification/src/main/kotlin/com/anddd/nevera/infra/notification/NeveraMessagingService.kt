@@ -61,18 +61,19 @@ class NeveraMessagingService : FirebaseMessagingService() {
         createdAt: String?,
         deepLink: String,
     ) {
-        if (id != null) {
-            enqueueNotificationSave(
-                id = id,
-                type = AppNotificationType.DEFAULT,
-                title = title.orEmpty(),
-                subtitle = message,
-                createdAt = createdAt.toEpochMilliOrNow(),
-                deeplink = deepLink,
-            )
-        } else {
-            Timber.d("페이로드에 id가 미포함되었습니다")
+        if (id == null) {
+            Timber.d("페이로드에 id가 미포함되어 알림을 건너뜁니다")
+            return
         }
+
+        enqueueNotificationSave(
+            id = id,
+            type = AppNotificationType.DEFAULT,
+            title = title.orEmpty(),
+            subtitle = message,
+            createdAt = createdAt.toEpochMilliOrNow(),
+            deeplink = deepLink,
+        )
 
         showNotification(
             title = title,
