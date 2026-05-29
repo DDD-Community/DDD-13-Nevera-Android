@@ -5,6 +5,8 @@ import com.anddd.nevera.data.datasource.AuthRemoteDataSource
 import com.anddd.nevera.data.datasource.AuthRemoteDataSourceImpl
 import com.anddd.nevera.data.datasource.OcrDataSource
 import com.anddd.nevera.data.datasource.OcrDataSourceImpl
+import com.anddd.nevera.data.datasource.OcrProgressDataSource
+import com.anddd.nevera.data.datasource.OcrProgressDataSourceImpl
 import com.anddd.nevera.data.datasource.FcmTokenLocalDataSource
 import com.anddd.nevera.data.datasource.FcmTokenLocalDataSourceImpl
 import com.anddd.nevera.data.datasource.FcmTokenRemoteDataSource
@@ -73,6 +75,10 @@ internal abstract class DataSourceModule {
     @Binds
     @Singleton
     abstract fun bindOcrDataSource(impl: OcrDataSourceImpl): OcrDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindOcrProgressDataSource(impl: OcrProgressDataSourceImpl): OcrProgressDataSource
 
     @Binds
     @Singleton

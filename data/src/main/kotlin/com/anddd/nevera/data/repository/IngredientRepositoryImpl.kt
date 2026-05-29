@@ -6,6 +6,7 @@ import com.anddd.nevera.core.common.map
 import com.anddd.nevera.core.network.auth.ApiCallExecutor
 import com.anddd.nevera.data.datasource.IngredientRemoteDataSource
 import com.anddd.nevera.data.datasource.OcrDataSource
+import com.anddd.nevera.data.datasource.OcrProgressDataSource
 import com.anddd.nevera.data.datasource.OcrProgressResponse
 import com.anddd.nevera.data.mapper.error.toCommonError
 import com.anddd.nevera.data.mapper.error.toOcrExtractError
@@ -29,6 +30,7 @@ import javax.inject.Inject
 
 internal class IngredientRepositoryImpl @Inject constructor(
     private val ocrDataSource: OcrDataSource,
+    private val ocrProgressDataSource: OcrProgressDataSource,
     private val remoteDataSource: IngredientRemoteDataSource,
     private val apiCall: ApiCallExecutor,
 ) : IngredientRepository {
@@ -43,7 +45,7 @@ internal class IngredientRepositoryImpl @Inject constructor(
     }
 
     override fun observeOcrProgress(jobId: OcrJobId): Flow<OcrProgressResult> =
-        ocrDataSource.observeOcrProgress(jobId.value)
+        ocrProgressDataSource.observeOcrProgress(jobId.value)
             .map { response ->
                 when (response) {
                     OcrProgressResponse.Opened -> OcrProgressResult.Opened
