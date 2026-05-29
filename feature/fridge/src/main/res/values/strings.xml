@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fridge_title">나의 냉장고</string>
+    <string name="fridge_notification_icon_desc">알림</string>
+</resources>
