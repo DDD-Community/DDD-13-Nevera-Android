@@ -6,5 +6,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface NotificationRepository {
     fun getNotifications(): Flow<PagingData<AppNotification>>
+    fun hasUnread(): Flow<Boolean>
+    suspend fun insert(notification: AppNotification)
     suspend fun markAsRead(id: String)
+    suspend fun markAllAsRead()
 }

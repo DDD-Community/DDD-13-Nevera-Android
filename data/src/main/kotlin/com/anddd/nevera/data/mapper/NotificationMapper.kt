@@ -36,6 +36,16 @@ internal fun NotificationEntity.toDomain(): AppNotification = AppNotification(
     deeplink = deeplink,
 )
 
+internal fun AppNotification.toEntity(): NotificationEntity = NotificationEntity(
+    id = id,
+    type = type.name,
+    title = title,
+    subtitle = subtitle,
+    receivedAt = receivedAt,
+    isRead = isRead,
+    deeplink = deeplink,
+)
+
 private fun String.toAppNotificationType(): AppNotificationType = when (this) {
     "EXPIRY_DATE" -> AppNotificationType.EXPIRY_DATE
     else -> AppNotificationType.EXPIRY_DATE // TODO: 서버 타입 추가 시 분기 확장

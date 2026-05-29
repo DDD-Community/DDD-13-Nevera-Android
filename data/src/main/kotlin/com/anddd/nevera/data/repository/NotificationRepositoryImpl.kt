@@ -8,6 +8,7 @@ import androidx.paging.map
 import com.anddd.nevera.data.datasource.NotificationLocalDataSource
 import com.anddd.nevera.data.datasource.NotificationRemoteMediator
 import com.anddd.nevera.data.mapper.toDomain
+import com.anddd.nevera.data.mapper.toEntity
 import com.anddd.nevera.domain.model.notification.AppNotification
 import com.anddd.nevera.domain.repository.NotificationRepository
 import kotlinx.coroutines.flow.Flow
@@ -30,8 +31,18 @@ internal class NotificationRepositoryImpl @Inject constructor(
             pagingSourceFactory = { localDataSource.getPagingSource() },
         ).flow.map { pagingData -> pagingData.map { it.toDomain() } }
 
+    override fun hasUnread(): Flow<Boolean> = localDataSource.hasUnread()
+
+    override suspend fun insert(notification: AppNotification) {
+        localDataSource.insert(notification.toEntity())
+    }
+
     override suspend fun markAsRead(id: String) {
         localDataSource.markAsRead(id)
+    }
+
+    override suspend fun markAllAsRead() {
+        localDataSource.markAllAsRead()
     }
 
     companion object {
