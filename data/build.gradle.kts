@@ -27,4 +27,5 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.paging.runtime)
     implementation(libs.room.runtime)
+    implementation(libs.room.paging)
 }
