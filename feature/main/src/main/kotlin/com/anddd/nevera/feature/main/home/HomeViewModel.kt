@@ -218,6 +218,7 @@ class HomeViewModel @Inject constructor(
         createWish(name, goalAmount)
             .onSuccess {
                 getHomeSummary().onSuccess { summary -> applyHomeSummary(summary) }
+                postSideEffect(HomeSideEffect.ShowWishCreatedToast)
             }
             .onFailure {
                 // TODO: 에러 처리
@@ -237,6 +238,7 @@ class HomeViewModel @Inject constructor(
         updateWish(id, name, goalAmount)
             .onSuccess {
                 getHomeSummary().onSuccess { summary -> applyHomeSummary(summary) }
+                postSideEffect(HomeSideEffect.ShowWishUpdatedToast)
             }
             .onFailure {
                 // TODO: 에러 처리
