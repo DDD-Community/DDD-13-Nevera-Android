@@ -138,8 +138,8 @@ class NeveraMessagingService : FirebaseMessagingService() {
             .build()
     }
 
-    private fun String?.toNotificationId(type: NotificationType): Int =
-        this?.toIntOrNull() ?: this?.hashCode() ?: type.ordinal
+    private fun String.toNotificationId(type: NotificationType): Int =
+        toIntOrNull() ?: type.ordinal
 
     private fun enqueueNotificationSave(
         id: String,
