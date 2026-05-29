@@ -104,7 +104,7 @@ private fun NotificationType.labelResId(): Int = when (this) {
 }
 
 private fun formatRelativeTime(epochMillis: Long): String {
-    val diffMillis = System.currentTimeMillis() - epochMillis
+    val diffMillis = maxOf(0L, System.currentTimeMillis() - epochMillis)
     val minutes = TimeUnit.MILLISECONDS.toMinutes(diffMillis)
     val hours = TimeUnit.MILLISECONDS.toHours(diffMillis)
     val days = TimeUnit.MILLISECONDS.toDays(diffMillis)
