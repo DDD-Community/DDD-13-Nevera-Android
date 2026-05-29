@@ -16,6 +16,8 @@ import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureMode
 import com.anddd.nevera.feature.main.home.navigation.HomeRoute
 import com.anddd.nevera.feature.main.home.navigation.homeScreen
 import com.anddd.nevera.feature.mypage.navigation.myPageNavGraph
+import com.anddd.nevera.feature.notification.navigation.NotificationRoute
+import com.anddd.nevera.feature.notification.navigation.notificationScreen
 import com.anddd.nevera.feature.splash.main.navigation.SplashRoute
 import com.anddd.nevera.feature.splash.main.navigation.splashScreen
 
@@ -62,6 +64,9 @@ fun NeveraNavHost(
             onNavigateToGallery = {
                 navController.navigateToIngredientCapture(OcrCaptureMode.Gallery)
             },
+            onNavigateToNotification = {
+                navController.navigate(NotificationRoute)
+            },
         )
         myPageNavGraph(
             navController = navController,
@@ -78,6 +83,9 @@ fun NeveraNavHost(
                     popUpTo(IngredientGraphRoute) { inclusive = true }
                 }
             }
+        )
+        notificationScreen(
+            onBack = { navController.popBackStack() },
         )
     }
 }
