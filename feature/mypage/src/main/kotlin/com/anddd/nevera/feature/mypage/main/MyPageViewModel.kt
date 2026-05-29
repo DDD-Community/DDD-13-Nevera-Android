@@ -44,7 +44,7 @@ class MyPageViewModel @Inject constructor(
 
     private fun observeBadge() = intent {
         observeUnreadNotification().collect { hasUnread ->
-            reduce { state.copy(hasUnreadNotification = hasUnread) }
+            applyMutation(MyPageMutation.BadgeUpdated(hasUnread))
         }
     }
 
