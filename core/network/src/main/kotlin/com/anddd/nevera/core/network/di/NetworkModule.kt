@@ -61,4 +61,20 @@ object NetworkModule {
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
+
+    // OCR 분석 서버 처리 시간이 길어 readTimeout을 별도로 확장한 Retrofit
+    @Provides
+    @Singleton
+    @OcrExtractRetrofit
+    fun provideOcrExtractRetrofit(
+        retrofit: Retrofit,
+        okHttpClient: OkHttpClient,
+    ): Retrofit =
+        retrofit.newBuilder()
+            .client(
+                okHttpClient.newBuilder()
+                    .readTimeout(120, TimeUnit.SECONDS)
+                    .build()
+            )
+            .build()
 }

@@ -1,5 +1,6 @@
 package com.anddd.nevera.data.di
 
+import com.anddd.nevera.core.network.di.OcrExtractRetrofit
 import com.anddd.nevera.core.network.di.RefreshApi
 import com.anddd.nevera.core.network.di.RefreshRetrofit
 import com.anddd.nevera.data.api.AuthApi
@@ -53,6 +54,13 @@ internal object ApiModule {
     @Provides
     @Singleton
     fun provideIngredientApi(retrofit: Retrofit): IngredientApi {
+        return retrofit.create(IngredientApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    @OcrExtractRetrofit
+    fun provideOcrExtractIngredientApi(@OcrExtractRetrofit retrofit: Retrofit): IngredientApi {
         return retrofit.create(IngredientApi::class.java)
     }
 
