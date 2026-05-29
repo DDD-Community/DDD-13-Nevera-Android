@@ -9,11 +9,11 @@ import androidx.navigation.compose.NavHost
 import com.anddd.nevera.feature.auth.main.google.GoogleAuthClient
 import com.anddd.nevera.feature.auth.navigation.AuthGraphRoute
 import com.anddd.nevera.feature.auth.navigation.authNavGraph
+import com.anddd.nevera.feature.fridge.main.navigation.fridgeScreen
 import com.anddd.nevera.feature.ingredient.main.navigation.IngredientGraphRoute
 import com.anddd.nevera.feature.ingredient.main.navigation.ingredientNavGraph
-import com.anddd.nevera.feature.ingredient.main.navigation.navigateToOcrCaptureCamera
-import com.anddd.nevera.feature.ingredient.main.navigation.navigateToOcrCaptureGallery
-import com.anddd.nevera.feature.fridge.main.navigation.fridgeScreen
+import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureMode
+import com.anddd.nevera.feature.ingredient.ocrcapture.navigation.navigateToIngredientCapture
 import com.anddd.nevera.feature.main.home.navigation.HomeRoute
 import com.anddd.nevera.feature.main.home.navigation.homeScreen
 import com.anddd.nevera.feature.mypage.navigation.myPageNavGraph
@@ -57,8 +57,12 @@ fun NeveraNavHost(
             }
         )
         homeScreen(
-            onNavigateToCamera = { navController.navigateToOcrCaptureCamera() },
-            onNavigateToGallery = { navController.navigateToOcrCaptureGallery() },
+            onNavigateToCamera = {
+                navController.navigateToIngredientCapture(OcrCaptureMode.Camera)
+            },
+            onNavigateToGallery = {
+                navController.navigateToIngredientCapture(OcrCaptureMode.Gallery)
+            },
         )
         fridgeScreen()
         myPageNavGraph(

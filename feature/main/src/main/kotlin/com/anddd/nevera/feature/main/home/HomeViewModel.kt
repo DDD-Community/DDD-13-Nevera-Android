@@ -137,7 +137,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun onAddIngredientClick() = intent {
-        postSideEffect(HomeSideEffect.ShowCaptureModeDialog)
+        postSideEffect(HomeSideEffect.ShowCaptureModeBottomSheet)
     }
 
     private fun loadMoreIngredients(tab: IngredientFilterTab) = intent {

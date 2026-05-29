@@ -12,8 +12,8 @@ import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureMode
 import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureMutation
 import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureSideEffect
 import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureUiState
-import com.anddd.nevera.feature.ingredient.ocrcapture.navigation.GALLERY_MODE_VALUE
-import com.anddd.nevera.feature.ingredient.ocrcapture.navigation.OCR_CAPTURE_INITIAL_MODE_ARG
+import com.anddd.nevera.feature.ingredient.ocrcapture.navigation.OcrCaptureRoute
+import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlin.coroutines.cancellation.CancellationException
 import org.orbitmvi.orbit.syntax.Syntax
@@ -26,8 +26,7 @@ class OcrCaptureViewModel @Inject constructor(
     private val galleryManager: GalleryManager,
 ) : NeveraViewModel<OcrCaptureUiState, OcrCaptureSideEffect, OcrCaptureIntent, OcrCaptureMutation>(
     OcrCaptureUiState(
-        mode = if (savedStateHandle.get<String>(OCR_CAPTURE_INITIAL_MODE_ARG) == GALLERY_MODE_VALUE)
-            OcrCaptureMode.Gallery else OcrCaptureMode.Camera
+        mode = savedStateHandle.toRoute<OcrCaptureRoute>().mode
     )
 ) {
 
@@ -78,7 +77,7 @@ class OcrCaptureViewModel @Inject constructor(
     private fun onSwapCamera() = intent { cameraManager.swapCamera() }
 
     private fun onSelectImage(uri: Uri) = intent {
-        postSideEffect(OcrCaptureSideEffect.NavigateToResult(uri))
+        postSideEffect(OcrCaptureSideEffect.NavigateToResult(uri, OcrCaptureMode.Gallery))
     }
 
     private fun onTakePicture() = intent {
@@ -104,7 +103,7 @@ class OcrCaptureViewModel @Inject constructor(
             is OcrCaptureMutation.GalleryLoaded ->
                 reduce { state.copy(galleryImages = mutation.images) }
             is OcrCaptureMutation.CaptureSuccess ->
-                postSideEffect(OcrCaptureSideEffect.NavigateToResult(mutation.uri))
+                postSideEffect(OcrCaptureSideEffect.NavigateToResult(mutation.uri, OcrCaptureMode.Camera))
         }
     }
 
