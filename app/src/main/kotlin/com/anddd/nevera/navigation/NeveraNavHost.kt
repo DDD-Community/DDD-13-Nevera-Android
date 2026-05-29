@@ -1,12 +1,9 @@
 package com.anddd.nevera.navigation
 
-import android.widget.Toast
 import androidx.compose.animation.EnterTransition
-import timber.log.Timber
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.anddd.nevera.feature.auth.main.google.GoogleAuthClient
@@ -29,9 +26,9 @@ import com.anddd.nevera.feature.splash.main.navigation.splashScreen
 fun NeveraNavHost(
     navController: NavHostController,
     googleAuthClient: GoogleAuthClient,
-    modifier: Modifier = Modifier
+    onDeeplink: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
 
     NavHost(
         navController = navController,
@@ -106,18 +103,7 @@ fun NeveraNavHost(
         )
         notificationScreen(
             onBack = { navController.popBackStack() },
-            onDeeplink = { deeplink ->
-                when {
-                    deeplink.startsWith("nevera://detail/") -> {
-                        val ingredientId = deeplink.removePrefix("nevera://detail/")
-                        if (ingredientId.isNotBlank()) {
-                            // TODO: 냉장고 탭 구현 후 식재료(id=$ingredientId) 포커스 네비게이션 추가
-                            Toast.makeText(context, "냉장고 탭으로 이동", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                    else -> Timber.w("알 수 없는 deeplink 형식: $deeplink")
-                }
-            },
+            onDeeplink = onDeeplink,
         )
     }
 }
