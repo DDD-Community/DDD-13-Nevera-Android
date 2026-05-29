@@ -5,7 +5,7 @@ import com.anddd.nevera.data.model.ingredient.IngredientResponse
 import com.anddd.nevera.data.model.ingredient.RegisterIngredientRequest
 
 internal interface IngredientRemoteDataSource {
-    suspend fun registerIngredients(items: List<RegisterIngredientRequest>): ApiResponse<Unit>
+    suspend fun registerIngredients(items: List<RegisterIngredientRequest>): ApiResponse<Boolean>
 
     suspend fun getRescuedIngredients(
         offset: Int,

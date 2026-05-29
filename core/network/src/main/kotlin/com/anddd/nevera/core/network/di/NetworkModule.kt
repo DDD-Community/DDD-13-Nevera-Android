@@ -21,6 +21,7 @@ object NetworkModule {
 
     private const val OKHTTP_TAG = "OkHttp"
     private const val TIMEOUT_SECONDS = 30L
+    private const val OCR_EXTRACT_READ_TIMEOUT_SECONDS = 300L
 
     private val loggingInterceptor: HttpLoggingInterceptor =
         HttpLoggingInterceptor { message ->
@@ -55,6 +56,34 @@ object NetworkModule {
     fun provideRetrofit(
         okHttpClient: OkHttpClient,
         gson: Gson
+    ): Retrofit =
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+
+    // OCR 분석은 서버 처리 시간이 길어 readTimeout을 별도로 확장
+    @Provides
+    @Singleton
+    @OcrExtractOkHttpClient
+    fun provideOcrExtractOkHttpClient(
+        @AuthInterceptorQualifier authInterceptor: Interceptor,
+    ): OkHttpClient =
+        OkHttpClient.Builder()
+            .addInterceptor(authInterceptor)
+            .addInterceptor(loggingInterceptor)
+            .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .readTimeout(OCR_EXTRACT_READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .writeTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .build()
+
+    @Provides
+    @Singleton
+    @OcrExtractRetrofit
+    fun provideOcrExtractRetrofit(
+        @OcrExtractOkHttpClient okHttpClient: OkHttpClient,
+        gson: Gson,
     ): Retrofit =
         Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)

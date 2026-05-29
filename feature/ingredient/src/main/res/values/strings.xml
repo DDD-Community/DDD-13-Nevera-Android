@@ -36,7 +36,10 @@
     <string name="ingredient_item_cost_unit">원</string>
 
     <!-- OcrScanningDialog -->
-    <string name="ocr_scanning_title">영수증을 읽는 중...</string>
+    <string name="ocr_scanning_title_reading_receipt">영수증을 읽는 중...</string>
+    <string name="ocr_scanning_title_recognizing_ingredients">식재료를 인식 중...</string>
+    <string name="ocr_scanning_title_analyzing_text">텍스트를 분석 중...</string>
+    <string name="ocr_scanning_title_scanning_carefully">꼼꼼하게 스캔 중...</string>
     <string name="ocr_scanning_close_description">취소</string>
 
     <!-- IngredientScreen -->

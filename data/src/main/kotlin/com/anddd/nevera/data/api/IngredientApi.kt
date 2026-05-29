@@ -3,6 +3,7 @@ package com.anddd.nevera.data.api
 import com.anddd.nevera.core.network.model.ApiResponse
 import com.anddd.nevera.data.model.ingredient.IngredientResponse
 import com.anddd.nevera.data.model.ingredient.OcrIngredientDto
+import com.anddd.nevera.data.model.ingredient.OcrJobResponse
 import com.anddd.nevera.data.model.ingredient.RegisterIngredientRequest
 import okhttp3.MultipartBody
 import retrofit2.http.Body
@@ -14,16 +15,20 @@ import retrofit2.http.Query
 
 internal interface IngredientApi {
 
+    @POST("api/v1/ocr/jobs")
+    suspend fun createOcrJob(): ApiResponse<OcrJobResponse>
+
     @Multipart
     @POST("api/v1/ocr/extract")
     suspend fun extractIngredients(
+        @Query("jobId") jobId: String,
         @Part file: MultipartBody.Part,
     ): ApiResponse<List<OcrIngredientDto>>
 
     @POST("api/v1/inventory")
     suspend fun registerIngredients(
         @Body items: List<RegisterIngredientRequest>,
-    ): ApiResponse<Unit>
+    ): ApiResponse<Boolean>
 
     @GET("api/v1/savings/consumed")
     suspend fun getRescuedIngredients(

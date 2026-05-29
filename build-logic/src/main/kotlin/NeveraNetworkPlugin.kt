@@ -19,6 +19,7 @@ class NeveraNetworkPlugin : Plugin<Project> {
                 "implementation"(libs.findLibrary("retrofit-converter-gson").get())
                 "implementation"(libs.findLibrary("okhttp").get())
                 "implementation"(libs.findLibrary("okhttp-logging").get())
+                "implementation"(libs.findLibrary("okhttp-sse").get())
             }
         }
     }

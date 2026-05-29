@@ -12,7 +12,7 @@ internal class IngredientRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun registerIngredients(
         items: List<RegisterIngredientRequest>,
-    ): ApiResponse<Unit> = ingredientApi.registerIngredients(items)
+    ): ApiResponse<Boolean> = ingredientApi.registerIngredients(items)
 
     override suspend fun getRescuedIngredients(
         offset: Int,
