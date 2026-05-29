@@ -65,7 +65,7 @@ fun NeveraNavHost(
                 navController.navigateToIngredientCapture(OcrCaptureMode.Gallery)
             },
             onNavigateToNotification = {
-                navController.navigate(NotificationRoute)
+                navController.navigate(NotificationRoute) { launchSingleTop = true }
             },
         )
         myPageNavGraph(
@@ -76,7 +76,7 @@ fun NeveraNavHost(
                 }
             },
             onNavigateToNotification = {
-                navController.navigate(NotificationRoute)
+                navController.navigate(NotificationRoute) { launchSingleTop = true }
             },
         )
         ingredientNavGraph(
