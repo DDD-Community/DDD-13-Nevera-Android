@@ -5,11 +5,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,41 +20,40 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.splash.R
 
-private val LogoWidth = 224.dp
-private val LogoHeight = 100.dp
-private val ContentColumnHeight = 420.dp
-private val IllustrationWidth = 290.dp
-private val IllustrationHeight = 232.dp
+private const val TopSpacerWeight = 0.08f
+private const val TitleWeight = 0.52f
+private const val GapWeight = 0.05f
+private const val IllustrationWeight = 0.28f
+private const val BottomSpacerWeight = 0.07f
+private const val LogoHeightFraction = 0.24f
+private const val LogoAspectRatio = 224f / 100f
 
 @Composable
 internal fun SplashContent(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.fillMaxSize()
             .background(NeveraTheme.colors.backgroundPrimary),
-        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        Spacer(modifier = Modifier.weight(TopSpacerWeight))
 
         Column(
             modifier = Modifier.fillMaxWidth()
-                .height(ContentColumnHeight)
-                .padding(horizontal = NeveraTheme.spacing.padding16)
-            ,
+                .weight(TitleWeight)
+                .padding(horizontal = NeveraTheme.spacing.padding16),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Image(
                 painter = NeveraIcons.Logo100,
                 contentDescription = stringResource(R.string.splash_logo_description),
-                modifier = Modifier.size(
-                    width = LogoWidth,
-                    height = LogoHeight,
-                ),
+                modifier = Modifier
+                    .fillMaxHeight(LogoHeightFraction)
+                    .aspectRatio(LogoAspectRatio),
                 contentScale = ContentScale.Fit,
             )
 
@@ -67,17 +67,18 @@ internal fun SplashContent(modifier: Modifier = Modifier) {
             )
         }
 
-        Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap20))
+        Spacer(modifier = Modifier.weight(GapWeight))
 
         Image(
             painter = painterResource(R.drawable.img_splash),
             contentDescription = stringResource(R.string.splash_illustration_description),
-            modifier = Modifier.size(
-                width = IllustrationWidth,
-                height = IllustrationHeight,
-            ),
+            modifier = Modifier
+                .weight(IllustrationWeight)
+                .fillMaxWidth(),
             contentScale = ContentScale.Fit,
         )
+
+        Spacer(modifier = Modifier.weight(BottomSpacerWeight))
     }
 }
 
