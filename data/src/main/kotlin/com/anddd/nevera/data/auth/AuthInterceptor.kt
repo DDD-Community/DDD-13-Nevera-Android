@@ -20,7 +20,7 @@ import javax.inject.Inject
  * 1. 모든 요청에 "Authorization: Bearer {accessToken}" 헤더 추가
  * 2. 일반 API 요청에서 401 응답 수신 시 refresh token으로 토큰 갱신 시도
  * 3. 갱신 성공 → 새 토큰으로 원래 요청 재시도
- * 4. refresh API가 401을 반환하면 세션 만료로 간주하고 토큰을 삭제한 뒤 세션 만료 이벤트를 발행
+ * 4. refresh API가 4xx를 반환하면 세션 만료로 간주하고 토큰을 삭제한 뒤 세션 만료 이벤트를 발행 (5xx 일시 장애는 제외)
  * 5. 그 외 갱신 실패는 예외를 그대로 전파 (apiCall이 변환)
  *
  * [RefreshDataSource]는 [AuthInterceptor]가 없는 전용 [okhttp3.OkHttpClient]를 사용한다.
@@ -85,7 +85,8 @@ internal class AuthInterceptor @Inject constructor(
                                 .build()
                         )
                     } catch (e: HttpException) {
-                        if (e.code() == UNAUTHORIZED_STATUS_CODE) {
+                        // 5xx(일시 서버 장애)는 토큰이 유효할 수 있으므로 세션 만료 처리 제외
+                        if (e.code() in 400 until 500) {
                             tokenDataSource.get().clearLoginInfo()
                             sessionEventBus.emitSessionExpired()
                         }
