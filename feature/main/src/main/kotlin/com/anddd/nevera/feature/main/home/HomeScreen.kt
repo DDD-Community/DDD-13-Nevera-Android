@@ -12,7 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.anddd.nevera.feature.main.R
-import com.anddd.nevera.feature.main.home.component.CaptureModeBottomSheet
+import com.anddd.nevera.core.ui.component.ReceiptCaptureModeBottomSheet
 import com.anddd.nevera.feature.main.home.component.HomeContent
 import com.anddd.nevera.feature.main.home.model.HomeSideEffect
 import org.orbitmvi.orbit.compose.collectAsState
@@ -56,7 +56,7 @@ fun HomeScreen(
     )
 
     if (showCaptureModeBottomSheet) {
-        CaptureModeBottomSheet(
+        ReceiptCaptureModeBottomSheet(
             sheetState = captureModeSheetState,
             onReceiptScan = {
                 showCaptureModeBottomSheet = false

@@ -8,8 +8,14 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object FridgeRoute
 
-fun NavGraphBuilder.fridgeScreen() {
+fun NavGraphBuilder.fridgeScreen(
+    onNavigateToCamera: () -> Unit,
+    onNavigateToGallery: () -> Unit,
+) {
     composable<FridgeRoute> {
-        FridgeScreen()
+        FridgeScreen(
+            onNavigateToCamera = onNavigateToCamera,
+            onNavigateToGallery = onNavigateToGallery,
+        )
     }
 }

@@ -8,4 +8,8 @@ sealed interface FridgeIntent : NeveraIntent {
     data class SelectStorageFilter(val filter: StorageLocationFilter) : FridgeIntent
 
     data class SelectCategoryFilter(val filter: CategoryFilter) : FridgeIntent
+
+    data object AddIngredientClick : FridgeIntent
+
+    data class SelectSortOrder(val order: IngredientSortOrder) : FridgeIntent
 }
