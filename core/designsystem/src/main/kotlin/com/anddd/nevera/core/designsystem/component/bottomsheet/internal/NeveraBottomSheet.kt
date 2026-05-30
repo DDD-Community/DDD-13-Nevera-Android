@@ -3,6 +3,7 @@ package com.anddd.nevera.core.designsystem.component.bottomsheet.internal
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -23,6 +24,7 @@ internal fun NeveraBottomSheet(
     modifier: Modifier = Modifier,
     shape: Shape = NeveraBottomSheetDefaults.ContainerShape,
     dragHandle: @Composable (() -> Unit)? = { NeveraBottomSheetDefaultThumb() },
+    properties: ModalBottomSheetProperties = ModalBottomSheetProperties(),
     content: @Composable ColumnScope.() -> Unit,
 ) {
     ModalBottomSheet(
@@ -32,6 +34,7 @@ internal fun NeveraBottomSheet(
         shape = shape,
         containerColor = NeveraTheme.colors.surfacePrimary,
         dragHandle = dragHandle,
+        properties = properties,
         content = content,
     )
 }
