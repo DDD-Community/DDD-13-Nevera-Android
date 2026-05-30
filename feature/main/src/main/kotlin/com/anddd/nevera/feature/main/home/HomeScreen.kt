@@ -6,7 +6,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -16,6 +16,7 @@ import com.anddd.nevera.feature.main.R
 import com.anddd.nevera.feature.main.home.component.CreateWishBottomSheet
 import com.anddd.nevera.feature.main.home.component.GreetingBottomSheet
 import com.anddd.nevera.feature.main.home.component.HomeContent
+import com.anddd.nevera.feature.main.home.component.SetNicknameBottomSheet
 import com.anddd.nevera.feature.main.home.component.UpdateWishBottomSheet
 import com.anddd.nevera.feature.main.home.model.HomeIntent
 import com.anddd.nevera.feature.main.home.model.HomeSideEffect
@@ -37,16 +38,19 @@ fun HomeScreen(
     val wishUpdatedMessage = stringResource(R.string.home_wish_updated_toast)
 
     val captureModeSheetState = rememberModalBottomSheetState()
-    var showCaptureModeBottomSheet by remember { mutableStateOf(false) }
-    var showGreetingBottomSheet by remember { mutableStateOf(false) }
-    var showCreateWishBottomSheet by remember { mutableStateOf(false) }
-    var showUpdateWishBottomSheet by remember { mutableStateOf(false) }
+    var showCaptureModeBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var showSetNicknameBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var showGreetingBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var showCreateWishBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var showUpdateWishBottomSheet by rememberSaveable { mutableStateOf(false) }
 
     viewModel.collectSideEffect { effect ->
         when (effect) {
             is HomeSideEffect.ShowError -> Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
 
             HomeSideEffect.ShowCaptureModeBottomSheet -> showCaptureModeBottomSheet = true
+
+            HomeSideEffect.ShowSetNicknameBottomSheet -> showSetNicknameBottomSheet = true
 
             HomeSideEffect.ShowGreetingBottomSheet -> showGreetingBottomSheet = true
 
@@ -79,6 +83,14 @@ fun HomeScreen(
                 onNavigateToGallery()
             },
             onDismiss = { showCaptureModeBottomSheet = false },
+        )
+    }
+    if (showSetNicknameBottomSheet) {
+        SetNicknameBottomSheet(
+            onNicknameConfirmed = { nickname ->
+                showSetNicknameBottomSheet = false
+                viewModel.handleIntent(HomeIntent.UpdateNicknameClick(nickname))
+            },
         )
     }
     if (showGreetingBottomSheet) {

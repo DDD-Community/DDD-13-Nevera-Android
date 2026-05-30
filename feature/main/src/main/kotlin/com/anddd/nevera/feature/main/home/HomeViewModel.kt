@@ -58,9 +58,9 @@ class HomeViewModel @Inject constructor(
     override fun handleIntent(intent: HomeIntent) {
         when (intent) {
             is HomeIntent.RecentIngredientTabClick -> onRecentIngredientTabClick(intent.tab)
-            
+
             HomeIntent.AddIngredientClick -> onAddIngredientClick()
-            
+
             is HomeIntent.LoadMoreIngredients -> loadMoreIngredients(intent.tab)
 
             is HomeIntent.UpdateNicknameClick -> onConfirmNickname(intent.nickname)
@@ -106,7 +106,7 @@ class HomeViewModel @Inject constructor(
         onboardingResult
             .onSuccess { status ->
                 if (!status.isCompleteOnboarding) {
-                    applyMutation(HomeMutation.ShowSetNicknameBottomSheet)
+                    postSideEffect(HomeSideEffect.ShowSetNicknameBottomSheet)
                 }
             }
             .onFailure {
@@ -310,15 +310,8 @@ class HomeViewModel @Inject constructor(
                 )
             }
 
-            HomeMutation.ShowSetNicknameBottomSheet -> reduce {
-                state.copy(isShowSetNicknameBottomSheet = true)
-            }
-
             is HomeMutation.UpdateNickname -> reduce {
-                state.copy(
-                    profile = state.profile.copy(nickname = mutation.nickname),
-                    isShowSetNicknameBottomSheet = false,
-                )
+                state.copy(profile = state.profile.copy(nickname = mutation.nickname))
             }
 
             is HomeMutation.BadgeUpdated -> reduce {

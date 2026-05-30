@@ -8,6 +8,8 @@ sealed interface HomeSideEffect : NeveraSideEffect {
 
     data object ShowCaptureModeBottomSheet : HomeSideEffect
 
+    data object ShowSetNicknameBottomSheet : HomeSideEffect
+
     data object ShowGreetingBottomSheet : HomeSideEffect
 
     data object ShowCreateWishBottomSheet : HomeSideEffect

@@ -115,11 +115,6 @@ internal fun HomeContent(
                 )
             }
 
-            if (uiState.isShowSetNicknameBottomSheet) {
-                SetNicknameBottomSheet(
-                    onNicknameConfirmed = { nickname -> onIntent(HomeIntent.UpdateNicknameClick(nickname)) },
-                )
-            }
             if (uiState.isLoading) {
                 LoadingContent()
             }
