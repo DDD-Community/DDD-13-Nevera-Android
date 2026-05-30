@@ -11,9 +11,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.anddd.nevera.feature.main.R
 import com.anddd.nevera.core.ui.component.ReceiptCaptureModeBottomSheet
+import com.anddd.nevera.feature.main.R
+import com.anddd.nevera.feature.main.home.component.CreateWishBottomSheet
+import com.anddd.nevera.feature.main.home.component.GreetingBottomSheet
 import com.anddd.nevera.feature.main.home.component.HomeContent
+import com.anddd.nevera.feature.main.home.component.UpdateWishBottomSheet
+import com.anddd.nevera.feature.main.home.model.HomeIntent
 import com.anddd.nevera.feature.main.home.model.HomeSideEffect
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -28,23 +32,31 @@ fun HomeScreen(
 ) {
     val context = LocalContext.current
     val state = viewModel.collectAsState().value
-    var showCaptureModeBottomSheet by remember { mutableStateOf(false) }
-    val captureModeSheetState = rememberModalBottomSheetState()
+
     val wishCreatedMessage = stringResource(R.string.home_wish_created_toast)
     val wishUpdatedMessage = stringResource(R.string.home_wish_updated_toast)
 
+    val captureModeSheetState = rememberModalBottomSheetState()
+    var showCaptureModeBottomSheet by remember { mutableStateOf(false) }
+    var showGreetingBottomSheet by remember { mutableStateOf(false) }
+    var showCreateWishBottomSheet by remember { mutableStateOf(false) }
+    var showUpdateWishBottomSheet by remember { mutableStateOf(false) }
+
     viewModel.collectSideEffect { effect ->
         when (effect) {
-            is HomeSideEffect.ShowError ->
-                Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
-            HomeSideEffect.ShowCaptureModeBottomSheet ->
-                showCaptureModeBottomSheet = true
+            is HomeSideEffect.ShowError -> Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
 
-            HomeSideEffect.ShowWishCreatedToast ->
-                Toast.makeText(context, wishCreatedMessage, Toast.LENGTH_SHORT).show()
+            HomeSideEffect.ShowCaptureModeBottomSheet -> showCaptureModeBottomSheet = true
 
-            HomeSideEffect.ShowWishUpdatedToast ->
-                Toast.makeText(context, wishUpdatedMessage, Toast.LENGTH_SHORT).show()
+            HomeSideEffect.ShowGreetingBottomSheet -> showGreetingBottomSheet = true
+
+            HomeSideEffect.ShowCreateWishBottomSheet -> showCreateWishBottomSheet = true
+
+            HomeSideEffect.ShowUpdateWishBottomSheet -> showUpdateWishBottomSheet = true
+
+            HomeSideEffect.ShowWishCreatedToast -> Toast.makeText(context, wishCreatedMessage, Toast.LENGTH_SHORT).show()
+
+            HomeSideEffect.ShowWishUpdatedToast -> Toast.makeText(context, wishUpdatedMessage, Toast.LENGTH_SHORT).show()
 
             HomeSideEffect.NavigateToNotification -> onNavigateToNotification()
         }
@@ -68,5 +80,36 @@ fun HomeScreen(
             },
             onDismiss = { showCaptureModeBottomSheet = false },
         )
+    }
+    if (showGreetingBottomSheet) {
+        GreetingBottomSheet(
+            onCreateWishClick = {
+                showGreetingBottomSheet = false
+                viewModel.handleIntent(HomeIntent.CreateWishClick)
+            },
+            onSkipClick = { showGreetingBottomSheet = false },
+        )
+    }
+    if (showCreateWishBottomSheet) {
+        CreateWishBottomSheet(
+            onWishCreated = { name, amount ->
+                showCreateWishBottomSheet = false
+                viewModel.handleIntent(HomeIntent.CreateWishConfirmed(name, amount))
+            },
+            onDismissRequest = { showCreateWishBottomSheet = false },
+        )
+    }
+    if (showUpdateWishBottomSheet) {
+        state.wish?.let { wish ->
+            UpdateWishBottomSheet(
+                wishName = wish.name,
+                goalAmount = wish.goalAmount.toLong(),
+                onWishUpdated = { name, amount ->
+                    showUpdateWishBottomSheet = false
+                    viewModel.handleIntent(HomeIntent.UpdateWishConfirmed(wish.id, name, amount))
+                },
+                onDismissRequest = { showUpdateWishBottomSheet = false },
+            )
+        }
     }
 }

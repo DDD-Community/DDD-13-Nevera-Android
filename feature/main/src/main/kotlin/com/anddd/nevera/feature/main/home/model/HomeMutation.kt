@@ -45,17 +45,5 @@ sealed interface HomeMutation : NeveraMutation {
 
     data class UpdateNickname(val nickname: String) : HomeMutation
 
-    data object ShowGreetingBottomSheet : HomeMutation
-
-    data object HideGreetingBottomSheet : HomeMutation
-
-    data object ShowCreateWishBottomSheet : HomeMutation
-
-    data object HideCreateWishBottomSheet : HomeMutation
-
-    data object ShowUpdateWishBottomSheet : HomeMutation
-
-    data object HideUpdateWishBottomSheet : HomeMutation
-
     data class BadgeUpdated(val hasUnread: Boolean) : HomeMutation
 }

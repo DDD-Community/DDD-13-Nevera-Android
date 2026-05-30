@@ -120,32 +120,6 @@ internal fun HomeContent(
                     onNicknameConfirmed = { nickname -> onIntent(HomeIntent.UpdateNicknameClick(nickname)) },
                 )
             }
-            if (uiState.isShowGreetingBottomSheet) {
-                GreetingBottomSheet(
-                    onCreateWishClick = { onIntent(HomeIntent.CreateWishClick) },
-                    onSkipClick = { onIntent(HomeIntent.GreetingSkipClick) },
-                )
-            }
-            if (uiState.isShowCreateWishBottomSheet) {
-                CreateWishBottomSheet(
-                    onWishCreated = { name, amount ->
-                        onIntent(HomeIntent.CreateWishConfirmed(name, amount))
-                    },
-                    onDismissRequest = { onIntent(HomeIntent.CreateWishDismissed) },
-                )
-            }
-            if (uiState.isShowUpdateWishBottomSheet) {
-                uiState.wish?.let { wish ->
-                    UpdateWishBottomSheet(
-                        wishName = wish.name,
-                        goalAmount = wish.goalAmount.toLong(),
-                        onWishUpdated = { name, amount ->
-                            onIntent(HomeIntent.UpdateWishConfirmed(wish.id, name, amount))
-                        },
-                        onDismissRequest = { onIntent(HomeIntent.UpdateWishDismissed) },
-                    )
-                }
-            }
             if (uiState.isLoading) {
                 LoadingContent()
             }
