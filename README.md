@@ -51,6 +51,20 @@ Screen
                                         └─ reduce ─────→ State → Screen
 ```
 
+#### MVI Convention
+
+Nevera의 MVI 구조는 단순히 Orbit MVI를 사용하는 것에 그치지 않고, 프로젝트 차원의 규칙을 추가로 정의합니다.
+
+- 사용자 액션은 `Intent`로 표현합니다.
+- 화면 상태는 `UiState`로 표현합니다.
+- 일회성 이벤트는 `SideEffect`로 표현합니다.
+- 상태 변경의 의미는 `Mutation`으로 표현합니다.
+- 실제 `reduce` 호출은 `applyMutation()` 한 곳에 모읍니다.
+
+이 규칙을 통해 화면에서 발생 가능한 액션과 상태 변경 흐름을 코드만으로 추적하기 쉽게 만듭니다.
+
+자세한 설계 원칙과 도입 근거는 [MVI 도입 및 core:mvi 설계 원칙](docs/mvi-core-architecture.md)을 참고해 주세요.
+
 ---
 
 ## 개발 환경
