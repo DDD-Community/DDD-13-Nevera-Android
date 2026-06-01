@@ -43,6 +43,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,6 +54,7 @@ import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.core.ui.iconRes
 import com.anddd.nevera.domain.model.ingredient.FoodCategory
+import com.anddd.nevera.feature.fridge.R
 import com.anddd.nevera.feature.fridge.main.model.FridgeIngredientUiModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -191,7 +193,7 @@ private fun SwipeActionButtons(
             contentAlignment = Alignment.Center,
         ) {
             Text(
-                text = "구조",
+                text = stringResource(R.string.fridge_ingredient_action_rescue),
                 style = NeveraTheme.typography.bodySmall,
                 color = NeveraTheme.colors.textInverse,
             )
@@ -205,7 +207,7 @@ private fun SwipeActionButtons(
             contentAlignment = Alignment.Center,
         ) {
             Text(
-                text = "폐기",
+                text = stringResource(R.string.fridge_ingredient_action_dispose),
                 style = NeveraTheme.typography.bodySmall,
                 color = NeveraTheme.colors.textInverse,
             )
@@ -327,6 +329,15 @@ private fun IngredientInfoColumn(
     item: FridgeIngredientUiModel,
     modifier: Modifier = Modifier,
 ) {
+    val subtitle = buildString {
+        if (item.cost > 0) {
+            append(stringResource(R.string.fridge_ingredient_cost_format, item.cost))
+            append(" • ")
+        }
+        append(item.categoryName)
+        append(" • ")
+        append(stringResource(R.string.fridge_ingredient_quantity_format, item.quantity))
+    }
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(NeveraTheme.spacing.gap2),
@@ -339,7 +350,7 @@ private fun IngredientInfoColumn(
             overflow = TextOverflow.Ellipsis,
         )
         Text(
-            text = buildSubtitle(item),
+            text = subtitle,
             style = NeveraTheme.typography.captionMedium,
             color = NeveraTheme.colors.textTertiary,
             maxLines = 1,
@@ -365,14 +376,6 @@ private fun DayLabel(
         )
     }
 }
-
-private fun buildSubtitle(item: FridgeIngredientUiModel): String =
-    buildString {
-        if (item.cost > 0) {
-            append("%,d원 • ".format(item.cost))
-        }
-        append("${item.categoryName} • ${item.quantity}개")
-    }
 
 @Preview(showBackground = true, widthDp = 360)
 @Composable
