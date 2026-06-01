@@ -224,7 +224,7 @@ private fun IngredientCategoryIcon(
     val daysRemaining = remember(item) {
         item.expiryDate?.let { ChronoUnit.DAYS.between(LocalDate.now(), it) } ?: Long.MAX_VALUE
     }
-    val imageShape = remember { RoundedCornerShape(NeveraTheme.radius.medium) }
+    val imageShape = RoundedCornerShape(NeveraTheme.radius.medium)
     val cornerRadiusDp: Dp = NeveraTheme.radius.medium
 
     val warningColor = NeveraTheme.colors.statusWarningNormal

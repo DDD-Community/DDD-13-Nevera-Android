@@ -31,7 +31,7 @@ internal fun IngredientItem(
     ingredient: IngredientUiModel,
     modifier: Modifier = Modifier,
 ) {
-    val imageShape = remember { RoundedCornerShape(NeveraTheme.radius.small) }
+    val imageShape = RoundedCornerShape(NeveraTheme.radius.small)
 
     Row(
         modifier = modifier.fillMaxWidth(),
