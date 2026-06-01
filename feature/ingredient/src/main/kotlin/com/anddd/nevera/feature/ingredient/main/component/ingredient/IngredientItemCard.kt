@@ -22,6 +22,7 @@ import com.anddd.nevera.feature.ingredient.main.component.ingredient.internal.In
 import com.anddd.nevera.feature.ingredient.main.component.ingredient.internal.IngredientExpiryDateRow
 import com.anddd.nevera.feature.ingredient.main.component.ingredient.internal.IngredientHeaderRow
 import com.anddd.nevera.feature.ingredient.main.component.ingredient.internal.IngredientQuantityField
+import com.anddd.nevera.core.ui.displayName
 import com.anddd.nevera.feature.ingredient.main.displayName
 import com.anddd.nevera.feature.ingredient.main.model.IngredientUiModel
 import java.time.LocalDate

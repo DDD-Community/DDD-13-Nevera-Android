@@ -9,6 +9,7 @@ data class FridgeUiState(
     val categoryFilters: Map<StorageLocationFilter, CategoryFilter> = emptyMap(),
     val totalCount: Int = 0,
     val selectedSortOrder: IngredientSortOrder = IngredientSortOrder.ExpiryDate,
+    val ingredients: List<FridgeIngredientUiModel> = emptyList(),
 ) : NeveraState {
     val selectedCategoryFilter: CategoryFilter
         get() = categoryFilters[selectedStorageFilter] ?: CategoryFilter.All

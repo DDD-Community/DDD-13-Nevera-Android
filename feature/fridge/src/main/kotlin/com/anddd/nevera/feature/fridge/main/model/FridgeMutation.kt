@@ -4,7 +4,11 @@ import com.anddd.nevera.core.mvi.NeveraMutation
 
 sealed interface FridgeMutation : NeveraMutation {
 
-    data object LoadSuccess : FridgeMutation
+    data object Loading : FridgeMutation
+
+    data object LoadComplete : FridgeMutation
+
+    data class ShowIngredients(val ingredients: List<FridgeIngredientUiModel>) : FridgeMutation
 
     data class SelectStorageFilter(val filter: StorageLocationFilter) : FridgeMutation
 

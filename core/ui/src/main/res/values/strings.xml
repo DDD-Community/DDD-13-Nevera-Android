@@ -7,4 +7,15 @@
     <string name="receipt_capture_mode_gallery">온라인 주문내역 캡처</string>
     <string name="receipt_capture_mode_gallery_subtitle">온라인 주문내역 이미지를 첨부해요</string>
     <string name="receipt_capture_mode_close">닫기</string>
+
+    <!-- FoodCategory displayName -->
+    <string name="ingredient_category_vegetable">채소</string>
+    <string name="ingredient_category_fruit">과일</string>
+    <string name="ingredient_category_meat_egg">육류/계란</string>
+    <string name="ingredient_category_seafood">해산물</string>
+    <string name="ingredient_category_dairy">유제품</string>
+    <string name="ingredient_category_sauce">소스/양념</string>
+    <string name="ingredient_category_beverage">음료</string>
+    <string name="ingredient_category_processed">가공식품</string>
+    <string name="ingredient_category_other">기타</string>
 </resources>

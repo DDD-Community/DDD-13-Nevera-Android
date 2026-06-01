@@ -32,6 +32,8 @@ object NeveraIcons {
         @Composable get() = painterResource(R.drawable.ic_check)
     val Warning: Painter
         @Composable get() = painterResource(R.drawable.ic_warning)
+    val CircleWarning: Painter
+        @Composable get() = painterResource(R.drawable.ic_circle_warning)
     val Eye: Painter
         @Composable get() = painterResource(R.drawable.ic_eyes)
     val EyeOff: Painter

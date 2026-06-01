@@ -20,4 +20,8 @@
     <string name="fridge_list_sort_expiry">유통기한순</string>
     <string name="fridge_list_sort_latest">최신순</string>
     <string name="fridge_list_empty_message">아직 등록한 식재료가 없어요</string>
+    <string name="fridge_ingredient_action_rescue">구조</string>
+    <string name="fridge_ingredient_action_dispose">폐기</string>
+    <string name="fridge_ingredient_cost_format">%,d원</string>
+    <string name="fridge_ingredient_quantity_format">%d개</string>
 </resources>

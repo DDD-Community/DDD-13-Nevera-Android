@@ -36,8 +36,8 @@ import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.ingredient.R
 import com.anddd.nevera.domain.model.ingredient.FoodCategory
-import com.anddd.nevera.feature.ingredient.main.displayName
-import com.anddd.nevera.feature.ingredient.main.iconRes
+import com.anddd.nevera.core.ui.displayName
+import com.anddd.nevera.core.ui.iconRes
 
 /**
  * 식재료 카테고리 선택 바텀시트
