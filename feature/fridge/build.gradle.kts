@@ -8,4 +8,5 @@ android {
 
 dependencies {
     implementation(libs.coroutines.android)
+    implementation(project(":infra:permission"))
 }
