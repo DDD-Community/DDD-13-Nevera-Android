@@ -8,6 +8,10 @@
     <string name="receipt_capture_mode_gallery_subtitle">온라인 주문내역 이미지를 첨부해요</string>
     <string name="receipt_capture_mode_close">닫기</string>
 
+    <!-- NotificationPermissionDescriptionItem -->
+    <string name="notification_permission_title">알림권한</string>
+    <string name="notification_permission_description">유통기한 임박 알림</string>
+
     <!-- FoodCategory displayName -->
     <string name="ingredient_category_vegetable">채소</string>
     <string name="ingredient_category_fruit">과일</string>
