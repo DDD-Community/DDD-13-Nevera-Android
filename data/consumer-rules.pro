@@ -1,16 +1,8 @@
 # ============================================================
-# Retrofit Response Models
-# @SerializedName 미사용 → Gson이 필드명으로 JSON 키 매핑
-# 난독화 시 필드명이 변경되면 역직렬화 실패하므로 보존
+# Retrofit Response / Request Models
+# Gson은 getDeclaredFields()로 필드를 찾아 반사적으로 값을 설정한다.
+# -keepclassmembers { <fields> }만으로는 R8 full mode에서 필드가 제거되며
+# TypeAdapter가 생성되지 않아 LinkedTreeMap으로 폴백한다.
+# 클래스 전체(-keep { *; })를 보존해야 필드/생성자/메서드가 모두 유지된다.
 # ============================================================
--keepclassmembers class com.anddd.nevera.data.model.** {
-    <fields>;
-}
-
-
-# ============================================================
-# DataStore
-# Proto DataStore 미사용 (Preferences DataStore) → 별도 규칙 불필요
-# 향후 Proto DataStore 도입 시 아래 주석 해제
-# ============================================================
-# -keep class com.anddd.nevera.data.datastore.** { *; }
+-keep class com.anddd.nevera.data.model.** { *; }
