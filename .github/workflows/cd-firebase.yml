@@ -53,7 +53,7 @@ jobs:
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           token: ${{ secrets.FIREBASE_TOKEN }}
-          groups: developers
+          groups: android-developers
           file: app/build/outputs/apk/debug/app-debug.apk
           releaseNotes: |
             브랜치: ${{ github.ref_name }}
@@ -67,7 +67,7 @@ jobs:
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           token: ${{ secrets.FIREBASE_TOKEN }}
-          groups: developers, qa-and-team
+          groups: android-developers, qa-and-team
           file: app/build/outputs/apk/debug/app-debug.apk
           releaseNotes: |
             브랜치: ${{ github.ref_name }}
