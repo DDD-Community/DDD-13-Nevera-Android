@@ -85,8 +85,8 @@ fun FridgeScreen(
                 content = { onConfirm, onDismiss ->
                     NeveraActionBottomSheet(
                         sheetState = notificationPermissionSheetState,
-                        title = stringResource(R.string.notification_permission_request_title),
-                        confirmLabel = stringResource(R.string.notification_permission_request_confirm),
+                        title = stringResource(R.string.fridge_notification_permission_request_title),
+                        confirmLabel = stringResource(R.string.fridge_notification_permission_request_confirm),
                         onConfirm = onConfirm,
                         onDismissRequest = onDismiss,
                     ) {

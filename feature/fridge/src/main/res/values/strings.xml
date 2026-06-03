@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- 냉장고 화면 -->
     <string name="fridge_title">나의 냉장고</string>
     <string name="fridge_notification_icon_desc">알림</string>
+    <string name="fridge_fab_label">식재료</string>
+
+    <!-- 필터 -->
     <string name="fridge_filter_all">전체</string>
     <string name="fridge_filter_refrigerator">냉장</string>
     <string name="fridge_filter_freezer">냉동</string>
     <string name="fridge_filter_room_temp">실온</string>
+
+    <!-- 카테고리 -->
     <string name="fridge_category_all">전체</string>
     <string name="fridge_category_vegetable">채소</string>
     <string name="fridge_category_fruit">과일</string>
@@ -16,16 +22,20 @@
     <string name="fridge_category_beverage">음료</string>
     <string name="fridge_category_processed">가공식품</string>
     <string name="fridge_category_other">기타</string>
-    <string name="fridge_fab_label">식재료</string>
+
+    <!-- 식재료 목록 -->
     <string name="fridge_list_sort_expiry">유통기한순</string>
     <string name="fridge_list_sort_latest">최신순</string>
     <string name="fridge_list_empty_message">아직 등록한 식재료가 없어요</string>
+
+    <!-- 식재료 카드 -->
     <string name="fridge_ingredient_action_rescue">구조</string>
     <string name="fridge_ingredient_action_dispose">폐기</string>
     <string name="fridge_ingredient_cost_format">%,d원</string>
     <string name="fridge_ingredient_quantity_format">%d개</string>
 
-    <string name="notification_permission_request_title">앱 사용을 위해 권한을 허용해주세요</string>
-    <string name="notification_permission_request_confirm">확인</string>
+    <!-- 알림 권한 -->
+    <string name="fridge_notification_permission_request_title">앱 사용을 위해 권한을 허용해주세요</string>
+    <string name="fridge_notification_permission_request_confirm">확인</string>
 
 </resources>
