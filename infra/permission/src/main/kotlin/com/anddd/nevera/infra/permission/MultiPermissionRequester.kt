@@ -15,8 +15,6 @@ fun MultiPermissionRequester(
     onAllGranted: () -> Unit,
     onAnyDenied: () -> Unit,
     content: @Composable (onConfirm: () -> Unit, onDismiss: () -> Unit) -> Unit,
-    rationaleContent: @Composable ((onConfirm: () -> Unit, onDismiss: () -> Unit) -> Unit)? = null,
-    checker: PermissionChecker = DefaultPermissionChecker,
 ) {
     var currentIndex by remember { mutableIntStateOf(0) }
     var anyDenied by remember { mutableStateOf(false) }
@@ -34,7 +32,6 @@ fun MultiPermissionRequester(
             onGranted = { currentIndex++ },
             onDenied = { anyDenied = true; currentIndex++ },
             content = content,
-            rationaleContent = rationaleContent,
         )
     }
 }

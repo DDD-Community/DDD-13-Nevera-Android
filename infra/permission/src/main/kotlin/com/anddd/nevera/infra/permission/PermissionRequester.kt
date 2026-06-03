@@ -8,10 +8,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import timber.log.Timber
@@ -22,7 +18,6 @@ fun PermissionRequester(
     onGranted: () -> Unit,
     onDenied: () -> Unit,
     content: @Composable (onConfirm: () -> Unit, onDismiss: () -> Unit) -> Unit,
-    rationaleContent: @Composable ((onConfirm: () -> Unit, onDismiss: () -> Unit) -> Unit)? = null,
 ) {
     val context = LocalContext.current
     val activity = context.findActivity() ?: run {
@@ -31,34 +26,24 @@ fun PermissionRequester(
         return
     }
 
-    var showRationale by rememberSaveable { mutableStateOf(false) }
-
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
     ) { isGranted ->
         if (isGranted) {
             onGranted()
-        } else if (ActivityCompat.shouldShowRequestPermissionRationale(
-                activity,
-                permission.manifestPermission,
-            )
-        ) {
-            showRationale = true
+        } else if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission.manifestPermission)) {
+            // 첫 거부: content가 화면에 떠 있으므로 사용자가 재시도 가능
+            Unit
         } else {
             context.openAppSettings()
             onDenied()
         }
     }
 
-    if (showRationale) {
-        val onConfirm = { launcher.launch(permission.manifestPermission) }
-        val onDismiss = { onDenied() }
-        (rationaleContent ?: content)(onConfirm, onDismiss)
-    } else {
-        val onConfirm = { launcher.launch(permission.manifestPermission) }
-        val onDismiss = { onDenied() }
-        content(onConfirm, onDismiss)
-    }
+    content(
+        { launcher.launch(permission.manifestPermission) },
+        { onDenied() },
+    )
 }
 
 private fun Context.openAppSettings() {
