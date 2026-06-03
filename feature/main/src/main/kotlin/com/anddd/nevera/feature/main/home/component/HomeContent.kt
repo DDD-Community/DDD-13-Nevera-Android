@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
+// import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -19,8 +19,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.component.appbar.NeveraAppBarAction
 import com.anddd.nevera.core.designsystem.component.appbar.NeveraLogoAppBar
-import com.anddd.nevera.core.designsystem.component.button.NeveraButtonSize
-import com.anddd.nevera.core.designsystem.component.button.NeveraFilledButton
+// import com.anddd.nevera.core.designsystem.component.button.NeveraButtonSize
+// import com.anddd.nevera.core.designsystem.component.button.NeveraFilledButton
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.core.ui.component.LoadingContent
@@ -49,15 +49,14 @@ internal fun HomeContent(
                 ),
             )
         },
-        floatingActionButton = {
-            // TODO LeadingIcon + Text Button 구현 및 교체
-            NeveraFilledButton(
-                label = stringResource(R.string.home_fab_label),
-                onClick = { onIntent(HomeIntent.AddIngredientClick) },
-                size = NeveraButtonSize.Medium,
-                shape = RoundedCornerShape(NeveraTheme.radius.max)
-            )
-        },
+//        floatingActionButton = {
+//            NeveraFilledButton(
+//                label = stringResource(R.string.home_fab_label),
+//                onClick = { onIntent(HomeIntent.AddIngredientClick) },
+//                size = NeveraButtonSize.Medium,
+//                shape = RoundedCornerShape(NeveraTheme.radius.max)
+//            )
+//        },
         containerColor = NeveraTheme.colors.surfacePrimary,
         contentWindowInsets = WindowInsets(0),
     ) { innerPadding ->
