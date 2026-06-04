@@ -26,11 +26,11 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.anddd.nevera.feature.ingredient.R
 import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureIntent
 import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureSideEffect
-import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun OcrCaptureScreen(
+    openGallery: Boolean,
     onNavigateBack: () -> Unit,
     onNavigateToResult: (Uri) -> Unit,
     viewModel: OcrCaptureViewModel = hiltViewModel(),
@@ -38,7 +38,6 @@ fun OcrCaptureScreen(
     val context = LocalContext.current
     DarkNavigationBarEffect()
 
-    val uiState = viewModel.collectAsState().value
     val cameraPermissionState = rememberCameraPermissionState()
 
     val photoPickerLauncher = rememberLauncherForActivityResult(
@@ -56,7 +55,7 @@ fun OcrCaptureScreen(
     }
 
     LaunchedEffect(cameraPermissionState.hasPermission, cameraPermissionState.isDenied) {
-        if (uiState.openGallery && !galleryAutoLaunched) {
+        if (openGallery && !galleryAutoLaunched) {
             if (cameraPermissionState.hasPermission || cameraPermissionState.isDenied) {
                 galleryAutoLaunched = true
                 viewModel.handleIntent(OcrCaptureIntent.OpenGallery)
