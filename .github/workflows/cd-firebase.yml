@@ -7,15 +7,23 @@ on:
       - 'release/**'
   workflow_dispatch:   # 수동 트리거 (긴급 배포 시 사용)
 
+concurrency:
+  group: cd-firebase-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   distribute:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
+      pull-requests: read   # Draft Release 및 PR 목록 조회용
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # release 브랜치의 merge-base 탐색에 필요
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -46,6 +54,66 @@ jobs:
         env:
           GOOGLE_WEB_CLIENT_ID: ${{ secrets.GOOGLE_WEB_CLIENT_ID }}
 
+      # develop: Draft Release 전체 내용 사용
+      - name: Generate release notes (develop)
+        if: github.ref == 'refs/heads/develop'
+        id: notes_develop
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          NOTES=$(gh release list --limit 5 \
+            --json isDraft,body \
+            --jq 'map(select(.isDraft == true)) | first | .body // ""' \
+            2>/dev/null)
+
+          if [ -z "$NOTES" ]; then
+            NOTES="빌드: #${{ github.run_number }}"
+          fi
+
+          echo "notes<<EOF" >> $GITHUB_OUTPUT
+          echo "$NOTES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      # release/*: 브랜치 컷 시점 기준으로 PR 필터링
+      - name: Generate release notes (release branch)
+        if: startsWith(github.ref, 'refs/heads/release/')
+        id: notes_release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git fetch origin develop
+      
+          # 마지막 GitHub Release 날짜
+          LAST_RELEASE_DATE=$(gh release list --limit 1 \
+            --json publishedAt \
+            --jq '.[0].publishedAt' 2>/dev/null || echo "")
+      
+          # release 브랜치가 develop에서 갈라진 시점 (컷 포인트)
+          MERGE_BASE=$(git merge-base HEAD origin/develop)
+          CUT_DATE=$(git log -1 --format=%cI "$MERGE_BASE")
+      
+          # 검색 범위: 마지막 릴리즈 이후 ~ 컷 포인트 이전
+          if [ -n "$LAST_RELEASE_DATE" ]; then
+            SEARCH="merged:>=${LAST_RELEASE_DATE} merged:<=${CUT_DATE}"
+          else
+            SEARCH="merged:<=${CUT_DATE}"
+          fi
+      
+          NOTES=$(gh pr list \
+            --state merged \
+            --base develop \
+            --search "$SEARCH" \
+            --json number,title \
+            --jq '.[] | "• #\(.number) \(.title)"' 2>/dev/null || echo "")
+      
+          if [ -z "$NOTES" ]; then
+            NOTES="빌드: #${{ github.run_number }}"
+          fi
+      
+          echo "notes<<EOF" >> $GITHUB_OUTPUT
+          echo "$NOTES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       # develop 브랜치 → 개발자 그룹에만 배포
       - name: Upload to Firebase (developers)
         if: github.ref == 'refs/heads/develop'
@@ -57,8 +125,9 @@ jobs:
           file: app/build/outputs/apk/debug/app-debug.apk
           releaseNotes: |
             브랜치: ${{ github.ref_name }}
-            커밋: ${{ github.sha }}
-            메시지: ${{ github.event.head_commit.message }}
+            빌드: #${{ github.run_number }}
+
+            ${{ steps.notes_develop.outputs.notes }}
 
       # release/* 브랜치 → 개발자 + QA + 팀 전체 배포
       - name: Upload to Firebase (qa-and-team)
@@ -71,5 +140,6 @@ jobs:
           file: app/build/outputs/apk/debug/app-debug.apk
           releaseNotes: |
             브랜치: ${{ github.ref_name }}
-            커밋: ${{ github.sha }}
-            메시지: ${{ github.event.head_commit.message }}
+            빌드: #${{ github.run_number }}
+
+            ${{ steps.notes_release.outputs.notes }}

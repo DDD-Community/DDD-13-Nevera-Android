@@ -74,11 +74,39 @@ set -o pipefail
 
 > `compileDebugKotlin`을 선택한 이유: 전체 `build`보다 빠르고, Kotlin 컴파일 오류·import 오류·타입 불일치를 모두 잡을 수 있다.
 
-### Step 4: 자체 코드 리뷰
+### Step 4: 자체 코드 리뷰 + 라벨·제목 추론
 
 아래 **크리티컬 기준**으로 diff를 검토한다.
 크리티컬 문제가 1개라도 발견되면 → **Step 5-A**로 이동.
 모두 통과하면 → **Step 5-B**로 이동.
+
+코드 리뷰와 동시에 아래 기준으로 **라벨**과 **PR 제목**을 추론한다. 추론 결과는 Step 6 확인 단계에서 함께 제시한다.
+
+#### 라벨 추론 기준
+
+| diff 특징 | 추천 라벨 |
+|---|---|
+| 새 화면·기능 추가 (새 파일, 새 라우트 등) | `feat` |
+| 기존 버그·예외 처리 수정 | `fix` |
+| Composable 레이아웃·색상·폰트만 변경 | `design` |
+| 속도·메모리·쿼리 최적화 | `perf` |
+| 리팩토링·의존성·CI·빌드 설정 변경 | `chore` |
+| 테스트·문서·주석만 변경 | `skip-changelog` |
+
+#### PR 제목 추론 기준
+
+PR 제목은 **Firebase 릴리즈 노트에 그대로 표시**된다. 아래 규칙을 지켜 추론한다.
+
+- 사용자 입장에서 "무엇이 달라졌는가"를 한국어로 서술한다
+- 개발 내부 용어(`ViewModel`, `Repository`, `UiState`, `Composable` 등)를 사용하지 않는다
+- `[feat]:`, `fix:` 등 타입 prefix를 붙이지 않는다 (라벨이 타입을 표현한다)
+- 50자 이내로 간결하게 작성한다
+
+| ❌ 피해야 할 제목 | ✅ 올바른 제목 |
+|---|---|
+| `[feat]: fridge-ingredient-list` | `냉장고 식재료 목록 화면 추가` |
+| `fix: NeveraTheme Shape remember 캐싱 제거` | `테마 변경 시 버튼 모양이 바뀌지 않던 문제 수정` |
+| `[design]: update notification icon` | `앱 알림 아이콘 변경` |
 
 #### 크리티컬 기준 (Android / Kotlin)
 
@@ -164,7 +192,8 @@ $ARGUMENTS
 
 ## PR 생성 준비
 
-**제목**: `[브랜치명에서 추론한 PR 제목]`
+**제목**: `[Step 4에서 추론한 사용자 친화적 한국어 제목]`
+**라벨**: `[Step 4에서 추론한 라벨]`  ← Release Drafter 릴리즈 노트에 반영됨
 **Base**: `develop` ← **Head**: `현재 브랜치명`
 
 **본문 미리보기**:
@@ -189,8 +218,11 @@ cat > /tmp/pr_body.md << 'EOF'
 [작성된 PR 본문 전체]
 EOF
 
-gh pr create --base develop --title "[PR 제목]" --body-file /tmp/pr_body.md
+gh pr create --base develop --title "[PR 제목]" --label "[라벨]" --body-file /tmp/pr_body.md
 ```
+
+> `--label` 값은 Step 4에서 추론한 라벨 이름 그대로 사용한다 (예: `feat`, `fix`, `design`).
+> 저장소에 해당 라벨이 없으면 `gh`가 오류를 반환한다. Release Drafter 가이드의 Step 1-1에서 라벨을 먼저 생성해야 한다.
 
 생성 후 PR URL을 출력한다.
 
@@ -198,18 +230,27 @@ gh pr create --base develop --title "[PR 제목]" --body-file /tmp/pr_body.md
 
 ## PR 제목 규칙
 
-브랜치명 패턴에서 제목을 추론한다:
+PR 제목은 **Firebase 릴리즈 노트에 그대로 표시**되므로 브랜치명에서 기계적으로 변환하지 않는다.
+diff와 커밋 메시지를 분석해 **사용자가 이해할 수 있는 한국어 제목**을 추론한다.
 
-| 브랜치 패턴 | 제목 형식                 |
-|-------------|-----------------------|
-| `feature/xxx` | `[feat]: xxx`         |
-| `fix/xxx` | `[fix]: xxx`          |
-| `hotfix/xxx` | `[hotfix]: xxx`       |
-| `refactor/xxx` | `[refactor]: xxx`     |
-| `chore/xxx` | `[chore]: xxx`        |
-| 기타 | 커밋 메시지에서 가장 대표적인 것 사용 |
+### 제목 생성 원칙
 
-브랜치명의 `/`, `-`, `_`는 공백 또는 적절한 구분으로 변환한다.
+1. **사용자 관점**: "이 변경으로 사용자가 무엇을 경험하게 되는가"를 기술한다
+2. **한국어**: 타 직군(QA, PM, 디자이너)이 읽는다고 가정한다
+3. **타입 prefix 없음**: `[feat]:`, `fix:` 등을 제목에 포함하지 않는다. 타입은 라벨이 담당한다
+4. **내부 용어 금지**: `ViewModel`, `Repository`, `UiState`, `Composable`, 클래스명 등 사용 금지
+5. **50자 이내**: 간결하게
+
+### 추론 방법
+
+브랜치명은 **힌트**로만 사용하고, 실제 제목은 diff/커밋에서 추론한다.
+
+| 브랜치 패턴 힌트 | 추론 방향 |
+|---|---|
+| `feature/xxx` | 새 기능 — diff에서 어떤 기능인지 파악 |
+| `fix/xxx` | 버그 수정 — 어떤 문제를 고쳤는지 사용자 언어로 |
+| `hotfix/xxx` | 긴급 수정 — 어떤 문제를 고쳤는지 |
+| `refactor/xxx`, `chore/xxx` | 내부 작업 — `chore` 또는 `skip-changelog` 라벨 권장, 제목은 간략히 |
 
 ---
 

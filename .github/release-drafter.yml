@@ -1,0 +1,58 @@
+name-template: 'v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
+
+# 버전 자동 증가 규칙 (SemVer 기반)
+version-resolver:
+  major:
+    labels:
+      - 'breaking-change'
+  minor:
+    labels:
+      - 'feat'
+      - 'feature'
+  patch:
+    labels:
+      - 'fix'
+      - 'bug'
+      - 'design'
+      - 'perf'
+  default: patch
+
+# 릴리즈 노트 카테고리
+categories:
+  - title: '✨ 새 기능'
+    labels:
+      - 'feat'
+      - 'feature'
+  - title: '🐛 버그 수정'
+    labels:
+      - 'fix'
+      - 'bug'
+  - title: '🎨 디자인 변경'
+    labels:
+      - 'design'
+      - 'ui'
+  - title: '⚡ 성능 개선'
+    labels:
+      - 'perf'
+      - 'performance'
+
+# 릴리즈 노트에서 제외할 라벨
+exclude-labels:
+  - 'chore'
+  - 'refactor'
+  - 'ci'
+  - 'test'
+  - 'docs'
+  - 'skip-changelog'
+
+# 각 항목 포맷: "• #번호 PR제목"
+change-template: '• #$NUMBER $TITLE'
+
+# 카테고리에 속하지 않는 PR이 있을 경우 표시 여부
+# (라벨 미부착 PR 등 — 팀 규칙으로 방지해야 하지만 폴백용)
+no-changes-template: '변경사항 없음'
+
+# 전체 릴리즈 노트 템플릿
+template: |
+  $CHANGES
