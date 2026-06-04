@@ -83,7 +83,7 @@ internal fun WishBanner(
                     savedMoney = it.accumulatedAmount,
                     goalMoney = it.goalAmount,
                     remainingMoney = it.remainingAmount,
-                    onClick = onEditWish,
+                    onClick = if (it.isAchieved) onCreateWish else onEditWish,
                 )
             } ?: run {
                 EmptyWishCard(onCreateWish = onCreateWish)
