@@ -323,16 +323,7 @@ class HomeViewModel @Inject constructor(
     private suspend fun Syntax<HomeUiState, HomeSideEffect>.applyHomeSummary(summary: HomeSummary) {
         applyMutation(HomeMutation.ShowProfile(HomeProfileUiModel(summary.nickname)))
         val wishMutation = summary.wish?.let { wish ->
-            HomeMutation.ShowWish(
-                HomeWishUiModel(
-                    id = wish.id,
-                    name = wish.name,
-                    goalAmount = wish.goalAmount,
-                    accumulatedAmount = wish.accumulatedAmount,
-                    remainingAmount = wish.remainingAmount,
-                    isAchieved = wish.isAchieved,
-                )
-            )
+            HomeMutation.ShowWish(wish.toUiModel())
         } ?: HomeMutation.ShowEmptyWish
         applyMutation(wishMutation)
         applyMutation(
