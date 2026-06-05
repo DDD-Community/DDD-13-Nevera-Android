@@ -96,15 +96,18 @@ categories:
       labels: [chore, refactor, ci, test, docs]
 
   - type: pre-exclude
+    title: '🚫 제외'
     when:
       labels: [skip-changelog]
 
   - type: version-resolver
+    title: '💥 주요 변경'
     semver-increment: major
     when:
       labels: [breaking-change]
 
   - type: version-resolver
+    title: '기본'
     semver-increment: patch
 ```
 
