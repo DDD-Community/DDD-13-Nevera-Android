@@ -11,6 +11,7 @@ import com.anddd.nevera.core.network.auth.ApiCallExecutor
 import com.anddd.nevera.data.datasource.NotificationLocalDataSource
 import com.anddd.nevera.data.datasource.NotificationRemoteDataSource
 import com.anddd.nevera.data.datasource.NotificationRemoteMediator
+import com.anddd.nevera.data.datasource.NotificationSettingLocalDataSource
 import com.anddd.nevera.data.mapper.error.toGetNotificationTimeError
 import com.anddd.nevera.data.mapper.error.toUpdateNotificationTimeError
 import com.anddd.nevera.data.mapper.toDomain
@@ -30,6 +31,7 @@ internal class NotificationRepositoryImpl @Inject constructor(
     private val remoteMediator: NotificationRemoteMediator,
     private val localDataSource: NotificationLocalDataSource,
     private val remoteDataSource: NotificationRemoteDataSource,
+    private val settingLocalDataSource: NotificationSettingLocalDataSource,
     private val apiCall: ApiCallExecutor,
 ) : NotificationRepository {
 
@@ -57,21 +59,33 @@ internal class NotificationRepositoryImpl @Inject constructor(
         localDataSource.markAllAsRead()
     }
 
-    override suspend fun getNotificationTime(): NeveraResult<NotificationTime, GetNotificationTimeError> =
-        apiCall {
+    override suspend fun getNotificationTime(): NeveraResult<NotificationTime, GetNotificationTimeError> {
+        return apiCall {
             remoteDataSource.getNotificationTime()
         }.map(
             transformSuccess = { it.toDomain() },
             transformFailure = { it.toGetNotificationTimeError() },
         )
+    }
 
-    override suspend fun updateNotificationTime(hour: Int, minute: Int): NeveraResult<NotificationTime, UpdateNotificationTimeError> =
-        apiCall {
-            remoteDataSource.updateNotificationTime(UpdateNotificationTimeRequest(hour, minute))
+    override suspend fun updateNotificationTime(
+        hour: Int,
+        minute: Int
+    ): NeveraResult<NotificationTime, UpdateNotificationTimeError> {
+        return apiCall {
+            val request = UpdateNotificationTimeRequest(hour, minute)
+            remoteDataSource.updateNotificationTime(request)
         }.map(
             transformSuccess = { it.toDomain() },
             transformFailure = { it.toUpdateNotificationTimeError() },
         )
+    }
+
+    override suspend fun getExpiryAlarmEnabled(): Boolean =
+        settingLocalDataSource.getExpiryAlarmEnabled()
+
+    override suspend fun setExpiryAlarmEnabled(enabled: Boolean) =
+        settingLocalDataSource.setExpiryAlarmEnabled(enabled)
 
     companion object {
         private const val PAGE_SIZE = 20

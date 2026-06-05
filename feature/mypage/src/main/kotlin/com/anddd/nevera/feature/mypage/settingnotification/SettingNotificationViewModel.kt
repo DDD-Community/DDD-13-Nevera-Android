@@ -5,7 +5,9 @@ import androidx.core.app.NotificationManagerCompat
 import com.anddd.nevera.core.common.onFailure
 import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.core.mvi.NeveraViewModel
+import com.anddd.nevera.domain.usecase.notification.GetExpiryAlarmEnabledUseCase
 import com.anddd.nevera.domain.usecase.notification.GetNotificationTimeUseCase
+import com.anddd.nevera.domain.usecase.notification.SetExpiryAlarmEnabledUseCase
 import com.anddd.nevera.domain.usecase.notification.UpdateNotificationTimeUseCase
 import com.anddd.nevera.feature.mypage.settingnotification.model.SettingNotificationIntent
 import com.anddd.nevera.feature.mypage.settingnotification.model.SettingNotificationMutation
@@ -21,6 +23,8 @@ class SettingNotificationViewModel @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val getNotificationTime: GetNotificationTimeUseCase,
     private val updateNotificationTime: UpdateNotificationTimeUseCase,
+    private val getExpiryAlarmEnabled: GetExpiryAlarmEnabledUseCase,
+    private val setExpiryAlarmEnabled: SetExpiryAlarmEnabledUseCase,
 ) : NeveraViewModel<SettingNotificationUiState, SettingNotificationSideEffect, SettingNotificationIntent, SettingNotificationMutation>(
     SettingNotificationUiState()
 ) {
@@ -30,6 +34,7 @@ class SettingNotificationViewModel @Inject constructor(
 
     init {
         loadNotificationTime()
+        loadExpiryAlarmEnabled()
     }
 
     override fun handleIntent(intent: SettingNotificationIntent) {
@@ -52,6 +57,11 @@ class SettingNotificationViewModel @Inject constructor(
         }
     }
 
+    private fun loadExpiryAlarmEnabled() = intent {
+        val enabled = getExpiryAlarmEnabled()
+        applyMutation(SettingNotificationMutation.ExpiryAlarmUpdated(enabled))
+    }
+
     private fun loadNotificationTime() = intent {
         getNotificationTime()
             .onSuccess { applyMutation(SettingNotificationMutation.AlarmTimeUpdated(it.hour, it.minute)) }
@@ -62,8 +72,10 @@ class SettingNotificationViewModel @Inject constructor(
         when {
             enabled && !isSystemNotificationEnabled ->
                 postSideEffect(SettingNotificationSideEffect.ShowPermissionDeniedDialog)
-            else ->
+            else -> {
+                setExpiryAlarmEnabled(enabled)
                 applyMutation(SettingNotificationMutation.ExpiryAlarmUpdated(enabled))
+            }
         }
     }
 

@@ -16,4 +16,6 @@ interface NotificationRepository {
     suspend fun markAllAsRead()
     suspend fun getNotificationTime(): NeveraResult<NotificationTime, GetNotificationTimeError>
     suspend fun updateNotificationTime(hour: Int, minute: Int): NeveraResult<NotificationTime, UpdateNotificationTimeError>
+    suspend fun getExpiryAlarmEnabled(): Boolean
+    suspend fun setExpiryAlarmEnabled(enabled: Boolean)
 }
