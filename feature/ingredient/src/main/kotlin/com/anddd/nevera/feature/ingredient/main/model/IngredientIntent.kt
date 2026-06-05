@@ -9,4 +9,5 @@ sealed interface IngredientIntent : NeveraIntent {
     data class  ToggleAllSelection(val selectAll: Boolean) : IngredientIntent
     data object AddEmptyItem : IngredientIntent
     data object Register     : IngredientIntent
+    data object ImageClick   : IngredientIntent
 }

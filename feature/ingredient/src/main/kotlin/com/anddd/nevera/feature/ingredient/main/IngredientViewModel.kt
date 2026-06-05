@@ -53,6 +53,7 @@ class IngredientViewModel @Inject constructor(
             is IngredientIntent.ToggleAllSelection -> toggleAllSelection(intent.selectAll)
             IngredientIntent.AddEmptyItem -> addEmptyItem()
             IngredientIntent.Register -> register()
+            IngredientIntent.ImageClick -> navigateToPhotoDetail()
         }
     }
 
@@ -89,9 +90,15 @@ class IngredientViewModel @Inject constructor(
         applyMutation(AllSelectionToggled(selectAll))
     }
 
+    // ── 사진 상세 화면 이동 ────────────────────────────────────────────────────
+    private fun navigateToPhotoDetail() = intent {
+        postSideEffect(IngredientSideEffect.NavigateToPhotoDetail(state.imageUri))
+    }
+
     // ── 빈 아이템 추가 ─────────────────────────────────────────────────────────
     private fun addEmptyItem() = intent {
         applyMutation(EmptyItemAdded)
+        postSideEffect(IngredientSideEffect.ScrollToNewItem(state.items.size))
     }
 
     // ── 식재료 등록 ────────────────────────────────────────────────────────────

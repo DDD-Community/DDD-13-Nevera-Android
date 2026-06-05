@@ -40,6 +40,7 @@ data class IngredientUiModel(
             quantity = 1,
             expiryDate = LocalDate.now().plusDays(7),
             cost = 0,
+            isSelected = false
         )
     }
 }
