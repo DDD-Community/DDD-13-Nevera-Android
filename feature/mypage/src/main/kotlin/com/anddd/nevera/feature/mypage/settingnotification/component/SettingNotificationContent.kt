@@ -17,9 +17,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.app.NotificationManagerCompat
 import com.anddd.nevera.core.designsystem.component.appbar.NeveraAppBar
 import com.anddd.nevera.core.designsystem.component.appbar.NeveraAppBarNavigation
 import com.anddd.nevera.core.designsystem.component.toggle.NeveraSwitch
@@ -68,9 +70,7 @@ internal fun SettingNotificationContent(
 
                 ExpiryAlarmRow(
                     checked = uiState.isExpiryAlarmEnabled,
-                    onCheckedChange = { enabled ->
-                        onIntent(SettingNotificationIntent.ExpiryAlarmToggled(enabled))
-                    },
+                    onIntent = onIntent,
                 )
 
                 AlarmTimeRow(
@@ -105,8 +105,9 @@ private fun NotificationSectionHeader() {
 @Composable
 private fun ExpiryAlarmRow(
     checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
+    onIntent: (SettingNotificationIntent) -> Unit,
 ) {
+    val context = LocalContext.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -122,7 +123,11 @@ private fun ExpiryAlarmRow(
         Spacer(modifier = Modifier.weight(1f))
         NeveraSwitch(
             checked = checked,
-            onCheckedChange = onCheckedChange,
+            onCheckedChange = { enabled ->
+                val isSystemNotificationEnabled =
+                    NotificationManagerCompat.from(context).areNotificationsEnabled()
+                onIntent(SettingNotificationIntent.ExpiryAlarmToggled(enabled, isSystemNotificationEnabled))
+            },
         )
     }
 }

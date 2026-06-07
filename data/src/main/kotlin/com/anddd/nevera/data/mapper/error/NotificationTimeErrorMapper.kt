@@ -2,6 +2,7 @@ package com.anddd.nevera.data.mapper.error
 
 import com.anddd.nevera.core.common.NetworkError
 import com.anddd.nevera.domain.model.notification.GetNotificationTimeError
+import com.anddd.nevera.domain.model.notification.UpdateNotificationEnabledError
 import com.anddd.nevera.domain.model.notification.UpdateNotificationTimeError
 
 private object NotificationTimeErrorCode {
@@ -26,4 +27,12 @@ internal fun NetworkError.toUpdateNotificationTimeError(): UpdateNotificationTim
         else -> UpdateNotificationTimeError.Common(toCommonError())
     }
     else -> UpdateNotificationTimeError.Common(toCommonError())
+}
+
+internal fun NetworkError.toUpdateNotificationEnabledError(): UpdateNotificationEnabledError = when (this) {
+    is NetworkError.HttpError -> when (code) {
+        NotificationTimeErrorCode.MEMBER_NOT_FOUND -> UpdateNotificationEnabledError.MemberNotFound
+        else -> UpdateNotificationEnabledError.Common(toCommonError())
+    }
+    else -> UpdateNotificationEnabledError.Common(toCommonError())
 }

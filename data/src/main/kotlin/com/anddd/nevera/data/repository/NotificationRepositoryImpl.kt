@@ -11,15 +11,18 @@ import com.anddd.nevera.core.network.auth.ApiCallExecutor
 import com.anddd.nevera.data.datasource.NotificationLocalDataSource
 import com.anddd.nevera.data.datasource.NotificationRemoteDataSource
 import com.anddd.nevera.data.datasource.NotificationRemoteMediator
-import com.anddd.nevera.data.datasource.NotificationSettingLocalDataSource
 import com.anddd.nevera.data.mapper.error.toGetNotificationTimeError
+import com.anddd.nevera.data.mapper.error.toUpdateNotificationEnabledError
 import com.anddd.nevera.data.mapper.error.toUpdateNotificationTimeError
 import com.anddd.nevera.data.mapper.toDomain
 import com.anddd.nevera.data.mapper.toEntity
+import com.anddd.nevera.data.model.notification.UpdateNotificationEnabledRequest
 import com.anddd.nevera.data.model.notification.UpdateNotificationTimeRequest
 import com.anddd.nevera.domain.model.notification.AppNotification
 import com.anddd.nevera.domain.model.notification.GetNotificationTimeError
+import com.anddd.nevera.domain.model.notification.NotificationSettings
 import com.anddd.nevera.domain.model.notification.NotificationTime
+import com.anddd.nevera.domain.model.notification.UpdateNotificationEnabledError
 import com.anddd.nevera.domain.model.notification.UpdateNotificationTimeError
 import com.anddd.nevera.domain.repository.NotificationRepository
 import kotlinx.coroutines.flow.Flow
@@ -31,7 +34,6 @@ internal class NotificationRepositoryImpl @Inject constructor(
     private val remoteMediator: NotificationRemoteMediator,
     private val localDataSource: NotificationLocalDataSource,
     private val remoteDataSource: NotificationRemoteDataSource,
-    private val settingLocalDataSource: NotificationSettingLocalDataSource,
     private val apiCall: ApiCallExecutor,
 ) : NotificationRepository {
 
@@ -59,12 +61,22 @@ internal class NotificationRepositoryImpl @Inject constructor(
         localDataSource.markAllAsRead()
     }
 
-    override suspend fun getNotificationTime(): NeveraResult<NotificationTime, GetNotificationTimeError> {
+    override suspend fun getNotificationTime(): NeveraResult<NotificationSettings, GetNotificationTimeError> {
         return apiCall {
             remoteDataSource.getNotificationTime()
         }.map(
             transformSuccess = { it.toDomain() },
             transformFailure = { it.toGetNotificationTimeError() },
+        )
+    }
+
+    override suspend fun updateNotificationEnabled(enabled: Boolean): NeveraResult<NotificationSettings, UpdateNotificationEnabledError> {
+        return apiCall {
+            val request = UpdateNotificationEnabledRequest(enabled)
+            remoteDataSource.updateNotificationEnabled(request)
+        }.map(
+            transformSuccess = { it.toDomain() },
+            transformFailure = { it.toUpdateNotificationEnabledError() },
         )
     }
 
@@ -80,12 +92,6 @@ internal class NotificationRepositoryImpl @Inject constructor(
             transformFailure = { it.toUpdateNotificationTimeError() },
         )
     }
-
-    override suspend fun getExpiryAlarmEnabled(): Boolean =
-        settingLocalDataSource.getExpiryAlarmEnabled()
-
-    override suspend fun setExpiryAlarmEnabled(enabled: Boolean) =
-        settingLocalDataSource.setExpiryAlarmEnabled(enabled)
 
     companion object {
         private const val PAGE_SIZE = 20

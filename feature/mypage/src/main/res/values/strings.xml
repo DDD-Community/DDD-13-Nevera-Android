@@ -39,4 +39,5 @@
     <string name="setting_notification_time_pm">오후</string>
     <string name="setting_notification_load_alarm_time_error">알림 시간을 불러오지 못했어요</string>
     <string name="setting_notification_update_alarm_time_error">알림 시간 저장에 실패했어요</string>
+    <string name="setting_notification_update_notification_enabled_error">알림 수신 여부 저장에 실패했어요</string>
 </resources>

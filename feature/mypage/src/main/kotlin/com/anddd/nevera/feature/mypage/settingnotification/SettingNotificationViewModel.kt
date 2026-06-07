@@ -1,40 +1,30 @@
 package com.anddd.nevera.feature.mypage.settingnotification
 
-import android.content.Context
-import androidx.core.app.NotificationManagerCompat
 import com.anddd.nevera.core.common.onFailure
 import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.core.mvi.NeveraViewModel
-import com.anddd.nevera.domain.usecase.notification.GetExpiryAlarmEnabledUseCase
 import com.anddd.nevera.domain.usecase.notification.GetNotificationTimeUseCase
-import com.anddd.nevera.domain.usecase.notification.SetExpiryAlarmEnabledUseCase
+import com.anddd.nevera.domain.usecase.notification.UpdateNotificationEnabledUseCase
 import com.anddd.nevera.domain.usecase.notification.UpdateNotificationTimeUseCase
 import com.anddd.nevera.feature.mypage.settingnotification.model.SettingNotificationIntent
 import com.anddd.nevera.feature.mypage.settingnotification.model.SettingNotificationMutation
 import com.anddd.nevera.feature.mypage.settingnotification.model.SettingNotificationSideEffect
 import com.anddd.nevera.feature.mypage.settingnotification.model.SettingNotificationUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import org.orbitmvi.orbit.syntax.Syntax
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingNotificationViewModel @Inject constructor(
-    @param:ApplicationContext private val context: Context,
     private val getNotificationTime: GetNotificationTimeUseCase,
+    private val updateNotificationEnabled: UpdateNotificationEnabledUseCase,
     private val updateNotificationTime: UpdateNotificationTimeUseCase,
-    private val getExpiryAlarmEnabled: GetExpiryAlarmEnabledUseCase,
-    private val setExpiryAlarmEnabled: SetExpiryAlarmEnabledUseCase,
 ) : NeveraViewModel<SettingNotificationUiState, SettingNotificationSideEffect, SettingNotificationIntent, SettingNotificationMutation>(
     SettingNotificationUiState()
 ) {
 
-    private val isSystemNotificationEnabled: Boolean
-        get() = NotificationManagerCompat.from(context).areNotificationsEnabled()
-
     init {
-        loadNotificationTime()
-        loadExpiryAlarmEnabled()
+        loadNotificationSettings()
     }
 
     override fun handleIntent(intent: SettingNotificationIntent) {
@@ -43,7 +33,8 @@ class SettingNotificationViewModel @Inject constructor(
                 postSideEffect(SettingNotificationSideEffect.NavigateBack)
             }
 
-            is SettingNotificationIntent.ExpiryAlarmToggled -> onExpiryAlarmToggled(intent.enabled)
+            is SettingNotificationIntent.ExpiryAlarmToggled ->
+                onExpiryAlarmToggled(intent.enabled, intent.isSystemNotificationEnabled)
 
             SettingNotificationIntent.AlarmTimeClicked -> intent {
                 postSideEffect(SettingNotificationSideEffect.ShowTimePickerDialog)
@@ -57,24 +48,23 @@ class SettingNotificationViewModel @Inject constructor(
         }
     }
 
-    private fun loadExpiryAlarmEnabled() = intent {
-        val enabled = getExpiryAlarmEnabled()
-        applyMutation(SettingNotificationMutation.ExpiryAlarmUpdated(enabled))
-    }
-
-    private fun loadNotificationTime() = intent {
+    private fun loadNotificationSettings() = intent {
         getNotificationTime()
-            .onSuccess { applyMutation(SettingNotificationMutation.AlarmTimeUpdated(it.hour, it.minute)) }
+            .onSuccess {
+                applyMutation(SettingNotificationMutation.ExpiryAlarmUpdated(it.enabled))
+                applyMutation(SettingNotificationMutation.AlarmTimeUpdated(it.hour, it.minute))
+            }
             .onFailure { postSideEffect(SettingNotificationSideEffect.ShowLoadAlarmTimeError) }
     }
 
-    private fun onExpiryAlarmToggled(enabled: Boolean) = intent {
+    private fun onExpiryAlarmToggled(enabled: Boolean, isSystemNotificationEnabled: Boolean) = intent {
         when {
             enabled && !isSystemNotificationEnabled ->
                 postSideEffect(SettingNotificationSideEffect.ShowPermissionDeniedDialog)
             else -> {
-                setExpiryAlarmEnabled(enabled)
-                applyMutation(SettingNotificationMutation.ExpiryAlarmUpdated(enabled))
+                updateNotificationEnabled(enabled)
+                    .onSuccess { applyMutation(SettingNotificationMutation.ExpiryAlarmUpdated(it.enabled)) }
+                    .onFailure { postSideEffect(SettingNotificationSideEffect.ShowUpdateNotificationEnabledError) }
             }
         }
     }

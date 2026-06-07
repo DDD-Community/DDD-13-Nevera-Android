@@ -1,14 +1,14 @@
 package com.anddd.nevera.domain.usecase.notification
 
 import com.anddd.nevera.core.common.NeveraResult
-import com.anddd.nevera.domain.model.notification.GetNotificationTimeError
 import com.anddd.nevera.domain.model.notification.NotificationSettings
+import com.anddd.nevera.domain.model.notification.UpdateNotificationEnabledError
 import com.anddd.nevera.domain.repository.NotificationRepository
 import javax.inject.Inject
 
-class GetNotificationTimeUseCase @Inject constructor(
+class UpdateNotificationEnabledUseCase @Inject constructor(
     private val notificationRepository: NotificationRepository,
 ) {
-    suspend operator fun invoke(): NeveraResult<NotificationSettings, GetNotificationTimeError> =
-        notificationRepository.getNotificationTime()
+    suspend operator fun invoke(enabled: Boolean): NeveraResult<NotificationSettings, UpdateNotificationEnabledError> =
+        notificationRepository.updateNotificationEnabled(enabled)
 }

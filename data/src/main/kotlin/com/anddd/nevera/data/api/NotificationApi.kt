@@ -2,9 +2,11 @@ package com.anddd.nevera.data.api
 
 import com.anddd.nevera.core.network.model.ApiResponse
 import com.anddd.nevera.data.model.notification.NotificationListResponse
+import com.anddd.nevera.data.model.notification.NotificationSettingsResponse
 import com.anddd.nevera.data.model.notification.NotificationTimeResponse
 import com.anddd.nevera.data.model.notification.RegisterFcmTokenRequest
 import com.anddd.nevera.data.model.notification.RegisterFcmTokenResponse
+import com.anddd.nevera.data.model.notification.UpdateNotificationEnabledRequest
 import com.anddd.nevera.data.model.notification.UpdateNotificationTimeRequest
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -25,7 +27,12 @@ internal interface NotificationApi {
     ): ApiResponse<List<NotificationListResponse>>
 
     @GET("api/v1/mypage/notification")
-    suspend fun getNotificationTime(): ApiResponse<NotificationTimeResponse>
+    suspend fun getNotificationTime(): ApiResponse<NotificationSettingsResponse>
+
+    @PUT("api/v1/mypage/notification/enabled")
+    suspend fun updateNotificationEnabled(
+        @Body body: UpdateNotificationEnabledRequest,
+    ): ApiResponse<NotificationSettingsResponse>
 
     @PUT("api/v1/mypage/notification/time")
     suspend fun updateNotificationTime(

@@ -57,6 +57,10 @@ fun SettingNotificationScreen(
             SettingNotificationSideEffect.ShowUpdateAlarmTimeError -> {
                 Toast.makeText(context, context.getString(MyPageR.string.setting_notification_update_alarm_time_error), Toast.LENGTH_SHORT).show()
             }
+
+            SettingNotificationSideEffect.ShowUpdateNotificationEnabledError -> {
+                Toast.makeText(context, context.getString(MyPageR.string.setting_notification_update_notification_enabled_error), Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

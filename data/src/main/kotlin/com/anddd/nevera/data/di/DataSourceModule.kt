@@ -29,8 +29,6 @@ import com.anddd.nevera.data.datasource.NotificationLocalDataSource
 import com.anddd.nevera.data.datasource.NotificationLocalDataSourceImpl
 import com.anddd.nevera.data.datasource.NotificationRemoteDataSource
 import com.anddd.nevera.data.datasource.NotificationRemoteDataSourceImpl
-import com.anddd.nevera.data.datasource.NotificationSettingLocalDataSource
-import com.anddd.nevera.data.datasource.NotificationSettingLocalDataSourceImpl
 import com.anddd.nevera.domain.repository.FcmTokenProvider
 import dagger.Binds
 import dagger.Module
@@ -101,8 +99,4 @@ internal abstract class DataSourceModule {
     @Binds
     @Singleton
     abstract fun bindNotificationLocalDataSource(impl: NotificationLocalDataSourceImpl): NotificationLocalDataSource
-
-    @Binds
-    @Singleton
-    abstract fun bindNotificationSettingLocalDataSource(impl: NotificationSettingLocalDataSourceImpl): NotificationSettingLocalDataSource
 }
