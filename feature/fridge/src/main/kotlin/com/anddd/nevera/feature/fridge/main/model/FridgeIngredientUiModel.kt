@@ -1,10 +1,12 @@
 package com.anddd.nevera.feature.fridge.main.model
 
+import androidx.compose.runtime.Stable
 import com.anddd.nevera.domain.model.ingredient.FoodCategory
 import com.anddd.nevera.domain.model.ingredient.FridgeIngredient
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
+@Stable
 data class FridgeIngredientUiModel(
     val id: Long,
     val name: String,

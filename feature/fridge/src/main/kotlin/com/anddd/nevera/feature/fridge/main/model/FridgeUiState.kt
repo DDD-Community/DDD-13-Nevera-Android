@@ -1,8 +1,10 @@
 package com.anddd.nevera.feature.fridge.main.model
 
+import androidx.compose.runtime.Immutable
 import com.anddd.nevera.core.mvi.NeveraState
 import com.anddd.nevera.domain.model.ingredient.IngredientSortOrder
 
+@Immutable
 data class FridgeUiState(
     val isLoading: Boolean = false,
     val hasUnreadNotification: Boolean = false,
