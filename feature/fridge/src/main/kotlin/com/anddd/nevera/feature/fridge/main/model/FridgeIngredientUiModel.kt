@@ -1,6 +1,7 @@
 package com.anddd.nevera.feature.fridge.main.model
 
 import com.anddd.nevera.domain.model.ingredient.FoodCategory
+import com.anddd.nevera.domain.model.ingredient.FridgeIngredient
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
@@ -23,3 +24,12 @@ data class FridgeIngredientUiModel(
             }
         }
 }
+
+internal fun FridgeIngredient.toUiModel() = FridgeIngredientUiModel(
+    id = id,
+    name = name,
+    category = category,
+    quantity = quantity,
+    cost = cost,
+    expiryDate = expiryDate,
+)
