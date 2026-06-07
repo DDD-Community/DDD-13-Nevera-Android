@@ -8,10 +8,12 @@ data class FridgeUiState(
     val hasUnreadNotification: Boolean = false,
     val selectedStorageFilter: StorageLocationFilter = StorageLocationFilter.All,
     val categoryFilters: Map<StorageLocationFilter, CategoryFilter> = emptyMap(),
-    val totalCount: Int = 0,
     val selectedSortOrder: IngredientSortOrder = IngredientSortOrder.ExpiryDate,
     val ingredients: List<FridgeIngredientUiModel> = emptyList(),
 ) : NeveraState {
     val selectedCategoryFilter: CategoryFilter
         get() = categoryFilters[selectedStorageFilter] ?: CategoryFilter.All
+
+    val totalCount: Int
+        get() = ingredients.size
 }
