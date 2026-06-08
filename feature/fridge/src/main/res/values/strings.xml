@@ -38,4 +38,16 @@
     <string name="fridge_notification_permission_request_title">앱 사용을 위해 권한을 허용해주세요</string>
     <string name="fridge_notification_permission_request_confirm">확인</string>
 
+    <!-- 구조 바텀시트 -->
+    <string name="fridge_rescue_percentage_little">조금 먹었어요</string>
+    <string name="fridge_rescue_percentage_half">절반 정도 먹었어요</string>
+    <string name="fridge_rescue_percentage_more">절반보다 더 먹었어요</string>
+    <string name="fridge_rescue_percentage_all">다 먹었어요</string>
+    <string name="fridge_rescue_sheet_question">얼마나 구조하셨어요?</string>
+    <string name="fridge_rescue_sheet_confirm">변경하기</string>
+    <string name="fridge_rescue_sheet_rescue_amount_label">구조 금액</string>
+    <string name="fridge_rescue_sheet_total_amount_label">총 금액</string>
+    <string name="fridge_rescue_sheet_rescue_amount_format">+%,d원</string>
+    <string name="fridge_rescue_sheet_total_amount_format">%,d원</string>
+
 </resources>
