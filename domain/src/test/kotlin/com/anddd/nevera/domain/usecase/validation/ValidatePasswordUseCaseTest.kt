@@ -3,7 +3,6 @@ package com.anddd.nevera.domain.usecase.validation
 import com.anddd.nevera.domain.model.validation.PasswordValidationError
 import com.anddd.nevera.domain.model.validation.PasswordValidationResult
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
