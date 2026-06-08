@@ -14,6 +14,7 @@ class ValidatePasswordUseCase @Inject constructor() {
         val errors = buildList {
             if (password.length < MIN_LENGTH) add(PasswordValidationError.TooShort(MIN_LENGTH))
             if (password.length > MAX_LENGTH) add(PasswordValidationError.TooLong(MAX_LENGTH))
+            if (password.any { it !in 'a'..'z' && it !in 'A'..'Z' && !it.isDigit() && it !in SPECIAL_CHARS }) add(PasswordValidationError.ContainsInvalidCharacter)
             if (password.none { it in 'a'..'z' || it in 'A'..'Z' }) add(PasswordValidationError.MissingLetter)
             if (password.none { it.isDigit() }) add(PasswordValidationError.MissingDigit)
             if (password.none { it in SPECIAL_CHARS }) add(PasswordValidationError.MissingSpecialChar)
