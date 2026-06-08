@@ -45,8 +45,8 @@ private const val RatioMin = 0.25f
 private const val RatioHalf = 0.50f
 private const val RatioThreeQuarters = 0.75f
 private const val RatioMax = 1.0f
-private val RatioValueRange = RatioMin..RatioMax
-private const val RatioSteps = 2
+private val RatioValueRange = 0f..RatioMax
+private const val RatioSteps = 3
 
 private val ThumbSize = 24.dp
 private val ThumbElevation = 2.dp
@@ -138,7 +138,7 @@ private fun RescueSlider(
     Column(modifier = modifier) {
         Slider(
             value = ratio,
-            onValueChange = onRatioChange,
+            onValueChange = { onRatioChange(maxOf(it, RatioMin)) },
             modifier = modifier.fillMaxWidth(),
             valueRange = RatioValueRange,
             steps = RatioSteps,
@@ -154,7 +154,7 @@ private fun RescueSlider(
                 val activeColor = NeveraTheme.colors.primaryNormal
                 val inactiveColor = NeveraTheme.colors.surfaceSecondary
                 val dotColor = NeveraTheme.colors.surfaceQuaternary
-                val fraction = (sliderState.value - RatioMin) / (RatioMax - RatioMin)
+                val fraction = sliderState.value
 
                 Canvas(
                     modifier = Modifier
