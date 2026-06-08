@@ -1,11 +1,6 @@
 package com.anddd.nevera.feature.mypage.settingnotification
 
-import android.app.Activity
-import android.content.Intent
-import android.provider.Settings
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -14,7 +9,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.core.app.ActivityCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.anddd.nevera.core.designsystem.component.button.NeveraButtonColor
 import com.anddd.nevera.core.designsystem.component.dialog.NeveraConfirmDialog
@@ -24,6 +18,7 @@ import com.anddd.nevera.feature.mypage.settingnotification.model.SettingNotifica
 import com.anddd.nevera.feature.mypage.settingnotification.model.SettingNotificationSideEffect
 import com.anddd.nevera.infra.permission.AppPermission
 import com.anddd.nevera.infra.permission.DefaultPermissionChecker
+import com.anddd.nevera.infra.permission.PermissionRequester
 import com.anddd.nevera.feature.mypage.R as MyPageR
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -36,33 +31,12 @@ fun SettingNotificationScreen(
     val context = LocalContext.current
     val uiState = viewModel.collectAsState().value
     var showTimePicker by remember { mutableStateOf(false) }
-    var showPermissionDeniedDialog by remember { mutableStateOf(false) }
+    var showPermissionRequester by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         val isPermissionGranted =
             DefaultPermissionChecker.isGranted(context, AppPermission.Notification)
         viewModel.handleIntent(SettingNotificationIntent.LoadSettings(isPermissionGranted))
-    }
-
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-    ) { isGranted ->
-        if (isGranted) {
-            viewModel.handleIntent(
-                SettingNotificationIntent.ExpiryAlarmToggled(
-                    enabled = true,
-                    isPermissionGranted = true,
-                )
-            )
-        } else {
-            val isPermanentlyDenied = (context as? Activity)?.let {
-                !ActivityCompat.shouldShowRequestPermissionRationale(
-                    it,
-                    AppPermission.Notification.manifestPermission,
-                )
-            } ?: false
-            if (isPermanentlyDenied) showPermissionDeniedDialog = true
-        }
     }
 
     viewModel.collectSideEffect { effect ->
@@ -74,7 +48,7 @@ fun SettingNotificationScreen(
             }
 
             SettingNotificationSideEffect.RequestNotificationPermission -> {
-                permissionLauncher.launch(AppPermission.Notification.manifestPermission)
+                showPermissionRequester = true
             }
 
             SettingNotificationSideEffect.ShowLoadAlarmTimeError -> {
@@ -120,22 +94,32 @@ fun SettingNotificationScreen(
         )
     }
 
-    if (showPermissionDeniedDialog) {
-        NeveraConfirmDialog(
-            title = stringResource(MyPageR.string.setting_notification_permission_dialog_title),
-            subtitle = stringResource(MyPageR.string.setting_notification_permission_dialog_subtitle),
-            positive = stringResource(MyPageR.string.setting_notification_permission_dialog_positive),
-            negative = stringResource(MyPageR.string.setting_notification_permission_dialog_negative),
-            onNegative = { showPermissionDeniedDialog = false },
-            onPositive = {
-                showPermissionDeniedDialog = false
-                val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
-                    putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
-                }
-                context.startActivity(intent)
+    if (showPermissionRequester) {
+        PermissionRequester(
+            permission = AppPermission.Notification,
+            onGranted = {
+                showPermissionRequester = false
+                viewModel.handleIntent(
+                    SettingNotificationIntent.ExpiryAlarmToggled(
+                        enabled = true,
+                        isPermissionGranted = true,
+                    )
+                )
             },
-            negativeButtonColor = NeveraButtonColor.Secondary,
-            positiveButtonColor = NeveraButtonColor.Primary,
-        )
+            onDenied = {
+                showPermissionRequester = false
+            },
+        ) { onConfirm, onDismiss ->
+            NeveraConfirmDialog(
+                title = stringResource(MyPageR.string.setting_notification_permission_dialog_title),
+                subtitle = stringResource(MyPageR.string.setting_notification_permission_dialog_subtitle),
+                positive = stringResource(MyPageR.string.setting_notification_permission_dialog_positive),
+                negative = stringResource(MyPageR.string.setting_notification_permission_dialog_negative),
+                onNegative = { onDismiss() },
+                onPositive = { onConfirm() },
+                negativeButtonColor = NeveraButtonColor.Secondary,
+                positiveButtonColor = NeveraButtonColor.Primary,
+            )
+        }
     }
 }
