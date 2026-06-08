@@ -25,10 +25,10 @@ import com.anddd.nevera.data.datasource.IngredientRemoteDataSource
 import com.anddd.nevera.data.datasource.IngredientRemoteDataSourceImpl
 import com.anddd.nevera.data.datasource.WishRemoteDataSource
 import com.anddd.nevera.data.datasource.WishRemoteDataSourceImpl
-import com.anddd.nevera.data.datasource.NotificationRemoteDataSource
-import com.anddd.nevera.data.datasource.NotificationRemoteDataSourceImpl
 import com.anddd.nevera.data.datasource.NotificationLocalDataSource
 import com.anddd.nevera.data.datasource.NotificationLocalDataSourceImpl
+import com.anddd.nevera.data.datasource.NotificationRemoteDataSource
+import com.anddd.nevera.data.datasource.NotificationRemoteDataSourceImpl
 import com.anddd.nevera.domain.repository.FcmTokenProvider
 import dagger.Binds
 import dagger.Module

@@ -21,4 +21,23 @@
     <string name="setting_account_withdraw_dialog_subtitle">탈퇴 시 모든 기록이 완전히 삭제되며\n다시 복구할 수 없어요</string>
     <string name="setting_account_withdraw_confirm">탈퇴하기</string>
     <string name="setting_account_dialog_dismiss">닫기</string>
+
+    <!-- Setting Notification -->
+    <string name="setting_notification_title">알림 설정</string>
+    <string name="setting_notification_section_title">유통기한 알림</string>
+    <string name="setting_notification_section_subtitle">임박한 재료와 추천 레시피를 함께 알려드려요</string>
+    <string name="setting_notification_expiry_alarm">유통기한 임박</string>
+    <string name="setting_notification_alarm_time">알림 시간</string>
+    <string name="setting_notification_permission_dialog_title">기기의 앱 알림이 꺼져있어요</string>
+    <string name="setting_notification_permission_dialog_subtitle">설정에서 권한을 허용해주세요</string>
+    <string name="setting_notification_permission_dialog_positive">알림 켜기</string>
+    <string name="setting_notification_permission_dialog_negative">닫기</string>
+    <string name="setting_notification_time_picker_title">시간 선택</string>
+    <string name="setting_notification_time_picker_cancel">취소</string>
+    <string name="setting_notification_time_picker_confirm">완료</string>
+    <string name="setting_notification_time_am">오전</string>
+    <string name="setting_notification_time_pm">오후</string>
+    <string name="setting_notification_load_alarm_time_error">알림 시간을 불러오지 못했어요</string>
+    <string name="setting_notification_update_alarm_time_error">알림 시간 저장에 실패했어요</string>
+    <string name="setting_notification_update_notification_enabled_error">알림 수신 여부 저장에 실패했어요</string>
 </resources>
