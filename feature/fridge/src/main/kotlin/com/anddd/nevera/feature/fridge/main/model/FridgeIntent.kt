@@ -14,4 +14,8 @@ sealed interface FridgeIntent : NeveraIntent {
     data class SelectSortOrder(val order: IngredientSortOrder) : FridgeIntent
 
     data object NotificationIconClicked : FridgeIntent
+
+    data class RescueClick(val item: FridgeIngredientUiModel) : FridgeIntent
+
+    data class RescueConfirm(val item: FridgeIngredientUiModel, val ratio: Float) : FridgeIntent
 }

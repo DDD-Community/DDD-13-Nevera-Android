@@ -7,6 +7,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -15,11 +16,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.anddd.nevera.core.designsystem.component.bottomsheet.NeveraActionBottomSheet
+import com.anddd.nevera.core.designsystem.component.button.NeveraButtonColor
+import com.anddd.nevera.core.designsystem.component.dialog.NeveraConfirmDialog
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.core.ui.component.NotificationPermissionDescriptionItem
 import com.anddd.nevera.core.ui.component.ReceiptCaptureModeBottomSheet
 import com.anddd.nevera.feature.fridge.R
 import com.anddd.nevera.feature.fridge.main.component.FridgeContent
+import com.anddd.nevera.feature.fridge.main.component.FridgeIngredientRescueBottomSheet
+import com.anddd.nevera.feature.fridge.main.model.FridgeIngredientUiModel
+import com.anddd.nevera.feature.fridge.main.model.FridgeIntent
 import com.anddd.nevera.feature.fridge.main.model.FridgeSideEffect
 import com.anddd.nevera.infra.permission.AppPermission
 import com.anddd.nevera.infra.permission.PermissionRequester
@@ -39,8 +45,13 @@ fun FridgeScreen(
     val context = LocalContext.current
     val uiState = viewModel.collectAsState().value
     var showCaptureModeBottomSheet by remember { mutableStateOf(false) }
+    var showRescueBottomSheet by remember { mutableStateOf(false) }
+    var showRescueConfirmDialog by remember { mutableStateOf(false) }
+    var rescueTargetItem by remember { mutableStateOf<FridgeIngredientUiModel?>(null) }
+    var pendingRescueRatio by remember { mutableFloatStateOf(1.0f) }
     var permissionHandled by remember { mutableStateOf(false) }
     val captureModeSheetState = rememberModalBottomSheetState()
+    val rescueSheetState = rememberModalBottomSheetState()
     val notificationPermissionSheetState = rememberModalBottomSheetState()
 
     viewModel.collectSideEffect { effect ->
@@ -50,6 +61,11 @@ fun FridgeScreen(
             FridgeSideEffect.ShowCaptureModeBottomSheet -> showCaptureModeBottomSheet = true
 
             FridgeSideEffect.NavigateToNotification -> onNavigateToNotification()
+
+            is FridgeSideEffect.ShowRescueBottomSheet -> {
+                rescueTargetItem = effect.item
+                showRescueBottomSheet = true
+            }
         }
     }
 
@@ -57,6 +73,36 @@ fun FridgeScreen(
         uiState = uiState,
         onIntent = viewModel::handleIntent,
     )
+
+    if (showRescueBottomSheet && rescueTargetItem != null) {
+        FridgeIngredientRescueBottomSheet(
+            item = rescueTargetItem!!,
+            sheetState = rescueSheetState,
+            onConfirmClick = { ratio ->
+                pendingRescueRatio = ratio
+                showRescueConfirmDialog = true
+            },
+            onDismissRequest = {
+                showRescueConfirmDialog = false
+                showRescueBottomSheet = false
+            },
+        )
+
+        if (showRescueConfirmDialog) {
+            NeveraConfirmDialog(
+                title = stringResource(R.string.fridge_rescue_confirm_dialog_title),
+                positive = stringResource(R.string.fridge_rescue_sheet_confirm),
+                negative = stringResource(R.string.fridge_rescue_confirm_dialog_close),
+                onPositive = {
+                    showRescueConfirmDialog = false
+                    showRescueBottomSheet = false
+                    viewModel.handleIntent(FridgeIntent.RescueConfirm(rescueTargetItem!!, pendingRescueRatio))
+                },
+                onNegative = { showRescueConfirmDialog = false },
+                negativeButtonColor = NeveraButtonColor.Secondary,
+            )
+        }
+    }
 
     if (showCaptureModeBottomSheet) {
         ReceiptCaptureModeBottomSheet(

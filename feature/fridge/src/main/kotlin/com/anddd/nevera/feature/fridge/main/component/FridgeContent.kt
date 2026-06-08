@@ -108,7 +108,7 @@ internal fun FridgeContent(
                     items(uiState.ingredients, key = { it.id }) { item ->
                         FridgeIngredientItem(
                             item = item,
-                            onRescueClick = {},
+                            onRescueClick = { onIntent(FridgeIntent.RescueClick(item)) },
                             onDisposeClick = {},
                             onMoreClick = {},
                         )

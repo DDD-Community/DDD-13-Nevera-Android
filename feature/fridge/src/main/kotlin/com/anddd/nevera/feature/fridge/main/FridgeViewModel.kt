@@ -8,6 +8,7 @@ import com.anddd.nevera.domain.usecase.ingredient.GetFridgeIngredientsUseCase
 import com.anddd.nevera.domain.usecase.notification.MarkAllNotificationsAsReadUseCase
 import com.anddd.nevera.domain.usecase.notification.ObserveUnreadNotificationUseCase
 import com.anddd.nevera.feature.fridge.main.model.CategoryFilter
+import com.anddd.nevera.feature.fridge.main.model.FridgeIngredientUiModel
 import com.anddd.nevera.feature.fridge.main.model.FridgeIntent
 import com.anddd.nevera.feature.fridge.main.model.FridgeMutation
 import com.anddd.nevera.feature.fridge.main.model.FridgeSideEffect
@@ -37,6 +38,8 @@ class FridgeViewModel @Inject constructor(
             FridgeIntent.AddIngredientClick -> addIngredient()
             is FridgeIntent.SelectSortOrder -> selectSortOrder(intent.order)
             FridgeIntent.NotificationIconClicked -> navigateToNotification()
+            is FridgeIntent.RescueClick -> showRescueBottomSheet(intent.item)
+            is FridgeIntent.RescueConfirm -> rescueIngredient(intent.item, intent.ratio)
         }
     }
 
@@ -57,6 +60,14 @@ class FridgeViewModel @Inject constructor(
 
     private fun addIngredient() = intent {
         postSideEffect(FridgeSideEffect.ShowCaptureModeBottomSheet)
+    }
+
+    private fun showRescueBottomSheet(item: FridgeIngredientUiModel) = intent {
+        postSideEffect(FridgeSideEffect.ShowRescueBottomSheet(item))
+    }
+
+    private fun rescueIngredient(item: FridgeIngredientUiModel, ratio: Float) = intent {
+        // TODO: 구조 API 연동
     }
 
     private fun observeBadge() = intent {

@@ -50,4 +50,8 @@
     <string name="fridge_rescue_sheet_rescue_amount_format">+%,d원</string>
     <string name="fridge_rescue_sheet_total_amount_format">%,d원</string>
 
+    <!-- 구조 다이얼로그 -->
+    <string name="fridge_rescue_confirm_dialog_title">식재료를 변경할까요?</string>
+    <string name="fridge_rescue_confirm_dialog_close">닫기</string>
+
 </resources>
