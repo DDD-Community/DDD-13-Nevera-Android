@@ -23,53 +23,52 @@ class SettingNotificationViewModel @Inject constructor(
     SettingNotificationUiState()
 ) {
 
-    init {
-        loadNotificationSettings()
-    }
-
     override fun handleIntent(intent: SettingNotificationIntent) {
         when (intent) {
             SettingNotificationIntent.NavigateBack -> intent {
                 postSideEffect(SettingNotificationSideEffect.NavigateBack)
             }
 
+            is SettingNotificationIntent.LoadSettings ->
+                loadNotificationSettings(intent.isPermissionGranted)
+
             is SettingNotificationIntent.ExpiryAlarmToggled ->
-                onExpiryAlarmToggled(intent.enabled, intent.isSystemNotificationEnabled)
+                onExpiryAlarmToggled(intent.enabled, intent.isPermissionGranted)
 
             SettingNotificationIntent.AlarmTimeClicked -> intent {
                 postSideEffect(SettingNotificationSideEffect.ShowTimePickerDialog)
             }
 
-            is SettingNotificationIntent.AlarmTimeSelected -> onAlarmTimeSelected(intent.hour, intent.minute)
-
-            SettingNotificationIntent.NavigateToNotificationSettingsClicked -> intent {
-                postSideEffect(SettingNotificationSideEffect.OpenNotificationSettings)
-            }
+            is SettingNotificationIntent.AlarmTimeSelected ->
+                onAlarmTimeSelected(intent.hour, intent.minute)
         }
     }
 
-    private fun loadNotificationSettings() = intent {
+    private fun loadNotificationSettings(isPermissionGranted: Boolean) = intent {
         getNotificationTime()
-            .onSuccess {
-                applyMutation(SettingNotificationMutation.ExpiryAlarmUpdated(it.enabled))
-                applyMutation(SettingNotificationMutation.AlarmTimeUpdated(it.hour, it.minute))
+            .onSuccess { setting ->
+                if (setting.enabled && !isPermissionGranted) {
+                    updateNotificationEnabled(false)
+                }
+                val effectiveEnabled = setting.enabled && isPermissionGranted
+                applyMutation(SettingNotificationMutation.ExpiryAlarmUpdated(effectiveEnabled))
+                applyMutation(SettingNotificationMutation.AlarmTimeUpdated(setting.hour, setting.minute))
             }.onFailure {
                 postSideEffect(SettingNotificationSideEffect.ShowLoadAlarmTimeError)
             }
     }
 
-    private fun onExpiryAlarmToggled(enabled: Boolean, isSystemNotificationEnabled: Boolean) = intent {
+    private fun onExpiryAlarmToggled(enabled: Boolean, isPermissionGranted: Boolean) = intent {
         when {
-            enabled && !isSystemNotificationEnabled -> {
-                postSideEffect(SettingNotificationSideEffect.ShowPermissionDeniedDialog)
-            } else -> {
+            enabled && !isPermissionGranted ->
+                postSideEffect(SettingNotificationSideEffect.RequestNotificationPermission)
+            else ->
                 updateNotificationEnabled(enabled)
                     .onSuccess {
                         applyMutation(SettingNotificationMutation.ExpiryAlarmUpdated(it.enabled))
                     }.onFailure {
                         postSideEffect(SettingNotificationSideEffect.ShowUpdateNotificationEnabledError)
                     }
-            }
         }
     }
 
