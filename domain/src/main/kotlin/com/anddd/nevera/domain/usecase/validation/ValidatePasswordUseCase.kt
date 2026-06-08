@@ -24,8 +24,9 @@ class ValidatePasswordUseCase @Inject constructor() {
         else PasswordValidationResult.Invalid(errors)
     }
 
-    private fun isAllowedPasswordChar(c: Char) =
-        c in 'a'..'z' || c in 'A'..'Z' || c.isDigit() || c in SPECIAL_CHARS
+    private fun isAllowedPasswordChar(c: Char): Boolean {
+        return c in 'a'..'z' || c in 'A'..'Z' || c.isDigit() || c in SPECIAL_CHARS
+    }
 
     companion object {
         private const val MIN_LENGTH = 8
