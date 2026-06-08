@@ -14,13 +14,18 @@ class ValidatePasswordUseCase @Inject constructor() {
         val errors = buildList {
             if (password.length < MIN_LENGTH) add(PasswordValidationError.TooShort(MIN_LENGTH))
             if (password.length > MAX_LENGTH) add(PasswordValidationError.TooLong(MAX_LENGTH))
-            if (password.none { it.isLetter() }) add(PasswordValidationError.MissingLetter)
             if (password.none { it.isDigit() }) add(PasswordValidationError.MissingDigit)
             if (password.none { it in SPECIAL_CHARS }) add(PasswordValidationError.MissingSpecialChar)
+            if (password.none { it in 'a'..'z' || it in 'A'..'Z' }) add(PasswordValidationError.MissingLetter)
+            if (password.any { !isAllowedPasswordChar(it) }) add(PasswordValidationError.ContainsInvalidCharacter)
         }
 
         return if (errors.isEmpty()) PasswordValidationResult.Valid
         else PasswordValidationResult.Invalid(errors)
+    }
+
+    private fun isAllowedPasswordChar(c: Char): Boolean {
+        return c in 'a'..'z' || c in 'A'..'Z' || c.isDigit() || c in SPECIAL_CHARS
     }
 
     companion object {
