@@ -17,8 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
-      contents: read
-      pull-requests: read   # Draft Release 및 PR 목록 조회용
+      contents: write        # Draft Release 조회에 push access 필요
+      pull-requests: read   # PR 목록 조회용
 
     steps:
       - name: Validate branch (workflow_dispatch only)
@@ -70,11 +70,6 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          echo "=== DEBUG: releases count ==="
-          gh api "repos/$GITHUB_REPOSITORY/releases" --jq 'length' || echo "API FAILED"
-          echo "=== DEBUG: draft releases count ==="
-          gh api "repos/$GITHUB_REPOSITORY/releases" --jq '[.[] | select(.draft == true)] | length' || echo "API FAILED"
-
           NOTES=$(gh api "repos/$GITHUB_REPOSITORY/releases" \
             --jq '[.[] | select(.draft == true)] | first | .body // ""' \
             2>/dev/null || echo "")
