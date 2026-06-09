@@ -70,6 +70,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          echo "=== DEBUG: releases count ==="
+          gh api "repos/$GITHUB_REPOSITORY/releases" --jq 'length' || echo "API FAILED"
+          echo "=== DEBUG: draft releases count ==="
+          gh api "repos/$GITHUB_REPOSITORY/releases" --jq '[.[] | select(.draft == true)] | length' || echo "API FAILED"
+
           NOTES=$(gh api "repos/$GITHUB_REPOSITORY/releases" \
             --jq '[.[] | select(.draft == true)] | first | .body // ""' \
             2>/dev/null || echo "")
