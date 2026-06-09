@@ -1,6 +1,7 @@
 package com.anddd.nevera.data.di
 
 import com.anddd.nevera.data.repository.AppInfoRepositoryImpl
+import com.anddd.nevera.data.repository.FridgeRepositoryImpl
 import com.anddd.nevera.data.repository.NotificationRepositoryImpl
 import com.anddd.nevera.data.repository.AuthRepositoryImpl
 import com.anddd.nevera.data.repository.FcmTokenRepositoryImpl
@@ -10,6 +11,7 @@ import com.anddd.nevera.data.repository.TokenRepositoryImpl
 import com.anddd.nevera.data.repository.UserRepositoryImpl
 import com.anddd.nevera.data.repository.WishRepositoryImpl
 import com.anddd.nevera.domain.repository.AppInfoRepository
+import com.anddd.nevera.domain.repository.FridgeRepository
 import com.anddd.nevera.domain.repository.NotificationRepository
 import com.anddd.nevera.domain.repository.AuthRepository
 import com.anddd.nevera.domain.repository.FcmTokenRepository
@@ -63,4 +65,8 @@ internal abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindNotificationRepository(impl: NotificationRepositoryImpl): NotificationRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindFridgeRepository(impl: FridgeRepositoryImpl): FridgeRepository
 }

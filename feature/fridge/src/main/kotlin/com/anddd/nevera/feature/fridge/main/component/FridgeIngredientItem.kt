@@ -72,8 +72,7 @@ private val IndicatorStrokeWidth = 2.dp
 private val ExpiredBadgeOffset = 8.dp
 
 private fun FridgeIngredientUiModel.expiryState(): ExpiryState {
-    val days = expiryDate?.let { ChronoUnit.DAYS.between(LocalDate.now(), it) }
-        ?: return ExpiryState.Normal
+    val days = ChronoUnit.DAYS.between(LocalDate.now(), expiryDate)
     return when {
         days >= 8L -> ExpiryState.Normal
         days in 1..7 -> ExpiryState.Warning
@@ -223,7 +222,7 @@ private fun IngredientCategoryIcon(
 ) {
     val expiryState = remember(item) { item.expiryState() }
     val daysRemaining = remember(item) {
-        item.expiryDate?.let { ChronoUnit.DAYS.between(LocalDate.now(), it) } ?: Long.MAX_VALUE
+        ChronoUnit.DAYS.between(LocalDate.now(), item.expiryDate)
     }
     val imageShape = RoundedCornerShape(NeveraTheme.radius.medium)
     val cornerRadiusDp: Dp = NeveraTheme.radius.medium

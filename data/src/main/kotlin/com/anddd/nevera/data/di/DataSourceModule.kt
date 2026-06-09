@@ -19,6 +19,8 @@ import com.anddd.nevera.data.datasource.TokenDataSource
 import com.anddd.nevera.data.datasource.TokenDataSourceImpl
 import com.anddd.nevera.data.datasource.UserRemoteDataSource
 import com.anddd.nevera.data.datasource.UserRemoteDataSourceImpl
+import com.anddd.nevera.data.datasource.FridgeRemoteDataSource
+import com.anddd.nevera.data.datasource.FridgeRemoteDataSourceImpl
 import com.anddd.nevera.data.datasource.HomeRemoteDataSource
 import com.anddd.nevera.data.datasource.HomeRemoteDataSourceImpl
 import com.anddd.nevera.data.datasource.IngredientRemoteDataSource
@@ -99,4 +101,8 @@ internal abstract class DataSourceModule {
     @Binds
     @Singleton
     abstract fun bindNotificationLocalDataSource(impl: NotificationLocalDataSourceImpl): NotificationLocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindFridgeRemoteDataSource(impl: FridgeRemoteDataSourceImpl): FridgeRemoteDataSource
 }

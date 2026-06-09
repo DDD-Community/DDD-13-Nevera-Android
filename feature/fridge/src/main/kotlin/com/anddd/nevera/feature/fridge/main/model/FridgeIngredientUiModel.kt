@@ -13,12 +13,11 @@ data class FridgeIngredientUiModel(
     val category: FoodCategory,
     val quantity: Int,
     val cost: Int,
-    val expiryDate: LocalDate?,
+    val expiryDate: LocalDate,
 ) {
     val dDayLabel: String
         get() {
-            val days = expiryDate?.let { ChronoUnit.DAYS.between(LocalDate.now(), it) }
-                ?: return ""
+            val days = ChronoUnit.DAYS.between(LocalDate.now(), expiryDate)
             return when {
                 days > 0L -> "D-$days"
                 days == 0L -> "D-Day"

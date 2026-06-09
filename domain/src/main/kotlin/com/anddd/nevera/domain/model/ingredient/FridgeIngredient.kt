@@ -10,6 +10,6 @@ data class FridgeIngredient(
     val storageLocation: StorageLocation,
     val quantity: Int,
     val cost: Int,
-    val expiryDate: LocalDate?,
+    val expiryDate: LocalDate,
     val createdAt: Instant,
 )
