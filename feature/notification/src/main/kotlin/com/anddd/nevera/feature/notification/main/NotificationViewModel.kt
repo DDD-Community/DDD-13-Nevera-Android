@@ -8,7 +8,6 @@ import com.anddd.nevera.core.mvi.NeveraViewModel
 import com.anddd.nevera.domain.model.notification.AppNotification
 import com.anddd.nevera.domain.model.notification.AppNotificationType
 import com.anddd.nevera.domain.usecase.notification.GetNotificationsUseCase
-import com.anddd.nevera.domain.usecase.notification.MarkAllNotificationsAsReadUseCase
 import com.anddd.nevera.domain.usecase.notification.MarkNotificationAsReadUseCase
 import com.anddd.nevera.feature.notification.main.model.NotificationIntent
 import com.anddd.nevera.feature.notification.main.model.NotificationItemUiModel
@@ -26,7 +25,6 @@ import javax.inject.Inject
 class NotificationViewModel @Inject constructor(
     private val getNotificationsUseCase: GetNotificationsUseCase,
     private val markNotificationAsReadUseCase: MarkNotificationAsReadUseCase,
-    private val markAllNotificationsAsReadUseCase: MarkAllNotificationsAsReadUseCase,
 ) : NeveraViewModel<NotificationUiState, NotificationSideEffect, NotificationIntent, NotificationMutation>(
     NotificationUiState()
 ) {
@@ -35,10 +33,6 @@ class NotificationViewModel @Inject constructor(
             .map { pagingData -> pagingData.map { it.toUiModel() } }
             .cachedIn(viewModelScope)
 
-    init {
-        markAllAsRead()
-    }
-
     override fun handleIntent(intent: NotificationIntent) {
         when (intent) {
             NotificationIntent.BackClicked -> intent { postSideEffect(NotificationSideEffect.NavigateBack) }
@@ -46,10 +40,6 @@ class NotificationViewModel @Inject constructor(
             is NotificationIntent.NotificationItemClicked -> onNotificationClicked(intent.id, intent.deeplink)
             NotificationIntent.EnableNotificationClicked -> onEnableNotificationClicked()
         }
-    }
-
-    private fun markAllAsRead() = intent {
-        markAllNotificationsAsReadUseCase()
     }
 
     private fun updatePermission(isGranted: Boolean) = intent {
