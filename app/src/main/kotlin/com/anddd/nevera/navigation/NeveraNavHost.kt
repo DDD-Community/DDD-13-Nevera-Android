@@ -9,7 +9,7 @@ import androidx.navigation.compose.NavHost
 import com.anddd.nevera.feature.auth.main.google.GoogleAuthClient
 import com.anddd.nevera.feature.auth.navigation.AuthGraphRoute
 import com.anddd.nevera.feature.auth.navigation.authNavGraph
-import com.anddd.nevera.feature.fridge.main.navigation.fridgeScreen
+import com.anddd.nevera.feature.fridge.navigation.fridgeScreen
 import com.anddd.nevera.feature.ingredient.main.navigation.IngredientGraphRoute
 import com.anddd.nevera.feature.ingredient.main.navigation.ingredientNavGraph
 import com.anddd.nevera.feature.ingredient.ocrcapture.navigation.navigateToIngredientCapture

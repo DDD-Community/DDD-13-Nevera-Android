@@ -1,4 +1,4 @@
-package com.anddd.nevera.feature.fridge.main.navigation
+package com.anddd.nevera.feature.fridge.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
