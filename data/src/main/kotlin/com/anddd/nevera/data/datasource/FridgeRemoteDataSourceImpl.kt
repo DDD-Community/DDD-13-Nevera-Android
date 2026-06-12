@@ -2,6 +2,7 @@ package com.anddd.nevera.data.datasource
 
 import com.anddd.nevera.core.network.model.ApiResponse
 import com.anddd.nevera.data.api.FridgeApi
+import com.anddd.nevera.data.model.fridge.FridgeIngredientResponse
 import com.anddd.nevera.data.model.fridge.FridgeIngredientsResponse
 import javax.inject.Inject
 
@@ -23,4 +24,7 @@ internal class FridgeRemoteDataSourceImpl @Inject constructor(
             page = page,
             size = size,
         )
+
+    override suspend fun getFridgeIngredientById(id: Long): ApiResponse<FridgeIngredientResponse> =
+        fridgeApi.getFridgeIngredientById(id)
 }

@@ -40,4 +40,12 @@ internal class FridgeRepositoryImpl @Inject constructor(
             transformSuccess = { it.content.map { dto -> dto.toDomain() } },
             transformFailure = { it.toCommonError() },
         )
+
+    override suspend fun getFridgeIngredientById(id: Long): NeveraResult<FridgeIngredient, CommonError> =
+        apiCall {
+            remoteDataSource.getFridgeIngredientById(id)
+        }.map(
+            transformSuccess = { it.toDomain() },
+            transformFailure = { it.toCommonError() },
+        )
 }

@@ -16,4 +16,6 @@ interface FridgeRepository {
         page: Int,
         size: Int,
     ): NeveraResult<List<FridgeIngredient>, CommonError>
+
+    suspend fun getFridgeIngredientById(id: Long): NeveraResult<FridgeIngredient, CommonError>
 }
