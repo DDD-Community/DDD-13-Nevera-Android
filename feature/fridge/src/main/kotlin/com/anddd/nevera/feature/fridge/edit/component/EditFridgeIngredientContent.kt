@@ -24,7 +24,6 @@ import com.anddd.nevera.core.ui.component.field.DropdownFieldRow
 import com.anddd.nevera.core.ui.component.field.ExpiryDateFieldRow
 import com.anddd.nevera.core.ui.component.field.QuantityFieldRow
 import com.anddd.nevera.core.ui.displayName
-import com.anddd.nevera.domain.model.ingredient.StorageLocation
 import com.anddd.nevera.feature.fridge.R
 import com.anddd.nevera.feature.fridge.edit.model.EditFridgeIngredientIntent
 import com.anddd.nevera.feature.fridge.edit.model.EditFridgeIngredientUiState
@@ -115,9 +114,3 @@ internal fun EditFridgeIngredientContent(
     }
 }
 
-@Composable
-private fun StorageLocation.displayName(): String = when (this) {
-    StorageLocation.Fridge -> stringResource(R.string.fridge_filter_refrigerator)
-    StorageLocation.Freezer -> stringResource(R.string.fridge_filter_freezer)
-    StorageLocation.Pantry -> stringResource(R.string.fridge_filter_room_temp)
-}

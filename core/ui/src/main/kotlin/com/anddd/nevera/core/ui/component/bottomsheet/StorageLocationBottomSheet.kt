@@ -1,4 +1,4 @@
-package com.anddd.nevera.feature.ingredient.main.component
+package com.anddd.nevera.core.ui.component.bottomsheet
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,22 +20,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.component.bottomsheet.NeveraActionBottomSheet
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
-import com.anddd.nevera.feature.ingredient.R
+import com.anddd.nevera.core.ui.R
+import com.anddd.nevera.core.ui.displayName
 import com.anddd.nevera.domain.model.ingredient.StorageLocation
-import com.anddd.nevera.feature.ingredient.main.displayName
 
-/**
- * 식재료 보관 방법 선택 바텀시트
- *
- * @param selectedLocation   현재 선택된 보관 방법 (null = 미선택)
- * @param onLocationSelected 확인 탭 시 선택값 전달
- * @param onDismiss          시트 닫기
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StorageLocationBottomSheet(
@@ -87,7 +79,8 @@ private fun StorageLocationItem(
     onClick: () -> Unit,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .selectable(
                 selected = isSelected,
                 onClick = onClick,
@@ -110,17 +103,6 @@ private fun StorageLocationItem(
             tint = if (isSelected) NeveraTheme.colors.primaryNormal
             else NeveraTheme.colors.iconDisabled,
             modifier = Modifier.size(NeveraTheme.iconSize.medium),
-        )
-    }
-}
-
-@Preview(showBackground = true, widthDp = 360)
-@Composable
-private fun StorageLocationListPreview() {
-    NeveraTheme {
-        StorageLocationList(
-            selectedLocation = StorageLocation.Fridge,
-            onLocationClick = {},
         )
     }
 }

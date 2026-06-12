@@ -8,7 +8,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.anddd.nevera.core.designsystem.component.datepicker.NeveraDatePickerDialog
+import com.anddd.nevera.core.ui.component.bottomsheet.CategoryBottomSheet
+import com.anddd.nevera.core.ui.component.bottomsheet.StorageLocationBottomSheet
 import com.anddd.nevera.feature.fridge.edit.component.EditFridgeIngredientContent
+import com.anddd.nevera.feature.fridge.edit.model.EditFridgeIngredientIntent
 import com.anddd.nevera.feature.fridge.edit.model.EditFridgeIngredientSideEffect
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -43,14 +47,26 @@ fun EditFridgeIngredientScreen(
     )
 
     if (showCategorySheet) {
-        // TODO: CategoryBottomSheet 연동
+        CategoryBottomSheet(
+            selectedCategory = uiState.category,
+            onCategorySelected = { viewModel.handleIntent(EditFridgeIngredientIntent.UpdateCategory(it)) },
+            onDismiss = { showCategorySheet = false },
+        )
     }
 
     if (showStorageLocationSheet) {
-        // TODO: StorageLocationBottomSheet 연동
+        StorageLocationBottomSheet(
+            selectedLocation = uiState.storageLocation,
+            onLocationSelected = { viewModel.handleIntent(EditFridgeIngredientIntent.UpdateStorageLocation(it)) },
+            onDismiss = { showStorageLocationSheet = false },
+        )
     }
 
     if (showDatePicker) {
-        // TODO: DatePicker 연동
+        NeveraDatePickerDialog(
+            selectedDate = uiState.expiryDate,
+            onDateSelected = { viewModel.handleIntent(EditFridgeIngredientIntent.UpdateExpiryDate(it)) },
+            onDismiss = { showDatePicker = false },
+        )
     }
 }

@@ -1,18 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- CategoryBottomSheet -->
-    <string name="ingredient_category_title">카테고리</string>
-    <string name="ingredient_category_confirm">확인</string>
-
-    <!-- StorageLocationBottomSheet -->
-    <string name="ingredient_storage_location_title">보관 방법</string>
-    <string name="ingredient_storage_location_confirm">확인</string>
-
-    <!-- StorageLocation displayName -->
-    <string name="ingredient_storage_location_fridge">냉장</string>
-    <string name="ingredient_storage_location_freezer">냉동</string>
-    <string name="ingredient_storage_location_pantry">실온</string>
-
     <!-- IngredientItemCard -->
     <string name="ingredient_item_checkbox_description">식재료 선택</string>
 
