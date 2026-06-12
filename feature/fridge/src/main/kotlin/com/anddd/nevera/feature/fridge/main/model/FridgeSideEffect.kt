@@ -8,4 +8,6 @@ sealed interface FridgeSideEffect : NeveraSideEffect {
     data object ShowCaptureModeBottomSheet : FridgeSideEffect
 
     data object NavigateToNotification : FridgeSideEffect
+
+    data class ScrollToIngredient(val index: Int) : FridgeSideEffect
 }

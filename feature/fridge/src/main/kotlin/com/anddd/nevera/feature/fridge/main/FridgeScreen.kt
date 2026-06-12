@@ -2,6 +2,7 @@ package com.anddd.nevera.feature.fridge.main
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -19,6 +20,7 @@ import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.core.ui.component.NotificationPermissionDescriptionItem
 import com.anddd.nevera.core.ui.component.ReceiptCaptureModeBottomSheet
 import com.anddd.nevera.feature.fridge.R
+import com.anddd.nevera.feature.fridge.main.component.FRIDGE_LIST_HEADER_ITEM_COUNT
 import com.anddd.nevera.feature.fridge.main.component.FridgeContent
 import com.anddd.nevera.feature.fridge.main.model.FridgeSideEffect
 import com.anddd.nevera.infra.permission.AppPermission
@@ -42,6 +44,10 @@ fun FridgeScreen(
     var permissionHandled by remember { mutableStateOf(false) }
     val captureModeSheetState = rememberModalBottomSheetState()
     val notificationPermissionSheetState = rememberModalBottomSheetState()
+    val listState = rememberLazyListState()
+    // SideEffect 수신 시점의 uiState.ingredients는 아직 갱신 전일 수 있으므로,
+    // pendingScrollIndex에 보관해두고 ingredients가 갱신된 뒤 스크롤을 수행한다.
+    var pendingScrollIndex by remember { mutableStateOf<Int?>(null) }
 
     viewModel.collectSideEffect { effect ->
         when (effect) {
@@ -50,12 +56,23 @@ fun FridgeScreen(
             FridgeSideEffect.ShowCaptureModeBottomSheet -> showCaptureModeBottomSheet = true
 
             FridgeSideEffect.NavigateToNotification -> onNavigateToNotification()
+
+            is FridgeSideEffect.ScrollToIngredient -> pendingScrollIndex = effect.index
+        }
+    }
+
+    LaunchedEffect(pendingScrollIndex, uiState.ingredients) {
+        val index = pendingScrollIndex ?: return@LaunchedEffect
+        if (index < uiState.ingredients.size) {
+            listState.animateScrollToItem(FRIDGE_LIST_HEADER_ITEM_COUNT + index)
+            pendingScrollIndex = null
         }
     }
 
     FridgeContent(
         uiState = uiState,
         onIntent = viewModel::handleIntent,
+        listState = listState,
     )
 
     if (showCaptureModeBottomSheet) {
