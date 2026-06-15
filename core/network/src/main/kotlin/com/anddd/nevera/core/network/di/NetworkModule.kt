@@ -72,7 +72,7 @@ object NetworkModule {
     ): OkHttpClient =
         OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
-            .addInterceptor(loggingInterceptor)
+            // OCR 전용 클라이언트는 이미지 업로드와 SSE 스트림을 다루므로 BODY 로깅을 제외한다.
             .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .readTimeout(OCR_EXTRACT_READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .writeTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
