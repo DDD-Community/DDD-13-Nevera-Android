@@ -9,7 +9,8 @@ internal data class FridgeIngredientResponse(
     @SerializedName("location") val location: String,
     @SerializedName("quantity") val quantity: Int,
     @SerializedName("expirationDate") val expirationDate: String,
-    @SerializedName("dDay") val dDay: Int,
+    @SerializedName("dDay") val dDay: Int? = null,
+    @SerializedName("status") val status: String? = null,
     @SerializedName("cost") val cost: Int,
     @SerializedName("createdAt") val createdAt: String,
 )
