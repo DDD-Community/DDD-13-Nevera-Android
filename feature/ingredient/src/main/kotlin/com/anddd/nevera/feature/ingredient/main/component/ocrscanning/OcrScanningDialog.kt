@@ -15,11 +15,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,11 +28,9 @@ import androidx.annotation.StringRes
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.ingredient.R
-import com.anddd.nevera.feature.ingredient.main.OcrScanPresentationTimer
 import com.anddd.nevera.feature.ingredient.main.component.ocrscanning.internal.OcrScanningRepeatMode
 import com.anddd.nevera.feature.ingredient.main.component.ocrscanning.internal.OcrScanningVideo
 import com.anddd.nevera.feature.ingredient.main.model.OcrScanMessageStep
-import kotlinx.coroutines.delay
 
 // ──────────────────────────────────────────────────────────────
 // 내부 상수
@@ -64,18 +57,10 @@ fun OcrScanningDialog(
     onDismiss: () -> Unit,
     dismissOnClickOutside: Boolean = false,
 ) {
-    var messageStep by remember { mutableStateOf(OcrScanMessageStep.ReadingReceipt) }
-
-    LaunchedEffect(Unit) {
-        val steps = listOf(
-            OcrScanMessageStep.RecognizingIngredients,
-            OcrScanMessageStep.AnalyzingText,
-            OcrScanMessageStep.ScanningCarefully,
-        )
-        steps.forEach { step ->
-            delay(OcrScanPresentationTimer.MESSAGE_INTERVAL_MS)
-            messageStep = step
-        }
+    val messageStep = when {
+        progress < 0.2f -> OcrScanMessageStep.RecognizingIngredients
+        progress < 1f -> OcrScanMessageStep.AnalyzingText
+        else -> OcrScanMessageStep.ScanningCarefully
     }
 
     Dialog(
@@ -159,7 +144,6 @@ fun OcrScanningDialog(
 
 @StringRes
 private fun OcrScanMessageStep.titleResId(): Int = when (this) {
-    OcrScanMessageStep.ReadingReceipt -> R.string.ocr_scanning_title_reading_receipt
     OcrScanMessageStep.RecognizingIngredients -> R.string.ocr_scanning_title_recognizing_ingredients
     OcrScanMessageStep.AnalyzingText -> R.string.ocr_scanning_title_analyzing_text
     OcrScanMessageStep.ScanningCarefully -> R.string.ocr_scanning_title_scanning_carefully

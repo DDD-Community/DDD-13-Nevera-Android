@@ -14,7 +14,6 @@ class OcrScanPresentationTimer @Inject constructor() {
     }
 
     companion object {
-        const val MESSAGE_INTERVAL_MS = 450L
         private const val MIN_SCAN_DURATION_MS = 2_000L
     }
 }
