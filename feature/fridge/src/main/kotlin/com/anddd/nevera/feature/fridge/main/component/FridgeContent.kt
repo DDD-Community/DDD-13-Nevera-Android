@@ -3,6 +3,7 @@ package com.anddd.nevera.feature.fridge.main.component
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -108,9 +109,9 @@ internal fun FridgeContent(
                     items(uiState.ingredients, key = { it.id }) { item ->
                         FridgeIngredientItem(
                             item = item,
-                            onRescueClick = {},
-                            onDisposeClick = {},
-                            onMoreClick = {},
+                            onRescueClick = { onIntent(FridgeIntent.RescueClick(item)) },
+                            onDisposeClick = { onIntent(FridgeIntent.DisposeClick(item)) },
+                            onMoreClick = { onIntent(FridgeIntent.IngredientMoreClick(item)) },
                         )
                     }
                 }

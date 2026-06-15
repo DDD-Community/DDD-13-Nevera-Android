@@ -1,15 +1,21 @@
 package com.anddd.nevera.core.designsystem.component.bottomsheet
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,6 +53,23 @@ fun NeveraActionBottomSheet(
         sheetState = sheetState,
         modifier = modifier,
     ) {
+        ActionBottomSheetContent(
+            title = title,
+            confirmLabel = confirmLabel,
+            onConfirm = onConfirm,
+            content = content,
+        )
+    }
+}
+
+@Composable
+private fun ActionBottomSheetContent(
+    title: String,
+    confirmLabel: String,
+    onConfirm: () -> Unit,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    Column {
         Text(
             text = title,
             style = NeveraTheme.typography.titleLarge,
@@ -68,24 +91,50 @@ fun NeveraActionBottomSheet(
             label = confirmLabel,
             onClick = onConfirm,
             modifier = Modifier
-                .navigationBarsPadding()
                 .fillMaxWidth()
                 .padding(NeveraTheme.spacing.padding16),
         )
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true, widthDp = 360)
 @Composable
 private fun NeveraActionBottomSheetPreview() {
+    val items = listOf("채소", "과일", "육류/계란", "해산물")
+    val selected = "과일"
     NeveraTheme {
-        NeveraActionBottomSheet(
-            sheetState = rememberModalBottomSheetState(),
+        ActionBottomSheetContent(
             title = "카테고리",
             confirmLabel = "확인",
             onConfirm = {},
-            onDismissRequest = {},
-        ) {}
+        ) {
+            items.forEach { item ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            horizontal = NeveraTheme.spacing.padding20,
+                            vertical = 14.dp,
+                        ),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = item,
+                        style = NeveraTheme.typography.bodyMedium,
+                        color = if (item == selected) NeveraTheme.colors.primaryNormal
+                                else NeveraTheme.colors.textSecondary,
+                    )
+                    if (item == selected) {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = null,
+                            tint = NeveraTheme.colors.primaryNormal,
+                            modifier = Modifier.size(NeveraTheme.iconSize.small),
+                        )
+                    }
+                }
+            }
+        }
     }
 }

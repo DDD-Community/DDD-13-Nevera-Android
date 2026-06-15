@@ -1,6 +1,7 @@
 package com.anddd.nevera.feature.fridge.main.model
 
 import com.anddd.nevera.core.mvi.NeveraMutation
+import com.anddd.nevera.domain.model.ingredient.IngredientSortOrder
 
 sealed interface FridgeMutation : NeveraMutation {
 

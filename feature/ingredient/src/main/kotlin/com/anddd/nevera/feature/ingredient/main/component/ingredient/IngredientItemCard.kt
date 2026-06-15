@@ -11,19 +11,19 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.domain.model.ingredient.FoodCategory
 import com.anddd.nevera.domain.model.ingredient.StorageLocation
-import com.anddd.nevera.feature.ingredient.R
-import com.anddd.nevera.feature.ingredient.main.component.ingredient.internal.IngredientCostField
-import com.anddd.nevera.feature.ingredient.main.component.ingredient.internal.IngredientDropdownField
-import com.anddd.nevera.feature.ingredient.main.component.ingredient.internal.IngredientExpiryDateRow
+import com.anddd.nevera.core.ui.R as CoreUiR
+import com.anddd.nevera.core.ui.component.field.CostFieldRow
+import com.anddd.nevera.core.ui.component.field.DropdownFieldRow
+import com.anddd.nevera.core.ui.component.field.ExpiryDateFieldRow
+import com.anddd.nevera.core.ui.component.field.QuantityFieldRow
 import com.anddd.nevera.feature.ingredient.main.component.ingredient.internal.IngredientHeaderRow
-import com.anddd.nevera.feature.ingredient.main.component.ingredient.internal.IngredientQuantityField
 import com.anddd.nevera.core.ui.displayName
-import com.anddd.nevera.feature.ingredient.main.displayName
 import com.anddd.nevera.feature.ingredient.main.model.IngredientUiModel
 import java.time.LocalDate
 
@@ -72,37 +72,37 @@ fun IngredientItemCard(
                 onSelectionChanged = onSelectionChanged,
             )
 
-            IngredientQuantityField(
+            QuantityFieldRow(
                 quantity = item.quantity,
                 onQuantityChanged = onQuantityChanged,
             )
 
             Spacer(modifier = Modifier.size(NeveraTheme.spacing.gap8))
 
-            IngredientCostField(
+            CostFieldRow(
                 cost = item.cost,
                 onCostChanged = onCostChanged,
             )
 
             Spacer(modifier = Modifier.size(NeveraTheme.spacing.gap8))
 
-            IngredientDropdownField(
-                labelResId = R.string.ingredient_item_label_category,
+            DropdownFieldRow(
+                label = stringResource(CoreUiR.string.field_label_category),
                 value = item.category?.displayName(),
                 onClick = onCategoryClick,
             )
 
             Spacer(modifier = Modifier.size(NeveraTheme.spacing.gap8))
 
-            IngredientDropdownField(
-                labelResId = R.string.ingredient_item_label_location,
+            DropdownFieldRow(
+                label = stringResource(CoreUiR.string.field_label_storage_location),
                 value = item.location?.displayName(),
                 onClick = onLocationClick,
             )
 
             Spacer(modifier = Modifier.size(NeveraTheme.spacing.gap8))
 
-            IngredientExpiryDateRow(
+            ExpiryDateFieldRow(
                 expiryDate = item.expiryDate,
                 onClick = onDateClick,
             )

@@ -2,6 +2,7 @@ package com.anddd.nevera
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -50,7 +51,7 @@ fun NeveraApp(
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0),
+        contentWindowInsets = WindowInsets.navigationBars,
         bottomBar = {
             if (isTopLevel) {
                 NeveraNavigationBar(

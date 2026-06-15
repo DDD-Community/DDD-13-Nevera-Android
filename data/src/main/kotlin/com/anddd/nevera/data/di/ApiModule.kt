@@ -4,6 +4,7 @@ import com.anddd.nevera.core.network.di.OcrExtractRetrofit
 import com.anddd.nevera.core.network.di.RefreshApi
 import com.anddd.nevera.core.network.di.RefreshRetrofit
 import com.anddd.nevera.data.api.AuthApi
+import com.anddd.nevera.data.api.FridgeApi
 import com.anddd.nevera.data.api.HomeApi
 import com.anddd.nevera.data.api.IngredientApi
 import com.anddd.nevera.data.api.NotificationApi
@@ -68,5 +69,11 @@ internal object ApiModule {
     @Singleton
     fun provideWishApi(retrofit: Retrofit): WishApi {
         return retrofit.create(WishApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFridgeApi(retrofit: Retrofit): FridgeApi {
+        return retrofit.create(FridgeApi::class.java)
     }
 }
