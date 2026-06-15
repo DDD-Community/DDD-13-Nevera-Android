@@ -30,7 +30,7 @@ fun QuantityFieldRow(
         Spacer(modifier = Modifier.weight(1f))
         NeveraQuantityStepper(
             quantity = quantity,
-            onDecrease = { onQuantityChanged(quantity - 1) },
+            onDecrease = { onQuantityChanged((quantity - 1).coerceAtLeast(0)) },
             onIncrease = { onQuantityChanged(quantity + 1) },
         )
     }
