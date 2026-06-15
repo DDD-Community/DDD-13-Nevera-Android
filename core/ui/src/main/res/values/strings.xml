@@ -12,6 +12,27 @@
     <string name="notification_permission_title">알림권한</string>
     <string name="notification_permission_description">유통기한 임박 알림</string>
 
+    <!-- FieldRow 공통 -->
+    <string name="field_cost_unit">원</string>
+    <string name="field_dropdown_placeholder">선택</string>
+    <string name="field_expiry_date_placeholder">날짜 선택</string>
+    <string name="field_label_quantity">수량</string>
+    <string name="field_label_cost">금액</string>
+    <string name="field_label_expiry_date">유통기한</string>
+    <string name="field_label_category">카테고리</string>
+    <string name="field_label_storage_location">보관 방법</string>
+
+    <!-- CategoryBottomSheet -->
+    <string name="ingredient_category_title">카테고리</string>
+    <string name="ingredient_category_confirm">확인</string>
+
+    <!-- StorageLocationBottomSheet -->
+    <string name="ingredient_storage_location_title">보관 방법</string>
+    <string name="ingredient_storage_location_confirm">확인</string>
+    <string name="ingredient_storage_location_fridge">냉장</string>
+    <string name="ingredient_storage_location_freezer">냉동</string>
+    <string name="ingredient_storage_location_pantry">실온</string>
+
     <!-- FoodCategory displayName -->
     <string name="ingredient_category_vegetable">채소</string>
     <string name="ingredient_category_fruit">과일</string>

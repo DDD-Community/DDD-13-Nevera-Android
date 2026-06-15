@@ -3,6 +3,7 @@ package com.anddd.nevera.feature.main.home.component
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -50,7 +51,6 @@ internal fun HomeContent(
             )
         },
         floatingActionButton = {
-            // TODO LeadingIcon + Text Button 구현 및 교체
             NeveraFilledButton(
                 label = stringResource(R.string.home_fab_label),
                 onClick = { onIntent(HomeIntent.AddIngredientClick) },

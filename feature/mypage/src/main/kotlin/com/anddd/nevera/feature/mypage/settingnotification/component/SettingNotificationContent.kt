@@ -21,8 +21,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.app.NotificationManagerCompat
 import com.anddd.nevera.core.designsystem.component.appbar.NeveraAppBar
+import com.anddd.nevera.infra.permission.AppPermission
+import com.anddd.nevera.infra.permission.DefaultPermissionChecker
 import com.anddd.nevera.core.designsystem.component.appbar.NeveraAppBarNavigation
 import com.anddd.nevera.core.designsystem.component.toggle.NeveraSwitch
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
@@ -124,9 +125,9 @@ private fun ExpiryAlarmRow(
         NeveraSwitch(
             checked = checked,
             onCheckedChange = { enabled ->
-                val isSystemNotificationEnabled =
-                    NotificationManagerCompat.from(context).areNotificationsEnabled()
-                onIntent(SettingNotificationIntent.ExpiryAlarmToggled(enabled, isSystemNotificationEnabled))
+                val isPermissionGranted =
+                    DefaultPermissionChecker.isGranted(context, AppPermission.Notification)
+                onIntent(SettingNotificationIntent.ExpiryAlarmToggled(enabled, isPermissionGranted))
             },
         )
     }

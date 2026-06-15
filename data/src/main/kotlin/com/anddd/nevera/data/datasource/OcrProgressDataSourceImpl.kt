@@ -1,5 +1,7 @@
 package com.anddd.nevera.data.datasource
 
+import com.anddd.nevera.core.network.di.OcrExtractOkHttpClient
+import com.anddd.nevera.core.network.di.OcrExtractRetrofit
 import com.anddd.nevera.core.network.model.ApiResponse
 import com.anddd.nevera.data.model.ingredient.OcrProgressDto
 import com.google.gson.Gson
@@ -20,8 +22,8 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 internal class OcrProgressDataSourceImpl @Inject constructor(
-    retrofit: Retrofit,
-    okHttpClient: OkHttpClient,
+    @OcrExtractRetrofit retrofit: Retrofit,
+    @OcrExtractOkHttpClient okHttpClient: OkHttpClient,
     private val gson: Gson,
 ) : OcrProgressDataSource {
 
@@ -44,6 +46,7 @@ internal class OcrProgressDataSourceImpl @Inject constructor(
                 request = request,
                 listener = object : EventSourceListener() {
                     override fun onOpen(eventSource: EventSource, response: Response) {
+                        Timber.d("OCR SSE Open")
                         trySend(OcrProgressResponse.Opened)
                     }
 
@@ -56,10 +59,17 @@ internal class OcrProgressDataSourceImpl @Inject constructor(
                         val response = runCatching {
                             gson.fromJson<ApiResponse<OcrProgressDto>>(data, progressResponseType)
                         }.getOrElse { t ->
+                            Timber.w(t, "Failed to parse OCR SSE progress event")
                             close(t)
                             return
                         }
 
+                        Timber.d(
+                            "OCR SSE progress event: progress=%s, result=%s, errorCode=%s",
+                            response.result?.progress,
+                            response.result?.result,
+                            response.error?.code,
+                        )
                         trySend(OcrProgressResponse.Progress(response))
                         if ((response.result?.progress ?: 0) >= 100) close()
                     }

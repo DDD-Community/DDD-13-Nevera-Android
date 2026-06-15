@@ -50,12 +50,12 @@ internal fun SignupContent(
             modifier = Modifier.fillMaxSize()
                 .background(NeveraTheme.colors.backgroundPrimary)
                 .padding(innerPadding)
-                .imePadding()
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth()
                     .verticalScroll(scrollState)
                     .padding(horizontal = NeveraTheme.spacing.padding20)
+                    .imePadding()
             ) {
                 Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap20))
 

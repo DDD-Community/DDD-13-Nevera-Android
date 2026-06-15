@@ -7,7 +7,6 @@ import com.anddd.nevera.domain.model.home.HomeSummary
 import com.anddd.nevera.domain.usecase.home.GetHomeSummaryUseCase
 import com.anddd.nevera.domain.usecase.ingredient.GetDisposedIngredientsUseCase
 import com.anddd.nevera.domain.usecase.ingredient.GetRescuedIngredientsUseCase
-import com.anddd.nevera.domain.usecase.notification.MarkAllNotificationsAsReadUseCase
 import com.anddd.nevera.domain.usecase.notification.ObserveUnreadNotificationUseCase
 import com.anddd.nevera.domain.usecase.user.GetOnboardingStatusUseCase
 import com.anddd.nevera.domain.usecase.user.UpdateNicknameUseCase
@@ -19,7 +18,6 @@ import com.anddd.nevera.feature.main.home.model.HomeProfileUiModel
 import com.anddd.nevera.feature.main.home.model.HomeSavingsUiModel
 import com.anddd.nevera.feature.main.home.model.HomeSideEffect
 import com.anddd.nevera.feature.main.home.model.HomeUiState
-import com.anddd.nevera.feature.main.home.model.HomeWishUiModel
 import com.anddd.nevera.feature.main.home.model.IngredientFilterTab
 import com.anddd.nevera.feature.main.home.model.PaginatedListState
 import com.anddd.nevera.feature.main.home.model.appendPage
@@ -41,7 +39,6 @@ class HomeViewModel @Inject constructor(
     private val createWish: CreateWishUseCase,
     private val updateWish: UpdateWishUseCase,
     private val observeUnreadNotification: ObserveUnreadNotificationUseCase,
-    private val markAllNotificationsAsRead: MarkAllNotificationsAsReadUseCase,
 ) : NeveraViewModel<HomeUiState, HomeSideEffect, HomeIntent, HomeMutation>(HomeUiState()) {
 
     private companion object {
@@ -84,7 +81,6 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun onNotificationIconClick() = intent {
-        markAllNotificationsAsRead()
         postSideEffect(HomeSideEffect.NavigateToNotification)
     }
 

@@ -9,4 +9,5 @@ android {
 dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.coroutines.android)
+    implementation(project(":infra:permission"))
 }

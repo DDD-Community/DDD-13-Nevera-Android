@@ -25,7 +25,7 @@ import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.domain.model.ingredient.StorageLocation
 import com.anddd.nevera.feature.fridge.R
-import com.anddd.nevera.feature.fridge.main.model.IngredientSortOrder
+import com.anddd.nevera.domain.model.ingredient.IngredientSortOrder
 import com.anddd.nevera.feature.fridge.main.model.StorageLocationFilter
 
 @Composable

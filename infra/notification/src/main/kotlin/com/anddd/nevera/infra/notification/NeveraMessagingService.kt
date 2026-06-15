@@ -109,7 +109,9 @@ class NeveraMessagingService : FirebaseMessagingService() {
         deepLink: String,
     ): PendingIntent {
         val intent = Intent(Intent.ACTION_VIEW, deepLink.toUri()).apply {
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            // FCM 서비스(Activity 컨텍스트가 아님)에서 액티비티를 시작하므로 NEW_TASK가 필요하다.
+            // SINGLE_TOP을 함께 지정해 앱 실행 중에는 MainActivity가 재생성되지 않고 onNewIntent로 재사용되게 한다.
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         }
 
         return PendingIntent.getActivity(
@@ -194,7 +196,7 @@ class NeveraMessagingService : FirebaseMessagingService() {
         private const val NOTIFICATION_TYPE = "type"
         private const val NOTIFICATION_TITLE = "title"
         private const val NOTIFICATION_MESSAGE = "message"
-        private const val NOTIFICATION_DEEPLINK = "deepLink"
+        private const val NOTIFICATION_DEEPLINK = "deeplink"
         private const val NOTIFICATION_CREATED_AT = "createdAt"
         private const val DEFAULT_DEEP_LINK = "nevera://"
     }

@@ -38,4 +38,40 @@
     <string name="fridge_notification_permission_request_title">앱 사용을 위해 권한을 허용해주세요</string>
     <string name="fridge_notification_permission_request_confirm">확인</string>
 
+    <!-- 구조 바텀시트 -->
+    <string name="fridge_rescue_percentage_little">조금 먹었어요</string>
+    <string name="fridge_rescue_percentage_half">절반 정도 먹었어요</string>
+    <string name="fridge_rescue_percentage_more">절반보다 더 먹었어요</string>
+    <string name="fridge_rescue_percentage_all">다 먹었어요</string>
+    <string name="fridge_rescue_sheet_question">얼마나 구조하셨어요?</string>
+    <string name="fridge_rescue_sheet_confirm">변경하기</string>
+    <string name="fridge_rescue_sheet_rescue_amount_label">구조 금액</string>
+    <string name="fridge_rescue_sheet_total_amount_label">총 금액</string>
+    <string name="fridge_rescue_sheet_rescue_amount_format">+%,d원</string>
+    <string name="fridge_rescue_sheet_total_amount_format">%,d원</string>
+
+    <!-- 구조 다이얼로그 -->
+    <string name="fridge_rescue_confirm_dialog_title">식재료를 변경할까요?</string>
+    <string name="fridge_rescue_confirm_dialog_close">닫기</string>
+
+    <!-- 폐기 바텀시트 -->
+    <string name="fridge_dispose_percentage_little">아주 조금만 폐기했어요</string>
+    <string name="fridge_dispose_percentage_half">절반 정도 폐기했어요</string>
+    <string name="fridge_dispose_percentage_more">거의 다 폐기했어요</string>
+    <string name="fridge_dispose_percentage_all">전부 다 폐기했어요</string>
+    <string name="fridge_dispose_sheet_question">얼마나 폐기하셨어요?</string>
+    <string name="fridge_dispose_sheet_confirm">변경하기</string>
+    <string name="fridge_dispose_sheet_dispose_amount_label">폐기 금액</string>
+    <string name="fridge_dispose_sheet_total_amount_label">총 금액</string>
+    <string name="fridge_dispose_sheet_dispose_amount_format">-%,d원</string>
+    <string name="fridge_dispose_sheet_total_amount_format">%,d원</string>
+
+    <!-- 폐기 다이얼로그 -->
+    <string name="fridge_dispose_confirm_dialog_title">식재료를 변경할까요?</string>
+    <string name="fridge_dispose_confirm_dialog_close">닫기</string>
+
+    <!-- 식재료 수정 -->
+    <string name="edit_fridge_ingredient_title">내 식재료</string>
+    <string name="edit_fridge_ingredient_confirm">수정하기</string>
+
 </resources>

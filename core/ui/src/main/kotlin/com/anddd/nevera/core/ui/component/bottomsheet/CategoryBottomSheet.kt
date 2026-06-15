@@ -1,4 +1,4 @@
-package com.anddd.nevera.feature.ingredient.main.component
+package com.anddd.nevera.core.ui.component.bottomsheet
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,23 +29,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.component.bottomsheet.NeveraActionBottomSheet
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
-import com.anddd.nevera.feature.ingredient.R
-import com.anddd.nevera.domain.model.ingredient.FoodCategory
+import com.anddd.nevera.core.ui.R
 import com.anddd.nevera.core.ui.displayName
 import com.anddd.nevera.core.ui.iconRes
+import com.anddd.nevera.domain.model.ingredient.FoodCategory
 
-/**
- * 식재료 카테고리 선택 바텀시트
- *
- * @param selectedCategory   현재 선택된 카테고리 (null = 미선택)
- * @param onCategorySelected 확인 탭 시 선택값 전달
- * @param onDismiss          시트 닫기 (확인 후 or 외부 탭/스와이프)
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryBottomSheet(
@@ -98,7 +90,8 @@ private fun CategoryItem(
     onClick: () -> Unit,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .selectable(
                 selected = isSelected,
                 onClick = onClick,
@@ -135,17 +128,6 @@ private fun CategoryItem(
             tint = if (isSelected) NeveraTheme.colors.primaryNormal
             else NeveraTheme.colors.iconDisabled,
             modifier = Modifier.size(NeveraTheme.iconSize.medium),
-        )
-    }
-}
-
-@Preview(showBackground = true, widthDp = 360)
-@Composable
-private fun CategoryListPreview() {
-    NeveraTheme {
-        CategoryList(
-            selectedCategory = FoodCategory.Drink,
-            onCategoryClick = {},
         )
     }
 }
