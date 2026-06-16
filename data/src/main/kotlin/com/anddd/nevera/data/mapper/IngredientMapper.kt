@@ -1,16 +1,25 @@
 package com.anddd.nevera.data.mapper
 
+import com.anddd.nevera.data.model.ingredient.EditIngredientRequest
 import com.anddd.nevera.data.model.ingredient.IngredientResponse
 import com.anddd.nevera.data.model.ingredient.OcrIngredientDto
 import com.anddd.nevera.data.model.ingredient.RegisterIngredientRequest
+import com.anddd.nevera.domain.model.ingredient.EditIngredientInput
 import com.anddd.nevera.domain.model.ingredient.FoodCategory
 import com.anddd.nevera.domain.model.ingredient.Ingredient
 import com.anddd.nevera.domain.model.ingredient.OcrIngredient
 import com.anddd.nevera.domain.model.ingredient.StorageLocation
+import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 private val KST_ZONE_ID = ZoneId.of("Asia/Seoul")
+
+/**
+ * [LocalDate] → API 요청용 ISO-8601 offset 문자열 변환 (KST 기준 00:00)
+ */
+internal fun LocalDate.toApiExpirationDate(): String =
+    atStartOfDay(KST_ZONE_ID).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
 
 /**
  * API 응답 category 값 → FoodCategory 변환
@@ -92,8 +101,15 @@ internal fun OcrIngredient.toRequest(): RegisterIngredientRequest = RegisterIngr
     category = category.toApiString(),
     location = location.toApiString(),
     quantity = quantity,
-    expirationDate = expiryDate
-        ?.atStartOfDay(KST_ZONE_ID)
-        ?.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+    expirationDate = expiryDate?.toApiExpirationDate(),
+    cost = cost,
+)
+
+internal fun EditIngredientInput.toRequest(): EditIngredientRequest = EditIngredientRequest(
+    name = name,
+    category = category.toApiString(),
+    location = location.toApiString(),
+    quantity = quantity,
+    expirationDate = expiryDate.toApiExpirationDate(),
     cost = cost,
 )
