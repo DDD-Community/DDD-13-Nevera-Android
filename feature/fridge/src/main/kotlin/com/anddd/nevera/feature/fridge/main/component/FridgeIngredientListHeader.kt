@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
@@ -37,6 +36,7 @@ internal fun FridgeIngredientListHeader(
     modifier: Modifier = Modifier,
 ) {
     var dropdownExpanded by remember { mutableStateOf(false) }
+    val density = LocalDensity.current
 
     Row(
         modifier = modifier
@@ -75,35 +75,16 @@ internal fun FridgeIngredientListHeader(
                     modifier = Modifier.size(NeveraTheme.iconSize.small),
                 )
             }
-            DropdownMenu(
-                expanded = dropdownExpanded,
-                onDismissRequest = { dropdownExpanded = false },
-            ) {
-                IngredientSortOrder.entries.forEach { order ->
-                    DropdownMenuItem(
-                        text = {
-                            Text(
-                                text = stringResource(order.labelRes),
-                                style = NeveraTheme.typography.bodyMedium,
-                                color = NeveraTheme.colors.textSecondary,
-                            )
-                        },
-                        trailingIcon = {
-                            if (order == selectedSortOrder) {
-                                Icon(
-                                    painter = NeveraIcons.Check,
-                                    contentDescription = null,
-                                    tint = NeveraTheme.colors.iconPrimary,
-                                    modifier = Modifier.size(NeveraTheme.iconSize.small),
-                                )
-                            }
-                        },
-                        onClick = {
-                            onSortOrderSelected(order)
-                            dropdownExpanded = false
-                        },
-                    )
-                }
+            if (dropdownExpanded) {
+                FridgeSortOrderDropdownMenu(
+                    density = density,
+                    selectedSortOrder = selectedSortOrder,
+                    onSortOrderSelected = {
+                        onSortOrderSelected(it)
+                        dropdownExpanded = false
+                    },
+                    onDismissRequest = { dropdownExpanded = false },
+                )
             }
         }
     }
@@ -119,7 +100,7 @@ private val StorageLocationFilter.labelRes: Int
         }
     }
 
-private val IngredientSortOrder.labelRes: Int
+internal val IngredientSortOrder.labelRes: Int
     get() = when (this) {
         IngredientSortOrder.ExpiryDate -> R.string.fridge_list_sort_expiry
         IngredientSortOrder.Latest -> R.string.fridge_list_sort_latest

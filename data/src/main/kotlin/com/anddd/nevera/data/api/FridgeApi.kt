@@ -18,7 +18,7 @@ internal interface FridgeApi {
         @Query("size") size: Int,
     ): ApiResponse<FridgeIngredientsResponse>
 
-    @GET("api/v1/fridge/inventory/{inventoryId}")
+    @GET("api/v1/fridge/{inventoryId}")
     suspend fun getFridgeIngredientById(
         @Path("inventoryId") id: Long,
     ): ApiResponse<FridgeIngredientResponse>
