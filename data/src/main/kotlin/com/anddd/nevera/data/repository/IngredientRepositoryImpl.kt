@@ -1,7 +1,7 @@
 package com.anddd.nevera.data.repository
 
-import com.anddd.nevera.core.common.NeveraResult
 import com.anddd.nevera.core.common.NetworkError
+import com.anddd.nevera.core.common.NeveraResult
 import com.anddd.nevera.core.common.map
 import com.anddd.nevera.core.network.auth.ApiCallExecutor
 import com.anddd.nevera.data.datasource.IngredientRemoteDataSource
@@ -9,16 +9,20 @@ import com.anddd.nevera.data.datasource.OcrDataSource
 import com.anddd.nevera.data.datasource.OcrProgressDataSource
 import com.anddd.nevera.data.datasource.OcrProgressResponse
 import com.anddd.nevera.data.mapper.error.toCommonError
+import com.anddd.nevera.data.mapper.error.toEditIngredientError
 import com.anddd.nevera.data.mapper.error.toOcrExtractError
 import com.anddd.nevera.data.mapper.error.toRegisterIngredientError
 import com.anddd.nevera.data.mapper.toDomain
 import com.anddd.nevera.data.mapper.toProgressResult
 import com.anddd.nevera.data.mapper.toRequest
 import com.anddd.nevera.domain.model.common.CommonError
+import com.anddd.nevera.domain.model.ingredient.EditIngredientError
+import com.anddd.nevera.domain.model.ingredient.EditIngredientInput
+import com.anddd.nevera.domain.model.ingredient.FridgeIngredient
 import com.anddd.nevera.domain.model.ingredient.Ingredient
 import com.anddd.nevera.domain.model.ingredient.OcrExtractError
-import com.anddd.nevera.domain.model.ingredient.OcrJobId
 import com.anddd.nevera.domain.model.ingredient.OcrIngredient
+import com.anddd.nevera.domain.model.ingredient.OcrJobId
 import com.anddd.nevera.domain.model.ingredient.OcrProgressResult
 import com.anddd.nevera.domain.model.ingredient.RegisterIngredientError
 import com.anddd.nevera.domain.repository.IngredientRepository
@@ -84,6 +88,17 @@ internal class IngredientRepositoryImpl @Inject constructor(
         }.map(
             transformSuccess = { },
             transformFailure = { it.toRegisterIngredientError() },
+        )
+
+    override suspend fun editIngredient(
+        id: Long,
+        input: EditIngredientInput,
+    ): NeveraResult<FridgeIngredient, EditIngredientError> =
+        apiCall {
+            remoteDataSource.editIngredient(id = id, request = input.toRequest())
+        }.map(
+            transformSuccess = { it.toDomain() },
+            transformFailure = { it.toEditIngredientError() },
         )
 
     override suspend fun getRescuedIngredients(

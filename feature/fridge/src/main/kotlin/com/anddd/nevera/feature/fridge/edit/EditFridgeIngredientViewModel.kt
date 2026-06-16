@@ -5,23 +5,26 @@ import androidx.navigation.toRoute
 import com.anddd.nevera.core.common.onFailure
 import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.core.mvi.NeveraViewModel
+import com.anddd.nevera.domain.model.ingredient.EditIngredientInput
 import com.anddd.nevera.domain.model.ingredient.FoodCategory
 import com.anddd.nevera.domain.model.ingredient.StorageLocation
+import com.anddd.nevera.domain.usecase.ingredient.EditIngredientUseCase
 import com.anddd.nevera.domain.usecase.ingredient.GetFridgeIngredientByIdUseCase
 import com.anddd.nevera.feature.fridge.edit.model.EditFridgeIngredientIntent
-import java.time.LocalDate
 import com.anddd.nevera.feature.fridge.edit.model.EditFridgeIngredientMutation
 import com.anddd.nevera.feature.fridge.edit.model.EditFridgeIngredientSideEffect
 import com.anddd.nevera.feature.fridge.edit.model.EditFridgeIngredientUiState
 import com.anddd.nevera.feature.fridge.navigation.EditFridgeIngredientRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.orbitmvi.orbit.syntax.Syntax
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
 class EditFridgeIngredientViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getFridgeIngredientById: GetFridgeIngredientByIdUseCase,
+    private val editIngredient: EditIngredientUseCase,
 ) : NeveraViewModel<EditFridgeIngredientUiState, EditFridgeIngredientSideEffect, EditFridgeIngredientIntent, EditFridgeIngredientMutation>(
     EditFridgeIngredientUiState()
 ) {
@@ -88,8 +91,24 @@ class EditFridgeIngredientViewModel @Inject constructor(
     }
 
     private fun onConfirmClick() = intent {
-        // TODO: UpdateFridgeIngredientUseCase 연동
-        postSideEffect(EditFridgeIngredientSideEffect.NavigateBack)
+        applyMutation(EditFridgeIngredientMutation.Loading)
+        val input = EditIngredientInput(
+            name = state.name,
+            category = state.category,
+            location = state.storageLocation,
+            quantity = state.quantity,
+            expiryDate = state.expiryDate,
+            cost = state.cost,
+        )
+        editIngredient(ingredientId, input)
+            .onSuccess {
+                applyMutation(EditFridgeIngredientMutation.UpdateComplete)
+                postSideEffect(EditFridgeIngredientSideEffect.NavigateBack)
+            }
+            .onFailure {
+                applyMutation(EditFridgeIngredientMutation.UpdateComplete)
+                postSideEffect(EditFridgeIngredientSideEffect.ShowUpdateFailedToast)
+            }
     }
 
     override suspend fun Syntax<EditFridgeIngredientUiState, EditFridgeIngredientSideEffect>.applyMutation(
