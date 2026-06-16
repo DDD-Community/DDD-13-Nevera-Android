@@ -49,10 +49,20 @@ internal fun FridgeSortOrderDropdownMenu(
                     layoutDirection: LayoutDirection,
                     popupContentSize: IntSize,
                 ): IntOffset = with(density) {
-                    IntOffset(
-                        x = anchorBounds.right - popupContentSize.width,
-                        y = anchorBounds.bottom + NeveraTheme.spacing.gap4.roundToPx(),
+                    val verticalGap = NeveraTheme.spacing.gap4.roundToPx()
+                    val preferredX = anchorBounds.right - popupContentSize.width
+                    val preferredY = anchorBounds.bottom + verticalGap
+
+                    val clampedX = preferredX.coerceIn(
+                        minimumValue = 0,
+                        maximumValue = (windowSize.width - popupContentSize.width).coerceAtLeast(0),
                     )
+                    val clampedY = preferredY.coerceIn(
+                        minimumValue = 0,
+                        maximumValue = (windowSize.height - popupContentSize.height).coerceAtLeast(0),
+                    )
+
+                    IntOffset(x = clampedX, y = clampedY)
                 }
             }
         },
