@@ -3,7 +3,6 @@ package com.anddd.nevera.feature.fridge.main.component
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -32,6 +31,7 @@ import com.anddd.nevera.feature.fridge.main.model.FridgeIngredientUiModel
 import com.anddd.nevera.feature.fridge.main.model.FridgeIntent
 import com.anddd.nevera.feature.fridge.main.model.FridgeUiState
 import com.anddd.nevera.feature.fridge.main.model.StorageLocationFilter
+import kotlinx.collections.immutable.persistentListOf
 import java.time.LocalDate
 
 /**
@@ -132,7 +132,7 @@ internal fun FridgeContent(
     }
 }
 
-private val mockIngredients = listOf(
+private val mockIngredients = persistentListOf(
     FridgeIngredientUiModel(id = 1L, name = "제주 햇당근", category = FoodCategory.Veg, quantity = 1, cost = 6500, expiryDate = LocalDate.now().plusDays(28)),
     FridgeIngredientUiModel(id = 2L, name = "삼겹살", category = FoodCategory.MeatEggs, quantity = 1, cost = 0, expiryDate = LocalDate.now().minusDays(3)),
     FridgeIngredientUiModel(id = 3L, name = "서울우유 1L", category = FoodCategory.Dairy, quantity = 2, cost = 3200, expiryDate = LocalDate.now().plusDays(5)),

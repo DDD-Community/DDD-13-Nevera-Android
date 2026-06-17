@@ -17,9 +17,10 @@ import com.anddd.nevera.feature.fridge.main.model.FridgeUiState
 import com.anddd.nevera.feature.fridge.main.model.StorageLocationFilter
 import com.anddd.nevera.feature.fridge.main.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withTimeoutOrNull
-import java.time.LocalDate
 import org.orbitmvi.orbit.syntax.Syntax
 import timber.log.Timber
 import javax.inject.Inject
@@ -149,11 +150,11 @@ class FridgeViewModel @Inject constructor(
         when (mutation) {
             FridgeMutation.Loading -> reduce { state.copy(isLoading = true) }
             FridgeMutation.LoadComplete -> reduce { state.copy(isLoading = false) }
-            is FridgeMutation.ShowIngredients -> reduce { state.copy(ingredients = mutation.ingredients) }
+            is FridgeMutation.ShowIngredients -> reduce { state.copy(ingredients = mutation.ingredients.toImmutableList()) }
             is FridgeMutation.SelectStorageFilter -> reduce { state.copy(selectedStorageFilter = mutation.filter) }
             is FridgeMutation.SelectCategoryFilter -> reduce {
                 state.copy(
-                    categoryFilters = state.categoryFilters + (mutation.storageFilter to mutation.categoryFilter),
+                    categoryFilters = (state.categoryFilters + (mutation.storageFilter to mutation.categoryFilter)).toImmutableMap(),
                 )
             }
 
