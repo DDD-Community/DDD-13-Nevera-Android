@@ -1,6 +1,7 @@
 package com.anddd.nevera.feature.main.home.model
 
 import com.anddd.nevera.core.mvi.NeveraMutation
+import kotlinx.collections.immutable.PersistentList
 
 sealed interface HomeMutation : NeveraMutation {
     data object Loading : HomeMutation
@@ -18,7 +19,7 @@ sealed interface HomeMutation : NeveraMutation {
     data class ShowSavings(val savings: HomeSavingsUiModel) : HomeMutation
 
     data class ShowRescuedIngredients(
-        val ingredients: List<IngredientUiModel>,
+        val ingredients: PersistentList<IngredientUiModel>,
         val hasMore: Boolean,
     ) : HomeMutation
 
@@ -30,7 +31,7 @@ sealed interface HomeMutation : NeveraMutation {
     ) : HomeMutation
 
     data class ShowDisposalIngredients(
-        val ingredients: List<IngredientUiModel>,
+        val ingredients: PersistentList<IngredientUiModel>,
         val hasMore: Boolean,
     ) : HomeMutation
 

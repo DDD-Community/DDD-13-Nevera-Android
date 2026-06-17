@@ -1,7 +1,9 @@
 package com.anddd.nevera.feature.main.home.model
 
+import androidx.compose.runtime.Immutable
 import com.anddd.nevera.core.mvi.NeveraState
 
+@Immutable
 data class HomeUiState(
     val isLoading: Boolean = false,
     val hasUnreadNotification: Boolean = false,

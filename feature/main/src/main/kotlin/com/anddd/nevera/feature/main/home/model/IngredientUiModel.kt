@@ -2,6 +2,8 @@ package com.anddd.nevera.feature.main.home.model
 
 import com.anddd.nevera.domain.model.ingredient.FoodCategory
 import com.anddd.nevera.domain.model.ingredient.Ingredient
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.toPersistentList
 
 data class IngredientUiModel(
     val id: Long,
@@ -21,4 +23,4 @@ internal fun Ingredient.toUiModel(): IngredientUiModel = IngredientUiModel(
     cost = cost,
 )
 
-internal fun List<Ingredient>.toUiModel(): List<IngredientUiModel> = map { it.toUiModel() }
+internal fun List<Ingredient>.toUiModel(): PersistentList<IngredientUiModel> = map { it.toUiModel() }.toPersistentList()
