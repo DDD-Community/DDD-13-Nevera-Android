@@ -15,9 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -33,15 +32,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import coil3.compose.AsyncImage
 import com.anddd.nevera.core.designsystem.component.button.NeveraButtonColor
+import com.anddd.nevera.core.designsystem.component.button.NeveraButtonSize
 import com.anddd.nevera.core.designsystem.component.button.NeveraFilledButton
 import com.anddd.nevera.core.designsystem.component.button.NeveraWeakIconButton
 import com.anddd.nevera.core.designsystem.component.datepicker.NeveraDatePickerDialog
-import com.anddd.nevera.core.ui.component.bottomsheet.CategoryBottomSheet
-import com.anddd.nevera.core.ui.component.bottomsheet.StorageLocationBottomSheet
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
+import com.anddd.nevera.core.ui.component.bottomsheet.CategoryBottomSheet
+import com.anddd.nevera.core.ui.component.bottomsheet.StorageLocationBottomSheet
 import com.anddd.nevera.domain.model.ingredient.FoodCategory
 import com.anddd.nevera.domain.model.ingredient.StorageLocation
 import com.anddd.nevera.feature.ingredient.R
@@ -49,9 +51,8 @@ import com.anddd.nevera.feature.ingredient.main.component.ingredient.IngredientI
 import com.anddd.nevera.feature.ingredient.main.model.IngredientIntent
 import com.anddd.nevera.feature.ingredient.main.model.IngredientUiModel
 import com.anddd.nevera.feature.ingredient.main.model.IngredientUiState
+import kotlinx.collections.immutable.persistentListOf
 import java.time.LocalDate
-import androidx.core.net.toUri
-import com.anddd.nevera.core.designsystem.component.button.NeveraButtonSize
 
 // ─── 상수 ──────────────────────────────────────────────────────────────────
 private val ScannedImageSize = 72.dp
@@ -170,6 +171,7 @@ internal fun IngredientContent(
                     onDismiss = { editState = IngredientEditState.None },
                 )
             }
+
             is IngredientEditState.EditingLocation -> {
                 val item = uiState.items.find { it.id == state.itemId }
                     ?: run { editState = IngredientEditState.None; return@Box }
@@ -181,6 +183,7 @@ internal fun IngredientContent(
                     onDismiss = { editState = IngredientEditState.None },
                 )
             }
+
             is IngredientEditState.EditingDate -> {
                 val item = uiState.items.find { it.id == state.itemId }
                     ?: run { editState = IngredientEditState.None; return@Box }
@@ -192,6 +195,7 @@ internal fun IngredientContent(
                     onDismiss = { editState = IngredientEditState.None },
                 )
             }
+
             IngredientEditState.None -> Unit
         }
     }
@@ -283,7 +287,7 @@ private fun IngredientContentPreview() {
         IngredientContent(
             uiState = IngredientUiState(
                 imageUri = "content://preview/scanned_image",
-                items = listOf(
+                items = persistentListOf(
                     IngredientUiModel(
                         name = "아침에주스 ABC 주스, 18개입",
                         category = FoodCategory.Drink,

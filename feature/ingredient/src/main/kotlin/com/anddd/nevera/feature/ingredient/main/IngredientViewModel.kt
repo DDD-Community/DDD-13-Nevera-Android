@@ -1,6 +1,7 @@
 package com.anddd.nevera.feature.ingredient.main
 
 import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.toRoute
 import com.anddd.nevera.core.common.onFailure
 import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.core.mvi.NeveraViewModel
@@ -20,9 +21,9 @@ import com.anddd.nevera.feature.ingredient.main.model.IngredientPhase
 import com.anddd.nevera.feature.ingredient.main.model.IngredientSideEffect
 import com.anddd.nevera.feature.ingredient.main.model.IngredientUiModel
 import com.anddd.nevera.feature.ingredient.main.model.IngredientUiState
-import androidx.navigation.toRoute
 import com.anddd.nevera.feature.ingredient.main.navigation.IngredientRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job
 import org.orbitmvi.orbit.syntax.Syntax
 import javax.inject.Inject
@@ -130,7 +131,7 @@ class IngredientViewModel @Inject constructor(
             }
 
             is ScanCompleted -> reduce {
-                state.copy(phase = IngredientPhase.ScanSuccess, items = mutation.items)
+                state.copy(phase = IngredientPhase.ScanSuccess, items = mutation.items.toImmutableList())
             }
 
             ScanFailed -> reduce {
@@ -139,16 +140,16 @@ class IngredientViewModel @Inject constructor(
 
             is ItemUpdated -> reduce {
                 state.copy(
-                    items = state.items.map { if (it.id == mutation.item.id) mutation.item else it }
+                    items = state.items.map { if (it.id == mutation.item.id) mutation.item else it }.toImmutableList()
                 )
             }
 
             is AllSelectionToggled -> reduce {
-                state.copy(items = state.items.map { it.copy(isSelected = mutation.selectAll) })
+                state.copy(items = state.items.map { it.copy(isSelected = mutation.selectAll) }.toImmutableList())
             }
 
             EmptyItemAdded -> reduce {
-                state.copy(items = state.items + IngredientUiModel.empty())
+                state.copy(items = (state.items + IngredientUiModel.empty()).toImmutableList())
             }
 
             RegisterStarted -> reduce {
