@@ -1,7 +1,9 @@
 package com.anddd.nevera.feature.notification.main.model
 
+import androidx.compose.runtime.Immutable
 import com.anddd.nevera.core.mvi.NeveraState
 
+@Immutable
 data class NotificationUiState(
     val hasNotificationPermission: Boolean = true,
 ) : NeveraState
