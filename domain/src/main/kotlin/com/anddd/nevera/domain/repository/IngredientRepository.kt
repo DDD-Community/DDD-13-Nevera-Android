@@ -4,13 +4,16 @@ import com.anddd.nevera.core.common.NeveraResult
 import com.anddd.nevera.domain.model.common.CommonError
 import com.anddd.nevera.domain.model.ingredient.EditIngredientError
 import com.anddd.nevera.domain.model.ingredient.EditIngredientInput
+import com.anddd.nevera.domain.model.ingredient.FoodCategory
 import com.anddd.nevera.domain.model.ingredient.FridgeIngredient
 import com.anddd.nevera.domain.model.ingredient.Ingredient
+import com.anddd.nevera.domain.model.ingredient.IngredientSortOrder
 import com.anddd.nevera.domain.model.ingredient.OcrExtractError
 import com.anddd.nevera.domain.model.ingredient.OcrIngredient
 import com.anddd.nevera.domain.model.ingredient.OcrJobId
 import com.anddd.nevera.domain.model.ingredient.OcrProgressResult
 import com.anddd.nevera.domain.model.ingredient.RegisterIngredientError
+import com.anddd.nevera.domain.model.ingredient.StorageLocation
 import kotlinx.coroutines.flow.Flow
 
 interface IngredientRepository {
@@ -30,6 +33,16 @@ interface IngredientRepository {
         id: Long,
         input: EditIngredientInput,
     ): NeveraResult<FridgeIngredient, EditIngredientError>
+
+    suspend fun getFridgeIngredients(
+        storageLocation: StorageLocation?,
+        category: FoodCategory?,
+        sortOrder: IngredientSortOrder,
+        page: Int,
+        size: Int,
+    ): NeveraResult<List<FridgeIngredient>, CommonError>
+
+    suspend fun getFridgeIngredientById(id: Long): NeveraResult<FridgeIngredient, CommonError>
 
     suspend fun getRescuedIngredients(
         offset: Int,

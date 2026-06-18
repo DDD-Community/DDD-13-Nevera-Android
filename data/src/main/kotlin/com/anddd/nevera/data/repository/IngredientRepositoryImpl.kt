@@ -4,6 +4,7 @@ import com.anddd.nevera.core.common.NetworkError
 import com.anddd.nevera.core.common.NeveraResult
 import com.anddd.nevera.core.common.map
 import com.anddd.nevera.core.network.auth.ApiCallExecutor
+import com.anddd.nevera.data.datasource.FridgeRemoteDataSource
 import com.anddd.nevera.data.datasource.IngredientRemoteDataSource
 import com.anddd.nevera.data.datasource.OcrDataSource
 import com.anddd.nevera.data.datasource.OcrProgressDataSource
@@ -12,19 +13,23 @@ import com.anddd.nevera.data.mapper.error.toCommonError
 import com.anddd.nevera.data.mapper.error.toEditIngredientError
 import com.anddd.nevera.data.mapper.error.toOcrExtractError
 import com.anddd.nevera.data.mapper.error.toRegisterIngredientError
+import com.anddd.nevera.data.mapper.toApiString
 import com.anddd.nevera.data.mapper.toDomain
 import com.anddd.nevera.data.mapper.toProgressResult
 import com.anddd.nevera.data.mapper.toRequest
 import com.anddd.nevera.domain.model.common.CommonError
 import com.anddd.nevera.domain.model.ingredient.EditIngredientError
 import com.anddd.nevera.domain.model.ingredient.EditIngredientInput
+import com.anddd.nevera.domain.model.ingredient.FoodCategory
 import com.anddd.nevera.domain.model.ingredient.FridgeIngredient
 import com.anddd.nevera.domain.model.ingredient.Ingredient
+import com.anddd.nevera.domain.model.ingredient.IngredientSortOrder
 import com.anddd.nevera.domain.model.ingredient.OcrExtractError
 import com.anddd.nevera.domain.model.ingredient.OcrIngredient
 import com.anddd.nevera.domain.model.ingredient.OcrJobId
 import com.anddd.nevera.domain.model.ingredient.OcrProgressResult
 import com.anddd.nevera.domain.model.ingredient.RegisterIngredientError
+import com.anddd.nevera.domain.model.ingredient.StorageLocation
 import com.anddd.nevera.domain.repository.IngredientRepository
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
@@ -35,7 +40,8 @@ import javax.inject.Inject
 internal class IngredientRepositoryImpl @Inject constructor(
     private val ocrDataSource: OcrDataSource,
     private val ocrProgressDataSource: OcrProgressDataSource,
-    private val remoteDataSource: IngredientRemoteDataSource,
+    private val ingredientRemoteDataSource: IngredientRemoteDataSource,
+    private val fridgeRemoteDataSource: FridgeRemoteDataSource,
     private val apiCall: ApiCallExecutor,
 ) : IngredientRepository {
 
@@ -84,7 +90,7 @@ internal class IngredientRepositoryImpl @Inject constructor(
         items: List<OcrIngredient>,
     ): NeveraResult<Unit, RegisterIngredientError> =
         apiCall {
-            remoteDataSource.registerIngredients(items.map { it.toRequest() })
+            ingredientRemoteDataSource.registerIngredients(items.map { it.toRequest() })
         }.map(
             transformSuccess = { },
             transformFailure = { it.toRegisterIngredientError() },
@@ -95,10 +101,38 @@ internal class IngredientRepositoryImpl @Inject constructor(
         input: EditIngredientInput,
     ): NeveraResult<FridgeIngredient, EditIngredientError> =
         apiCall {
-            remoteDataSource.editIngredient(id = id, request = input.toRequest())
+            ingredientRemoteDataSource.editIngredient(id = id, request = input.toRequest())
         }.map(
             transformSuccess = { it.toDomain() },
             transformFailure = { it.toEditIngredientError() },
+        )
+
+    override suspend fun getFridgeIngredients(
+        storageLocation: StorageLocation?,
+        category: FoodCategory?,
+        sortOrder: IngredientSortOrder,
+        page: Int,
+        size: Int,
+    ): NeveraResult<List<FridgeIngredient>, CommonError> =
+        apiCall {
+            fridgeRemoteDataSource.getFridgeIngredients(
+                storageLocation = storageLocation?.toApiString(),
+                category = category?.toApiString(),
+                sortType = sortOrder.toApiString(),
+                page = page,
+                size = size,
+            )
+        }.map(
+            transformSuccess = { it.content.map { dto -> dto.toDomain() } },
+            transformFailure = { it.toCommonError() },
+        )
+
+    override suspend fun getFridgeIngredientById(id: Long): NeveraResult<FridgeIngredient, CommonError> =
+        apiCall {
+            fridgeRemoteDataSource.getFridgeIngredientById(id)
+        }.map(
+            transformSuccess = { it.toDomain() },
+            transformFailure = { it.toCommonError() },
         )
 
     override suspend fun getRescuedIngredients(
@@ -106,7 +140,7 @@ internal class IngredientRepositoryImpl @Inject constructor(
         limit: Int,
     ): NeveraResult<List<Ingredient>, CommonError> {
         return apiCall {
-            remoteDataSource.getRescuedIngredients(offset, limit)
+            ingredientRemoteDataSource.getRescuedIngredients(offset, limit)
         }.map(
             transformSuccess = { list -> list.map { it.toDomain() } },
             transformFailure = { it.toCommonError() },
@@ -118,7 +152,7 @@ internal class IngredientRepositoryImpl @Inject constructor(
         limit: Int,
     ): NeveraResult<List<Ingredient>, CommonError> {
         return apiCall {
-            remoteDataSource.getDisposedIngredients(offset, limit)
+            ingredientRemoteDataSource.getDisposedIngredients(offset, limit)
         }.map(
             transformSuccess = { list -> list.map { it.toDomain() } },
             transformFailure = { it.toCommonError() },

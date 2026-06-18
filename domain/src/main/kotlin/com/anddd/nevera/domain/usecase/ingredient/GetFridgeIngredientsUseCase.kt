@@ -6,11 +6,11 @@ import com.anddd.nevera.domain.model.ingredient.FoodCategory
 import com.anddd.nevera.domain.model.ingredient.FridgeIngredient
 import com.anddd.nevera.domain.model.ingredient.IngredientSortOrder
 import com.anddd.nevera.domain.model.ingredient.StorageLocation
-import com.anddd.nevera.domain.repository.FridgeRepository
+import com.anddd.nevera.domain.repository.IngredientRepository
 import javax.inject.Inject
 
 class GetFridgeIngredientsUseCase @Inject constructor(
-    private val fridgeRepository: FridgeRepository,
+    private val ingredientRepository: IngredientRepository,
 ) {
 
     suspend operator fun invoke(
@@ -18,7 +18,7 @@ class GetFridgeIngredientsUseCase @Inject constructor(
         category: FoodCategory?,
         sortOrder: IngredientSortOrder = IngredientSortOrder.ExpiryDate,
     ): NeveraResult<List<FridgeIngredient>, CommonError> =
-        fridgeRepository.getFridgeIngredients(
+        ingredientRepository.getFridgeIngredients(
             storageLocation = storageLocation,
             category = category,
             sortOrder = sortOrder,
