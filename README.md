@@ -77,3 +77,34 @@ Nevera의 MVI 구조는 단순히 Orbit MVI를 사용하는 것에 그치지 않
 | Min SDK | 26 |
 | Target SDK | 35 |
 | Compile SDK | 35 |
+
+---
+
+## AI Agent(Claude)
+이 프로젝트에는 Claude Code 전용 스킬과 훅이 내장되어 있어, 반복 작업을 자동화하고 프로젝트 규칙을 자동으로 강제합니다.
+자세한 내용은 **[📖 AI Agent 가이드](docs/aiagent/README.md)** 를 참고해 주세요.
+
+### Claude SKILLs
+
+| 카테고리 | 스킬 | 설명 | 유형 |
+|----------|------|------|------|
+| **개발 자동화** | [`/create-feature-module`](docs/aiagent/skills/dev-automation.md#create-feature-module) | Feature 모듈 MVI 보일러플레이트 자동 생성 | 🛠️ 실행 |
+| | [`/implement-compose-preview`](docs/aiagent/skills/dev-automation.md#implement-compose-preview) | Composable에 `@Preview` 함수 자동 생성 | 🛠️ 실행 |
+| | [`/recommend-commit-message`](docs/aiagent/skills/dev-automation.md#recommend-commit-message) | Staged 변경사항 분석 후 커밋 메시지 추천 | 🛠️ 실행 |
+| | [`/sync-develop`](docs/aiagent/skills/dev-automation.md#sync-develop) | upstream develop 브랜치 동기화 & push | 🛠️ 실행 |
+| **PR / CI** | [`/create-pr`](docs/aiagent/skills/pr-ci.md#create-pr) | 브랜치 분석 → 코드 리뷰 → PR 템플릿 작성 → PR 생성 | 🛠️ 실행 |
+| | [`/pr-auto-assign`](docs/aiagent/skills/pr-ci.md#pr-auto-assign) | PR Auto Assign 워크플로우 가이드 | 📖 참조 |
+| | [`/ci-android`](docs/aiagent/skills/pr-ci.md#ci-android) | GitHub Actions CI 구조 및 설정 가이드 | 📖 참조 |
+| **디자인 시스템** | [`/design-system-color`](docs/aiagent/skills/design-system.md#design-system-color) | 시맨틱 컬러 토큰 선택 가이드 | 📖 참조 |
+| | [`/design-system-typography`](docs/aiagent/skills/design-system.md#design-system-typography) | 타이포그래피 토큰 선택 가이드 | 📖 참조 |
+| | [`/design-system-spacing`](docs/aiagent/skills/design-system.md#design-system-spacing) | 스페이싱 토큰 및 패딩/갭 가이드 | 📖 참조 |
+| | [`/design-system-shape`](docs/aiagent/skills/design-system.md#design-system-shape) | Corner radius 토큰 선택 가이드 | 📖 참조 |
+
+> 🛠️ **실행** — `/스킬명` 직접 호출 또는 자연어로 트리거하면 코드 생성·액션을 즉시 실행합니다.  
+> 📖 **참조** — `/스킬명` 직접 호출 불가. 관련 질문·요청 시 Claude Code가 자동으로 참조해 답변에 반영합니다.
+
+### Claude Hooks
+
+| 파일 | 트리거 | 검증 내용 |
+|------|--------|----------|
+| [`check-appbar.sh`](docs/aiagent/hooks/check-appbar.md) | `.kt` 파일 편집 직후 | `Scaffold`의 `topBar`에 `TopAppBar` 등 Material3 기본 AppBar 대신 Nevera AppBar 사용 여부 |
