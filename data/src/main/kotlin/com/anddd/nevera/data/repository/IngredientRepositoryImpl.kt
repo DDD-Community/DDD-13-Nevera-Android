@@ -111,7 +111,9 @@ internal class IngredientRepositoryImpl @Inject constructor(
             transformSuccess = { response ->
                 val updated = response.toDomain()
                 _fridgeIngredients.update { current ->
-                    current.map { if (it.id == updated.id) updated else it }
+                    val index = current.indexOfFirst { it.id == updated.id }
+                    if (index < 0) current
+                    else current.toMutableList().also { it[index] = updated }
                 }
                 updated
             },

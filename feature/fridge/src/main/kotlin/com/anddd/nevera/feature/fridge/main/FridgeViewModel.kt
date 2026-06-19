@@ -1,7 +1,6 @@
 package com.anddd.nevera.feature.fridge.main
 
 import com.anddd.nevera.core.common.onFailure
-import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.core.mvi.NeveraViewModel
 import com.anddd.nevera.domain.model.ingredient.IngredientSortOrder
 import com.anddd.nevera.domain.usecase.ingredient.GetFridgeIngredientsUseCase
@@ -32,13 +31,13 @@ class FridgeViewModel @Inject constructor(
     private val observeUnreadNotification: ObserveUnreadNotificationUseCase,
     private val markAllNotificationsAsRead: MarkAllNotificationsAsReadUseCase,
     private val observeIngredientFocusRequest: ObserveIngredientFocusRequestUseCase,
-    private val observeFridgeIngredient: ObserveFridgeIngredientsUseCase,
+    private val observeFridgeIngredients: ObserveFridgeIngredientsUseCase,
 ) : NeveraViewModel<FridgeUiState, FridgeSideEffect, FridgeIntent, FridgeMutation>(FridgeUiState()) {
 
     init {
         observeBadge()
         observeFocusRequests()
-        observeIngredient()
+        observeIngredients()
         intent { loadIngredients() }
     }
 
@@ -102,9 +101,9 @@ class FridgeViewModel @Inject constructor(
         }
     }
 
-    private fun observeIngredient() = intent {
-        observeFridgeIngredient().collect { items ->
-            applyMutation(FridgeMutation.ShowIngredients(items.map { it.toUiModel() }))
+    private fun observeIngredients() = intent {
+        observeFridgeIngredients().collect { items ->
+            applyMutation(FridgeMutation.ShowIngredients(items.map { it.toUiModel() }.toImmutableList()))
         }
     }
 
@@ -157,7 +156,7 @@ class FridgeViewModel @Inject constructor(
         when (mutation) {
             FridgeMutation.Loading -> reduce { state.copy(isLoading = true) }
             FridgeMutation.LoadComplete -> reduce { state.copy(isLoading = false) }
-            is FridgeMutation.ShowIngredients -> reduce { state.copy(ingredients = mutation.ingredients.toImmutableList()) }
+            is FridgeMutation.ShowIngredients -> reduce { state.copy(ingredients = mutation.ingredients) }
             is FridgeMutation.SelectStorageFilter -> reduce { state.copy(selectedStorageFilter = mutation.filter) }
             is FridgeMutation.SelectCategoryFilter -> reduce {
                 state.copy(

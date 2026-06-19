@@ -2,6 +2,7 @@ package com.anddd.nevera.feature.fridge.main.model
 
 import com.anddd.nevera.core.mvi.NeveraMutation
 import com.anddd.nevera.domain.model.ingredient.IngredientSortOrder
+import kotlinx.collections.immutable.ImmutableList
 
 sealed interface FridgeMutation : NeveraMutation {
 
@@ -9,7 +10,7 @@ sealed interface FridgeMutation : NeveraMutation {
 
     data object LoadComplete : FridgeMutation
 
-    data class ShowIngredients(val ingredients: List<FridgeIngredientUiModel>) : FridgeMutation
+    data class ShowIngredients(val ingredients: ImmutableList<FridgeIngredientUiModel>) : FridgeMutation
 
     data class SelectStorageFilter(val filter: StorageLocationFilter) : FridgeMutation
 
