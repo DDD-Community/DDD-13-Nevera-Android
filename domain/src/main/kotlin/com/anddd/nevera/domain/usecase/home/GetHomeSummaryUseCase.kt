@@ -10,7 +10,6 @@ class GetHomeSummaryUseCase @Inject constructor(
     private val homeRepository: HomeRepository,
 ) {
 
-    suspend operator fun invoke(): NeveraResult<HomeSummary, CommonError> {
-        return homeRepository.getSummary()
-    }
+    suspend operator fun invoke(): NeveraResult<HomeSummary, CommonError> =
+        homeRepository.loadSummary()
 }

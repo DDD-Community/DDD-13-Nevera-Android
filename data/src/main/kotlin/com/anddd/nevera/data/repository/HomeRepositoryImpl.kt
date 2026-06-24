@@ -9,6 +9,9 @@ import com.anddd.nevera.data.mapper.toDomain
 import com.anddd.nevera.domain.model.common.CommonError
 import com.anddd.nevera.domain.model.home.HomeSummary
 import com.anddd.nevera.domain.repository.HomeRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import javax.inject.Inject
 
 internal class HomeRepositoryImpl @Inject constructor(
@@ -16,12 +19,19 @@ internal class HomeRepositoryImpl @Inject constructor(
     private val apiCall: ApiCallExecutor,
 ) : HomeRepository {
 
-    override suspend fun getSummary(): NeveraResult<HomeSummary, CommonError> {
-        return apiCall {
+    private val _homeSummary = MutableStateFlow<HomeSummary?>(null)
+
+    override suspend fun loadSummary(): NeveraResult<HomeSummary, CommonError> =
+        apiCall {
             homeRemoteDataSource.getSummary()
         }.map(
-            transformSuccess = { it.toDomain() },
+            transformSuccess = { response ->
+                val summary = response.toDomain()
+                _homeSummary.value = summary
+                summary
+            },
             transformFailure = { it.toCommonError() },
         )
-    }
+
+    override fun observeHomeSummary(): Flow<HomeSummary> = _homeSummary.filterNotNull()
 }
