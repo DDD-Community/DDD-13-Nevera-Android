@@ -3,6 +3,7 @@ package com.anddd.nevera.data.repository
 import com.anddd.nevera.core.common.NetworkError
 import com.anddd.nevera.core.common.NeveraResult
 import com.anddd.nevera.core.common.map
+import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.core.network.auth.ApiCallExecutor
 import com.anddd.nevera.data.datasource.FridgeRemoteDataSource
 import com.anddd.nevera.data.datasource.IngredientRemoteDataSource
@@ -37,12 +38,15 @@ import com.anddd.nevera.domain.model.ingredient.RegisterIngredientError
 import com.anddd.nevera.domain.model.ingredient.StorageLocation
 import com.anddd.nevera.domain.repository.IngredientRepository
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 internal class IngredientRepositoryImpl @Inject constructor(
@@ -54,6 +58,8 @@ internal class IngredientRepositoryImpl @Inject constructor(
 ) : IngredientRepository {
 
     private val _fridgeIngredients = MutableStateFlow<List<FridgeIngredient>>(emptyList())
+    private val _rescuedIngredients = MutableStateFlow<List<Ingredient>?>(null)
+    private val _disposedIngredients = MutableStateFlow<List<Ingredient>?>(null)
 
     override suspend fun createOcrJob(): NeveraResult<OcrJobId, OcrExtractError> {
         return apiCall {
@@ -159,6 +165,23 @@ internal class IngredientRepositoryImpl @Inject constructor(
 
     override fun observeFridgeIngredients(): Flow<List<FridgeIngredient>> = _fridgeIngredients.asStateFlow()
 
+    override fun observeRescuedIngredients(): Flow<List<Ingredient>> = _rescuedIngredients.filterNotNull()
+
+    override fun observeDisposedIngredients(): Flow<List<Ingredient>> = _disposedIngredients.filterNotNull()
+
+    override suspend fun loadProcessedIngredients() {
+        coroutineScope {
+            launch {
+                getRescuedIngredients(offset = 0, limit = PROCESSED_INGREDIENT_LIMIT)
+                    .onSuccess { _rescuedIngredients.value = it }
+            }
+            launch {
+                getDisposedIngredients(offset = 0, limit = PROCESSED_INGREDIENT_LIMIT)
+                    .onSuccess { _disposedIngredients.value = it }
+            }
+        }
+    }
+
     override suspend fun getFridgeIngredientById(id: Long): NeveraResult<FridgeIngredient, CommonError> =
         apiCall {
             fridgeRemoteDataSource.getFridgeIngredientById(id)
@@ -189,6 +212,10 @@ internal class IngredientRepositoryImpl @Inject constructor(
             transformSuccess = { list -> list.map { it.toDomain() } },
             transformFailure = { it.toCommonError() },
         )
+    }
+
+    private companion object {
+        const val PROCESSED_INGREDIENT_LIMIT = 10
     }
 
     override suspend fun processIngredient(
