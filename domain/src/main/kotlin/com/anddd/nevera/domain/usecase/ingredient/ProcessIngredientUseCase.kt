@@ -21,6 +21,7 @@ class ProcessIngredientUseCase @Inject constructor(
         val result = ingredientRepository.processIngredient(inventoryId, processType, ratio)
         if (result is NeveraResult.Success) {
             homeRepository.loadSummary()
+            ingredientRepository.loadProcessedIngredients()
         }
         return result
     }

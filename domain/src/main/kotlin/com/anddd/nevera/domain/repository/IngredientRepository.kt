@@ -60,6 +60,12 @@ interface IngredientRepository {
 
     fun observeFridgeIngredients(): Flow<List<FridgeIngredient>>
 
+    fun observeRescuedIngredients(): Flow<List<Ingredient>>
+
+    fun observeDisposedIngredients(): Flow<List<Ingredient>>
+
+    suspend fun loadProcessedIngredients()
+
     suspend fun processIngredient(
         inventoryId: Long,
         processType: ProcessType,

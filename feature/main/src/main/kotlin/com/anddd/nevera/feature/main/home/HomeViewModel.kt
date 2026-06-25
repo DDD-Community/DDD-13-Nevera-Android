@@ -8,6 +8,8 @@ import com.anddd.nevera.domain.usecase.home.GetHomeSummaryUseCase
 import com.anddd.nevera.domain.usecase.home.ObserveHomeSummaryUseCase
 import com.anddd.nevera.domain.usecase.ingredient.GetDisposedIngredientsUseCase
 import com.anddd.nevera.domain.usecase.ingredient.GetRescuedIngredientsUseCase
+import com.anddd.nevera.domain.usecase.ingredient.ObserveDisposedIngredientsUseCase
+import com.anddd.nevera.domain.usecase.ingredient.ObserveRescuedIngredientsUseCase
 import com.anddd.nevera.domain.usecase.notification.ObserveUnreadNotificationUseCase
 import com.anddd.nevera.domain.usecase.user.GetOnboardingStatusUseCase
 import com.anddd.nevera.domain.usecase.user.UpdateNicknameUseCase
@@ -36,6 +38,8 @@ class HomeViewModel @Inject constructor(
     private val observeHomeSummary: ObserveHomeSummaryUseCase,
     private val getRescuedIngredients: GetRescuedIngredientsUseCase,
     private val getDisposedIngredients: GetDisposedIngredientsUseCase,
+    private val observeRescuedIngredients: ObserveRescuedIngredientsUseCase,
+    private val observeDisposedIngredients: ObserveDisposedIngredientsUseCase,
     private val updateNickname: UpdateNicknameUseCase,
     private val getOnboardingStatus: GetOnboardingStatusUseCase,
     private val createWish: CreateWishUseCase,
@@ -52,6 +56,8 @@ class HomeViewModel @Inject constructor(
     init {
         observeBadge()
         observeSummary()
+        subscribeRescuedIngredients()
+        subscribeDisposalIngredients()
         load()
     }
 
@@ -80,6 +86,28 @@ class HomeViewModel @Inject constructor(
     private fun observeSummary() = intent {
         observeHomeSummary().collect { summary ->
             applyHomeSummary(summary)
+        }
+    }
+
+    private fun subscribeRescuedIngredients() = intent {
+        observeRescuedIngredients().collect { ingredients ->
+            applyMutation(
+                HomeMutation.ShowRescuedIngredients(
+                    ingredients = ingredients.toUiModel(),
+                    hasMore = ingredients.size == INGREDIENT_PAGINATION_LIMIT,
+                )
+            )
+        }
+    }
+
+    private fun subscribeDisposalIngredients() = intent {
+        observeDisposedIngredients().collect { ingredients ->
+            applyMutation(
+                HomeMutation.ShowDisposalIngredients(
+                    ingredients = ingredients.toUiModel(),
+                    hasMore = ingredients.size == INGREDIENT_PAGINATION_LIMIT,
+                )
+            )
         }
     }
 
