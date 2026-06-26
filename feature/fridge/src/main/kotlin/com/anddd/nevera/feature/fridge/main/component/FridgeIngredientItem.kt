@@ -53,6 +53,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
+import com.anddd.nevera.core.ui.backgroundColor
 import com.anddd.nevera.core.ui.displayName
 import com.anddd.nevera.core.ui.iconRes
 import com.anddd.nevera.domain.model.ingredient.FoodCategory
@@ -254,6 +255,7 @@ private fun IngredientCategoryIcon(
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()
+                .background(item.category.backgroundColor(), imageShape)
                 .clip(imageShape)
                 .then(
                     if (expiryState == ExpiryState.Normal) {

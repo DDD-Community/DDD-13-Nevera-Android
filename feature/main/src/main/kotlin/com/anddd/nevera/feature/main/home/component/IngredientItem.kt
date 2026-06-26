@@ -1,6 +1,7 @@
 package com.anddd.nevera.feature.main.home.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.domain.model.ingredient.FoodCategory
+import com.anddd.nevera.core.ui.backgroundColor
 import com.anddd.nevera.core.ui.iconRes
 import com.anddd.nevera.feature.main.home.model.IngredientUiModel
 
@@ -43,6 +45,7 @@ internal fun IngredientItem(
             contentDescription = null,
             modifier = Modifier
                 .size(CategoryImageSize)
+                .background(ingredient.category.backgroundColor(), imageShape)
                 .clip(imageShape)
                 .border(CategoryImageBorderWidth, NeveraTheme.colors.borderNormal, imageShape),
         )
