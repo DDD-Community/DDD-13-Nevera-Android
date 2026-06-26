@@ -35,7 +35,6 @@ internal fun ProfileContent(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .border(1.dp, NeveraTheme.colors.borderNormal)
             .padding(NeveraTheme.spacing.padding16),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(NeveraTheme.spacing.gap12)
@@ -80,6 +79,7 @@ private fun Profile(
                 contentDescription = stringResource(MyPageR.string.mypage_profile_image_desc),
                 modifier = Modifier
                     .size(48.dp)
+                    .border(1.dp, NeveraTheme.colors.borderNormal, CircleShape)
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop,
                 error = painterResource(R.drawable.ic_info),
@@ -122,6 +122,7 @@ private fun ProfileWithWish(
                     contentDescription = stringResource(MyPageR.string.mypage_profile_image_desc),
                     modifier = Modifier
                         .size(48.dp)
+                        .border(1.dp, NeveraTheme.colors.borderNormal, CircleShape)
                         .clip(CircleShape)
                         .align(Alignment.BottomStart),
                     contentScale = ContentScale.Crop,
