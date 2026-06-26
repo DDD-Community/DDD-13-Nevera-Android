@@ -1,6 +1,7 @@
 package com.anddd.nevera.feature.mypage.main.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.anddd.nevera.core.designsystem.ui.theme.shadow.neveraShadow
 import coil3.compose.AsyncImage
 import com.anddd.nevera.core.designsystem.R
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
@@ -77,6 +79,7 @@ private fun Profile(
                 contentDescription = stringResource(MyPageR.string.mypage_profile_image_desc),
                 modifier = Modifier
                     .size(48.dp)
+                    .border(1.dp, NeveraTheme.colors.borderNormal, CircleShape)
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop,
                 error = painterResource(R.drawable.ic_info),
@@ -119,6 +122,7 @@ private fun ProfileWithWish(
                     contentDescription = stringResource(MyPageR.string.mypage_profile_image_desc),
                     modifier = Modifier
                         .size(48.dp)
+                        .border(1.dp, NeveraTheme.colors.borderNormal, CircleShape)
                         .clip(CircleShape)
                         .align(Alignment.BottomStart),
                     contentScale = ContentScale.Crop,
@@ -130,6 +134,10 @@ private fun ProfileWithWish(
                     painter = painterResource(MyPageR.drawable.ic_avatar_wish),
                     contentDescription = "Has Wish Status",
                     modifier = Modifier
+                        .neveraShadow(
+                            layers = NeveraTheme.shadow.large,
+                            cornerRadius = NeveraTheme.radius.xLarge,
+                        )
                         .size(40.dp)
                         .align(Alignment.TopEnd)
                 )
