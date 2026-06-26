@@ -41,7 +41,7 @@
     <!-- 구조 바텀시트 -->
     <string name="fridge_rescue_percentage_little">조금 먹었어요</string>
     <string name="fridge_rescue_percentage_half">절반 정도 먹었어요</string>
-    <string name="fridge_rescue_percentage_more">절반보다 더 먹었어요</string>
+    <string name="fridge_rescue_percentage_more">거의 다 먹었어요</string>
     <string name="fridge_rescue_percentage_all">다 먹었어요</string>
     <string name="fridge_rescue_sheet_question">얼마나 구조하셨어요?</string>
     <string name="fridge_rescue_sheet_confirm">변경하기</string>
