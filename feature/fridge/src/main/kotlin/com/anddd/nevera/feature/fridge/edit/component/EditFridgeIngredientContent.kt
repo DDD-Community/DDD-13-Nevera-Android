@@ -73,6 +73,7 @@ internal fun EditFridgeIngredientContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
+                enabled = !uiState.isLoading,
                 useIcon = false,
                 config = NeveraTextFieldConfig(type = NeveraTextFieldType.Underline),
             )
