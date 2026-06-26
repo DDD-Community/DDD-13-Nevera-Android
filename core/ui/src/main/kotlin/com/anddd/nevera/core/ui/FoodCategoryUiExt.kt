@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
-import com.anddd.nevera.core.designsystem.ui.theme.color.ColorPalette
 import com.anddd.nevera.domain.model.ingredient.FoodCategory
 
 @DrawableRes
@@ -23,15 +22,15 @@ fun FoodCategory.iconRes(): Int = when (this) {
 
 @Composable
 fun FoodCategory.backgroundColor(): Color = when (this) {
-    FoodCategory.Veg       -> ColorPalette.lime5
-    FoodCategory.Fruit     -> ColorPalette.orange5
-    FoodCategory.MeatEggs  -> ColorPalette.red5
-    FoodCategory.Sea       -> ColorPalette.blue5
-    FoodCategory.Dairy     -> ColorPalette.cyan5
-    FoodCategory.Sauce     -> ColorPalette.purple5
-    FoodCategory.Drink     -> ColorPalette.yellow5
-    FoodCategory.Processed -> ColorPalette.green5
-    FoodCategory.Etc       -> NeveraTheme.colors.surfaceSecondary
+    FoodCategory.Veg       -> NeveraTheme.colors.categoryVeg
+    FoodCategory.Fruit     -> NeveraTheme.colors.categoryFruit
+    FoodCategory.MeatEggs  -> NeveraTheme.colors.categoryMeatEggs
+    FoodCategory.Sea       -> NeveraTheme.colors.categorySea
+    FoodCategory.Dairy     -> NeveraTheme.colors.categoryDairy
+    FoodCategory.Sauce     -> NeveraTheme.colors.categorySauce
+    FoodCategory.Drink     -> NeveraTheme.colors.categoryDrink
+    FoodCategory.Processed -> NeveraTheme.colors.categoryProcessed
+    FoodCategory.Etc       -> NeveraTheme.colors.categoryEtc
 }
 
 @Composable
