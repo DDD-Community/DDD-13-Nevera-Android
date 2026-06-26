@@ -7,8 +7,8 @@ android {
 
     defaultConfig {
         applicationId = "com.anddd.nevera"
-        versionCode = 6
-        versionName = "1.0.2"
+        versionCode = 7
+        versionName = "1.0.3"
     }
 
     signingConfigs {
