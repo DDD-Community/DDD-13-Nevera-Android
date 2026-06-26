@@ -37,6 +37,7 @@ class EditFridgeIngredientViewModel @Inject constructor(
 
     override fun handleIntent(intent: EditFridgeIngredientIntent) {
         when (intent) {
+            is EditFridgeIngredientIntent.UpdateName -> onUpdateName(intent.name)
             is EditFridgeIngredientIntent.UpdateQuantity -> onUpdateQuantity(intent.quantity)
             is EditFridgeIngredientIntent.UpdateCost -> onUpdateCost(intent.cost)
             is EditFridgeIngredientIntent.UpdateCategory -> onUpdateCategory(intent.category)
@@ -68,6 +69,10 @@ class EditFridgeIngredientViewModel @Inject constructor(
             .onFailure {
                 postSideEffect(EditFridgeIngredientSideEffect.NavigateBack)
             }
+    }
+
+    private fun onUpdateName(name: String) = intent {
+        applyMutation(EditFridgeIngredientMutation.NameUpdated(name))
     }
 
     private fun onUpdateQuantity(quantity: Int) = intent {
@@ -128,6 +133,7 @@ class EditFridgeIngredientViewModel @Inject constructor(
                     expiryDate = mutation.expiryDate,
                 )
             }
+            is EditFridgeIngredientMutation.NameUpdated -> reduce { state.copy(name = mutation.name) }
             is EditFridgeIngredientMutation.QuantityUpdated -> reduce { state.copy(quantity = mutation.quantity) }
             is EditFridgeIngredientMutation.CostUpdated -> reduce { state.copy(cost = mutation.cost) }
             is EditFridgeIngredientMutation.CategoryUpdated -> reduce { state.copy(category = mutation.category) }

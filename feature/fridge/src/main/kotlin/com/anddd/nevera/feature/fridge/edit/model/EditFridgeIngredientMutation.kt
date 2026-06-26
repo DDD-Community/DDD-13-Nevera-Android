@@ -16,6 +16,7 @@ sealed interface EditFridgeIngredientMutation : NeveraMutation {
     ) : EditFridgeIngredientMutation
     data object Loading : EditFridgeIngredientMutation
     data object UpdateComplete : EditFridgeIngredientMutation
+    data class NameUpdated(val name: String) : EditFridgeIngredientMutation
     data class QuantityUpdated(val quantity: Int) : EditFridgeIngredientMutation
     data class CostUpdated(val cost: Int) : EditFridgeIngredientMutation
     data class CategoryUpdated(val category: FoodCategory) : EditFridgeIngredientMutation
