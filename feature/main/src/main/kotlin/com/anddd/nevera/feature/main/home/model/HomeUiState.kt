@@ -10,7 +10,7 @@ data class HomeUiState(
     val profile: HomeProfileUiModel = HomeProfileUiModel(nickname = ""),
     val wish: HomeWishUiModel? = null,
     val savings: HomeSavingsUiModel = HomeSavingsUiModel(rescuedAmount = 0, disposalAmount = 0),
-    val ingredientFilterTab: IngredientFilterTab = IngredientFilterTab.Rescue,
+    val ingredientFilterTab: IngredientFilterTab = IngredientFilterTab.Disposal,
     val rescuedIngredients: PaginatedListState<IngredientUiModel> = PaginatedListState(),
     val disposalIngredients: PaginatedListState<IngredientUiModel> = PaginatedListState(),
 ) : NeveraState

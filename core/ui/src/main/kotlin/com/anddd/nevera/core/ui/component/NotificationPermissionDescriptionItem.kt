@@ -24,7 +24,7 @@ fun NotificationPermissionDescriptionItem(
         horizontalArrangement = Arrangement.spacedBy(NeveraTheme.spacing.gap12)
     ) {
         Image(
-            painter = painterResource(R.drawable.ic_bell),
+            painter = painterResource(R.drawable.ic_permission_bell),
             contentDescription = "notification_permission",
             modifier = Modifier.size(NeveraTheme.iconSize.medium)
         )
