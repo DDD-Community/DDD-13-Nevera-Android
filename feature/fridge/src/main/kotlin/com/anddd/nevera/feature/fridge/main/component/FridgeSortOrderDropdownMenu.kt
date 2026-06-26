@@ -124,9 +124,10 @@ private fun FridgeSortOrderDropdownMenuItem(
                 vertical = NeveraTheme.spacing.padding8,
             ),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(NeveraTheme.spacing.gap8, Alignment.End),
+        horizontalArrangement = Arrangement.spacedBy(NeveraTheme.spacing.gap8),
     ) {
         Text(
+            modifier = Modifier.weight(1f),
             text = stringResource(order.labelRes),
             style = NeveraTheme.typography.titleXSmall,
             color = if (isSelected) NeveraTheme.colors.textPrimary else NeveraTheme.colors.textTertiary,
