@@ -2,7 +2,10 @@ package com.anddd.nevera.core.ui
 
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
+import com.anddd.nevera.core.designsystem.ui.theme.color.ColorPalette
 import com.anddd.nevera.domain.model.ingredient.FoodCategory
 
 @DrawableRes
@@ -16,6 +19,19 @@ fun FoodCategory.iconRes(): Int = when (this) {
     FoodCategory.Drink -> R.drawable.img_listcell_beverage
     FoodCategory.Processed -> R.drawable.img_listcell_processed
     FoodCategory.Etc -> R.drawable.img_listcell_etc
+}
+
+@Composable
+fun FoodCategory.backgroundColor(): Color = when (this) {
+    FoodCategory.Veg       -> ColorPalette.lime5
+    FoodCategory.Fruit     -> ColorPalette.orange5
+    FoodCategory.MeatEggs  -> ColorPalette.red5
+    FoodCategory.Sea       -> ColorPalette.blue5
+    FoodCategory.Dairy     -> ColorPalette.cyan5
+    FoodCategory.Sauce     -> ColorPalette.purple5
+    FoodCategory.Drink     -> ColorPalette.yellow5
+    FoodCategory.Processed -> ColorPalette.green5
+    FoodCategory.Etc       -> NeveraTheme.colors.surfaceSecondary
 }
 
 @Composable
