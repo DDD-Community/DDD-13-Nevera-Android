@@ -54,12 +54,26 @@ jobs:
         env:
           GOOGLE_WEB_CLIENT_ID: ${{ secrets.GOOGLE_WEB_CLIENT_ID }}
 
+      - name: Run Detekt (패턴 규칙 검사)
+        id: detekt
+        run: ./gradlew detekt --no-daemon
+        continue-on-error: true
+        env:
+          GOOGLE_WEB_CLIENT_ID: ${{ secrets.GOOGLE_WEB_CLIENT_ID }}
+
       - name: Upload Lint Debug Result
         uses: actions/upload-artifact@v5
         if: always()
         with:
           name: lint-result
           path: '**/build/reports/lint-results-debug.html'
+
+      - name: Upload Detekt Result
+        uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: detekt-result
+          path: '**/build/reports/detekt'
 
       - name: Upload Test Result
         uses: actions/upload-artifact@v5
@@ -72,6 +86,7 @@ jobs:
         if: always()
         run: |
           if [ "${{ steps.unit-test.outcome }}" = "failure" ] || \
-             [ "${{ steps.lint.outcome }}" = "failure" ]; then
+             [ "${{ steps.lint.outcome }}" = "failure" ] || \
+             [ "${{ steps.detekt.outcome }}" = "failure" ]; then
             exit 1
           fi

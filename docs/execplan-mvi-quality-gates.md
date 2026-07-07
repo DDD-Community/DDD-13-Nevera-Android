@@ -21,7 +21,7 @@ MVI 규칙과 디자인 시스템 규칙은 `RuleSetProvider`와 config 파일�
 - [x] 마일스톤 1: Detekt 기본 설치 및 설정 — `:quality:detekt-rules` 모듈 생성, `nevera.quality` Convention Plugin 작성, feature 모듈에 Detekt 적용
 - [x] 마일스톤 2: MVI 패턴 규칙 구현 — `NeveraViewModelInheritanceRule`, `ReduceOutsideApplyMutationRule`, `SealedInterfaceContractRule`, `ContentComposableParameterRule` 구현 및 테스트
 - [x] 마일스톤 3: 디자인 시스템 규칙 구현 — `Material3AppBarRule` 구현 및 테스트 (향후 확장 기반 마련)
-- [ ] 마일스톤 4: CI 통합 — `.github/workflows/ci.yml`에 Detekt 스텝 추가, 빌드 실패 조건 연결
+- [x] 마일스톤 4: CI 통합 — `.github/workflows/ci.yml`에 Detekt 스텝 추가, 빌드 실패 조건 연결
 
 
 ## Surprises & Discoveries
@@ -57,7 +57,13 @@ MVI 규칙과 디자인 시스템 규칙은 `RuleSetProvider`와 config 파일�
 ## Outcomes & Retrospective
 
 
-(완료 후 작성한다.)
+모든 마일스톤 완료 (2026-07-07).
+
+- MVI 패턴 4개 룰, 디자인 시스템 1개 룰, 총 16개 테스트 케이스 작성
+- `./gradlew detekt` 단일 명령으로 두 룰셋 동시 검사
+- CI에서 위반 시 PR 빌드 실패 → 아키텍처 규칙 자동 강제
+
+예상보다 빨리 완료. 핵심 발견: `detekt-gradlePlugin`은 `implementation`으로 선언해야 하고, `formatting` 키와 `assertj-core`는 별도로 추가해야 한다. 두 사항 모두 Surprises & Discoveries에 기록했다.
 
 
 ## Context and Orientation
