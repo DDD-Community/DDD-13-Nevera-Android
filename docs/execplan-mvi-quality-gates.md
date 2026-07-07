@@ -20,7 +20,7 @@ MVI 규칙과 디자인 시스템 규칙은 `RuleSetProvider`와 config 파일�
 
 - [x] 마일스톤 1: Detekt 기본 설치 및 설정 — `:quality:detekt-rules` 모듈 생성, `nevera.quality` Convention Plugin 작성, feature 모듈에 Detekt 적용
 - [x] 마일스톤 2: MVI 패턴 규칙 구현 — `NeveraViewModelInheritanceRule`, `ReduceOutsideApplyMutationRule`, `SealedInterfaceContractRule`, `ContentComposableParameterRule` 구현 및 테스트
-- [ ] 마일스톤 3: 디자인 시스템 규칙 구현 — `Material3AppBarRule` 구현 및 테스트 (향후 확장 기반 마련)
+- [x] 마일스톤 3: 디자인 시스템 규칙 구현 — `Material3AppBarRule` 구현 및 테스트 (향후 확장 기반 마련)
 - [ ] 마일스톤 4: CI 통합 — `.github/workflows/ci.yml`에 Detekt 스텝 추가, 빌드 실패 조건 연결
 
 
