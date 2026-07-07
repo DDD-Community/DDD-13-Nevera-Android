@@ -16,14 +16,16 @@ import com.anddd.nevera.core.designsystem.component.appbar.NeveraAppBarAction
 import com.anddd.nevera.core.designsystem.component.appbar.NeveraAppBarNavigation
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.ingredient.R
-import com.anddd.nevera.feature.ingredient.ocrcapture.component.camera.internal.OcrCaptureCameraContent
+import com.anddd.nevera.feature.ingredient.ocrcapture.component.camera.internal.OcrCaptureCameraView
 import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureIntent
+import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureUiState
 
 @Composable
 internal fun OcrCaptureContent(
-    cameraPermissionState: PermissionState,
+    uiState: OcrCaptureUiState,
     onIntent: (OcrCaptureIntent) -> Unit,
     onBindCamera: (LifecycleOwner, Preview.SurfaceProvider) -> Unit,
+    onDismissPermissionDialog: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -39,12 +41,12 @@ internal fun OcrCaptureContent(
             )
         },
     ) { innerPadding ->
-        OcrCaptureCameraContent(
-            hasCameraPermission = cameraPermissionState.hasPermission,
-            showPermissionDialog = cameraPermissionState.isDenied,
+        OcrCaptureCameraView(
+            hasCameraPermission = uiState.hasCameraPermission,
+            showPermissionDialog = uiState.showPermissionDialog,
             onIntent = onIntent,
             onBindCamera = onBindCamera,
-            onDismissPermissionDialog = cameraPermissionState.clearDenied,
+            onDismissPermissionDialog = onDismissPermissionDialog,
             onOpenSettings = { onIntent(OcrCaptureIntent.OpenCameraSettings) },
             modifier = Modifier.fillMaxSize().padding(innerPadding),
         )
@@ -56,14 +58,10 @@ internal fun OcrCaptureContent(
 private fun OcrCaptureContentCameraPreview() {
     NeveraTheme {
         OcrCaptureContent(
-            cameraPermissionState = PermissionState(
-                hasPermission = true,
-                isDenied = false,
-                requestPermission = {},
-                clearDenied = {},
-            ),
+            uiState = OcrCaptureUiState(hasCameraPermission = true, showPermissionDialog = false),
             onIntent = {},
             onBindCamera = { _, _ -> },
+            onDismissPermissionDialog = {},
         )
     }
 }
@@ -73,14 +71,10 @@ private fun OcrCaptureContentCameraPreview() {
 private fun OcrCaptureContentCameraPermissionDeniedPreview() {
     NeveraTheme {
         OcrCaptureContent(
-                        cameraPermissionState = PermissionState(
-                hasPermission = false,
-                isDenied = true,
-                requestPermission = {},
-                clearDenied = {},
-            ),
+            uiState = OcrCaptureUiState(hasCameraPermission = false, showPermissionDialog = true),
             onIntent = {},
             onBindCamera = { _, _ -> },
+            onDismissPermissionDialog = {},
         )
     }
 }

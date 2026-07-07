@@ -28,7 +28,7 @@ import com.anddd.nevera.feature.mypage.main.model.ProfileUiModel
 import com.anddd.nevera.feature.mypage.R as MyPageR
 
 @Composable
-internal fun ProfileContent(
+internal fun ProfileCard(
     modifier: Modifier = Modifier,
     profile: ProfileUiModel,
 ) {
@@ -181,14 +181,14 @@ private fun NicknameWithEmailColumn(
 }
 
 @Preview(
-    name = "ProfileContent",
+    name = "ProfileCard",
     showBackground = true,
     widthDp = 360
 )
 @Composable
-private fun ProfileContentPreview() {
+private fun ProfileCardPreview() {
     NeveraTheme {
-        ProfileContent(
+        ProfileCard(
             profile = ProfileUiModel(
                 nickname = "김푸드",
                 email = "anddd@email.com",
@@ -200,14 +200,14 @@ private fun ProfileContentPreview() {
 }
 
 @Preview(
-    name = "ProfileContent - HasWish",
+    name = "ProfileCard - HasWish",
     showBackground = true,
     widthDp = 360
 )
 @Composable
-private fun ProfileContentHasWishPreview() {
+private fun ProfileCardHasWishPreview() {
     NeveraTheme {
-        ProfileContent(
+        ProfileCard(
             profile = ProfileUiModel(
                 nickname = "김푸드",
                 email = "anddd@email.com",
@@ -219,14 +219,14 @@ private fun ProfileContentHasWishPreview() {
 }
 
 @Preview(
-    name = "ProfileContent - With Image",
+    name = "ProfileCard - With Image",
     showBackground = true,
     widthDp = 360
 )
 @Composable
-private fun ProfileContentWithImagePreview() {
+private fun ProfileCardWithImagePreview() {
     NeveraTheme {
-        ProfileContent(
+        ProfileCard(
             profile = ProfileUiModel(
                 nickname = "김푸드",
                 email = "anddd@email.com",
@@ -238,14 +238,14 @@ private fun ProfileContentWithImagePreview() {
 }
 
 @Preview(
-    name = "ProfileContent - HasWish With Image",
+    name = "ProfileCard - HasWish With Image",
     showBackground = true,
     widthDp = 360
 )
 @Composable
-private fun ProfileContentHasWishWithImagePreview() {
+private fun ProfileCardHasWishWithImagePreview() {
     NeveraTheme {
-        ProfileContent(
+        ProfileCard(
             profile = ProfileUiModel(
                 nickname = "김푸드",
                 email = "anddd@email.com",

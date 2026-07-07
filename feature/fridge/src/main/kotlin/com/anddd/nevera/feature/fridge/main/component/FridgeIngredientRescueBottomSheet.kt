@@ -71,7 +71,7 @@ internal fun FridgeIngredientRescueBottomSheet(
         onConfirm = { onConfirmClick(ratio) },
         onDismissRequest = onDismissRequest,
     ) {
-        RescueBottomSheetContent(
+        RescueSliderSection(
             item = item,
             ratio = ratio,
             onRatioChange = { ratio = it },
@@ -80,7 +80,7 @@ internal fun FridgeIngredientRescueBottomSheet(
 }
 
 @Composable
-private fun RescueBottomSheetContent(
+private fun RescueSliderSection(
     item: FridgeIngredientUiModel,
     ratio: Float,
     onRatioChange: (Float) -> Unit,
@@ -267,15 +267,15 @@ private val previewItem = FridgeIngredientUiModel(
 @Composable
 private fun FridgeIngredientRescueBottomSheetLittlePreview() {
     NeveraTheme {
-        RescueBottomSheetContent(item = previewItem, ratio = RatioMin, onRatioChange = {})
+        RescueSliderSection(item = previewItem, ratio = RatioMin, onRatioChange = {})
     }
 }
 
 @Preview(name = "RescueBottomSheet - 50% (절반 정도 먹었어요)", showBackground = true, widthDp = 360)
 @Composable
-private fun FridgeIngredientRescueBottomSheetContentPreview() {
+private fun FridgeIngredientRescueSliderSectionPreview() {
     NeveraTheme {
-        RescueBottomSheetContent(item = previewItem, ratio = RatioHalf, onRatioChange = {})
+        RescueSliderSection(item = previewItem, ratio = RatioHalf, onRatioChange = {})
     }
 }
 
@@ -283,7 +283,7 @@ private fun FridgeIngredientRescueBottomSheetContentPreview() {
 @Composable
 private fun FridgeIngredientRescueBottomSheetMorePreview() {
     NeveraTheme {
-        RescueBottomSheetContent(item = previewItem, ratio = RatioThreeQuarters, onRatioChange = {})
+        RescueSliderSection(item = previewItem, ratio = RatioThreeQuarters, onRatioChange = {})
     }
 }
 
@@ -291,6 +291,6 @@ private fun FridgeIngredientRescueBottomSheetMorePreview() {
 @Composable
 private fun FridgeIngredientRescueBottomSheetAllPreview() {
     NeveraTheme {
-        RescueBottomSheetContent(item = previewItem, ratio = RatioMax, onRatioChange = {})
+        RescueSliderSection(item = previewItem, ratio = RatioMax, onRatioChange = {})
     }
 }

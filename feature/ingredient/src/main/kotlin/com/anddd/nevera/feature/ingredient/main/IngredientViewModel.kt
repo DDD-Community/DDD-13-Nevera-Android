@@ -17,6 +17,8 @@ import com.anddd.nevera.feature.ingredient.main.model.IngredientMutation.Registe
 import com.anddd.nevera.feature.ingredient.main.model.IngredientMutation.RegisterStarted
 import com.anddd.nevera.feature.ingredient.main.model.IngredientMutation.ScanCompleted
 import com.anddd.nevera.feature.ingredient.main.model.IngredientMutation.ScanFailed
+import com.anddd.nevera.feature.ingredient.main.model.IngredientMutation.SetScrollTarget
+import com.anddd.nevera.feature.ingredient.main.model.IngredientMutation.ClearScrollTarget
 import com.anddd.nevera.feature.ingredient.main.model.IngredientPhase
 import com.anddd.nevera.feature.ingredient.main.model.IngredientSideEffect
 import com.anddd.nevera.feature.ingredient.main.model.IngredientUiModel
@@ -55,6 +57,7 @@ class IngredientViewModel @Inject constructor(
             IngredientIntent.AddEmptyItem -> addEmptyItem()
             IngredientIntent.Register -> register()
             IngredientIntent.ImageClick -> navigateToPhotoDetail()
+            IngredientIntent.ScrollHandled -> clearScrollTarget()
         }
     }
 
@@ -99,7 +102,11 @@ class IngredientViewModel @Inject constructor(
     // ── 빈 아이템 추가 ─────────────────────────────────────────────────────────
     private fun addEmptyItem() = intent {
         applyMutation(EmptyItemAdded)
-        postSideEffect(IngredientSideEffect.ScrollToNewItem(state.items.size))
+        applyMutation(SetScrollTarget(state.items.size))
+    }
+
+    private fun clearScrollTarget() = intent {
+        applyMutation(ClearScrollTarget)
     }
 
     // ── 식재료 등록 ────────────────────────────────────────────────────────────
@@ -159,6 +166,9 @@ class IngredientViewModel @Inject constructor(
             RegisterFailed -> reduce {
                 state.copy(phase = IngredientPhase.ScanSuccess)
             }
+
+            is SetScrollTarget -> reduce { state.copy(scrollTargetIndex = mutation.index) }
+            ClearScrollTarget -> reduce { state.copy(scrollTargetIndex = null) }
         }
     }
 }

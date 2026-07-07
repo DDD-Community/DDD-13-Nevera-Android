@@ -26,7 +26,7 @@ import com.anddd.nevera.feature.mypage.main.model.labelRes
 import com.anddd.nevera.core.designsystem.R as DesignSystemR
 
 @Composable
-internal fun SettingsContent(
+internal fun SettingsList(
     settingItems: List<SettingItem>,
     modifier: Modifier = Modifier,
     onClick: (SettingItem) -> Unit
@@ -100,14 +100,14 @@ private fun SettingItem(
 }
 
 @Preview(
-    name = "SettingsContent",
+    name = "SettingsList",
     showBackground = true,
     widthDp = 360
 )
 @Composable
-private fun SettingsContentPreview() {
+private fun SettingsListPreview() {
     NeveraTheme {
-        SettingsContent(
+        SettingsList(
             settingItems = listOf(
                 SettingItem.Notification,
                 SettingItem.Account,

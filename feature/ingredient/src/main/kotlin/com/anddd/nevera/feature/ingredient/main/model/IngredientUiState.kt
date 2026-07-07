@@ -18,6 +18,7 @@ data class IngredientUiState(
     val imageUri: String = "",
     val scanProgress: Float = 0f,
     val items: ImmutableList<IngredientUiModel> = persistentListOf(),
+    val scrollTargetIndex: Int? = null,
 ) : NeveraState {
 
     val isAllSelected: Boolean

@@ -14,17 +14,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameMillis
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -67,22 +68,21 @@ private sealed interface IngredientEditState {
     data class EditingDate(val itemId: String) : IngredientEditState
 }
 
-/**
- * 식재료 목록 편집 콘텐츠
- *
- * @param uiState   현재 UI 상태
- * @param listState 리스트 스크롤 상태
- * @param onIntent  Intent 전달 콜백
- * @param modifier  외부 Modifier
- */
 @Composable
 internal fun IngredientContent(
     uiState: IngredientUiState,
-    listState: LazyListState,
     onIntent: (IngredientIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val listState = rememberLazyListState()
     var editState by remember { mutableStateOf<IngredientEditState>(IngredientEditState.None) }
+
+    LaunchedEffect(uiState.scrollTargetIndex) {
+        val index = uiState.scrollTargetIndex ?: return@LaunchedEffect
+        withFrameMillis {}
+        listState.animateScrollToItem(index)
+        onIntent(IngredientIntent.ScrollHandled)
+    }
 
     Box(
         modifier = modifier
@@ -307,7 +307,6 @@ private fun IngredientContentPreview() {
                     ),
                 ),
             ),
-            listState = rememberLazyListState(),
             onIntent = {},
         )
     }

@@ -19,13 +19,11 @@ import com.anddd.nevera.domain.model.validation.EmailValidationResult
 import com.anddd.nevera.domain.model.validation.PasswordValidationError
 import com.anddd.nevera.domain.model.validation.PasswordValidationResult
 import com.anddd.nevera.feature.auth.main.model.LoginIntent
+import com.anddd.nevera.feature.auth.main.model.LoginUiState
 
 @Composable
 internal fun LoginContent(
-    email: String,
-    password: String,
-    emailValidation: EmailValidationResult = EmailValidationResult.Empty,
-    passwordValidation: PasswordValidationResult = PasswordValidationResult.Empty,
+    uiState: LoginUiState,
     onIntent: (LoginIntent) -> Unit,
 ) {
     val scrollState = rememberScrollState()
@@ -42,10 +40,10 @@ internal fun LoginContent(
         LoginHeader()
         Spacer(Modifier.height(NeveraTheme.spacing.gap16))
         LoginInputSection(
-            email = email,
-            password = password,
-            emailValidation = emailValidation,
-            passwordValidation = passwordValidation,
+            email = uiState.email,
+            password = uiState.password,
+            emailValidation = uiState.emailValidation,
+            passwordValidation = uiState.passwordValidation,
             onEmailChange = { onIntent(LoginIntent.EmailChanged(it)) },
             onPasswordChange = { onIntent(LoginIntent.PasswordChanged(it)) },
             onLoginClick = { onIntent(LoginIntent.LoginWithEmailClicked) },
@@ -62,10 +60,12 @@ internal fun LoginContent(
 private fun LoginContentPreview() {
     NeveraTheme {
         LoginContent(
-            email = "",
-            password = "",
-            emailValidation = EmailValidationResult.Empty,
-            passwordValidation = PasswordValidationResult.Empty,
+            uiState = LoginUiState(
+                email = "",
+                password = "",
+                emailValidation = EmailValidationResult.Empty,
+                passwordValidation = PasswordValidationResult.Empty,
+            ),
             onIntent = {},
         )
     }
@@ -76,11 +76,13 @@ private fun LoginContentPreview() {
 private fun LoginContentErrorPreview() {
     NeveraTheme {
         LoginContent(
-            email = "invalid-email",
-            password = "short",
-            emailValidation = EmailValidationResult.InvalidFormat,
-            passwordValidation = PasswordValidationResult.Invalid(
-                listOf(PasswordValidationError.TooShort(8))
+            uiState = LoginUiState(
+                email = "invalid-email",
+                password = "short",
+                emailValidation = EmailValidationResult.InvalidFormat,
+                passwordValidation = PasswordValidationResult.Invalid(
+                    listOf(PasswordValidationError.TooShort(8))
+                ),
             ),
             onIntent = {},
         )
@@ -92,10 +94,12 @@ private fun LoginContentErrorPreview() {
 private fun LoginContentEnabledPreview() {
     NeveraTheme {
         LoginContent(
-            email = "hello@email.com",
-            password = "Password1!",
-            emailValidation = EmailValidationResult.Valid,
-            passwordValidation = PasswordValidationResult.Valid,
+            uiState = LoginUiState(
+                email = "hello@email.com",
+                password = "Password1!",
+                emailValidation = EmailValidationResult.Valid,
+                passwordValidation = PasswordValidationResult.Valid,
+            ),
             onIntent = {},
         )
     }

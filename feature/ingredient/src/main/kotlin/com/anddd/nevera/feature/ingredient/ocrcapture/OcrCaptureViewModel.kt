@@ -22,7 +22,7 @@ class OcrCaptureViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val cameraManager: CameraManager,
 ) : NeveraViewModel<OcrCaptureUiState, OcrCaptureSideEffect, OcrCaptureIntent, OcrCaptureMutation>(
-    OcrCaptureUiState
+    OcrCaptureUiState()
 ) {
     private val openGallery = savedStateHandle.toRoute<OcrCaptureRoute>().openGallery
     private var galleryAutoLaunched = false
@@ -46,6 +46,7 @@ class OcrCaptureViewModel @Inject constructor(
             OcrCaptureIntent.SwapCamera -> onSwapCamera()
             is OcrCaptureIntent.SelectImage -> onSelectImage(intent.uri)
             OcrCaptureIntent.OpenCameraSettings -> onOpenCameraSettings()
+            is OcrCaptureIntent.CameraPermissionUpdated -> onCameraPermissionUpdated(intent.hasPermission, intent.isDenied)
         }
     }
 
@@ -55,6 +56,10 @@ class OcrCaptureViewModel @Inject constructor(
 
     private fun onOpenCameraSettings() = intent {
         postSideEffect(OcrCaptureSideEffect.OpenCameraSettings)
+    }
+
+    private fun onCameraPermissionUpdated(hasPermission: Boolean, isDenied: Boolean) = intent {
+        applyMutation(OcrCaptureMutation.UpdateCameraPermission(hasPermission, isDenied))
     }
 
     private fun onOpenGallery() = intent {
@@ -89,6 +94,9 @@ class OcrCaptureViewModel @Inject constructor(
         when (mutation) {
             is OcrCaptureMutation.CaptureSuccess ->
                 postSideEffect(OcrCaptureSideEffect.NavigateToResult(mutation.uri))
+            is OcrCaptureMutation.UpdateCameraPermission -> reduce {
+                state.copy(hasCameraPermission = mutation.hasPermission, showPermissionDialog = mutation.isDenied)
+            }
         }
     }
 

@@ -7,11 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,8 +43,17 @@ internal fun FridgeContent(
     uiState: FridgeUiState,
     onIntent: (FridgeIntent) -> Unit,
     modifier: Modifier = Modifier,
-    listState: LazyListState = rememberLazyListState(),
 ) {
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(uiState.scrollTargetIndex, uiState.ingredients) {
+        val index = uiState.scrollTargetIndex ?: return@LaunchedEffect
+        if (index < uiState.ingredients.size) {
+            listState.animateScrollToItem(FRIDGE_LIST_HEADER_ITEM_COUNT + index)
+            onIntent(FridgeIntent.ScrollHandled)
+        }
+    }
+
     Scaffold(
         modifier = modifier,
         topBar = {
