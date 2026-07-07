@@ -1,0 +1,33 @@
+config:
+  validation: true
+  warningsAsErrors: true
+
+comments:
+  active: false
+complexity:
+  active: false
+coroutines:
+  active: false
+empty-blocks:
+  active: false
+exceptions:
+  active: false
+naming:
+  active: false
+performance:
+  active: false
+potential-bugs:
+  active: false
+style:
+  active: false
+
+NeveraMviRules:
+  active: true
+  NeveraViewModelInheritanceRule:
+    active: true
+  ReduceOutsideApplyMutationRule:
+    active: true
+  SealedInterfaceContractRule:
+    active: true
+  ContentComposableParameterRule:
+    active: true

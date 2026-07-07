@@ -8,6 +8,7 @@ dependencies {
     compileOnly(libs.android.gradlePlugin)
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.ksp.gradlePlugin)
+    implementation(libs.detekt.gradlePlugin)
 }
 
 gradlePlugin {
@@ -51,6 +52,10 @@ gradlePlugin {
         register("neveraAndroidApplication") {
             id = "nevera.android.application"
             implementationClass = "com.anddd.nevera.buildlogic.NeveraAndroidApplicationPlugin"
+        }
+        register("neveraQuality") {
+            id = "nevera.quality"
+            implementationClass = "com.anddd.nevera.buildlogic.NeveraQualityPlugin"
         }
     }
 }

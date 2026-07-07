@@ -15,6 +15,7 @@ class NeveraFeaturePlugin : Plugin<Project> {
 
             pluginManager.apply("nevera.android.compose")
             pluginManager.apply("nevera.android.hilt")
+            pluginManager.apply("nevera.quality")
             pluginManager.apply("org.jetbrains.kotlin.plugin.serialization")
 
             configure<LibraryExtension> {
