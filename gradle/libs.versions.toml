@@ -46,6 +46,7 @@ paging = "3.5.0"
 
 kotlinxCollectionsImmutable = "0.5.0"
 detekt = "1.23.8"
+assertj = "3.26.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -129,6 +130,7 @@ detekt-gradlePlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gr
 # Detekt custom rule 작성용
 detekt-api = { group = "io.gitlab.arturbosch.detekt", name = "detekt-api", version.ref = "detekt" }
 detekt-test = { group = "io.gitlab.arturbosch.detekt", name = "detekt-test", version.ref = "detekt" }
+assertj-core = { group = "org.assertj", name = "assertj-core", version.ref = "assertj" }
 
 kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinxCollectionsImmutable" }
 

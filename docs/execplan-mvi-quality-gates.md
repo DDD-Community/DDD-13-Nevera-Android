@@ -19,7 +19,7 @@ MVI 규칙과 디자인 시스템 규칙은 `RuleSetProvider`와 config 파일�
 
 
 - [x] 마일스톤 1: Detekt 기본 설치 및 설정 — `:quality:detekt-rules` 모듈 생성, `nevera.quality` Convention Plugin 작성, feature 모듈에 Detekt 적용
-- [ ] 마일스톤 2: MVI 패턴 규칙 구현 — `NeveraViewModelInheritanceRule`, `ReduceOutsideApplyMutationRule`, `SealedInterfaceContractRule`, `ContentComposableParameterRule` 구현 및 테스트
+- [x] 마일스톤 2: MVI 패턴 규칙 구현 — `NeveraViewModelInheritanceRule`, `ReduceOutsideApplyMutationRule`, `SealedInterfaceContractRule`, `ContentComposableParameterRule` 구현 및 테스트
 - [ ] 마일스톤 3: 디자인 시스템 규칙 구현 — `Material3AppBarRule` 구현 및 테스트 (향후 확장 기반 마련)
 - [ ] 마일스톤 4: CI 통합 — `.github/workflows/ci.yml`에 Detekt 스텝 추가, 빌드 실패 조건 연결
 
@@ -30,6 +30,8 @@ MVI 규칙과 디자인 시스템 규칙은 `RuleSetProvider`와 config 파일�
 - **detekt-gradlePlugin은 `implementation`으로 선언해야 한다**: Convention Plugin(`NeveraQualityPlugin`)은 Gradle 데몬이 플러그인 클래스를 로드할 때 `configure<DetektExtension>` 호출에 필요한 `DetektExtension` 클래스가 런타임 클래스패스에 있어야 한다. `compileOnly`는 컴파일 시점에만 클래스를 제공하므로, 런타임에 `Could not generate a decorated class for type NeveraQualityPlugin` 오류가 발생한다. Android Gradle Plugin, Kotlin Gradle Plugin 등은 Gradle 데몬이 이미 로드해 두기 때문에 `compileOnly`로도 동작하지만, Detekt는 그렇지 않다. ExecPlan의 단계 1-4 설명은 `compileOnly`로 잘못 기술되어 있다(실제 구현은 `implementation` 사용). 날짜: 2026-07-07
 
 - **`formatting` 룰셋 키는 `detekt-formatting` 플러그인 없이 사용할 수 없다**: `config.validation: true` 상태에서 `formatting: active: false`를 config에 포함하면 `Property 'formatting' is misspelled or does not exist` 오류가 발생한다. `detekt-formatting`은 ktlint 기반의 별도 Detekt 플러그인이며, 사용하지 않는다면 config 파일에서 해당 키를 제거해야 한다. 날짜: 2026-07-07
+
+- **`detekt-test`는 AssertJ를 포함하지 않는다**: ExecPlan의 테스트 코드에서 `assertThat`은 AssertJ에서 가져온다. 그러나 `detekt-test`는 AssertJ를 transitive dependency로 공개하지 않으므로, `testImplementation(libs.assertj.core)` 를 `build.gradle.kts`에 별도로 추가해야 한다. 날짜: 2026-07-07
 
 
 ## Decision Log
