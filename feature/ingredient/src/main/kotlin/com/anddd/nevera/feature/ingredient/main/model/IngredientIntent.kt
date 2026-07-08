@@ -10,4 +10,5 @@ sealed interface IngredientIntent : NeveraIntent {
     data object AddEmptyItem : IngredientIntent
     data object Register     : IngredientIntent
     data object ImageClick   : IngredientIntent
+    data object ScrollHandled : IngredientIntent
 }

@@ -19,7 +19,7 @@ import com.anddd.nevera.feature.ingredient.ocrcapture.component.PermissionDenied
 import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureIntent
 
 @Composable
-internal fun OcrCaptureCameraContent(
+internal fun OcrCaptureCameraView(
     hasCameraPermission: Boolean,
     showPermissionDialog: Boolean,
     onIntent: (OcrCaptureIntent) -> Unit,
@@ -69,9 +69,9 @@ internal fun OcrCaptureCameraContent(
 
 @ComposePreview(widthDp = 360, heightDp = 720)
 @Composable
-private fun OcrCaptureCameraContentPreview() {
+private fun OcrCaptureCameraViewPreview() {
     NeveraTheme {
-        OcrCaptureCameraContent(
+        OcrCaptureCameraView(
             hasCameraPermission = true,
             showPermissionDialog = false,
             onIntent = {},
@@ -84,9 +84,9 @@ private fun OcrCaptureCameraContentPreview() {
 
 @ComposePreview(widthDp = 360, heightDp = 720, name = "Permission Denied")
 @Composable
-private fun OcrCaptureCameraContentPermissionDeniedPreview() {
+private fun OcrCaptureCameraViewPermissionDeniedPreview() {
     NeveraTheme {
-        OcrCaptureCameraContent(
+        OcrCaptureCameraView(
             hasCameraPermission = false,
             showPermissionDialog = true,
             onIntent = {},

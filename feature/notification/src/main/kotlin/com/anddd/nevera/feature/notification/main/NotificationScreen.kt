@@ -93,7 +93,7 @@ fun NotificationScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        NotificationContent(
+        NotificationList(
             uiState = uiState,
             pagingItems = pagingItems,
             onIntent = viewModel::handleIntent,
@@ -105,7 +105,7 @@ fun NotificationScreen(
 }
 
 @Composable
-private fun NotificationContent(
+private fun NotificationList(
     uiState: NotificationUiState,
     pagingItems: LazyPagingItems<NotificationItemUiModel>,
     onIntent: (NotificationIntent) -> Unit,
@@ -218,12 +218,12 @@ private class NotificationUiStateProvider : PreviewParameterProvider<Notificatio
 @Preview(name = "빈 상태 - 권한 있음")
 @Preview(name = "빈 상태 - 권한 없음")
 @Composable
-private fun NotificationContentPreview(
+private fun NotificationListPreview(
     @PreviewParameter(NotificationUiStateProvider::class) uiState: NotificationUiState,
 ) {
     val pagingItems = flowOf(PagingData.empty<NotificationItemUiModel>()).collectAsLazyPagingItems()
     NeveraTheme {
-        NotificationContent(
+        NotificationList(
             uiState = uiState,
             pagingItems = pagingItems,
             onIntent = {},
@@ -233,7 +233,7 @@ private fun NotificationContentPreview(
 
 @Preview(name = "다크모드", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun NotificationContentDarkPreview() {
+private fun NotificationListDarkPreview() {
     val sampleItems = listOf(
         NotificationItemUiModel(
             id = "1",
@@ -247,7 +247,7 @@ private fun NotificationContentDarkPreview() {
     )
     val pagingItems = flowOf(PagingData.from(sampleItems)).collectAsLazyPagingItems()
     NeveraTheme {
-        NotificationContent(
+        NotificationList(
             uiState = NotificationUiState(hasNotificationPermission = false),
             pagingItems = pagingItems,
             onIntent = {},

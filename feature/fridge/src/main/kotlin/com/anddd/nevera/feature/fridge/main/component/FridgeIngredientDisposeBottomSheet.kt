@@ -71,7 +71,7 @@ internal fun FridgeIngredientDisposeBottomSheet(
         onConfirm = { onConfirmClick(ratio) },
         onDismissRequest = onDismissRequest,
     ) {
-        DisposeBottomSheetContent(
+        DisposeSliderSection(
             item = item,
             ratio = ratio,
             onRatioChange = { ratio = it },
@@ -80,7 +80,7 @@ internal fun FridgeIngredientDisposeBottomSheet(
 }
 
 @Composable
-private fun DisposeBottomSheetContent(
+private fun DisposeSliderSection(
     item: FridgeIngredientUiModel,
     ratio: Float,
     onRatioChange: (Float) -> Unit,
@@ -267,7 +267,7 @@ private val disposePreviewItem = FridgeIngredientUiModel(
 @Composable
 private fun FridgeIngredientDisposeBottomSheetLittlePreview() {
     NeveraTheme {
-        DisposeBottomSheetContent(item = disposePreviewItem, ratio = DisposeRatioMin, onRatioChange = {})
+        DisposeSliderSection(item = disposePreviewItem, ratio = DisposeRatioMin, onRatioChange = {})
     }
 }
 
@@ -275,7 +275,7 @@ private fun FridgeIngredientDisposeBottomSheetLittlePreview() {
 @Composable
 private fun FridgeIngredientDisposeBottomSheetHalfPreview() {
     NeveraTheme {
-        DisposeBottomSheetContent(item = disposePreviewItem, ratio = DisposeRatioHalf, onRatioChange = {})
+        DisposeSliderSection(item = disposePreviewItem, ratio = DisposeRatioHalf, onRatioChange = {})
     }
 }
 
@@ -283,7 +283,7 @@ private fun FridgeIngredientDisposeBottomSheetHalfPreview() {
 @Composable
 private fun FridgeIngredientDisposeBottomSheetMorePreview() {
     NeveraTheme {
-        DisposeBottomSheetContent(item = disposePreviewItem, ratio = DisposeRatioThreeQuarters, onRatioChange = {})
+        DisposeSliderSection(item = disposePreviewItem, ratio = DisposeRatioThreeQuarters, onRatioChange = {})
     }
 }
 
@@ -291,6 +291,6 @@ private fun FridgeIngredientDisposeBottomSheetMorePreview() {
 @Composable
 private fun FridgeIngredientDisposeBottomSheetAllPreview() {
     NeveraTheme {
-        DisposeBottomSheetContent(item = disposePreviewItem, ratio = DisposeRatioMax, onRatioChange = {})
+        DisposeSliderSection(item = disposePreviewItem, ratio = DisposeRatioMax, onRatioChange = {})
     }
 }

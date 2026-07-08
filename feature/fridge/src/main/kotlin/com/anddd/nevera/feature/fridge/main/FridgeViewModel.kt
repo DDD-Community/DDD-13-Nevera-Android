@@ -58,6 +58,7 @@ class FridgeViewModel @Inject constructor(
             is FridgeIntent.DisposeClick -> showDisposeBottomSheet(intent.item)
             is FridgeIntent.DisposeConfirm -> disposeIngredient(intent.item, intent.ratio)
             is FridgeIntent.IngredientMoreClick -> navigateToEditIngredient(intent.item)
+            FridgeIntent.ScrollHandled -> clearScrollTarget()
         }
     }
 
@@ -130,6 +131,10 @@ class FridgeViewModel @Inject constructor(
         }
     }
 
+    private fun clearScrollTarget() = intent {
+        applyMutation(FridgeMutation.ClearScrollTarget)
+    }
+
     private fun navigateToNotification() = intent {
         markAllNotificationsAsRead()
         postSideEffect(FridgeSideEffect.NavigateToNotification)
@@ -145,7 +150,7 @@ class FridgeViewModel @Inject constructor(
 
         val index = ingredients.indexOfFirst { it.id == ingredientId }
         if (index >= 0) {
-            postSideEffect(FridgeSideEffect.ScrollToIngredient(index))
+            applyMutation(FridgeMutation.SetScrollTarget(index))
         } else {
             // TODO: 실 API 연동 시 추가 페이지 요청 후 재시도
             Timber.w("포커스할 식재료를 찾을 수 없음: id=$ingredientId")
@@ -183,6 +188,8 @@ class FridgeViewModel @Inject constructor(
 
             is FridgeMutation.SelectSortOrder -> reduce { state.copy(selectedSortOrder = mutation.order) }
             is FridgeMutation.BadgeUpdated -> reduce { state.copy(hasUnreadNotification = mutation.hasUnread) }
+            is FridgeMutation.SetScrollTarget -> reduce { state.copy(scrollTargetIndex = mutation.index) }
+            FridgeMutation.ClearScrollTarget -> reduce { state.copy(scrollTargetIndex = null) }
         }
     }
 
