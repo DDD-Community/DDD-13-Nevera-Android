@@ -85,7 +85,7 @@ internal fun IngredientContent(
 
     LaunchedEffect(uiState.scrollTargetIndex) {
         val index = uiState.scrollTargetIndex ?: return@LaunchedEffect
-        withFrameMillis {}
+        withFrameMillis {} // 새 아이템이 LazyColumn에 레이아웃된 후 스크롤하도록 한 프레임 대기
         listState.animateScrollToItem(INGREDIENT_LIST_HEADER_ITEM_COUNT + index)
         onIntent(IngredientIntent.ScrollHandled)
     }

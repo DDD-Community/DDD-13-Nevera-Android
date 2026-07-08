@@ -42,7 +42,7 @@ jobs:
 
       - name: Run unit tests
         id: unit-test
-        run: ./gradlew testDebugUnitTest --no-daemon --info
+        run: ./gradlew testDebugUnitTest :quality:detekt-rules:test --no-daemon --info
         continue-on-error: true
         env:
           GOOGLE_WEB_CLIENT_ID: ${{ secrets.GOOGLE_WEB_CLIENT_ID }}
