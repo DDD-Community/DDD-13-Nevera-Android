@@ -1,150 +1,144 @@
-# Codex Execution Plans (ExecPlans):
+# Codex 실행 계획 (ExecPlan):
 
-This document describes the requirements for an execution plan ("ExecPlan"), a design document that a coding agent can follow to deliver a working feature or system change. Treat the reader as a complete beginner to this repository: they have only the current working tree and the single ExecPlan file you provide. There is no memory of prior plans and no external context.
+이 문서는 실행 계획("ExecPlan")의 작성 요건을 정의한다. ExecPlan은 코딩 에이전트가 따라서 기능이나 시스템 변경을 완성할 수 있는 설계 문서다. 독자를 이 저장소를 처음 보는 완전한 초보자로 가정하고 작성한다. 독자에게는 현재 작업 트리와 단 하나의 ExecPlan 파일만 주어진다. 이전 계획에 대한 기억도, 외부 컨텍스트도 없다.
 
-## How to use ExecPlans and PLANS.md
+## ExecPlan과 PLANS.md 사용법
 
-When authoring an executable specification (ExecPlan), follow PLANS.md _to the letter_. If it is not in your context, refresh your memory by reading the entire PLANS.md file. Be thorough in reading (and re-reading) source material to produce an accurate specification. When creating a spec, start from the skeleton and flesh it out as you do your research.
+실행 명세(ExecPlan)를 **작성할 때**는 PLANS.md를 *글자 그대로* 따른다. 컨텍스트에 없다면 PLANS.md 파일 전체를 다시 읽어 내용을 숙지한다. 정확한 명세를 만들기 위해 소스를 철저히 읽고(그리고 다시 읽고) 아래의 골격에서 시작해 살을 붙인다.
 
-When implementing an executable specification (ExecPlan), do not prompt the user for "next steps"; simply proceed to the next milestone. Keep all sections up to date, add or split entries in the list at every stopping point to affirmatively state the progress made and next steps. Resolve ambiguities autonomously, and commit frequently.
+실행 명세(ExecPlan)를 **구현할 때**는 사용자에게 "다음 단계"를 묻지 않고 다음 마일스톤으로 진행한다. 모든 섹션을 최신 상태로 유지하고, 매 중단 지점마다 진행 목록에 항목을 추가하거나 분리해 진행 상황과 다음 단계를 명확히 기록한다. 모호한 점은 자율적으로 해결하고, 자주 커밋한다.
 
-When discussing an executable specification (ExecPlan), record decisions in a log in the spec for posterity; it should be unambiguously clear why any change to the specification was made. ExecPlans are living documents, and it should always be possible to restart from _only_ the ExecPlan and no other work.
+실행 명세(ExecPlan)를 **논의할 때**는 나중을 위해 명세 내 결정 로그에 결정 사항을 기록한다. 명세가 변경된 이유가 명확하게 드러나야 한다. ExecPlan은 살아있는 문서이며, 오직 ExecPlan만 가지고도 처음부터 재시작할 수 있어야 한다.
 
-When researching a design with challenging requirements or significant unknowns, use milestones to implement proof of concepts, "toy implementations", etc., that allow validating whether the user's proposal is feasible. Read the source code of libraries by finding or acquiring them, research deeply, and include prototypes to guide a fuller implementation.
+도전적인 요구사항이나 중요한 미지 요소가 포함된 설계를 **연구할 때**는 마일스톤을 활용해 개념 검증(PoC)이나 "장난감 구현체"를 만들어 사용자의 제안이 실현 가능한지 검증한다. 라이브러리 소스 코드를 찾아 읽고, 깊이 조사하고, 더 완전한 구현을 이끌 프로토타입을 포함한다.
 
-## Requirements
+## 요건
 
-NON-NEGOTIABLE REQUIREMENTS:
+**협상 불가 요건:**
 
-* Every ExecPlan must be fully self-contained. Self-contained means that in its current form it contains all knowledge and instructions needed for a novice to succeed.
-* Every ExecPlan is a living document. Contributors are required to revise it as progress is made, as discoveries occur, and as design decisions are finalized. Each revision must remain fully self-contained.
-* Every ExecPlan must enable a complete novice to implement the feature end-to-end without prior knowledge of this repo.
-* Every ExecPlan must produce a demonstrably working behavior, not merely code changes to "meet a definition".
-* Every ExecPlan must define every term of art in plain language or do not use it.
+* 모든 ExecPlan은 완전히 자급자족적이어야 한다. 자급자족이란 현재 형태에서 초보자가 성공하는 데 필요한 모든 지식과 지침이 포함되어 있다는 뜻이다.
+* 모든 ExecPlan은 살아있는 문서다. 기여자는 진행이 이루어지고, 발견이 생기고, 설계 결정이 확정될 때마다 문서를 수정해야 한다. 각 수정본은 완전히 자급자족적이어야 한다.
+* 모든 ExecPlan은 완전한 초보자가 이 저장소에 대한 사전 지식 없이 기능을 처음부터 끝까지 구현할 수 있도록 해야 한다.
+* 모든 ExecPlan은 단순히 코드 변경에 그치지 않고 실제로 동작하는 결과물을 만들어야 한다.
+* 모든 ExecPlan은 전문 용어를 일반 언어로 정의하거나, 그렇지 않으면 사용하지 않아야 한다.
 
-Purpose and intent come first. Begin by explaining, in a few sentences, why the work matters from a user's perspective: what someone can do after this change that they could not do before, and how to see it working. Then guide the reader through the exact steps to achieve that outcome, including what to edit, what to run, and what they should observe.
+목적과 의도를 먼저 밝혀야 한다. 이 변경이 사용자 관점에서 왜 중요한지, 이 변경 이후에 할 수 있게 되는 것은 무엇인지, 그리고 작동하는 것을 어떻게 확인할 수 있는지 몇 문장으로 설명한다. 그런 다음 독자가 그 결과를 얻기 위한 정확한 단계들 — 무엇을 편집하고, 무엇을 실행하고, 무엇을 관찰해야 하는지 — 을 안내한다.
 
-The agent executing your plan can list files, read files, search, run the project, and run tests. It does not know any prior context and cannot infer what you meant from earlier milestones. Repeat any assumption you rely on. Do not point to external blogs or docs; if knowledge is required, embed it in the plan itself in your own words. If an ExecPlan builds upon a prior ExecPlan and that file is checked in, incorporate it by reference. If it is not, you must include all relevant context from that plan.
+계획을 실행하는 에이전트는 파일 목록 조회, 파일 읽기, 검색, 프로젝트 실행, 테스트 실행이 가능하다. 이전 컨텍스트를 모르고, 이전 마일스톤에서 의도한 것을 추론할 수 없다. 의존하는 모든 가정을 반복해서 명시한다. 외부 블로그나 문서를 인용하지 않는다. 지식이 필요하다면 본인의 말로 계획 안에 직접 포함한다. 이 ExecPlan이 이전 ExecPlan을 기반으로 하고 해당 파일이 저장소에 있다면 참조로 포함한다. 그렇지 않다면 해당 계획의 관련 컨텍스트를 모두 포함해야 한다.
 
-## Formatting
+## 형식
 
-Format and envelope are simple and strict. Each ExecPlan must be one single fenced code block labeled as `md` that begins and ends with triple backticks. Do not nest additional triple-backtick code fences inside; when you need to show commands, transcripts, diffs, or code, present them as indented blocks within that single fence. Use indentation for clarity rather than code fences inside an ExecPlan to avoid prematurely closing the ExecPlan's code fence. Use two newlines after every heading, use # and ## and so on, and correct syntax for ordered and unordered lists.
+형식과 구조는 단순하고 엄격하다. 각 ExecPlan은 삼중 백틱으로 시작하고 끝나는 단일 펜스 코드 블록이어야 하며 `md`로 레이블링해야 한다. 내부에 삼중 백틱 코드 펜스를 중첩하지 않는다. 명령어, 트랜스크립트, diff, 코드를 보여야 할 때는 단일 펜스 안에서 들여쓰기 블록으로 표현한다. 명확성을 위해 펜스 대신 들여쓰기를 사용한다. 각 제목 뒤에 두 줄 개행을 사용하고, `#`, `##` 등의 제목 문법과 순서 있는/없는 목록에 올바른 문법을 사용한다.
 
-When writing an ExecPlan to a Markdown (.md) file where the content of the file *is only* the single ExecPlan, you should omit the triple backticks.
+ExecPlan을 Markdown(`.md`) 파일에 작성하고 파일 내용이 *오직* 단일 ExecPlan인 경우에는 삼중 백틱을 생략한다.
 
-Write in plain prose. Prefer sentences over lists. Avoid checklists, tables, and long enumerations unless brevity would obscure meaning. Checklists are permitted only in the `Progress` section, where they are mandatory. Narrative sections must remain prose-first.
+평문 산문으로 작성한다. 목록보다 문장을 선호한다. 간결함이 의미를 흐리지 않는 한 체크리스트, 표, 긴 열거는 피한다. 체크리스트는 `Progress` 섹션에서만 허용하며, 거기서는 필수다. 서술 섹션은 산문 우선이어야 한다.
 
-## Guidelines
+## 지침
 
-Self-containment and plain language are paramount. If you introduce a phrase that is not ordinary English ("daemon", "middleware", "RPC gateway", "filter graph"), define it immediately and remind the reader how it manifests in this repository (for example, by naming the files or commands where it appears). Do not say "as defined previously" or "according to the architecture doc." Include the needed explanation here, even if you repeat yourself.
+자급자족성과 평이한 언어가 최우선이다. 일반적이지 않은 표현("데몬", "미들웨어", "RPC 게이트웨이", "필터 그래프")을 도입할 경우 즉시 정의하고, 이 저장소에서 어떻게 나타나는지(예: 해당 표현이 등장하는 파일이나 명령어를 지명해서) 독자에게 상기시킨다. "앞서 정의된 대로" 또는 "아키텍처 문서에 따르면"이라고 쓰지 않는다. 필요한 설명은 반복되더라도 여기에 포함한다.
 
-Avoid common failure modes. Do not rely on undefined jargon. Do not describe "the letter of a feature" so narrowly that the resulting code compiles but does nothing meaningful. Do not outsource key decisions to the reader. When ambiguity exists, resolve it in the plan itself and explain why you chose that path. Err on the side of over-explaining user-visible effects and under-specifying incidental implementation details.
+흔한 실패 패턴을 피한다. 정의되지 않은 전문 용어에 의존하지 않는다. 결과 코드가 컴파일되지만 의미 있는 동작을 하지 않을 정도로 기능을 지나치게 좁게 기술하지 않는다. 핵심 결정을 독자에게 떠넘기지 않는다. 모호한 점이 있다면 계획 안에서 해결하고 왜 그 경로를 선택했는지 설명한다. 사용자가 볼 수 있는 효과는 과하다 싶을 정도로 설명하고, 우발적인 구현 세부사항은 최소한으로 명시한다.
 
-Anchor the plan with observable outcomes. State what the user can do after implementation, the commands to run, and the outputs they should see. Acceptance should be phrased as behavior a human can verify ("after starting the server, navigating to [http://localhost:8080/health](http://localhost:8080/health) returns HTTP 200 with body OK") rather than internal attributes ("added a HealthCheck struct"). If a change is internal, explain how its impact can still be demonstrated (for example, by running tests that fail before and pass after, and by showing a scenario that uses the new behavior).
+관찰 가능한 결과로 계획을 뒷받침한다. 구현 이후 사용자가 할 수 있는 것, 실행할 명령어, 봐야 할 출력을 명시한다. 수용 기준은 사람이 검증할 수 있는 동작으로 표현한다("서버 시작 후 http://localhost:8080/health에 접속하면 HTTP 200과 OK 본문이 반환된다"). 내부 변경이라면 그 영향을 어떻게 증명할 수 있는지 설명한다(예: 변경 전 실패하고 변경 후 통과하는 테스트를 실행하고, 새 동작을 사용하는 시나리오를 보여준다).
 
-Specify repository context explicitly. Name files with full repository-relative paths, name functions and modules precisely, and describe where new files should be created. If touching multiple areas, include a short orientation paragraph that explains how those parts fit together so a novice can navigate confidently. When running commands, show the working directory and exact command line. When outcomes depend on environment, state the assumptions and provide alternatives when reasonable.
+저장소 컨텍스트를 명시적으로 지정한다. 저장소 상대 경로로 파일을 명명하고, 함수와 모듈을 정확하게 명명하고, 새 파일을 어디에 생성해야 하는지 설명한다. 여러 영역을 건드린다면 각 부분이 어떻게 맞물리는지 설명하는 짧은 오리엔테이션 단락을 포함한다. 명령어 실행 시 작업 디렉터리와 정확한 명령 행을 보여준다. 결과가 환경에 따라 달라진다면 가정을 명시하고 합리적인 경우 대안을 제공한다.
 
-Be idempotent and safe. Write the steps so they can be run multiple times without causing damage or drift. If a step can fail halfway, include how to retry or adapt. If a migration or destructive operation is necessary, spell out backups or safe fallbacks. Prefer additive, testable changes that can be validated as you go.
+멱등성과 안전성을 확보한다. 단계들이 손상이나 상태 변이 없이 여러 번 실행될 수 있도록 작성한다. 단계가 중간에 실패할 수 있다면 재시도나 적응 방법을 포함한다. 마이그레이션이나 파괴적인 작업이 필요하다면 백업이나 안전한 폴백을 명시한다. 진행하면서 검증할 수 있는, 추가적이고 테스트 가능한 변경을 선호한다.
 
-Validation is not optional. Include instructions to run tests, to start the system if applicable, and to observe it doing something useful. Describe comprehensive testing for any new features or capabilities. Include expected outputs and error messages so a novice can tell success from failure. Where possible, show how to prove that the change is effective beyond compilation (for example, through a small end-to-end scenario, a CLI invocation, or an HTTP request/response transcript). State the exact test commands appropriate to the project's toolchain and how to interpret their results.
+검증은 선택사항이 아니다. 테스트 실행, 해당하는 경우 시스템 시작, 유용한 동작 관찰에 대한 지침을 포함한다. 새로운 기능이나 기능에 대한 포괄적인 테스트를 설명한다. 초보자가 성공과 실패를 구분할 수 있도록 예상 출력과 에러 메시지를 포함한다. 가능하다면 변경이 효과적임을 컴파일 이상으로 증명하는 방법을 보여준다(소규모 엔드투엔드 시나리오, CLI 호출, HTTP 요청/응답 트랜스크립트 등). 프로젝트의 도구 체인에 맞는 정확한 테스트 명령어와 결과 해석 방법을 명시한다.
 
-Capture evidence. When your steps produce terminal output, short diffs, or logs, include them inside the single fenced block as indented examples. Keep them concise and focused on what proves success. If you need to include a patch, prefer file-scoped diffs or small excerpts that a reader can recreate by following your instructions rather than pasting large blobs.
+증거를 남긴다. 단계가 터미널 출력, 짧은 diff, 로그를 생성하면 단일 펜스 블록 안에 들여쓰기 예시로 포함한다. 성공을 증명하는 내용에 집중해 간결하게 유지한다. 패치를 포함해야 한다면 독자가 지침을 따라 재현할 수 있는 파일 범위 diff나 작은 발췌를 선호하고, 대용량 블록 붙여넣기는 피한다.
 
-## Milestones
+## 마일스톤
 
-Milestones are narrative, not bureaucracy. If you break the work into milestones, introduce each with a brief paragraph that describes the scope, what will exist at the end of the milestone that did not exist before, the commands to run, and the acceptance you expect to observe. Keep it readable as a story: goal, work, result, proof. Progress and milestones are distinct: milestones tell the story, progress tracks granular work. Both must exist. Never abbreviate a milestone merely for the sake of brevity, do not leave out details that could be crucial to a future implementation.
+마일스톤은 서사이지 관료적 절차가 아니다. 작업을 마일스톤으로 나눈다면, 범위, 마일스톤 종료 시점에 존재하게 될 것, 실행할 명령어, 예상하는 수용 기준을 설명하는 짧은 단락으로 시작한다. 목표, 작업, 결과, 증거의 이야기로 읽히도록 한다. 진행 상황과 마일스톤은 별개다. 마일스톤은 이야기를 전달하고, 진행 상황은 세부 작업을 추적한다. 둘 다 있어야 한다. 간결함을 위해 마일스톤을 축약하거나, 미래 구현에 중요할 수 있는 세부사항을 생략하지 않는다.
 
-Each milestone must be independently verifiable and incrementally implement the overall goal of the execution plan.
+각 마일스톤은 독립적으로 검증 가능해야 하며, 실행 계획의 전체 목표를 점진적으로 구현해야 한다.
 
-## Living plans and design decisions
+## 살아있는 계획과 설계 결정
 
-* ExecPlans are living documents. As you make key design decisions, update the plan to record both the decision and the thinking behind it. Record all decisions in the `Decision Log` section.
-* ExecPlans must contain and maintain a `Progress` section, a `Surprises & Discoveries` section, a `Decision Log`, and an `Outcomes & Retrospective` section. These are not optional.
-* When you discover optimizer behavior, performance tradeoffs, unexpected bugs, or inverse/unapply semantics that shaped your approach, capture those observations in the `Surprises & Discoveries` section with short evidence snippets (test output is ideal).
-* If you change course mid-implementation, document why in the `Decision Log` and reflect the implications in `Progress`. Plans are guides for the next contributor as much as checklists for you.
-* At completion of a major task or the full plan, write an `Outcomes & Retrospective` entry summarizing what was achieved, what remains, and lessons learned.
+* ExecPlan은 살아있는 문서다. 핵심 설계 결정을 내릴 때마다 결정 내용과 그 이유를 계획에 기록한다. 모든 결정은 `Decision Log` 섹션에 기록한다.
+* ExecPlan은 `Progress` 섹션, `Surprises & Discoveries` 섹션, `Decision Log`, `Outcomes & Retrospective` 섹션을 포함하고 유지해야 한다. 선택 사항이 아니다.
+* 구현 중에 옵티마이저 동작, 성능 트레이드오프, 예상치 못한 버그, 접근 방식을 형성한 인사이트를 발견하면 `Surprises & Discoveries` 섹션에 짧은 증거 조각(테스트 출력이 이상적)과 함께 기록한다.
+* 구현 중간에 방향을 바꾼다면 `Decision Log`에 이유를 기록하고 `Progress`에 그 영향을 반영한다. 계획은 자신을 위한 체크리스트인 동시에 다음 기여자를 위한 안내서다.
+* 주요 작업이나 전체 계획 완료 시, 달성한 것, 남은 것, 배운 점을 요약하는 `Outcomes & Retrospective` 항목을 작성한다.
 
-# Prototyping milestones and parallel implementations
+# 프로토타이핑 마일스톤과 병렬 구현
 
-It is acceptable—-and often encouraged—-to include explicit prototyping milestones when they de-risk a larger change. Examples: adding a low-level operator to a dependency to validate feasibility, or exploring two composition orders while measuring optimizer effects. Keep prototypes additive and testable. Clearly label the scope as "prototyping"; describe how to run and observe results; and state the criteria for promoting or discarding the prototype.
+더 큰 변경의 위험을 줄이기 위해 명시적인 프로토타이핑 마일스톤을 포함하는 것은 허용되며 종종 권장된다. 예: 실현 가능성을 검증하기 위해 의존성에 저수준 연산자를 추가하거나, 옵티마이저 효과를 측정하면서 두 가지 합성 순서를 탐색하는 것. 프로토타입은 추가적이고 테스트 가능하게 유지한다. 범위를 "프로토타이핑"으로 명확히 표시하고, 실행 및 관찰 방법을 설명하고, 프로토타입을 채택하거나 폐기하는 기준을 명시한다.
 
-Prefer additive code changes followed by subtractions that keep tests passing. Parallel implementations (e.g., keeping an adapter alongside an older path during migration) are fine when they reduce risk or enable tests to continue passing during a large migration. Describe how to validate both paths and how to retire one safely with tests. When working with multiple new libraries or feature areas, consider creating spikes that evaluate the feasibility of these features _independently_ of one another, proving that the external library performs as expected and implements the features we need in isolation.
+테스트가 계속 통과하는 상태를 유지하는 삭제가 뒤따르는 추가적인 코드 변경을 선호한다. 병렬 구현(예: 대규모 마이그레이션 중 이전 경로 옆에 어댑터를 유지하는 것)은 위험을 줄이거나 테스트가 계속 통과하게 하는 경우에 괜찮다. 두 경로를 모두 검증하는 방법과 테스트를 통해 하나를 안전하게 제거하는 방법을 설명한다. 여러 새 라이브러리나 기능 영역을 다룰 때는 이러한 기능들의 실현 가능성을 서로 독립적으로 평가하는 스파이크를 만드는 것을 고려한다.
 
-## Skeleton of a Good ExecPlan
+## 좋은 ExecPlan의 골격
 
-    # <Short, action-oriented description>
+    # <짧고 행동 지향적인 설명>
 
-    This ExecPlan is a living document. The sections `Progress`, `Surprises & Discoveries`, `Decision Log`, and `Outcomes & Retrospective` must be kept up to date as work proceeds.
+    이 ExecPlan은 살아있는 문서다. `Progress`, `Surprises & Discoveries`, `Decision Log`, `Outcomes & Retrospective` 섹션은 작업이 진행되는 동안 반드시 최신 상태로 유지해야 한다.
 
-    If PLANS.md file is checked into the repo, reference the path to that file here from the repository root and note that this document must be maintained in accordance with PLANS.md.
+    PLANS.md 파일이 저장소에 있다면 저장소 루트로부터의 경로를 여기에 참조하고, 이 문서가 PLANS.md에 따라 유지되어야 함을 명시한다.
 
     ## Purpose / Big Picture
 
-    Explain in a few sentences what someone gains after this change and how they can see it working. State the user-visible behavior you will enable.
+    이 변경 이후에 얻을 수 있는 것과 작동하는 것을 어떻게 확인할 수 있는지 몇 문장으로 설명한다. 활성화할 사용자 가시적 동작을 명시한다.
 
     ## Progress
 
-    Use a list with checkboxes to summarize granular steps. Every stopping point must be documented here, even if it requires splitting a partially completed task into two ("done" vs. "remaining"). This section must always reflect the actual current state of the work.
+    체크박스가 있는 목록으로 세부 단계를 요약한다. 부분적으로 완료된 작업은 두 항목("완료된 것"과 "남은 것")으로 분리하더라도 모든 중단 지점을 여기에 기록해야 한다. 이 섹션은 항상 실제 현재 상태를 반영해야 한다.
 
-    - [x] (2025-10-01 13:00Z) Example completed step.
-    - [ ] Example incomplete step.
-    - [ ] Example partially completed step (completed: X; remaining: Y).
+    - [x] (2025-10-01 13:00Z) 완료된 단계 예시.
+    - [ ] 미완료 단계 예시.
+    - [ ] 부분 완료 단계 예시 (완료: X, 남은 것: Y).
 
-    Use timestamps to measure rates of progress.
+    진행 속도를 측정하기 위해 타임스탬프를 사용한다.
 
     ## Surprises & Discoveries
 
-    Document unexpected behaviors, bugs, optimizations, or insights discovered during implementation. Provide concise evidence.
+    구현 중에 발견한 예상치 못한 동작, 버그, 최적화, 인사이트를 기록한다. 간결한 증거를 제공한다.
 
-    - Observation: …
-      Evidence: …
+    - 관찰: …
+      증거: …
 
     ## Decision Log
 
-    Record every decision made while working on the plan in the format:
+    계획 작업 중 내려진 모든 결정을 다음 형식으로 기록한다:
 
-    - Decision: …
-      Rationale: …
-      Date/Author: …
+    - 결정: …
+      근거: …
+      날짜/작성자: …
 
     ## Outcomes & Retrospective
 
-    Summarize outcomes, gaps, and lessons learned at major milestones or at completion. Compare the result against the original purpose.
+    주요 마일스톤 또는 완료 시점에 결과, 미흡한 점, 배운 점을 요약한다. 결과를 원래 목적과 비교한다.
 
     ## Context and Orientation
 
-    Describe the current state relevant to this task as if the reader knows nothing. Name the key files and modules by full path. Define any non-obvious term you will use. Do not refer to prior plans.
+    독자가 아무것도 모른다고 가정하고 이 작업과 관련된 현재 상태를 설명한다. 핵심 파일과 모듈을 전체 경로로 명명한다. 명확하지 않은 용어는 정의한다. 이전 계획을 언급하지 않는다.
 
     ## Plan of Work
 
-    Describe, in prose, the sequence of edits and additions. For each edit, name the file and location (function, module) and what to insert or change. Keep it concrete and minimal.
+    편집과 추가의 순서를 산문으로 설명한다. 각 편집에 대해 파일과 위치(함수, 모듈)를 명명하고 삽입하거나 변경할 내용을 설명한다. 구체적이고 최소한으로 유지한다.
 
     ## Concrete Steps
 
-    State the exact commands to run and where to run them (working directory). When a command generates output, show a short expected transcript so the reader can compare. This section must be updated as work proceeds.
+    실행할 정확한 명령어와 실행 위치(작업 디렉터리)를 명시한다. 명령어가 출력을 생성할 때는 독자가 비교할 수 있도록 짧은 예상 트랜스크립트를 보여준다. 이 섹션은 작업이 진행될수록 업데이트되어야 한다.
 
     ## Validation and Acceptance
 
-    Describe how to start or exercise the system and what to observe. Phrase acceptance as behavior, with specific inputs and outputs. If tests are involved, say "run <project's test command> and expect <N> passed; the new test <name> fails before the change and passes after>".
+    시스템을 시작하거나 사용하는 방법과 무엇을 관찰해야 하는지 설명한다. 수용 기준은 특정 입력과 출력으로 동작을 표현한다. 테스트가 포함된다면 "<프로젝트의 테스트 명령어>를 실행하고 <N>개가 통과하길 기대하며, 새 테스트 <이름>은 변경 전 실패하고 변경 후 통과한다"라고 명시한다.
 
     ## Idempotence and Recovery
 
-    If steps can be repeated safely, say so. If a step is risky, provide a safe retry or rollback path. Keep the environment clean after completion.
+    단계들이 안전하게 반복될 수 있다면 그렇게 명시한다. 단계가 위험하다면 안전한 재시도나 롤백 경로를 제공한다. 완료 후 환경을 깨끗하게 유지한다.
 
     ## Artifacts and Notes
 
-    Include the most important transcripts, diffs, or snippets as indented examples. Keep them concise and focused on what proves success.
+    가장 중요한 트랜스크립트, diff, 코드 조각을 들여쓰기 예시로 포함한다. 성공을 증명하는 내용에 집중해 간결하게 유지한다.
 
     ## Interfaces and Dependencies
 
-    Be prescriptive. Name the libraries, modules, and services to use and why. Specify the types, traits/interfaces, and function signatures that must exist at the end of the milestone. Prefer stable names and paths such as `crate::module::function` or `package.submodule.Interface`. E.g.:
+    사용할 라이브러리, 모듈, 서비스와 그 이유를 구체적으로 명시한다. 마일스톤 종료 시점에 존재해야 하는 타입, 트레이트/인터페이스, 함수 시그니처를 지정한다. `crate::module::function`이나 `package.submodule.Interface`와 같은 안정적인 이름과 경로를 선호한다.
 
-    In crates/foo/planner.rs, define:
+위의 지침을 따르면, 단일 무상태 에이전트 또는 초보자가 ExecPlan을 처음부터 끝까지 읽고 작동하는 관찰 가능한 결과를 만들어낼 수 있다. 이것이 기준이다: 자급자족적이고, 자충족적이고, 초보자를 안내하고, 결과에 집중한다.
 
-        pub trait Planner {
-            fn plan(&self, observed: &Observed) -> Vec<Action>;
-        }
-
-If you follow the guidance above, a single, stateless agent -- or a human novice -- can read your ExecPlan from top to bottom and produce a working, observable result. That is the bar: SELF-CONTAINED, SELF-SUFFICIENT, NOVICE-GUIDING, OUTCOME-FOCUSED.
-
-When you revise a plan, you must ensure your changes are comprehensively reflected across all sections, including the living document sections, and you must write a note at the bottom of the plan describing the change and the reason why. ExecPlans must describe not just the what but the why for almost everything.
+계획을 수정할 때는 변경 사항이 살아있는 문서 섹션을 포함한 모든 섹션에 포괄적으로 반영되었는지 확인하고, 계획 하단에 변경 내용과 이유를 설명하는 메모를 작성해야 한다. ExecPlan은 거의 모든 것에 대해 무엇을 했는지뿐만 아니라 왜 했는지도 설명해야 한다.
