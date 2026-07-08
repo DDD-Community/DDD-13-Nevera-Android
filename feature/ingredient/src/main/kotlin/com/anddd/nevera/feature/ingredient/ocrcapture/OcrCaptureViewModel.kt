@@ -46,6 +46,7 @@ class OcrCaptureViewModel @Inject constructor(
             OcrCaptureIntent.SwapCamera -> onSwapCamera()
             is OcrCaptureIntent.SelectImage -> onSelectImage(intent.uri)
             OcrCaptureIntent.OpenCameraSettings -> onOpenCameraSettings()
+            OcrCaptureIntent.DismissPermissionDialog -> onDismissPermissionDialog()
             is OcrCaptureIntent.CameraPermissionUpdated -> onCameraPermissionUpdated(intent.hasPermission, intent.isDenied)
         }
     }
@@ -56,6 +57,11 @@ class OcrCaptureViewModel @Inject constructor(
 
     private fun onOpenCameraSettings() = intent {
         postSideEffect(OcrCaptureSideEffect.OpenCameraSettings)
+    }
+
+    private fun onDismissPermissionDialog() = intent {
+        applyMutation(OcrCaptureMutation.UpdateCameraPermission(hasPermission = state.hasCameraPermission, isDenied = false))
+        postSideEffect(OcrCaptureSideEffect.ClearPermissionDenied)
     }
 
     private fun onCameraPermissionUpdated(hasPermission: Boolean, isDenied: Boolean) = intent {

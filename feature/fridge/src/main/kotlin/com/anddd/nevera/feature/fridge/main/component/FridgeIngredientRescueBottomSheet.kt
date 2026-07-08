@@ -281,7 +281,7 @@ private fun FridgeIngredientRescueSliderSectionPreview() {
 
 @Preview(name = "RescueBottomSheet - 75% (절반보다 더 먹었어요)", showBackground = true, widthDp = 360)
 @Composable
-private fun FridgeIngredientRescueBottomSheetMorePreview() {
+private fun FridgeIngredientRescueSliderSectionMorePreview() {
     NeveraTheme {
         RescueSliderSection(item = previewItem, ratio = RatioThreeQuarters, onRatioChange = {})
     }
@@ -289,7 +289,7 @@ private fun FridgeIngredientRescueBottomSheetMorePreview() {
 
 @Preview(name = "RescueBottomSheet - 100% (다 먹었어요)", showBackground = true, widthDp = 360)
 @Composable
-private fun FridgeIngredientRescueBottomSheetAllPreview() {
+private fun FridgeIngredientRescueSliderSectionAllPreview() {
     NeveraTheme {
         RescueSliderSection(item = previewItem, ratio = RatioMax, onRatioChange = {})
     }

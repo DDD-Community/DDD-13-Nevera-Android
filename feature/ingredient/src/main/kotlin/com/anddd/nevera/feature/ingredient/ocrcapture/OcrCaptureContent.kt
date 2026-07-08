@@ -25,7 +25,6 @@ internal fun OcrCaptureContent(
     uiState: OcrCaptureUiState,
     onIntent: (OcrCaptureIntent) -> Unit,
     onBindCamera: (LifecycleOwner, Preview.SurfaceProvider) -> Unit,
-    onDismissPermissionDialog: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -46,7 +45,7 @@ internal fun OcrCaptureContent(
             showPermissionDialog = uiState.showPermissionDialog,
             onIntent = onIntent,
             onBindCamera = onBindCamera,
-            onDismissPermissionDialog = onDismissPermissionDialog,
+            onDismissPermissionDialog = { onIntent(OcrCaptureIntent.DismissPermissionDialog) },
             onOpenSettings = { onIntent(OcrCaptureIntent.OpenCameraSettings) },
             modifier = Modifier.fillMaxSize().padding(innerPadding),
         )
@@ -61,7 +60,6 @@ private fun OcrCaptureContentCameraPreview() {
             uiState = OcrCaptureUiState(hasCameraPermission = true, showPermissionDialog = false),
             onIntent = {},
             onBindCamera = { _, _ -> },
-            onDismissPermissionDialog = {},
         )
     }
 }
@@ -74,7 +72,6 @@ private fun OcrCaptureContentCameraPermissionDeniedPreview() {
             uiState = OcrCaptureUiState(hasCameraPermission = false, showPermissionDialog = true),
             onIntent = {},
             onBindCamera = { _, _ -> },
-            onDismissPermissionDialog = {},
         )
     }
 }

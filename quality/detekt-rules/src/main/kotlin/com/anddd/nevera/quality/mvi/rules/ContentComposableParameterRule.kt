@@ -9,6 +9,7 @@ import io.gitlab.arturbosch.detekt.api.Rule
 import io.gitlab.arturbosch.detekt.api.Severity
 import org.jetbrains.kotlin.psi.KtFunctionType
 import org.jetbrains.kotlin.psi.KtNamedFunction
+import org.jetbrains.kotlin.psi.KtNullableType
 import org.jetbrains.kotlin.psi.KtParameter
 import org.jetbrains.kotlin.psi.KtUserType
 
@@ -50,12 +51,15 @@ class ContentComposableParameterRule(config: Config) : Rule(config) {
         val typeRef = param.typeReference ?: return true
         val typeElement = typeRef.typeElement
 
+        // Nullable 타입(Modifier?, HomeUiState?)의 경우 내부 타입을 꺼내 검사한다
+        val innerElement = if (typeElement is KtNullableType) typeElement.innerType else typeElement
+
         return when {
             typeElement is KtFunctionType -> true
-            typeElement is KtUserType &&
-                typeElement.referencedName?.endsWith("UiState") == true -> true
-            typeElement is KtUserType &&
-                typeElement.referencedName == "Modifier" -> true
+            innerElement is KtUserType &&
+                innerElement.referencedName?.endsWith("UiState") == true -> true
+            innerElement is KtUserType &&
+                innerElement.referencedName == "Modifier" -> true
             else -> false
         }
     }

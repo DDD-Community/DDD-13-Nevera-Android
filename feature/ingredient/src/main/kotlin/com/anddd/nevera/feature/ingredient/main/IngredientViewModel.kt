@@ -101,8 +101,9 @@ class IngredientViewModel @Inject constructor(
 
     // ── 빈 아이템 추가 ─────────────────────────────────────────────────────────
     private fun addEmptyItem() = intent {
+        val newItemIndex = state.items.size // 추가 전 크기 = 새 아이템의 items 리스트 0-based 인덱스
         applyMutation(EmptyItemAdded)
-        applyMutation(SetScrollTarget(state.items.size))
+        applyMutation(SetScrollTarget(newItemIndex))
     }
 
     private fun clearScrollTarget() = intent {

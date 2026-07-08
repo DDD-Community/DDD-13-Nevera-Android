@@ -30,4 +30,26 @@ class ReduceOutsideApplyMutationRuleTest {
         """.trimIndent()
         assertThat(rule.lint(code)).hasSize(1)
     }
+
+    @Test
+    fun `컬렉션의 reduce 호출은 위반 없음`() {
+        val code = """
+            private fun sum(numbers: List<Int>): Int {
+                return numbers.reduce { acc, n -> acc + n }
+            }
+        """.trimIndent()
+        assertThat(rule.lint(code)).isEmpty()
+    }
+
+    @Test
+    fun `applyMutation 내부 람다 안에서 reduce 호출은 위반 없음`() {
+        val code = """
+            suspend fun applyMutation(mutation: HomeMutation) {
+                when (mutation) {
+                    is HomeMutation.SetItems -> reduce { state.copy(items = mutation.items) }
+                }
+            }
+        """.trimIndent()
+        assertThat(rule.lint(code)).isEmpty()
+    }
 }

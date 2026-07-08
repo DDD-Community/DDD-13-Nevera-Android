@@ -75,6 +75,7 @@ fun OcrCaptureScreen(
                 )
             OcrCaptureSideEffect.ShowCaptureError ->
                 Toast.makeText(context, context.getString(R.string.ocr_capture_error), Toast.LENGTH_SHORT).show()
+            OcrCaptureSideEffect.ClearPermissionDenied -> cameraPermissionState.clearDenied()
         }
     }
 
@@ -82,7 +83,6 @@ fun OcrCaptureScreen(
         uiState = uiState,
         onIntent = viewModel::handleIntent,
         onBindCamera = viewModel::bindCamera,
-        onDismissPermissionDialog = cameraPermissionState.clearDenied,
     )
 }
 

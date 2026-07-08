@@ -60,6 +60,12 @@ private val ScannedImageSize = 72.dp
 private val ScannedImageBorderWidth = 1.dp
 private val SectionDividerHeight = 8.dp
 
+/**
+ * 식재료 아이템 목록([uiState.items]) 앞에 위치한 LazyColumn 고정 아이템 개수.
+ * scrollTargetIndex(items 기준 0-based)를 실제 LazyColumn 인덱스로 변환할 때 사용한다.
+ */
+private const val INGREDIENT_LIST_HEADER_ITEM_COUNT = 1
+
 // ─── 바텀시트 / 다이얼로그 상태 ───────────────────────────────────────────────
 private sealed interface IngredientEditState {
     data object None : IngredientEditState
@@ -80,7 +86,7 @@ internal fun IngredientContent(
     LaunchedEffect(uiState.scrollTargetIndex) {
         val index = uiState.scrollTargetIndex ?: return@LaunchedEffect
         withFrameMillis {}
-        listState.animateScrollToItem(index)
+        listState.animateScrollToItem(INGREDIENT_LIST_HEADER_ITEM_COUNT + index)
         onIntent(IngredientIntent.ScrollHandled)
     }
 

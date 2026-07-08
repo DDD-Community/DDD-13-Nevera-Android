@@ -50,8 +50,8 @@ internal fun FridgeContent(
         val index = uiState.scrollTargetIndex ?: return@LaunchedEffect
         if (index < uiState.ingredients.size) {
             listState.animateScrollToItem(FRIDGE_LIST_HEADER_ITEM_COUNT + index)
-            onIntent(FridgeIntent.ScrollHandled)
         }
+        onIntent(FridgeIntent.ScrollHandled)
     }
 
     Scaffold(
