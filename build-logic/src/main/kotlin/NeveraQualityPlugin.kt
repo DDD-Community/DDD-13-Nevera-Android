@@ -12,10 +12,7 @@ class NeveraQualityPlugin : Plugin<Project> {
             pluginManager.apply("io.gitlab.arturbosch.detekt")
 
             configure<DetektExtension> {
-                config.setFrom(
-                    rootProject.files("config/detekt/detekt-mvi.yml"),
-                    rootProject.files("config/detekt/detekt-designsystem.yml"),
-                )
+                config.setFrom(rootProject.files("config/detekt/detekt.yml"))
                 buildUponDefaultConfig = true
                 parallel = true
             }

@@ -31,3 +31,8 @@ NeveraMviRules:
     active: true
   ContentComposableParameterRule:
     active: true
+
+NeveraDesignSystemRules:
+  active: true
+  Material3AppBarRule:
+    active: true

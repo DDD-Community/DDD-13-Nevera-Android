@@ -12,7 +12,7 @@ Nevera Android 프로젝트는 feature 모듈의 Presentation Layer에서 MVI(Mo
 
 이 ExecPlan을 완료하면 두 가지가 가능해진다. 첫째, 로컬에서 `./gradlew detekt`를 실행하면 MVI 패턴 위반과 디자인 시스템 위반을 즉시 확인할 수 있다. 둘째, PR을 올리면 CI가 Detekt를 실행하여 위반이 있을 경우 빌드를 실패시킨다. 이를 통해 AI 에이전트가 작성하든 사람이 작성하든 feature 모듈 코드가 동일한 구조 규칙을 따르는지 자동으로 검증된다.
 
-MVI 규칙과 디자인 시스템 규칙은 `RuleSetProvider`와 config 파일을 각각 분리하여 관리한다. 이를 통해 두 영역의 규칙을 독립적으로 활성화/비활성화하고, 각 파일이 단일 책임을 갖도록 구성한다.
+MVI 규칙과 디자인 시스템 규칙은 `RuleSetProvider`를 각각 분리하여 관리한다. config는 단일 `detekt.yml` 파일로 통합 관리한다.
 
 
 ## Progress
@@ -49,9 +49,9 @@ MVI 규칙과 디자인 시스템 규칙은 `RuleSetProvider`와 config 파일�
   근거: `build-logic/`은 Gradle Convention Plugin 전용이다. Detekt 룰은 Detekt가 런타임에 로드하는 별도 JAR이므로, 일반 Gradle 모듈로 분리하는 것이 관심사 분리 원칙에 맞다.
   날짜/작성자: 2026-07-07 / Ju Hyeok
 
-- 결정: MVI 패턴 규칙과 디자인 시스템 규칙을 별도 `RuleSetProvider`와 config 파일로 분리한다.
-  근거: 두 규칙 체계는 서로 다른 영역을 담당한다. MVI 규칙(`NeveraMviRules`)은 데이터 흐름 아키텍처 준수를 검증하고, 디자인 시스템 규칙(`NeveraDesignSystemRules`)은 UI 컴포넌트 일관성을 검증한다. 하나의 `RuleSetProvider`와 하나의 config 파일에 두 영역을 혼합하면 각 파일이 단일 책임을 갖지 못한다. 분리하면 특정 영역만 독립적으로 활성화/비활성화할 수 있고, 향후 각 영역에 규칙이 추가될 때 구조가 명확하게 유지된다. CI 스텝은 단일 `./gradlew detekt`로 유지한다(어느 쪽 위반이든 PR은 동일하게 차단해야 하므로 분리의 실익이 없다).
-  날짜/작성자: 2026-07-07 / Ju Hyeok
+- 결정: MVI 패턴 규칙과 디자인 시스템 규칙을 별도 `RuleSetProvider`로 분리하되, config 파일은 단일 `detekt.yml`로 통합한다.
+  근거: `RuleSetProvider` 분리는 두 영역의 코드 책임을 명확히 구분하므로 유지한다. 그러나 config 파일 분리는 실익이 없다. 현재 모든 feature 모듈은 `NeveraQualityPlugin` 하나를 통해 동일하게 두 룰셋을 적용받으므로, 모듈별로 룰셋을 다르게 조합해야 할 상황이 없다. 또한 전역 설정(`config.validation`, 내장 룰 비활성화)이 특정 룰셋 파일에 섞이면 책임이 혼재된다. 단일 파일로 통합하면 "Detekt 설정이 어디 있지?" 라는 질문에 한 파일만 열면 된다. 파일을 나눠야 할 시점은 모듈 타입별로 다른 룰셋 조합이 실제로 필요해질 때다. CI 스텝은 단일 `./gradlew detekt`로 유지한다.
+  날짜/작성자: 2026-07-07 초안 / Ju Hyeok, 2026-07-08 config 통합으로 수정 / Ju Hyeok
 
 
 ## Outcomes & Retrospective
@@ -105,8 +105,7 @@ MVI 규칙과 디자인 시스템 규칙은 `RuleSetProvider`와 config 파일�
 
     Nevera-Android/
     ├── config/detekt/
-    │   ├── detekt-mvi.yml               ← MVI 패턴 룰셋 설정
-    │   └── detekt-designsystem.yml      ← 디자인 시스템 룰셋 설정
+    │   └── detekt.yml                   ← 전역 설정 + MVI + 디자인 시스템 룰셋 통합
     └── quality/detekt-rules/
         ├── build.gradle.kts
         └── src/
@@ -137,7 +136,7 @@ MVI 규칙과 디자인 시스템 규칙은 `RuleSetProvider`와 config 파일�
 
 ### 강제할 규칙 목록
 
-**MVI 패턴 규칙** (`NeveraMviRules` 룰셋, `config/detekt/detekt-mvi.yml`로 관리):
+**MVI 패턴 규칙** (`NeveraMviRules` 룰셋, `config/detekt/detekt.yml`로 관리):
 
 1. **NeveraViewModel 상속 강제**: `feature/*` 패키지의 `*ViewModel` 클래스는 반드시 `NeveraViewModel`을 상속해야 한다. `ViewModel()`을 직접 상속하면 위반이다.
 
@@ -147,7 +146,7 @@ MVI 규칙과 디자인 시스템 규칙은 `RuleSetProvider`와 config 파일�
 
 4. **Content Composable 파라미터 제약**: `*Content`라는 이름의 `@Composable` 함수는 `*UiState` 타입, 함수 타입(`(*) -> Unit`), `Modifier` 타입 파라미터만 허용한다. local state 값이나 Boolean 플래그 등을 파라미터로 받으면 위반이다.
 
-**디자인 시스템 규칙** (`NeveraDesignSystemRules` 룰셋, `config/detekt/detekt-designsystem.yml`로 관리):
+**디자인 시스템 규칙** (`NeveraDesignSystemRules` 룰셋, `config/detekt/detekt.yml`로 관리):
 
 5. **Material3 기본 AppBar 금지**: `TopAppBar`, `CenterAlignedTopAppBar`, `SmallTopAppBar`, `MediumTopAppBar`, `LargeTopAppBar`를 직접 호출하면 위반이다. 디자인 시스템의 `NeveraAppBar` 계열을 사용해야 한다.
 
@@ -212,10 +211,7 @@ MVI 규칙과 디자인 시스템 규칙은 `RuleSetProvider`와 config 파일�
                 pluginManager.apply("io.gitlab.arturbosch.detekt")
 
                 configure<DetektExtension> {
-                    config.setFrom(
-                        rootProject.files("config/detekt/detekt-mvi.yml"),
-                        rootProject.files("config/detekt/detekt-designsystem.yml"),
-                    )
+                    config.setFrom(rootProject.files("config/detekt/detekt.yml"))
                     buildUponDefaultConfig = true
                     parallel = true
                 }
@@ -246,9 +242,9 @@ MVI 규칙과 디자인 시스템 규칙은 `RuleSetProvider`와 config 파일�
 
 이로써 `nevera.feature` 플러그인을 사용하는 모든 feature 모듈에 Detekt가 자동으로 적용된다.
 
-**1-6. config 파일 생성 — MVI 패턴 룰셋**
+**1-6. config 파일 생성**
 
-`config/detekt/detekt-mvi.yml`을 생성한다. 이 파일은 MVI 패턴 룰셋만 담당한다. Detekt 기본 룰셋은 모두 비활성화하여 커스텀 룰 검증에 집중한다.
+`config/detekt/detekt.yml`을 생성한다. 전역 설정, MVI 룰셋, 디자인 시스템 룰셋을 한 파일로 관리한다. Detekt 기본 룰셋은 모두 비활성화하여 커스텀 룰 검증에 집중한다.
 
     config:
       validation: true
@@ -263,8 +259,6 @@ MVI 규칙과 디자인 시스템 규칙은 `RuleSetProvider`와 config 파일�
     empty-blocks:
       active: false
     exceptions:
-      active: false
-    formatting:
       active: false
     naming:
       active: false
@@ -285,10 +279,6 @@ MVI 규칙과 디자인 시스템 규칙은 `RuleSetProvider`와 config 파일�
         active: true
       ContentComposableParameterRule:
         active: true
-
-**1-7. config 파일 생성 — 디자인 시스템 룰셋**
-
-`config/detekt/detekt-designsystem.yml`을 생성한다. 이 파일은 디자인 시스템 룰셋만 담당한다.
 
     NeveraDesignSystemRules:
       active: true
@@ -974,8 +964,7 @@ BUILD SUCCESSFUL이면 현재 코드에 위반 없음.
 4. `build-logic/src/main/kotlin/NeveraFeaturePlugin.kt` 수정 — `pluginManager.apply("nevera.quality")` 추가
 5. `settings.gradle.kts` 수정 — `include(":quality:detekt-rules")` 추가
 6. `quality/detekt-rules/build.gradle.kts` 생성
-7. `config/detekt/detekt-mvi.yml` 생성 — MVI 룰셋 설정
-8. `config/detekt/detekt-designsystem.yml` 생성 — 디자인 시스템 룰셋 설정
+7. `config/detekt/detekt.yml` 생성 — 전역 설정 + MVI 룰셋 + 디자인 시스템 룰셋 통합
 9. `META-INF/services/io.gitlab.arturbosch.detekt.api.RuleSetProvider` 생성 — 두 Provider 등록
 10. `NeveraMviRuleSetProvider.kt` 생성 (`mvi/` 패키지)
 11. MVI 룰 4개 생성 (`mvi/rules/` 패키지)
@@ -1025,7 +1014,7 @@ Material3 AppBar 위반 코드 삽입 후 `./gradlew :feature:main:detekt` 실�
 
 모든 단계는 반복 실행해도 안전하다. Gradle 태스크는 멱등이며, 파일 생성은 이미 존재하면 덮어쓴다.
 
-Detekt 룰 추가 후 기존 코드에 예상치 못한 위반이 다수 발생하면, 해당 config 파일(`detekt-mvi.yml` 또는 `detekt-designsystem.yml`)에서 해당 룰의 `active: false`로 임시 비활성화하고 Decision Log에 기록한 후 점진적으로 수정한다. 이 방식이 `baseline.xml`을 쓰는 것보다 더 명시적이다.
+Detekt 룰 추가 후 기존 코드에 예상치 못한 위반이 다수 발생하면, `config/detekt/detekt.yml`에서 해당 룰의 `active: false`로 임시 비활성화하고 Decision Log에 기록한 후 점진적으로 수정한다. 이 방식이 `baseline.xml`을 쓰는 것보다 더 명시적이다.
 
 
 ## Artifacts and Notes
@@ -1079,4 +1068,6 @@ Convention Plugin이 각 feature 모듈에 추가하는 의존성:
 
 ---
 
-변경 이력: 2026-07-07 — MVI 패턴 규칙과 디자인 시스템 규칙을 별도 `RuleSetProvider`(`NeveraMviRuleSetProvider`, `NeveraDesignSystemRuleSetProvider`)와 별도 config 파일(`detekt-mvi.yml`, `detekt-designsystem.yml`)로 분리했다. `ContentComposableParameterRule`은 MVI의 Screen/Content 분리 원칙에 해당하므로 MVI 룰셋에 포함하고, `Material3AppBarRule`은 디자인 시스템 룰셋으로 이동했다. CI 스텝은 단일 `./gradlew detekt`로 유지한다(양쪽 위반 모두 PR을 동일하게 차단해야 하므로 분리 실익 없음). 모든 패키지 경로와 테스트 패키지 경로를 `mvi/` 및 `designsystem/` 하위로 갱신했다.
+변경 이력:
+- 2026-07-07 — MVI 패턴 규칙과 디자인 시스템 규칙을 별도 `RuleSetProvider`(`NeveraMviRuleSetProvider`, `NeveraDesignSystemRuleSetProvider`)와 별도 config 파일(`detekt-mvi.yml`, `detekt-designsystem.yml`)로 분리했다. `ContentComposableParameterRule`은 MVI의 Screen/Content 분리 원칙에 해당하므로 MVI 룰셋에 포함하고, `Material3AppBarRule`은 디자인 시스템 룰셋으로 이동했다. CI 스텝은 단일 `./gradlew detekt`로 유지한다.
+- 2026-07-08 — config 파일을 단일 `detekt.yml`로 통합했다. `RuleSetProvider` 분리는 유지하되, 모듈 타입별로 룰셋 조합을 달리할 필요가 없는 현재 구조에서는 파일 분리가 오히려 전역 설정과 룰셋 설정의 책임을 혼재시키는 문제가 있었다. `NeveraQualityPlugin.kt`의 `config.setFrom()`도 단일 파일 참조로 단순화했다.
