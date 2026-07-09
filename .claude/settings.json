@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/check-detekt.sh",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/check-detekt.sh",
             "timeout": 300
           }
         ]
