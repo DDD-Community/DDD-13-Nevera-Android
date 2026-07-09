@@ -57,3 +57,8 @@ Thumbs.db
 # Captures / Profiling
 # ======================
 /captures
+
+# ======================
+# Claude Code hooks state
+# ======================
+.claude/hooks/.state/
