@@ -38,6 +38,11 @@ if [[ "$RETRY_COUNT" -ge "$MAX_RETRIES" ]]; then
     exit 0
 fi
 
+# detekt 실행 전에 카운터부터 기록한다 — 훅 timeout(300초)으로 프로세스가
+# 강제 종료돼도 재시도 횟수가 보존되도록 하기 위함 (성공 시엔 아래에서 바로 지움)
+RETRY_COUNT_NEXT=$((RETRY_COUNT + 1))
+echo "$RETRY_COUNT_NEXT" > "$COUNTER_FILE"
+
 DETEKT_OUTPUT=$(./gradlew detekt 2>&1)
 DETEKT_EXIT=$?
 
@@ -45,9 +50,6 @@ if [[ "$DETEKT_EXIT" -eq 0 ]]; then
     rm -f "$COUNTER_FILE"
     exit 0
 fi
-
-RETRY_COUNT_NEXT=$((RETRY_COUNT + 1))
-echo "$RETRY_COUNT_NEXT" > "$COUNTER_FILE"
 
 # detekt 콘솔 출력 형식: <파일경로>:<line>:<col>: <메시지> [<RuleId>]
 ISSUE_SUMMARY=$(echo "$DETEKT_OUTPUT" | grep -E ':[0-9]+:[0-9]+: .*\[[A-Za-z0-9]+\]$' | head -40)
