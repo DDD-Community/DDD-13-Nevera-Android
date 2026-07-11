@@ -78,6 +78,8 @@ feature/main/src/main/kotlin/.../home/
 
 Screen/Content 분리의 목적은 "검증하기 어려운 코드(ViewModel, navigation)를 얇은 Screen 한 곳에 몰아넣고, 나머지 렌더링 코드는 `(값, 콜백) → UI`라는 결정적 함수로 유지해 Preview·리뷰만으로 검증 가능하게 만드는 것"입니다. Content를 다시 Component로 쪼개는 목적은 여기에 더해 **재구성(recomposition) 범위를 좁히는 것**입니다 — 자세한 내용은 [5장](#5-compose-관점에서-본-계층-분리의-장점)에서 다룹니다.
 
+> **자동 검증**: 이 계층 규칙은 detekt 커스텀 룰셋 `NeveraScreenContentRules`로 강제됩니다 — `ScreenDelegatesToContentRule`(Screen의 Content 위임), `ViewModelAccessOnlyInScreenRule`(ViewModel 구독을 Screen으로 제한), `ToastOutsideScreenRule`(Toast를 Screen으로 제한). `./gradlew detekt`로 검사되며 CI와 Claude Code Stop 훅에 편입되어 있습니다.
+
 ### 경계 사례 처리
 
 - **Content/Component 내부 local UI state**: "리셋되어도 비즈니스적으로 아무 일도 일어나지 않는가?"가 Yes면 `remember`로 내부에 둡니다. 스크롤 위치(`HomeContent`의 `rememberLazyListState`), 인라인 편집 토글(`IngredientContent`의 `editState`) 등이 해당합니다. No(리셋 시 비즈니스 의미 손실)면 UiState로 승격합니다.
@@ -160,7 +162,7 @@ Compose 컴파일러는 함수 파라미터를 모두 안정적(stable)이라고
 
 SideEffect로 트리거되는 바텀시트가 늘어날수록 Screen에 `showXxx` 플래그 선언 + `collectSideEffect`의 `when` 분기 + `if` 블록이 3곳씩 늘어납니다. 대응 원칙:
 
-- Screen에는 레이아웃/`Modifier` 코드를 두지 않습니다. Screen은 구독·분기·위임만 하고, 실제 레이아웃은 전부 Content 또는 SideEffect 트리거 컴포넌트(바텀시트 등) 내부에 있어야 합니다.
+- Screen에는 레이아웃/`Modifier` 코드를 두지 않습니다. Screen은 구독·분기·위임만 하고, 실제 레이아웃은 전부 Content 또는 SideEffect 트리거 컴포넌트(바텀시트 등) 내부에 있어야 합니다. Scaffold 사용은 `ScreenNoScaffoldRule`이 파일 단위(`*Screen.kt`)로 자동 검출합니다.
 - SideEffect 트리거 바텀시트가 3개를 넘으면 플래그들을 `rememberSaveable`로 묶은 별도 state holder + 전용 `*BottomSheets` 컴포저블로 추출하는 것을 고려합니다. 화면이 단순할 때(바텀시트 1~2개)는 추출을 강제하지 않습니다 — 간접 참조 비용이 이득을 넘어서기 때문입니다.
 
 ## 8. AppBar 규칙

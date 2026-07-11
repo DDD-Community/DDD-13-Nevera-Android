@@ -20,8 +20,8 @@ Nevera Android 프로젝트의 feature 모듈은 화면을 세 계층으로 나�
 
 - [x] (2026-07-11) 마일스톤 1: 신규 detekt 규칙 4개 구현 및 단위 테스트 — `ScreenDelegatesToContentRule`, `ScreenNoScaffoldRule`, `ViewModelAccessOnlyInScreenRule`, `ToastOutsideScreenRule` + `ContentComposableParameterRule`에 `LazyPagingItems` 허용 추가. `./gradlew :quality:detekt-rules:test` BUILD SUCCESSFUL
 - [x] (2026-07-11) 마일스톤 2: 전체 코드베이스 위반 수집 — `./gradlew detekt --continue`로 스파이크와 동일한 6건 확정 (auth 1, ingredient 3, notification 2). 추가 위반 없음
-- [ ] 마일스톤 3: 위반 화면 단계적 수정 — SignupScreen(Toast 헬퍼), PhotoDetailScreen·RegisterSuccessScreen(Content 분리), IngredientScreen(Scaffold 이동), NotificationScreen(NotificationList → NotificationContent 개명·이동)
-- [ ] 마일스톤 4: 최종 검증 및 문서 상호 참조 — 전체 detekt 통과, 단위 테스트 통과, 문서 3종에 규칙 ID 역참조 추가
+- [x] (2026-07-11) 마일스톤 3: 위반 화면 단계적 수정 완료 — 화면당 1커밋 5건: SignupScreen(showToast를 Screen 함수 내부 로컬 함수로 이동), PhotoDetailScreen·RegisterSuccessScreen(경량 UiState + Content 분리), NotificationScreen(NotificationList → component/NotificationContent 이동·개명), IngredientScreen(Scaffold·AppBar·phase 분기를 IngredientContent로 이동, 기존 목록 UI는 IngredientListSection으로 분리). 각 수정 후 해당 모듈 detekt + compileDebugKotlin 통과 확인
+- [x] (2026-07-11) 마일스톤 4: 최종 검증 및 문서 상호 참조 — `./gradlew :quality:detekt-rules:test detekt` BUILD SUCCESSFUL(위반 0건), `mvi-presentation-layer-structure.md` 4·7장과 `screen-content-srp-responsibility.md` 5·6장에 규칙 ID 역참조 추가
 
 
 ## Surprises & Discoveries
@@ -84,7 +84,12 @@ Nevera Android 프로젝트의 feature 모듈은 화면을 세 계층으로 나�
 ## Outcomes & Retrospective
 
 
-(작업 완료 시 작성)
+모든 마일스톤 완료 (2026-07-11).
+
+- 신규 룰셋 `NeveraScreenContentRules` 4개 규칙 + 단위 테스트 21개(신규 20 + `ContentComposableParameterRule` LazyPagingItems 1) 추가. `./gradlew detekt` 단일 명령으로 기존 5개 규칙과 함께 검사되며, CI·Claude Code Stop 훅에 설정 변경 없이 자동 편입됨을 확인했다.
+- 스파이크에서 예측한 위반 6건이 본 실행에서도 정확히 재현되었고, 5개 화면 수정(화면당 1커밋)으로 전부 해소했다. 최종 `./gradlew :quality:detekt-rules:test detekt` BUILD SUCCESSFUL.
+- 계획 대비 유일한 조정: SignupScreen의 Toast 수정을 "collectSideEffect 분기 안 인라인"(9회 중복) 대신 "Screen 함수 내부 로컬 확장 함수"로 처리했다. 규칙이 요구하는 것은 "*Screen 함수 내부"이므로 두 방식 모두 통과하며, 로컬 함수가 중복이 없다.
+- 핵심 발견 2건을 Surprises & Discoveries에 기록했다: (1) `./gradlew detekt`의 fail-fast 때문에 전체 위반 수집에는 `--continue`가 필수, (2) 커스텀 룰 jar 수정 후에는 Gradle 데몬 워커 클래스로더 캐싱 때문에 `./gradlew --stop`이 필요할 수 있다. 둘 다 향후 규칙을 추가·수정할 때 재발할 함정이다.
 
 
 ## Context and Orientation

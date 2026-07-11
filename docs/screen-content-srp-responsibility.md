@@ -116,6 +116,8 @@ fun HomeScreen(
 
 **재구성(recomposition) 범위가 넓어집니다.** 바텀시트 visibility 같은 로컬 state가 바뀌면 Screen 전체가 재구성 후보가 되고, 그 안에 있는 레이아웃 코드 전체가 다시 실행될 가능성이 커집니다. Content로 분리했다면 이런 로컬 state 변경이 레이아웃 코드에 영향을 주지 않습니다.
 
+> **자동 검증**: 이 위반은 detekt가 잡아냅니다 — Screen이 Content를 호출하지 않으면 `ScreenDelegatesToContentRule`, Screen 파일에 Scaffold가 있으면 `ScreenNoScaffoldRule`이 빌드를 실패시킵니다.
+
 ## 6. Content 내부에서 Dialog/BottomSheet/Toast/SnackBar를 처리하면 생기는 문제
 
 이 문제는 5장보다 더 직접적으로 **실제 런타임 버그**를 만들어냅니다. 이유를 이해하려면 Compose의 기본 규칙 하나를 먼저 알아야 합니다.
@@ -169,6 +171,8 @@ Dialog/BottomSheet를 Content 안에서 열려면 Content가 다음 중 하나�
 
 - `viewModel`이나 SideEffect 스트림을 직접 구독한다 → Content가 "`uiState`와 Intent 람다만 받는 함수"라는 계약을 깨고 ViewModel에 의존하게 됩니다. 2장에서 정의한 Content의 책임(오직 디자인 액터에만 응답)이 무너지고, ViewModel 구현이 바뀌어도 Content가 함께 바뀌어야 하는 상황이 생깁니다.
 - Screen이 만든 로컬 state를 파라미터로 받는다 → Content의 파라미터 목록에 "SideEffect에서 파생된 값"이 섞이며, 그 값이 왜 `true`가 됐는지 이해하려면 결국 Screen을 열어봐야 합니다. 파일만 두 개로 늘고 실질적으로 얻는 것이 없습니다.
+
+> **자동 검증**: 이 위반은 detekt가 잡아냅니다 — Content/Component에서 `collectSideEffect`·`collectAsState`·`hiltViewModel`을 호출하면 `ViewModelAccessOnlyInScreenRule`, Screen 밖에서 `Toast.makeText`를 호출하면 `ToastOutsideScreenRule`, Content 파라미터에 허용 외 타입이 섞이면 기존 `ContentComposableParameterRule`이 빌드를 실패시킵니다.
 
 ## 7. 경계에서 발생하는 긴장 — 정직하게 다루기
 
