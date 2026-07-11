@@ -21,6 +21,10 @@ fun SignupScreen(
     val context = LocalContext.current
     val uiState = viewModel.collectAsState().value
 
+    fun Context.showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
     viewModel.collectSideEffect { effect ->
         when (effect) {
             SignupSideEffect.MoveToLoginScreen -> onNavigateToLogin()
@@ -54,8 +58,4 @@ fun SignupScreen(
             LoadingContent()
         }
     }
-}
-
-private fun Context.showToast(message: String) {
-    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
