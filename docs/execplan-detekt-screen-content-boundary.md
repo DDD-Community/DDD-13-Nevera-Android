@@ -8,7 +8,7 @@
 ## Purpose / Big Picture
 
 
-Nevera Android 프로젝트의 feature 모듈은 화면을 세 계층으로 나눈다. `*Screen`은 ViewModel을 구독하고 일회성 이벤트(SideEffect)를 처리하는 진입점이고, `*Content`는 화면 상태(`UiState`)를 받아 레이아웃을 그리는 순수 렌더러이며, 그 아래 Component들이 세부 UI를 조립한다. 이 규칙은 `docs/mvi-presentation-layer-structure.md`, `docs/screen-content-srp-responsibility.md`, `docs/compose-screen-content-separation.md`에 문서로 정리되어 있지만, 현재 코드 작성 시 자동으로 검증되지 않는다. 실제로 이 문서 규칙을 위반하는 화면이 코드베이스에 이미 존재한다(아래 `Surprises & Discoveries`의 스파이크 결과 참조).
+Nevera Android 프로젝트의 feature 모듈은 화면을 세 계층으로 나눈다. `*Screen`은 ViewModel을 구독하고 일회성 이벤트(SideEffect)를 처리하는 진입점이고, `*Content`는 화면 상태(`UiState`)를 받아 레이아웃을 그리는 순수 렌더러이며, 그 아래 Component들이 세부 UI를 조립한다. 이 규칙은 프로젝트 루트 `CLAUDE.md`(Screen vs Content 배치 기준)와 `docs/mvi-core-architecture.md`(MVI 타입·상태 흐름)에 정리되어 있지만, 현재 코드 작성 시 자동으로 검증되지 않는다. 실제로 이 규칙을 위반하는 화면이 코드베이스에 이미 존재한다(아래 `Surprises & Discoveries`의 스파이크 결과 참조).
 
 이 ExecPlan을 완료하면 다음이 가능해진다. 첫째, `./gradlew detekt`를 실행하면 Screen/Content 경계 위반(Screen이 Content 없이 직접 렌더링, Screen 파일의 Scaffold 사용, Content에서의 ViewModel 접근, Screen 밖 Toast 호출)이 즉시 검출된다. 둘째, 기존 위반 화면 4곳이 규칙에 맞게 수정되어 전체 detekt가 통과한다. 셋째, 이 검사는 별도 설정 없이 기존 CI(`.github/workflows/ci.yml`의 detekt 스텝)와 Claude Code Stop 훅(`.claude/hooks/check-detekt.sh`)에 자동으로 편입된다 — 두 경로 모두 이미 `./gradlew detekt`를 실행하고 있기 때문이다.
 
@@ -21,7 +21,8 @@ Nevera Android 프로젝트의 feature 모듈은 화면을 세 계층으로 나�
 - [x] (2026-07-11) 마일스톤 1: 신규 detekt 규칙 4개 구현 및 단위 테스트 — `ScreenDelegatesToContentRule`, `ScreenNoScaffoldRule`, `ViewModelAccessOnlyInScreenRule`, `ToastOutsideScreenRule` + `ContentComposableParameterRule`에 `LazyPagingItems` 허용 추가. `./gradlew :quality:detekt-rules:test` BUILD SUCCESSFUL
 - [x] (2026-07-11) 마일스톤 2: 전체 코드베이스 위반 수집 — `./gradlew detekt --continue`로 스파이크와 동일한 6건 확정 (auth 1, ingredient 3, notification 2). 추가 위반 없음
 - [x] (2026-07-11) 마일스톤 3: 위반 화면 단계적 수정 완료 — 화면당 1커밋 5건: SignupScreen(showToast를 Screen 함수 내부 로컬 함수로 이동), PhotoDetailScreen·RegisterSuccessScreen(경량 UiState + Content 분리), NotificationScreen(NotificationList → component/NotificationContent 이동·개명), IngredientScreen(Scaffold·AppBar·phase 분기를 IngredientContent로 이동, 기존 목록 UI는 IngredientListSection으로 분리). 각 수정 후 해당 모듈 detekt + compileDebugKotlin 통과 확인
-- [x] (2026-07-11) 마일스톤 4: 최종 검증 및 문서 상호 참조 — `./gradlew :quality:detekt-rules:test detekt` BUILD SUCCESSFUL(위반 0건), `mvi-presentation-layer-structure.md` 4·7장과 `screen-content-srp-responsibility.md` 5·6장에 규칙 ID 역참조 추가
+- [x] (2026-07-11) 마일스톤 4: 최종 검증 및 문서 상호 참조 — `./gradlew :quality:detekt-rules:test detekt` BUILD SUCCESSFUL(위반 0건), 설계 문서 2종에 규칙 ID 역참조 추가 (이후 2026-07-12 문서 제거로 역참조도 함께 삭제됨 — 하단 변경 메모 참조)
+- [x] (2026-07-12) 후속 조정: 설계 논의용 문서 3종(`mvi-presentation-layer-structure.md`, `screen-content-srp-responsibility.md`, `compose-screen-content-separation.md`)을 develop 병합 대상에서 제외하기 위해 저장소에서 제거하고, 이 문서의 참조를 자급자족 형태로 보완
 
 
 ## Surprises & Discoveries
@@ -65,7 +66,7 @@ Nevera Android 프로젝트의 feature 모듈은 화면을 세 계층으로 나�
   날짜/작성자: 2026-07-11 / Ju Hyeok
 
 - 결정: `ToastOutsideScreenRule`은 feature 패키지 전체에서 `Toast.makeText`를 검사하되 `*Screen` 함수 내부만 허용한다. ViewModel 안의 Toast도 위반으로 처리한다.
-  근거: Content/Component의 Toast는 recomposition마다 반복 실행되는 런타임 버그를 만들고(`docs/screen-content-srp-responsibility.md` 6장), ViewModel의 Toast는 플랫폼 의존을 만든다. 올바른 경로는 ViewModel이 SideEffect를 발행하고 Screen의 `collectSideEffect`에서 Toast를 띄우는 것 하나뿐이다.
+  근거: Composable 함수는 한 번만 실행된다는 보장이 없으므로(recomposition), Content/Component 본문에서 `Toast.makeText(...).show()`를 직접 실행하면 화면이 다시 그려질 때마다 같은 Toast가 반복해서 뜨는 런타임 버그가 된다. ViewModel의 Toast는 Android 플랫폼(`Context`) 의존을 만들어 단위 테스트를 막는다. 올바른 경로는 ViewModel이 SideEffect를 발행하고 Screen의 `collectSideEffect`(이벤트 스트림이라 recomposition과 무관하게 정확히 한 번 실행)에서 Toast를 띄우는 것 하나뿐이다.
   날짜/작성자: 2026-07-11 / Ju Hyeok
 
 - 결정: 기존 `ContentComposableParameterRule`의 허용 파라미터 타입에 `LazyPagingItems`를 추가한다.
@@ -103,7 +104,7 @@ Nevera Android 프로젝트의 feature 모듈은 화면을 세 계층으로 나�
 
 **RuleSetProvider / ServiceLoader**: Detekt가 커스텀 룰을 발견하는 진입점. `quality/detekt-rules/src/main/resources/META-INF/services/io.gitlab.arturbosch.detekt.api.RuleSetProvider` 파일에 Provider 클래스의 완전한 이름을 한 줄씩 적으면 런타임에 로드된다. Provider의 `ruleSetId`가 `config/detekt/detekt.yml`의 최상위 키가 된다.
 
-**Screen / Content / Component**: 이 프로젝트 Presentation Layer의 3계층. `*Screen`은 ViewModel 구독·SideEffect 처리·navigation 연결만 담당하는 진입점, `*Content`는 `uiState`와 콜백만 받아 Scaffold부터 레이아웃 전체를 그리는 순수 렌더러, Component는 Content 내부에서 조립되는 하위 렌더러다. 상세 근거는 `docs/mvi-presentation-layer-structure.md`와 `docs/screen-content-srp-responsibility.md` 참조.
+**Screen / Content / Component**: 이 프로젝트 Presentation Layer의 3계층. `*Screen`은 ViewModel 구독·SideEffect 처리·navigation 연결만 담당하는 진입점, `*Content`는 `uiState`와 콜백만 받아 Scaffold부터 레이아웃 전체를 그리는 순수 렌더러, Component는 Content 내부에서 조립되는 하위 렌더러다. 분리의 목적은 검증하기 어려운 코드(ViewModel·플랫폼 API 의존)를 얇은 Screen 한 곳에 격리하고, 나머지 렌더링 코드를 "값과 콜백만 받는 결정적 함수"로 유지해 ViewModel·Hilt 없이 Preview와 Compose UI 테스트로 검증 가능하게 만드는 것이다. 프로젝트 내 기준 문서는 루트 `CLAUDE.md`의 "Screen vs Content 컴포넌트 배치 기준" 절이다.
 
 ### 현재 상태
 
@@ -167,7 +168,7 @@ NotificationScreen(notification): private `NotificationList`를 `component/Notif
 
 ### 마일스톤 4: 최종 검증 및 문서 역참조
 
-`./gradlew :quality:detekt-rules:test`와 `./gradlew detekt`(플래그 없이 — 이제 전부 통과해야 하므로 fail-fast여도 무방)를 실행해 모두 성공하는지 확인한다. 이후 `docs/mvi-presentation-layer-structure.md` 4장·7장, `docs/screen-content-srp-responsibility.md` 5장·6장에 해당 위반을 자동 검출하는 규칙 ID를 한 줄씩 역참조로 추가한다. CI와 Stop 훅은 이미 `./gradlew detekt`를 실행하므로 수정하지 않고, 편입 사실만 최종 확인한다.
+`./gradlew :quality:detekt-rules:test`와 `./gradlew detekt`(플래그 없이 — 이제 전부 통과해야 하므로 fail-fast여도 무방)를 실행해 모두 성공하는지 확인한다. CI와 Stop 훅은 이미 `./gradlew detekt`를 실행하므로 수정하지 않고, 편입 사실만 최종 확인한다. (당초 이 마일스톤에는 설계 문서 2종에 규칙 ID 역참조를 추가하는 작업이 포함되어 있었고 실제로 수행되었으나, 이후 해당 문서들이 저장소에서 제거되면서 역참조도 함께 삭제되었다 — 하단 변경 메모 참조.)
 
 
 ## Concrete Steps
@@ -212,3 +213,9 @@ NotificationScreen(notification): private `NotificationList`를 `component/Notif
 마일스톤 1 종료 시점에 존재해야 하는 타입: `com.anddd.nevera.quality.screencontent.NeveraScreenContentRuleSetProvider`(RuleSetProvider 구현, ruleSetId `NeveraScreenContentRules`), 같은 패키지 `rules/` 아래 `ScreenDelegatesToContentRule`, `ScreenNoScaffoldRule`, `ViewModelAccessOnlyInScreenRule`, `ToastOutsideScreenRule`(모두 `io.gitlab.arturbosch.detekt.api.Rule` 상속, `Config` 생성자 파라미터).
 
 마일스톤 3 종료 시점에 존재해야 하는 타입: `com.anddd.nevera.feature.ingredient.photodetail.model.PhotoDetailUiState`, `...photodetail.component.PhotoDetailContent`, `...registersuccess.model.RegisterSuccessUiState`(또는 파라미터 구조에 맞는 동등물), `...registersuccess.component.RegisterSuccessContent`, `com.anddd.nevera.feature.notification.main.component.NotificationContent`, 재구성된 `com.anddd.nevera.feature.ingredient.main.component.IngredientContent`.
+
+
+## 변경 메모
+
+
+2026-07-12: 이 계획이 참조하던 설계 논의용 문서 3종(`docs/mvi-presentation-layer-structure.md`, `docs/screen-content-srp-responsibility.md`, `docs/compose-screen-content-separation.md`)을 저장소에서 제거했다. 세 문서는 Screen/Content 분리의 명분을 탐색하는 논의 과정의 산출물로, develop에 병합할 공식 문서가 아니라고 판단했기 때문이다. 이에 따라 이 문서를 다음과 같이 보완했다: (1) Purpose와 용어 정의의 문서 참조를 저장소에 남아 있는 기준 문서(루트 `CLAUDE.md`, `docs/mvi-core-architecture.md`)로 교체하고, 계층 분리의 목적(검증 불가 코드의 Screen 격리, Content의 결정적 함수 유지)을 본문에 직접 서술했다. (2) `ToastOutsideScreenRule` 결정의 근거를 외부 문서 인용 없이 자급자족하도록 풀어 썼다(recomposition 반복 실행 버그). (3) 마일스톤 4에 포함됐던 "설계 문서에 규칙 ID 역참조 추가" 작업은 수행 이력만 남기고, 역참조 자체는 문서 제거와 함께 삭제되었음을 Progress와 Plan of Work에 기록했다. 규칙 구현·테스트·위반 수정 등 코드 산출물은 이 변경의 영향을 받지 않는다.
