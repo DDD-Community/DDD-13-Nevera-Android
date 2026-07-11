@@ -48,6 +48,20 @@ class ContentComposableParameterRuleTest {
     }
 
     @Test
+    fun `LazyPagingItems 파라미터는 허용 - Paging은 Screen에서 collect해 값으로 전달`() {
+        val code = """
+            @Composable
+            fun NotificationContent(
+                uiState: NotificationUiState,
+                pagingItems: LazyPagingItems<NotificationItemUiModel>,
+                onIntent: (NotificationIntent) -> Unit,
+                modifier: Modifier = Modifier,
+            ) {}
+        """.trimIndent()
+        assertThat(rule.lint(code)).isEmpty()
+    }
+
+    @Test
     fun `Composable 어노테이션 없는 Content 함수는 검사하지 않음`() {
         val code = """
             fun HomeContent(

@@ -18,7 +18,7 @@ Nevera Android 프로젝트의 feature 모듈은 화면을 세 계층으로 나�
 ## Progress
 
 
-- [ ] 마일스톤 1: 신규 detekt 규칙 4개 구현 및 단위 테스트 — `ScreenDelegatesToContentRule`, `ScreenNoScaffoldRule`, `ViewModelAccessOnlyInScreenRule`, `ToastOutsideScreenRule` + `ContentComposableParameterRule`에 `LazyPagingItems` 허용 추가
+- [x] (2026-07-11) 마일스톤 1: 신규 detekt 규칙 4개 구현 및 단위 테스트 — `ScreenDelegatesToContentRule`, `ScreenNoScaffoldRule`, `ViewModelAccessOnlyInScreenRule`, `ToastOutsideScreenRule` + `ContentComposableParameterRule`에 `LazyPagingItems` 허용 추가. `./gradlew :quality:detekt-rules:test` BUILD SUCCESSFUL
 - [ ] 마일스톤 2: 전체 코드베이스 위반 수집 — `./gradlew detekt --continue`로 전 모듈 위반 목록 확정 (스파이크에서 6건 확인됨, 재확인 목적)
 - [ ] 마일스톤 3: 위반 화면 단계적 수정 — SignupScreen(Toast 헬퍼), PhotoDetailScreen·RegisterSuccessScreen(Content 분리), IngredientScreen(Scaffold 이동), NotificationScreen(NotificationList → NotificationContent 개명·이동)
 - [ ] 마일스톤 4: 최종 검증 및 문서 상호 참조 — 전체 detekt 통과, 단위 테스트 통과, 문서 3종에 규칙 ID 역참조 추가

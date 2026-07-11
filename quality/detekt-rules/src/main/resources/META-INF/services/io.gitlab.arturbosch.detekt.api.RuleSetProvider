@@ -1,2 +1,3 @@
 com.anddd.nevera.quality.mvi.NeveraMviRuleSetProvider
 com.anddd.nevera.quality.designsystem.NeveraDesignSystemRuleSetProvider
+com.anddd.nevera.quality.screencontent.NeveraScreenContentRuleSetProvider
