@@ -19,7 +19,7 @@ Nevera Android 프로젝트의 feature 모듈은 화면을 세 계층으로 나�
 
 
 - [x] (2026-07-11) 마일스톤 1: 신규 detekt 규칙 4개 구현 및 단위 테스트 — `ScreenDelegatesToContentRule`, `ScreenNoScaffoldRule`, `ViewModelAccessOnlyInScreenRule`, `ToastOutsideScreenRule` + `ContentComposableParameterRule`에 `LazyPagingItems` 허용 추가. `./gradlew :quality:detekt-rules:test` BUILD SUCCESSFUL
-- [ ] 마일스톤 2: 전체 코드베이스 위반 수집 — `./gradlew detekt --continue`로 전 모듈 위반 목록 확정 (스파이크에서 6건 확인됨, 재확인 목적)
+- [x] (2026-07-11) 마일스톤 2: 전체 코드베이스 위반 수집 — `./gradlew detekt --continue`로 스파이크와 동일한 6건 확정 (auth 1, ingredient 3, notification 2). 추가 위반 없음
 - [ ] 마일스톤 3: 위반 화면 단계적 수정 — SignupScreen(Toast 헬퍼), PhotoDetailScreen·RegisterSuccessScreen(Content 분리), IngredientScreen(Scaffold 이동), NotificationScreen(NotificationList → NotificationContent 개명·이동)
 - [ ] 마일스톤 4: 최종 검증 및 문서 상호 참조 — 전체 detekt 통과, 단위 테스트 통과, 문서 3종에 규칙 ID 역참조 추가
 
@@ -40,6 +40,9 @@ Nevera Android 프로젝트의 feature 모듈은 화면을 세 계층으로 나�
 
 - 관찰: detekt 1.23.8의 테스트 유틸리티 `io.github.detekt.test.utils.compileContentForTest(content, filename)`과 `Rule.lint(ktFile)` 조합으로 파일명 기반 규칙(`ScreenNoScaffoldRule`)을 단위 테스트할 수 있다. 스파이크에서 이 조합으로 작성한 테스트 전체가 첫 컴파일에 통과했다.
   증거: 스파이크 실행 시 `./gradlew :quality:detekt-rules:test` BUILD SUCCESSFUL.
+
+- 관찰: 커스텀 룰 jar를 수정해도 실행 중인 Gradle 데몬이 워커 클래스로더에 이전 jar의 클래스를 캐싱해, `--rerun-tasks`로도 구버전 룰이 실행될 수 있다. 룰 코드를 수정하며 반복 검증할 때는 `./gradlew --stop`으로 데몬을 재시작해야 한다.
+  증거: 마일스톤 1에서 `ScreenNoScaffoldRule` 메시지를 변경했는데 jar와 build/classes 모두 신버전임을 확인했음에도 detekt 출력은 스파이크 시절 메시지(파일 경로 포함)를 보여줬다. `./gradlew --stop` 후 재실행하자 신버전 메시지로 출력됨. 날짜: 2026-07-11
 
 
 ## Decision Log
