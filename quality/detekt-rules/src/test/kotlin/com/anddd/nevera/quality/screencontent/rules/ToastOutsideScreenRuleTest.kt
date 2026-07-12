@@ -75,6 +75,22 @@ class ToastOutsideScreenRuleTest {
     }
 
     @Test
+    fun `FQCN 호출로도 우회 불가 - android_widget_Toast_makeText도 위반`() {
+        val code = """
+            package com.anddd.nevera.feature.home.component
+
+            @Composable
+            internal fun HomeContent(uiState: HomeUiState) {
+                val context = LocalContext.current
+                if (uiState.errorMessage != null) {
+                    android.widget.Toast.makeText(context, uiState.errorMessage, android.widget.Toast.LENGTH_SHORT).show()
+                }
+            }
+        """.trimIndent()
+        assertThat(rule.lint(code)).hasSize(1)
+    }
+
+    @Test
     fun `ViewModel 안의 Toast도 위반 - SideEffect로 처리해야 함`() {
         val code = """
             package com.anddd.nevera.feature.home

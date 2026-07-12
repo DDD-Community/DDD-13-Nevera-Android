@@ -29,7 +29,9 @@ class ToastOutsideScreenRule(config: Config) : Rule(config) {
         if (expression.calleeExpression?.text != "makeText") return
 
         val qualified = expression.parent as? KtDotQualifiedExpression ?: return
-        if (qualified.receiverExpression.text != "Toast") return
+        // android.widget.Toast.makeText(...) 같은 FQCN 호출로 우회할 수 없도록 접미사까지 매칭한다
+        val receiverText = qualified.receiverExpression.text
+        if (receiverText != "Toast" && !receiverText.endsWith(".Toast")) return
 
         val packageName = expression.containingKtFile.packageFqName.asString()
         if (!packageName.contains("feature")) return
