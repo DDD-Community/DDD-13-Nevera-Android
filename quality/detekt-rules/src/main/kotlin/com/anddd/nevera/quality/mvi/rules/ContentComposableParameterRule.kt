@@ -60,6 +60,9 @@ class ContentComposableParameterRule(config: Config) : Rule(config) {
                 innerElement.referencedName?.endsWith("UiState") == true -> true
             innerElement is KtUserType &&
                 innerElement.referencedName == "Modifier" -> true
+            // Paging은 Screen에서 collectAsLazyPagingItems()로 수집한 값을 전달하는 것이 공식 패턴
+            innerElement is KtUserType &&
+                innerElement.referencedName == "LazyPagingItems" -> true
             else -> false
         }
     }
