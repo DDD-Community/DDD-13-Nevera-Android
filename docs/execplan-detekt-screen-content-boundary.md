@@ -10,7 +10,7 @@
 
 Nevera Android 프로젝트의 feature 모듈은 화면을 세 계층으로 나눈다. `*Screen`은 ViewModel을 구독하고 일회성 이벤트(SideEffect)를 처리하는 진입점이고, `*Content`는 화면 상태(`UiState`)를 받아 레이아웃을 그리는 순수 렌더러이며, 그 아래 Component들이 세부 UI를 조립한다. 이 규칙은 프로젝트 루트 `CLAUDE.md`(Screen vs Content 배치 기준)와 `docs/mvi-core-architecture.md`(MVI 타입·상태 흐름)에 정리되어 있지만, 현재 코드 작성 시 자동으로 검증되지 않는다. 실제로 이 규칙을 위반하는 화면이 코드베이스에 이미 존재한다(아래 `Surprises & Discoveries`의 스파이크 결과 참조).
 
-이 ExecPlan을 완료하면 다음이 가능해진다. 첫째, `./gradlew detekt`를 실행하면 Screen/Content 경계 위반(Screen이 Content 없이 직접 렌더링, Screen 파일의 Scaffold 사용, Content에서의 ViewModel 접근, Screen 밖 Toast 호출)이 즉시 검출된다. 둘째, 기존 위반 화면 4곳이 규칙에 맞게 수정되어 전체 detekt가 통과한다. 셋째, 이 검사는 별도 설정 없이 기존 CI(`.github/workflows/ci.yml`의 detekt 스텝)와 Claude Code Stop 훅(`.claude/hooks/check-detekt.sh`)에 자동으로 편입된다 — 두 경로 모두 이미 `./gradlew detekt`를 실행하고 있기 때문이다.
+이 ExecPlan을 완료하면 다음이 가능해진다. 첫째, `./gradlew detekt`를 실행하면 Screen/Content 경계 위반(Screen이 Content 없이 직접 렌더링, Screen 파일의 Scaffold 사용, Content에서의 ViewModel 접근, Screen 밖 Toast 호출)이 즉시 검출된다. 둘째, 기존 위반 화면 5곳이 규칙에 맞게 수정되어 전체 detekt가 통과한다. 셋째, 이 검사는 별도 설정 없이 기존 CI(`.github/workflows/ci.yml`의 detekt 스텝)와 Claude Code Stop 훅(`.claude/hooks/check-detekt.sh`)에 자동으로 편입된다 — 두 경로 모두 이미 `./gradlew detekt`를 실행하고 있기 때문이다.
 
 기존 MVI 규칙(`NeveraMviRules` 룰셋의 4개 규칙)과 책임이 겹치지 않도록, 이번 규칙들은 별도 룰셋 `NeveraScreenContentRules`로 분리한다. 기존 규칙은 "MVI 타입 계약"(ViewModel 상속, reduce 호출 위치, sealed interface 선언, Content 파라미터 타입)을 다루고, 신규 규칙은 "Compose 계층 간 경계"(누가 무엇을 호출할 수 있는가)를 다룬다.
 
@@ -156,7 +156,7 @@ Nevera Android 프로젝트의 feature 모듈은 화면을 세 계층으로 나�
 
 수정은 화면당 1커밋을 원칙으로 하고, 각 수정 후 해당 모듈의 detekt를 재실행해 그 화면의 위반이 사라졌는지 확인한다. 커밋은 사용자 확인 후 진행한다.
 
-SignupScreen(auth): private `showToast` 헬퍼를 제거하고 Toast 호출을 `SignupScreen` 함수의 `collectSideEffect` 분기 안으로 인라인한다. 동작 변화 없음.
+SignupScreen(auth): Screen 함수 밖의 private `showToast` 헬퍼를 `SignupScreen` 함수 내부 로컬 함수로 옮긴다. 동작 변화 없음. (당초 계획은 `collectSideEffect` 분기 안 인라인이었으나, Toast 호출이 9곳이라 중복이 커서 로컬 함수 방식으로 조정했다 — Outcomes & Retrospective 참조.)
 
 PhotoDetailScreen(ingredient): `photodetail/model/PhotoDetailUiState.kt`에 `data class PhotoDetailUiState(val imageUri: String)`(NeveraState 구현)를 만들고, `photodetail/component/PhotoDetailContent.kt`로 렌더링 코드(확대/이동 제스처 포함 — 리셋되어도 비즈니스 영향이 없는 local UI state이므로 Content 내부 remember 유지)를 옮긴다. Screen은 `BackHandler`, 시스템바 처리(`DisposableEffect`), navigation 콜백만 남기고 `PhotoDetailContent(uiState = PhotoDetailUiState(imageUri), ...)`를 호출한다. Preview는 Content 파일로 이동한다.
 
@@ -196,7 +196,7 @@ NotificationScreen(notification): private `NotificationList`를 `component/Notif
 ## Validation and Acceptance
 
 
-수용 기준은 세 가지다. 첫째, `./gradlew :quality:detekt-rules:test`가 통과하고, 신규 테스트가 각 규칙의 위반 검출과 정상 통과를 모두 증명한다. 둘째, 마일스톤 3 완료 전 `./gradlew detekt --continue`는 정확히 위반 화면들에서 실패하고, 완료 후 `./gradlew detekt`는 성공한다 — 즉 규칙이 실제 위반을 잡았고 수정이 유효했음을 전후 비교로 증명한다. 셋째, 수정된 화면 4곳은 동작 변화가 없어야 한다. 각 화면의 Preview가 렌더링되는지 확인하고, 특히 IngredientScreen은 phase 전환(스캔 중 → 성공 → 등록 중)과 취소 확인 다이얼로그 동작이 기존과 동일한지 코드 리뷰로 확인한다.
+수용 기준은 세 가지다. 첫째, `./gradlew :quality:detekt-rules:test`가 통과하고, 신규 테스트가 각 규칙의 위반 검출과 정상 통과를 모두 증명한다. 둘째, 마일스톤 3 완료 전 `./gradlew detekt --continue`는 정확히 위반 화면들에서 실패하고, 완료 후 `./gradlew detekt`는 성공한다 — 즉 규칙이 실제 위반을 잡았고 수정이 유효했음을 전후 비교로 증명한다. 셋째, 수정된 화면 5곳은 동작 변화가 없어야 한다. 각 화면의 Preview가 렌더링되는지 확인하고, 특히 IngredientScreen은 phase 전환(스캔 중 → 성공 → 등록 중)과 취소 확인 다이얼로그 동작이 기존과 동일한지 코드 리뷰로 확인한다.
 
 
 ## Idempotence and Recovery
