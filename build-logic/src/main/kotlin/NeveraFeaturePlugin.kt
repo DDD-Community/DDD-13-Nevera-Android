@@ -40,6 +40,9 @@ class NeveraFeaturePlugin : Plugin<Project> {
                 // 가져오지만, 테스트가 runTest를 직접 호출하므로 명시적으로도 선언한다.
                 "testImplementation"(libs.findLibrary("orbit-test").get())
                 "testImplementation"(libs.findLibrary("coroutines-test").get())
+                // ViewModel이 의존하는 UseCase는 인터페이스가 아닌 클래스라 손으로 대역을
+                // 만들 수 없다. 그 아래 저장소 계약은 domain 테스트가 이미 검증한다.
+                "testImplementation"(libs.findLibrary("mockk").get())
             }
         }
     }
