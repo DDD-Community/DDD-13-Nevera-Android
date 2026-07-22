@@ -35,6 +35,11 @@ class NeveraFeaturePlugin : Plugin<Project> {
                 "implementation"(libs.findLibrary("coil-network-okhttp").get())
                 "implementation"(libs.findLibrary("timber").get())
                 "implementation"(libs.findLibrary("kotlinx-collections-immutable").get())
+
+                // ViewModel 단위 테스트용. orbit-test는 Turbine과 coroutines-test를 전이로
+                // 가져오지만, 테스트가 runTest를 직접 호출하므로 명시적으로도 선언한다.
+                "testImplementation"(libs.findLibrary("orbit-test").get())
+                "testImplementation"(libs.findLibrary("coroutines-test").get())
             }
         }
     }
