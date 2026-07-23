@@ -14,6 +14,9 @@ concurrency:
 
 jobs:
   distribute:
+    # fork에서는 job 전체를 skip — on: 트리거에는 저장소 필터를 넣을 수 없고,
+    # step-level if는 러너가 이미 할당된 뒤라 실행 시간이 소모된다
+    if: github.repository == 'DDD-Community/DDD-13-Nevera-Android'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
