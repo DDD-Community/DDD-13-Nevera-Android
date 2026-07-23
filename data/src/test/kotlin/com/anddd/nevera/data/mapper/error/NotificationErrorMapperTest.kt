@@ -1,6 +1,7 @@
 package com.anddd.nevera.data.mapper.error
 
 import com.anddd.nevera.core.common.NetworkError
+import com.anddd.nevera.data.testutil.httpError
 import com.anddd.nevera.domain.model.common.CommonError
 import com.anddd.nevera.domain.model.notification.FcmTokenError
 import com.anddd.nevera.domain.model.notification.GetNotificationTimeError
@@ -16,9 +17,6 @@ import org.junit.jupiter.api.Test
  * 변환되므로, 두 함수를 따로 검증해 한쪽 변경이 다른 쪽으로 새지 않게 한다.
  */
 class NotificationErrorMapperTest {
-
-    private fun httpError(code: Int, message: String? = "서버 메시지"): NetworkError =
-        NetworkError.HttpError(code = code, message = message)
 
     @Test
     fun `알림 시각 조회 - 서버 코드 2041은 MemberNotFound가 된다`() {

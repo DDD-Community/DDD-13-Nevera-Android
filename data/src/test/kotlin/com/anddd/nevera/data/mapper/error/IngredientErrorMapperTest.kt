@@ -1,6 +1,7 @@
 package com.anddd.nevera.data.mapper.error
 
 import com.anddd.nevera.core.common.NetworkError
+import com.anddd.nevera.data.testutil.httpError
 import com.anddd.nevera.domain.model.common.CommonError
 import com.anddd.nevera.domain.model.ingredient.EditIngredientError
 import com.anddd.nevera.domain.model.ingredient.OcrExtractError
@@ -15,9 +16,6 @@ import org.junit.jupiter.api.Test
  * 하나씩 옮겨 적는 과정에서 값이 어긋나기 쉬운 지점이다.
  */
 class IngredientErrorMapperTest {
-
-    private fun httpError(code: Int, message: String? = "서버 메시지"): NetworkError =
-        NetworkError.HttpError(code = code, message = message)
 
     @Test
     fun `수정 - 서버 코드 4001은 InventoryNotFound가 된다`() {

@@ -1,6 +1,7 @@
 package com.anddd.nevera.data.mapper.error
 
 import com.anddd.nevera.core.common.NetworkError
+import com.anddd.nevera.data.testutil.httpError
 import com.anddd.nevera.domain.model.auth.EmailRequestError
 import com.anddd.nevera.domain.model.auth.EmailVerifyError
 import com.anddd.nevera.domain.model.auth.GoogleLoginError
@@ -19,9 +20,6 @@ import org.junit.jupiter.api.Test
  * 앱은 조용히 잘못된 에러 메시지를 띄우고 컴파일은 그대로 통과한다.
  */
 class AuthErrorMapperTest {
-
-    private fun httpError(code: Int, message: String? = "서버 메시지"): NetworkError =
-        NetworkError.HttpError(code = code, message = message)
 
     @Test
     fun `로그인 - 서버 코드 2008은 InvalidCredentials가 된다`() {

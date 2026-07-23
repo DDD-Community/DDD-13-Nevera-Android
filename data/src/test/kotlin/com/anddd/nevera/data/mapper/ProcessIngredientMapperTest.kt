@@ -2,6 +2,7 @@ package com.anddd.nevera.data.mapper
 
 import com.anddd.nevera.core.common.NetworkError
 import com.anddd.nevera.data.model.fridge.ProcessIngredientResponse
+import com.anddd.nevera.data.testutil.httpError
 import com.anddd.nevera.domain.model.common.CommonError
 import com.anddd.nevera.domain.model.ingredient.ProcessIngredientError
 import com.anddd.nevera.domain.model.ingredient.ProcessType
@@ -11,9 +12,6 @@ import org.junit.jupiter.api.Test
 
 /** 식재료 구조·폐기 처리의 요청·응답·에러 변환 규칙을 고정한다. */
 class ProcessIngredientMapperTest {
-
-    private fun httpError(code: Int, message: String? = "서버 메시지"): NetworkError =
-        NetworkError.HttpError(code = code, message = message)
 
     private fun response(
         processedStatus: String = "CONSUMED",

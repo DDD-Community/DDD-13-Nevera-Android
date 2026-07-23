@@ -1,6 +1,7 @@
 package com.anddd.nevera.data.mapper.error
 
 import com.anddd.nevera.core.common.NetworkError
+import com.anddd.nevera.data.testutil.httpError
 import com.anddd.nevera.domain.model.common.CommonError
 import com.anddd.nevera.domain.model.user.OnboardingStatusError
 import com.anddd.nevera.domain.model.user.ProfileError
@@ -10,9 +11,6 @@ import org.junit.jupiter.api.Test
 
 /** 프로필 조회·온보딩 상태·닉네임 변경의 서버 에러 코드 매핑을 고정한다. */
 class UserErrorMapperTest {
-
-    private fun httpError(code: Int, message: String? = "서버 메시지"): NetworkError =
-        NetworkError.HttpError(code = code, message = message)
 
     @Test
     fun `프로필 - 서버 코드 2041은 MemberNotFound가 된다`() {

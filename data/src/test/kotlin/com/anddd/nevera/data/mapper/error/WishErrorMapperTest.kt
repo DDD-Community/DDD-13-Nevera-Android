@@ -1,6 +1,7 @@
 package com.anddd.nevera.data.mapper.error
 
 import com.anddd.nevera.core.common.NetworkError
+import com.anddd.nevera.data.testutil.httpError
 import com.anddd.nevera.domain.model.common.CommonError
 import com.anddd.nevera.domain.model.wish.CreateWishError
 import com.anddd.nevera.domain.model.wish.UpdateWishError
@@ -9,9 +10,6 @@ import org.junit.jupiter.api.Test
 
 /** 위시 생성·수정의 서버 에러 코드 매핑을 고정한다. */
 class WishErrorMapperTest {
-
-    private fun httpError(code: Int, message: String? = "서버 메시지"): NetworkError =
-        NetworkError.HttpError(code = code, message = message)
 
     @Test
     fun `생성 - 서버 코드 3001은 InvalidInput이 된다`() {
