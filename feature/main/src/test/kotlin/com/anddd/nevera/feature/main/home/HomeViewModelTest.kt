@@ -29,6 +29,7 @@ import com.anddd.nevera.feature.main.home.model.IngredientFilterTab
 import com.anddd.nevera.feature.main.home.model.IngredientUiModel
 import com.anddd.nevera.feature.main.home.model.PaginatedListState
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.collections.immutable.persistentListOf
@@ -184,6 +185,10 @@ class HomeViewModelTest {
 
             expectNoItems()
         }
+
+        // 가드가 추가 로드 호출(offset=1)을 막았는지 확인한다.
+        // (init의 최초 load는 offset=0이므로 구분된다.)
+        coVerify(exactly = 0) { getRescuedIngredients(offset = 1, limit = 10) }
     }
 
     @Test
@@ -202,6 +207,10 @@ class HomeViewModelTest {
 
             expectNoItems()
         }
+
+        // 가드가 추가 로드 호출(offset=1)을 막았는지 확인한다.
+        // (init의 최초 load는 offset=0이므로 구분된다.)
+        coVerify(exactly = 0) { getRescuedIngredients(offset = 1, limit = 10) }
     }
 
     @Test
@@ -266,7 +275,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `추가 요청이 실패하면 목록은 그대로 두고 로딩 표시만 남는다`() = runTest {
+    fun `추가 요청이 실패하면 목록은 그대로 두고 로딩 표시를 해제한다`() = runTest {
         coEvery { getRescuedIngredients(offset = 1, limit = 10) } returns
             NeveraResult.Failure(CommonError.NetworkUnavailable)
 
@@ -281,9 +290,10 @@ class HomeViewModelTest {
         createViewModel().test(this, initialState = state) {
             containerHost.handleIntent(HomeIntent.LoadMoreIngredients(IngredientFilterTab.Rescue))
 
-            // 현재 동작이다. 실패 시 isLoadingMore가 true로 남아 다음 요청이 막힌다.
+            // 로딩을 켰다가 실패 시 다시 꺼야 다음 추가 로드 요청이 막히지 않는다.
+            // (copy가 isLoadingMore만 바꾸므로 items가 그대로임도 함께 검증된다.)
             expectState { copy(rescuedIngredients = rescuedIngredients.copy(isLoadingMore = true)) }
-            expectNoItems()
+            expectState { copy(rescuedIngredients = rescuedIngredients.copy(isLoadingMore = false)) }
         }
     }
 

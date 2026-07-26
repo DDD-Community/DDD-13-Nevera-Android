@@ -204,7 +204,8 @@ class HomeViewModel @Inject constructor(
                             )
                         }
                         .onFailure {
-                            // TODO 네트워크 에러 처리
+                            // 실패해도 로딩 표시를 해제해야 다음 추가 로드 요청이 막히지 않는다.
+                            applyMutation(HomeMutation.LoadMoreRescuedFailed)
                         }
                 }
 
@@ -224,7 +225,8 @@ class HomeViewModel @Inject constructor(
                             )
                         }
                         .onFailure {
-                            // TODO 네트워크 에러 처리
+                            // 실패해도 로딩 표시를 해제해야 다음 추가 로드 요청이 막히지 않는다.
+                            applyMutation(HomeMutation.LoadMoreDisposalFailed)
                         }
                 }
             }
@@ -310,6 +312,10 @@ class HomeViewModel @Inject constructor(
                 state.copy(rescuedIngredients = state.rescuedIngredients.copy(isLoadingMore = true))
             }
 
+            HomeMutation.LoadMoreRescuedFailed -> reduce {
+                state.copy(rescuedIngredients = state.rescuedIngredients.copy(isLoadingMore = false))
+            }
+
             is HomeMutation.AppendRescuedIngredients -> reduce {
                 state.copy(
                     rescuedIngredients = state.rescuedIngredients.appendPage(
@@ -331,6 +337,10 @@ class HomeViewModel @Inject constructor(
 
             HomeMutation.LoadingMoreDisposalIngredients -> reduce {
                 state.copy(disposalIngredients = state.disposalIngredients.copy(isLoadingMore = true))
+            }
+
+            HomeMutation.LoadMoreDisposalFailed -> reduce {
+                state.copy(disposalIngredients = state.disposalIngredients.copy(isLoadingMore = false))
             }
 
             is HomeMutation.AppendDisposalIngredients -> reduce {
