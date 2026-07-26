@@ -277,7 +277,7 @@ ViewModel 테스트 59개를 추가했다(`HomeViewModel` 17, `FridgeViewModel` 
 
 방법론에서 배운 것이 하나 있다. 모든 마일스톤에서 테스트를 쓴 뒤 프로덕션 코드를 일부러 망가뜨려 의도한 테스트가 실패하는지 확인했는데, 이 절차가 없었다면 통과하지만 아무것도 지키지 않는 테스트를 여러 개 남겼을 것이다. 실제로 마일스톤 6에서는 이 확인 과정에서 "상태가 바뀌지 않는 것이 정상"인 경우를 발견해 검증 방식을 고쳤다.
 
-테스트를 쓰다가 발견했지만 이 계획에서 고치지 않고 기록만 남긴 프로덕션 동작이 세 가지 있다. 원칙대로 테스트 추가와 동작 변경을 섞지 않았다. `ProcessIngredientMapper`가 알 수 없는 처리 유형을 폐기가 아닌 구조로 떨어뜨리는 것, `FridgeIngredientMapper`가 파싱 실패한 유통기한을 오늘 날짜로 대체해 화면에 잘못된 값이 보이는 것, 그리고 `HomeViewModel`에서 목록 추가 요청이 실패하면 `isLoadingMore`가 `true`로 남아 다음 요청이 영구히 막히는 것이다. 마지막 것은 사용자가 체감할 수 있는 결함이므로 별도 이슈로 다루는 편이 좋다.
+테스트를 쓰다가 발견한 프로덕션 동작이 세 가지 있었고, 원칙대로 테스트 추가와 동작 변경을 섞지 않았다. 이 중 `HomeViewModel`에서 목록 추가 요청이 실패하면 `isLoadingMore`가 `true`로 남아 다음 요청이 영구히 막히던 결함은 병합 전 리뷰 대응으로 수정했다(실패 시 로딩 표시를 해제). 나머지 둘 — `ProcessIngredientMapper`가 알 수 없는 처리 유형을 폐기가 아닌 구조로 떨어뜨리는 것, `FridgeIngredientMapper`가 파싱 실패한 유통기한을 오늘 날짜로 대체해 화면에 잘못된 값이 보이는 것 — 은 도메인 타입 변경이 필요한 설계 사안이라 후속 이슈로 트래킹한다. 세 건 모두 현재 동작을 characterization 테스트로 고정해 두었으므로, 이슈를 처리할 때 해당 테스트를 정상 동작 검증으로 바꾸면 된다.
 
 남은 일도 적어 둔다. `feature/ingredient`, `feature/splash`, `feature/notification`, `feature/sample`의 ViewModel에는 아직 테스트가 없다. 이 계획이 확립한 형태를 그대로 따르면 되므로 추가 설계 없이 진행할 수 있다.
 
@@ -555,7 +555,7 @@ DataSource Fake는 `data/src/test/kotlin/com/anddd/nevera/data/testutil/` 아래
 ## Concrete Steps
 
 
-모든 명령은 저장소 루트(`/Users/juhyeok/AndroidStudioProjects/Nevera-Android`)에서 실행한다.
+모든 명령은 저장소 루트에서 실행한다.
 
 작업을 시작하기 전에 현재 상태를 확인한다.
 
@@ -797,3 +797,4 @@ DataSource Fake는 `data/src/test/kotlin/com/anddd/nevera/data/testutil/` 아래
 
 
 - 2026-07-23: 계획 완료 후 병합 전 리뷰 대응으로 두 건의 구조 리팩터링(공용 `httpError` 픽스처 추출, `FakeDataSources.kt`의 대역/픽스처 분리)을 반영했다. `Progress`에 후속 항목을, `Decision Log`에 두 결정을, `Outcomes & Retrospective`에 "후속 리팩터링" 절을 추가했고, `Interfaces and Dependencies`의 `testutil` 설명을 현재 파일 구조에 맞게 갱신했다. 두 작업 모두 동작과 테스트 개수를 바꾸지 않는다.
+- 2026-07-26: PR #163 리뷰 대응. (1) `Outcomes & Retrospective`의 "고치지 않고 기록만 남긴 동작 세 가지" 중 `HomeViewModel` 페이지네이션 멈춤은 이번에 수정했으므로 해결됨으로 정리하고, 남은 두 매퍼 사안은 후속 이슈(#164, #165)로 트래킹함을 명시했다. (2) `Concrete Steps`에 박혀 있던 작성자 로컬 절대경로를 "저장소 루트"로 바꿔 환경 종속을 제거했다.
