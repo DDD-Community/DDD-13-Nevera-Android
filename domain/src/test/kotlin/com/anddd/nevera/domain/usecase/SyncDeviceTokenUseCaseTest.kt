@@ -6,6 +6,7 @@ import com.anddd.nevera.domain.model.notification.FcmTokenError
 import com.anddd.nevera.domain.testutil.FakeFcmTokenProvider
 import com.anddd.nevera.domain.testutil.FakeFcmTokenRepository
 import com.anddd.nevera.domain.testutil.FakeTokenRepository
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -102,6 +103,18 @@ class SyncDeviceTokenUseCaseTest {
 
         assertTrue(fcmTokenRepository.registeredTokens.isEmpty())
         assertEquals(NeveraResult.Success(Unit), result)
+    }
+
+    @Test
+    fun `제공자가 취소 예외를 던지면 삼키지 않고 재전파하며 아무것도 등록하지 않는다`() = runTest {
+        // 일반 예외는 삼켜 성공으로 넘기지만, 취소는 상위 코루틴을 위해 반드시 재전파해야 한다.
+        fcmTokenRepository.storedToken = null
+        fcmTokenProvider.error = CancellationException("취소됨")
+
+        val thrown = runCatching { useCase(null) }.exceptionOrNull()
+
+        assertTrue(thrown is CancellationException)
+        assertTrue(fcmTokenRepository.registeredTokens.isEmpty())
     }
 
     @Test

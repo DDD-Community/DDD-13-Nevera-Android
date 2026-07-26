@@ -15,12 +15,15 @@ internal class FakeHomeRemoteDataSource(
         result = homeSummaryResponse(),
         error = null,
     ),
+    /** 설정하면 호출 시 이 예외를 던진다. 코루틴 취소 전파 검증 등에 쓴다. */
+    var error: Throwable? = null,
 ) : HomeRemoteDataSource {
 
     var getSummaryCount: Int = 0
         private set
 
     override suspend fun getSummary(): ApiResponse<HomeSummaryResponse> {
+        error?.let { throw it }
         getSummaryCount++
         return summaryResponse
     }

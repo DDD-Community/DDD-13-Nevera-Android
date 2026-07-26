@@ -5,7 +5,8 @@ import com.anddd.nevera.data.model.home.HomeSummaryResponse
 /**
  * 홈 요약 응답([HomeSummaryResponse]) 픽스처.
  *
- * 위시 관련 필드는 기본적으로 null(위시 없음)이며, 필요한 케이스에서 인자로 채운다.
+ * 위시 관련 필드는 항상 null(위시 없음)로 만든다. 위시가 있는 응답이 필요하면
+ * [HomeSummaryResponse]를 직접 생성한다(위시 조립 규칙은 `HomeMapperTest`가 이미 검증).
  */
 internal fun homeSummaryResponse(
     nickname: String = "네베라",

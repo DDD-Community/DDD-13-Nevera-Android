@@ -19,6 +19,7 @@ import com.anddd.nevera.domain.model.ingredient.ProcessRatio
 import com.anddd.nevera.domain.model.ingredient.ProcessType
 import com.anddd.nevera.domain.model.ingredient.StorageLocation
 import com.google.gson.Gson
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withTimeoutOrNull
@@ -246,6 +247,16 @@ class IngredientRepositoryImplTest {
         assertNull(
             withTimeoutOrNull(EMISSION_TIMEOUT_MILLIS) { repository.observeDisposedIngredients().first() },
         )
+    }
+
+    @Test
+    fun `수정 중 코루틴이 취소되면 CancellationException을 삼키지 않고 전파한다`() = runTest {
+        // 취소를 실패(NeveraResult.Failure)로 삼키면 구조적 동시성이 깨진다.
+        ingredientDataSource.editError = CancellationException("취소됨")
+
+        val thrown = runCatching { repository.editIngredient(id = 1L, input = editInput) }.exceptionOrNull()
+
+        assertTrue(thrown is CancellationException)
     }
 
     private companion object {

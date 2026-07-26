@@ -20,6 +20,8 @@ internal class FakeIngredientRemoteDataSource(
     ),
     var rescuedResponse: ApiResponse<List<IngredientResponse>> = ApiResponse(emptyList(), null),
     var disposedResponse: ApiResponse<List<IngredientResponse>> = ApiResponse(emptyList(), null),
+    /** 설정하면 [editIngredient] 호출 시 이 예외를 던진다. 코루틴 취소 전파 검증 등에 쓴다. */
+    var editError: Throwable? = null,
 ) : IngredientRemoteDataSource {
 
     val editRequests = mutableListOf<Pair<Long, EditIngredientRequest>>()
@@ -28,6 +30,7 @@ internal class FakeIngredientRemoteDataSource(
         id: Long,
         request: EditIngredientRequest,
     ): ApiResponse<FridgeIngredientResponse> {
+        editError?.let { throw it }
         editRequests += id to request
         return editResponse
     }

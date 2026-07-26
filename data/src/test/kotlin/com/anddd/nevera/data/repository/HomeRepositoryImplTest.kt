@@ -8,11 +8,13 @@ import com.anddd.nevera.data.testutil.FakeHomeRemoteDataSource
 import com.anddd.nevera.data.testutil.homeSummaryResponse
 import com.anddd.nevera.domain.model.common.CommonError
 import com.google.gson.Gson
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 /**
@@ -100,6 +102,16 @@ class HomeRepositoryImplTest {
         repository.loadSummary()
 
         assertEquals("이전-닉네임", observedSummaryOrNull()?.nickname)
+    }
+
+    @Test
+    fun `조회 중 코루틴이 취소되면 CancellationException을 삼키지 않고 전파한다`() = runTest {
+        // 취소를 실패(NeveraResult.Failure)로 삼키면 구조적 동시성이 깨진다.
+        homeDataSource.error = CancellationException("취소됨")
+
+        val thrown = runCatching { repository.loadSummary() }.exceptionOrNull()
+
+        assertTrue(thrown is CancellationException)
     }
 
     @Test
