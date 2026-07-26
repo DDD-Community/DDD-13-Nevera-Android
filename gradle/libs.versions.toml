@@ -111,6 +111,7 @@ androidx-camera-view = { group = "androidx.camera", name = "camera-view", versio
 orbit-core = { group = "org.orbit-mvi", name = "orbit-core", version.ref = "orbitMvi" }
 orbit-viewmodel = { group = "org.orbit-mvi", name = "orbit-viewmodel", version.ref = "orbitMvi" }
 orbit-compose = { group = "org.orbit-mvi", name = "orbit-compose", version.ref = "orbitMvi" }
+orbit-test = { group = "org.orbit-mvi", name = "orbit-test", version.ref = "orbitMvi" }
 
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashscreen" }

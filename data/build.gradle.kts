@@ -28,4 +28,6 @@ dependencies {
     implementation(libs.paging.runtime)
     implementation(libs.room.runtime)
     implementation(libs.room.paging)
+
+    testImplementation(libs.coroutines.test)
 }

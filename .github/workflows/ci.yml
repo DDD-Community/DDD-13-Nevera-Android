@@ -42,7 +42,9 @@ jobs:
 
       - name: Run unit tests
         id: unit-test
-        run: ./gradlew testDebugUnitTest :quality:detekt-rules:test --no-daemon --info
+        # testDebugUnitTest는 Android 플러그인이 만드는 태스크라 순수 Kotlin(JVM) 모듈에는 없다.
+        # domain·core:common·quality:detekt-rules는 test 태스크를 명시해야 CI에서 실행된다.
+        run: ./gradlew testDebugUnitTest :domain:test :core:common:test :quality:detekt-rules:test --no-daemon --info
         continue-on-error: true
         env:
           GOOGLE_WEB_CLIENT_ID: ${{ secrets.GOOGLE_WEB_CLIENT_ID }}

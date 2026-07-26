@@ -25,6 +25,9 @@ sealed interface HomeMutation : NeveraMutation {
 
     data object LoadingMoreRescuedIngredients : HomeMutation
 
+    /** 구조 목록 추가 로드 실패 시 로딩 표시를 해제해 다음 요청이 막히지 않게 한다. */
+    data object LoadMoreRescuedFailed : HomeMutation
+
     data class AppendRescuedIngredients(
         val ingredients: List<IngredientUiModel>,
         val hasMore: Boolean,
@@ -36,6 +39,9 @@ sealed interface HomeMutation : NeveraMutation {
     ) : HomeMutation
 
     data object LoadingMoreDisposalIngredients : HomeMutation
+
+    /** 폐기 목록 추가 로드 실패 시 로딩 표시를 해제해 다음 요청이 막히지 않게 한다. */
+    data object LoadMoreDisposalFailed : HomeMutation
 
     data class AppendDisposalIngredients(
         val ingredients: List<IngredientUiModel>,
