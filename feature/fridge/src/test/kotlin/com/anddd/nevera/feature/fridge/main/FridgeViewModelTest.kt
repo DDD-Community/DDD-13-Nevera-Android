@@ -191,7 +191,7 @@ class FridgeViewModelTest {
             expectSideEffect(FridgeSideEffect.ShowToast("식재료를 찾을 수 없어요."))
         }
 
-        coVerify { processIngredient(7L, ProcessType.Consumed, ProcessRatio.Quarter) }
+        coVerify { processIngredient(item.id, ProcessType.Consumed, ProcessRatio.Quarter) }
     }
 
     @Test
@@ -201,7 +201,7 @@ class FridgeViewModelTest {
             expectSideEffect(FridgeSideEffect.ShowToast("식재료를 찾을 수 없어요."))
         }
 
-        coVerify { processIngredient(7L, ProcessType.Consumed, ProcessRatio.Half) }
+        coVerify { processIngredient(item.id, ProcessType.Consumed, ProcessRatio.Half) }
     }
 
     @Test
@@ -211,7 +211,7 @@ class FridgeViewModelTest {
             expectSideEffect(FridgeSideEffect.ShowToast("식재료를 찾을 수 없어요."))
         }
 
-        coVerify { processIngredient(7L, ProcessType.Consumed, ProcessRatio.ThreeQuarters) }
+        coVerify { processIngredient(item.id, ProcessType.Consumed, ProcessRatio.ThreeQuarters) }
     }
 
     @Test
@@ -221,7 +221,7 @@ class FridgeViewModelTest {
             expectSideEffect(FridgeSideEffect.ShowToast("식재료를 찾을 수 없어요."))
         }
 
-        coVerify { processIngredient(7L, ProcessType.Consumed, ProcessRatio.Full) }
+        coVerify { processIngredient(item.id, ProcessType.Consumed, ProcessRatio.Full) }
     }
 
     @Test
@@ -231,7 +231,7 @@ class FridgeViewModelTest {
             expectSideEffect(FridgeSideEffect.ShowToast("식재료를 찾을 수 없어요."))
         }
 
-        coVerify { processIngredient(7L, ProcessType.Wasted, ProcessRatio.Half) }
+        coVerify { processIngredient(item.id, ProcessType.Wasted, ProcessRatio.Half) }
     }
 
     @Test
@@ -314,7 +314,7 @@ class FridgeViewModelTest {
         createViewModel().test(this, initialState = FridgeUiState()) {
             containerHost.handleIntent(FridgeIntent.IngredientMoreClick(item))
 
-            expectSideEffect(FridgeSideEffect.NavigateToEditIngredient(7L))
+            expectSideEffect(FridgeSideEffect.NavigateToEditIngredient(item.id))
         }
     }
 

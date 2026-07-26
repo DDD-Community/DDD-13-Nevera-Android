@@ -71,7 +71,7 @@ class AppInfoViewModelTest {
         createViewModel().test(this, initialState = loadedState) {
             containerHost.handleIntent(AppInfoIntent.TermsClicked)
 
-            expectSideEffect(AppInfoSideEffect.OpenUrl("https://nevera.example.com/terms"))
+            expectSideEffect(AppInfoSideEffect.OpenUrl(loadedState.appInfo.termsUrl))
         }
     }
 
@@ -80,7 +80,7 @@ class AppInfoViewModelTest {
         createViewModel().test(this, initialState = loadedState) {
             containerHost.handleIntent(AppInfoIntent.PrivacyPolicyClicked)
 
-            expectSideEffect(AppInfoSideEffect.OpenUrl("https://nevera.example.com/privacy"))
+            expectSideEffect(AppInfoSideEffect.OpenUrl(loadedState.appInfo.privacyPolicyUrl))
         }
     }
 
@@ -89,10 +89,10 @@ class AppInfoViewModelTest {
         // 두 SideEffect가 같은 타입(OpenUrl)이라 매핑이 뒤바뀌어도 컴파일은 통과한다.
         createViewModel().test(this, initialState = loadedState) {
             containerHost.handleIntent(AppInfoIntent.TermsClicked)
-            expectSideEffect(AppInfoSideEffect.OpenUrl("https://nevera.example.com/terms"))
+            expectSideEffect(AppInfoSideEffect.OpenUrl(loadedState.appInfo.termsUrl))
 
             containerHost.handleIntent(AppInfoIntent.PrivacyPolicyClicked)
-            expectSideEffect(AppInfoSideEffect.OpenUrl("https://nevera.example.com/privacy"))
+            expectSideEffect(AppInfoSideEffect.OpenUrl(loadedState.appInfo.privacyPolicyUrl))
         }
     }
 

@@ -73,14 +73,18 @@ class ProcessIngredientUseCaseTest {
 
     @Test
     fun `입력받은 식재료 식별자와 처리 유형과 비율을 그대로 저장소에 전달한다`() = runTest {
-        useCase(inventoryId = 7L, processType = ProcessType.Wasted, ratio = ProcessRatio.ThreeQuarters)
+        val inventoryId = 7L
+        val processType = ProcessType.Wasted
+        val ratio = ProcessRatio.ThreeQuarters
+
+        useCase(inventoryId = inventoryId, processType = processType, ratio = ratio)
 
         assertEquals(
             listOf(
                 FakeIngredientRepository.ProcessCall(
-                    inventoryId = 7L,
-                    processType = ProcessType.Wasted,
-                    ratio = ProcessRatio.ThreeQuarters,
+                    inventoryId = inventoryId,
+                    processType = processType,
+                    ratio = ratio,
                 ),
             ),
             ingredientRepository.processCalls,
