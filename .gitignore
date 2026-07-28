@@ -59,6 +59,7 @@ Thumbs.db
 /captures
 
 # ======================
-# Claude Code hooks state
+# Claude Code
 # ======================
 .claude/hooks/.state/
+.claude/worktrees/

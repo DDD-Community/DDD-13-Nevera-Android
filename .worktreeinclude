@@ -1,0 +1,15 @@
+# Claude Code가 worktree를 만들 때 함께 복사할 파일 목록
+#
+# worktree는 새 checkout이라 gitignore된 파일이 존재하지 않는다.
+# local.properties가 없으면 Gradle이 SDK 경로를 찾지 못해 빌드가 실패하는데,
+# 에러 메시지가 원인을 직접 가리키지 않아 디버깅이 어렵다.
+#
+# 문법은 .gitignore와 동일하다.
+# 여기 적힌 패턴 중 "gitignore된 파일"만 복사되므로 추적 중인 파일은 중복되지 않는다.
+# 빌드가 의존하는 gitignore 파일이 새로 생기면 이 목록에 추가할 것.
+
+# Android SDK 경로 및 로컬 빌드 설정
+local.properties
+
+# 로컬 시크릿 (있는 경우에만 복사됨)
+secrets.properties
