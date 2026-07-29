@@ -17,7 +17,6 @@ Nevera Android 프로젝트에서 `core:designsystem` Compose UI 계측 테스�
 
 상세 배경이나 테스트 작성 기준이 필요하면 다음 문서를 읽는다.
 
-- `docs/designsystem-compose-test-guide.md`
 - `docs/execplan-designsystem-compose-tests.md`
 
 ## 기본 실행 원칙
