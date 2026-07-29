@@ -39,14 +39,18 @@ scripts/android/run-designsystem-compose-tests.sh
 이 스크립트는 다음 순서로 동작한다.
 
 1. `$ANDROID_HOME/platform-tools/adb`를 우선 찾고, 없으면 PATH의 `adb`를 찾는다.
-2. `$ANDROID_HOME/emulator/emulator`를 우선 찾고, 없으면 PATH의 `emulator`를 찾는다.
-3. `adb devices`에서 `device` 상태의 연결 기기가 있으면 재사용한다.
-4. 연결 기기가 없으면 `NEVERA_TEST_AVD` 또는 첫 번째 AVD를 선택한다.
+2. `adb devices`에서 `device` 상태의 첫 번째 기기가 있으면 그 serial을 대상으로 재사용한다.
+3. 연결 기기가 없을 때만 `$ANDROID_HOME/emulator/emulator`(없으면 PATH의 `emulator`)를 찾는다.
+4. `NEVERA_TEST_AVD` 또는 첫 번째 AVD를 선택한다.
 5. 에뮬레이터를 백그라운드로 시작한다.
-6. `adb get-state`와 `adb shell getprop sys.boot_completed`로 부팅 완료를 기다린다.
-7. `adb shell input keyevent 82`로 잠금 화면 해제를 시도한다.
-8. `./gradlew :core:designsystem:connectedDebugAndroidTest`를 실행한다.
-9. 스크립트가 직접 시작한 에뮬레이터만 종료한다.
+6. `adb devices`에서 `emulator-*` serial이 올라오기를 기다린 뒤,
+   `adb -s <serial> shell getprop sys.boot_completed`로 부팅 완료를 확인한다.
+7. `adb -s <serial> shell input keyevent 82`로 잠금 화면 해제를 시도한다.
+8. `ANDROID_SERIAL=<serial> ./gradlew :core:designsystem:connectedDebugAndroidTest`를 실행한다.
+9. 스크립트가 직접 시작한 에뮬레이터만 `adb -s <serial> emu kill`로 종료한다.
+
+기기가 여러 대 붙어 있어도 모든 `adb` 호출과 Gradle 실행이 2번에서 고른 한 대만 대상으로 한다.
+특정 기기를 쓰려면 `adb devices` 목록에서 확인한 뒤 해당 기기만 연결한 상태로 실행한다.
 
 ## 특정 AVD 지정
 
