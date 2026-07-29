@@ -1,14 +1,15 @@
 # Claude Code가 worktree를 만들 때 함께 복사할 파일 목록
 #
 # worktree는 새 checkout이라 gitignore된 파일이 존재하지 않는다.
-# local.properties가 없으면 Gradle이 SDK 경로를 찾지 못해 빌드가 실패하는데,
-# 에러 메시지가 원인을 직접 가리키지 않아 디버깅이 어렵다.
+# local.properties가 없으면 feature/auth의 GOOGLE_WEB_CLIENT_ID가 빈 문자열로 컴파일된다.
+# debug 빌드는 required=false라 실패하지 않고 그대로 통과하기 때문에,
+# 빌드는 멀쩡한데 Google 로그인만 런타임에 깨지는 형태로 드러난다. (release는 하드 실패)
 #
 # 문법은 .gitignore와 동일하다.
 # 여기 적힌 패턴 중 "gitignore된 파일"만 복사되므로 추적 중인 파일은 중복되지 않는다.
 # 빌드가 의존하는 gitignore 파일이 새로 생기면 이 목록에 추가할 것.
 
-# Android SDK 경로 및 로컬 빌드 설정
+# SDK 경로 및 빌드에 주입되는 로컬 설정 값 (GOOGLE_WEB_CLIENT_ID 등)
 local.properties
 
 # 로컬 시크릿 (있는 경우에만 복사됨)
