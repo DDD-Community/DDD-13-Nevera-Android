@@ -42,15 +42,27 @@ scripts/android/run-designsystem-compose-tests.sh
 2. `adb devices`에서 `device` 상태의 첫 번째 기기가 있으면 그 serial을 대상으로 재사용한다.
 3. 연결 기기가 없을 때만 `$ANDROID_HOME/emulator/emulator`(없으면 PATH의 `emulator`)를 찾는다.
 4. `NEVERA_TEST_AVD` 또는 첫 번째 AVD를 선택한다.
-5. 에뮬레이터를 백그라운드로 시작한다.
-6. `adb devices`에서 `emulator-*` serial이 올라오기를 기다린 뒤,
+5. 기존 `emulator-*` serial 목록을 기록한 뒤 에뮬레이터를 백그라운드로 시작한다. 로그는 `mktemp` 파일에 남기고 경로를 출력한다.
+6. 5번에서 기록한 목록에 **없는** 새 `emulator-*` serial이 올라오기를 기다린 뒤,
    `adb -s <serial> shell getprop sys.boot_completed`로 부팅 완료를 확인한다.
 7. `adb -s <serial> shell input keyevent 82`로 잠금 화면 해제를 시도한다.
 8. `ANDROID_SERIAL=<serial> ./gradlew :core:designsystem:connectedDebugAndroidTest`를 실행한다.
-9. 스크립트가 직접 시작한 에뮬레이터만 `adb -s <serial> emu kill`로 종료한다.
+9. 스크립트가 직접 시작한 에뮬레이터만 `adb -s <serial> emu kill`로 종료한다. 종료되지 않으면 추적한 PID로 정리한다.
+10. 에뮬레이터 로그는 성공 시 삭제하고, 실패 시 경로를 출력해 남긴다.
 
 기기가 여러 대 붙어 있어도 모든 `adb` 호출과 Gradle 실행이 2번에서 고른 한 대만 대상으로 한다.
 특정 기기를 쓰려면 `adb devices` 목록에서 확인한 뒤 해당 기기만 연결한 상태로 실행한다.
+부팅 대기가 새 serial만 대상으로 하므로, 사용자가 미리 켜 둔(또는 부팅 중인) 에뮬레이터를 잡아 종료하지 않는다.
+
+## 설치가 INSTALL_FAILED_VERIFICATION_FAILURE로 실패할 때
+
+Google Play/Google APIs 이미지 AVD에서는 패키지 검증기가 `Integrity verification timed out`으로 APK 설치를
+막을 수 있다. 테스트 코드 문제가 아니므로 대상 기기에서 검증기를 끄고 다시 실행한다.
+
+```bash
+adb -s <serial> shell settings put global verifier_verify_adb_installs 0
+adb -s <serial> shell settings put global package_verifier_enable 0
+```
 
 ## 특정 AVD 지정
 
