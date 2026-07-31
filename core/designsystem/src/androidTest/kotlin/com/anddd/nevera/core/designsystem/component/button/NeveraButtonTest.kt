@@ -55,15 +55,20 @@ class NeveraButtonTest {
     }
 
     @Test
-    fun `disabled 텍스트 버튼은 비활성 상태다`() {
+    fun `disabled 텍스트 버튼은 비활성 상태이고 눌러도 콜백을 호출하지 않는다`() {
+        var disabledClickCount = 0
         composeRule.setNeveraContent {
             NeveraFilledButton(
                 label = "비활성",
-                onClick = {},
+                onClick = { disabledClickCount++ },
                 enabled = false,
             )
         }
 
         composeRule.onNode(hasText("비활성") and hasClickAction()).assertIsNotEnabled()
+
+        composeRule.onNode(hasText("비활성") and hasClickAction()).performClick()
+
+        assertEquals("Disabled click count", 0, disabledClickCount)
     }
 }

@@ -77,17 +77,23 @@ class NeveraSwitchTest {
     }
 
     @Test
-    fun `disabled Switch는 비활성 상태다`() {
+    fun `disabled Switch는 비활성 상태이고 눌러도 콜백을 호출하지 않는다`() {
+        var changedValue: Boolean? = null
         composeRule.setNeveraContent {
             NeveraSwitch(
                 checked = false,
-                onCheckedChange = {},
+                onCheckedChange = { changedValue = it },
                 modifier = Modifier.testTag(SwitchTag),
                 enabled = false,
             )
         }
 
         composeRule.onNodeWithTag(SwitchTag).assertIsNotEnabled()
+
+        composeRule.onNodeWithTag(SwitchTag).performClick()
+
+        assertEquals(null, changedValue)
+        composeRule.onNodeWithTag(SwitchTag).assertIsOff()
     }
 }
 

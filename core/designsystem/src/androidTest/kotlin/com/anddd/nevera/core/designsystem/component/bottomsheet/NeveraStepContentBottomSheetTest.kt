@@ -40,6 +40,25 @@ class NeveraStepContentBottomSheetTest {
     }
 
     @Test
+    fun `CTA를 누르면 CTA 콜백을 호출한다`() {
+        var ctaCount = 0
+        composeRule.setNeveraContent {
+            NeveraStepContentBottomSheet(
+                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                stepIndicator = "1/2",
+                title = "나만의 위시는 무엇인가요?",
+                subtitle = "절약해서 이루고 싶은 걸 알려주세요",
+                ctaLabel = "다음",
+                onCtaClick = { ctaCount++ },
+            )
+        }
+
+        composeRule.onNodeWithText("다음").performClick()
+
+        assertEquals(1, ctaCount)
+    }
+
+    @Test
     fun `CTA가 비활성 상태이면 클릭할 수 없다`() {
         composeRule.setNeveraContent {
             NeveraStepContentBottomSheet(

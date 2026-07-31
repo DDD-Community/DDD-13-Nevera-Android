@@ -48,10 +48,13 @@ class NeveraPasswordTextFieldTest {
     }
 
     @Test
-    fun `비밀번호 표시 아이콘을 누르면 평문 텍스트를 표시한다`() {
+    fun `비밀번호 표시 아이콘을 누르면 마스킹이 해제되고 평문 텍스트를 표시한다`() {
         composeRule.setNeveraContent {
             NeveraPasswordTextField(value = "secret", onValueChange = {})
         }
+
+        // 클릭 후만 검증하면 마스킹이 아예 적용되지 않는 회귀도 통과한다. 해제 전 상태를 함께 고정한다.
+        composeRule.onNodeWithText("secret").assertDoesNotExist()
 
         composeRule.onNodeWithContentDescription("비밀번호 표시").performClick()
 

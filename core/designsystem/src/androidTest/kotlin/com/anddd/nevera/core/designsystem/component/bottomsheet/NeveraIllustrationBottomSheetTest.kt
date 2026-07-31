@@ -39,6 +39,26 @@ class NeveraIllustrationBottomSheetTest {
     }
 
     @Test
+    fun `primary 버튼을 누르면 primary 콜백을 호출한다`() {
+        var primaryCount = 0
+        composeRule.setNeveraContent {
+            NeveraIllustrationBottomSheet(
+                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                illustration = { Text("일러스트") },
+                title = "환영해요",
+                subtitle = "식재료를 구조해요",
+                primaryLabel = "시작",
+                onPrimaryClick = { primaryCount++ },
+                onDismissRequest = {},
+            )
+        }
+
+        composeRule.onNodeWithText("시작").performClick()
+
+        assertEquals(1, primaryCount)
+    }
+
+    @Test
     fun `ghost 버튼 정보가 모두 있으면 ghost 버튼을 표시하고 클릭한다`() {
         var ghostCount = 0
         composeRule.setNeveraContent {
