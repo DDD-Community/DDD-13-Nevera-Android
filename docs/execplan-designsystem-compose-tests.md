@@ -43,7 +43,7 @@
   증거: `core/designsystem/src/main/kotlin/com/anddd/nevera/core/designsystem/component/navigationbar/NeveraNavigationBarItem.kt`의 `Icon(contentDescription = null)`.
 
 - 관찰: 현재 로컬 환경에는 Android SDK의 `adb`와 `emulator` 실행 파일이 설치되어 있다. 그러나 관리형 샌드박스 안에서 `adb devices`를 실행하면 ADB daemon이 포트 리스너를 열지 못해 실패할 수 있다. 따라서 AI Agent가 CLI로 에뮬레이터와 ADB를 다루려면 실행 환경에 따라 권한 승인이 필요하다.
-  증거: `which adb`는 `/Users/juhyeok/Library/Android/sdk/platform-tools/adb`를 반환했고, `which emulator`는 `/Users/juhyeok/Library/Android/sdk/tools/emulator`를 반환했다. 샌드박스 안의 `adb devices`는 `could not install *smartsocket* listener: Operation not permitted`로 실패했다.
+  증거: `which adb`는 `$ANDROID_HOME/platform-tools/adb`를, `which emulator`는 구버전 경로인 `$ANDROID_HOME/tools/emulator`를 반환했다. 샌드박스 안의 `adb devices`는 `could not install *smartsocket* listener: Operation not permitted`로 실패했다.
 
 - 관찰: `PATH`의 `emulator`가 오래된 `$ANDROID_HOME/tools/emulator`를 가리키면 최신 SDK 구조에서 Qt/qemu 상대 경로를 잘못 해석해 실행에 실패할 수 있다. 스크립트는 `$ANDROID_HOME/emulator/emulator`를 우선 사용해야 한다.
   증거: 첫 스크립트 실행은 `/tmp/nevera-emulator.log`에 `Qt library not found at ../emulator/lib64/qt/lib`와 `Could not launch .../../emulator/qemu/darwin-x86_64/qemu-system-aarch64`를 남기고 timeout 되었다. `$ANDROID_HOME/emulator/emulator` 우선 사용으로 수정한 뒤에는 AVD가 정상 부팅되고 테스트가 실행되었다.
@@ -107,18 +107,18 @@ CLI Agent 실행 경로도 구현했다. `scripts/android/run-designsystem-compo
 ## Context and Orientation
 
 
-저장소 루트는 `/Users/juhyeok/AndroidStudioProjects/Nevera-Compose-Test`다. Gradle 모듈 `:core:designsystem`은 `core/designsystem` 디렉터리에 있고, 네임스페이스는 `com.anddd.nevera.core.designsystem`이다. 모듈 설정 파일은 `core/designsystem/build.gradle.kts`이며 `nevera.android.compose` Convention Plugin을 적용한다. 이 플러그인은 Android library 설정, Compose 활성화, Material3/UI 의존성, Compose UI test 의존성을 제공한다.
+이 문서의 모든 경로는 저장소 루트 기준 상대 경로다. Gradle 모듈 `:core:designsystem`은 `core/designsystem` 디렉터리에 있고, 네임스페이스는 `com.anddd.nevera.core.designsystem`이다. 모듈 설정 파일은 `core/designsystem/build.gradle.kts`이며 `nevera.android.compose` Convention Plugin을 적용한다. 이 플러그인은 Android library 설정, Compose 활성화, Material3/UI 의존성, Compose UI test 의존성을 제공한다.
 
 Compose UI 계측 테스트란 Android 기기나 에뮬레이터에서 실제 Compose 트리를 띄우고 노드를 찾아 클릭, 입력, 단언을 수행하는 테스트다. 이 저장소에서는 `androidx.compose.ui.test.junit4.createComposeRule`을 사용한다. 테스트는 JUnit4 스타일의 `@get:Rule`과 `org.junit.Test`를 사용한다. JVM 단위 테스트가 사용하는 JUnit5와 다르지만, `src/androidTest`에서는 AndroidX 테스트 러너가 JUnit4 테스트를 실행하므로 문제가 없다.
 
 AVD(Android Virtual Device)는 Android Emulator가 부팅하는 가상 기기 설정이다. Android Studio의 Device Manager에서 만든 Pixel 기기 같은 항목이 AVD다. CLI Agent는 Android Studio UI를 열지 않고 `emulator -list-avds`로 AVD 이름 목록을 읽고, `emulator -avd <AVD_NAME>`으로 해당 가상 기기를 켤 수 있다. 에뮬레이터가 완전히 켜졌는지는 `adb shell getprop sys.boot_completed`가 `1`을 반환하는지로 확인한다. 이 확인이 끝난 뒤에만 `connectedDebugAndroidTest`를 실행한다.
 
-현재 관련 파일은 다음과 같다.
+계획 착수 시점의 관련 파일은 다음과 같다. 아래 두 샘플 테스트는 이 계획에서 제거했으므로 현재 저장소에는 없다.
 
     core/designsystem/build.gradle.kts
     build-logic/src/main/kotlin/ComposeConfig.kt
-    core/designsystem/src/androidTest/kotlin/com/anddd/nevera/ExampleInstrumentedTest.kt
-    core/designsystem/src/test/kotlin/com/anddd/nevera/ExampleUnitTest.kt
+    core/designsystem/src/androidTest/kotlin/com/anddd/nevera/ExampleInstrumentedTest.kt  (제거됨)
+    core/designsystem/src/test/kotlin/com/anddd/nevera/ExampleUnitTest.kt  (제거됨)
     core/designsystem/src/main/kotlin/com/anddd/nevera/core/designsystem/ui/theme/Theme.kt
     core/designsystem/src/main/kotlin/com/anddd/nevera/core/designsystem/component/button/
     core/designsystem/src/main/kotlin/com/anddd/nevera/core/designsystem/component/stepper/NeveraQuantityStepper.kt
@@ -231,7 +231,7 @@ BottomSheet 계열은 Material3 `SheetState`가 필요하다. 테스트에서 `@
 ## Concrete Steps
 
 
-모든 명령은 저장소 루트 `/Users/juhyeok/AndroidStudioProjects/Nevera-Compose-Test`에서 실행한다.
+모든 명령은 저장소 루트에서 실행한다.
 
 현재 모듈이 Compose 테스트 의존성을 갖는지 확인한다.
 
@@ -402,6 +402,10 @@ Switch 테스트는 contentDescription이 없으므로 테스트에서 modifier�
 이 예시는 AssertJ를 쓰고 있지만 `core:designsystem`의 androidTest classpath에 AssertJ가 없다. 실제 테스트에서는 `org.junit.Assert.assertTrue`, `assertFalse`, `assertEquals`를 사용하거나, AssertJ를 추가할 명확한 이유가 있을 때만 Gradle 의존성을 추가한다. 첫 구현은 새 의존성 없이 JUnit assertion으로 작성한다.
 
 CLI 에뮬레이터 실행 스크립트의 형태는 다음과 같다. 실제 구현은 이 흐름을 유지하되, zsh/bash 호환성과 에러 메시지를 저장소 스타일에 맞게 정리한다.
+
+> 아래 스케치는 계획 시점 초안이다. 최종 구현은 `scripts/android/run-designsystem-compose-tests.sh`가 기준이며 다음 세 가지가 다르다.
+> 기기 serial을 캡처해 모든 `adb` 호출과 Gradle 실행에 고정하고(다중 기기 대응), 에뮬레이터 로그를 예측 가능한
+> `/tmp` 경로 대신 `mktemp` 파일에 남기며, 부팅 대기는 이 스크립트가 직접 띄운 에뮬레이터만 대상으로 한다.
 
     #!/usr/bin/env bash
     set -euo pipefail
