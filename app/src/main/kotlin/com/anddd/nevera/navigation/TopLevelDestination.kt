@@ -31,6 +31,7 @@ fun TopLevelDestination.toNavigationBarItem(
         selectedIcon = selectedIcon(),
         unselectedIcon = unselectedIcon(),
         selected = selected,
+        contentDescription = contentDescription(),
     )
 }
 
@@ -46,4 +47,10 @@ private fun TopLevelDestination.unselectedIcon(): Painter = when (this) {
     TopLevelDestination.Home -> NeveraIcons.NavHome
     TopLevelDestination.Fridge -> NeveraIcons.NavFridge
     TopLevelDestination.MyPage -> NeveraIcons.NavMy
+}
+
+private fun TopLevelDestination.contentDescription(): String = when (this) {
+    TopLevelDestination.Home -> "홈"
+    TopLevelDestination.Fridge -> "냉장고"
+    TopLevelDestination.MyPage -> "마이페이지"
 }

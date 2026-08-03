@@ -205,7 +205,9 @@ private fun PickerColumn(
             val firstVisible = listState.firstVisibleItemScrollOffset
             val itemHeight = PICKER_ITEM_HEIGHT.value.toInt()
             val targetIndex = listState.firstVisibleItemIndex + if (firstVisible > itemHeight / 2) 1 else 0
-            listState.animateScrollToItem(targetIndex)
+            if (targetIndex != listState.firstVisibleItemIndex || firstVisible != 0) {
+                listState.animateScrollToItem(targetIndex)
+            }
         }
     }
 }
