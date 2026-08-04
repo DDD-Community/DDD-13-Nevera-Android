@@ -24,7 +24,21 @@
 - [x] (2026-08-04) M2 `:feature:notification`을 `api`/`impl`로 분리 (콜백 방식은 유지)
 - [x] (2026-08-04) M3 홈·냉장고·마이페이지를 직접 이동으로 전환, `:app` 콜백 3개 제거
 - [x] (2026-08-04) M4 impl 간 의존을 빌드가 거부하도록 검사 추가
-- [ ] M5 (범위 밖) `auth`, `main`, `fridge`, `ingredient` 분리
+
+**Phase 2 — Now in Android 현행 구조에 맞춘다** (2026-08-05 추가, 아래 Decision Log 참조)
+
+- [ ] M5 `Navigator` 래퍼를 `:core:navigation`에 도입하고 raw `NavController` 전달을 걷어낸다
+- [ ] M6 `:feature:splash`, `:feature:auth`, `:feature:main` 을 api/impl로 분리
+- [ ] M7 `:feature:mypage`, `:feature:fridge`, `:feature:ingredient` 를 api/impl로 분리
+- [ ] M8 `:app`의 그래프 조립을 정리하고 남은 콜백을 Navigator 호출로 대체
+
+**Phase 3 — Navigation 3 마이그레이션**
+
+- [ ] M9 (스파이크) 의존성 상향만 단독 수행: Compose BOM·lifecycle. 아키텍처 변경 없음
+- [ ] M10 `NavKey`·`NavigationState`·`Navigator`를 Nav3 API로 교체
+- [ ] M11 feature의 `NavGraphBuilder` 확장을 `EntryProviderScope` 확장으로 교체
+- [ ] M12 `NavHost`를 `NavDisplay`로 교체하고 바텀 탭 상태 보존을 `subStacks`로 이전
+- [ ] M13 딥링크 경로를 Nav3 백스택 합성 방식으로 이전
 
 ## Surprises & Discoveries
 
@@ -57,6 +71,39 @@
 - 결정: 비교 대상 세 브랜치의 구현 범위를 "알림 화면으로 가는 경로"로 한정한다.
   근거: 여덟 개 feature를 전부 마이그레이션하면 브랜치마다 수백 개 파일이 바뀌어 비교가 불가능해진다. 소비자가 세 곳으로 가장 많은 알림 경로 하나만 세 방식으로 구현하면, 같은 요구에 대한 세 가지 답을 나란히 놓고 볼 수 있다.
   날짜/작성자: 2026-08-04 / 이 계획 작성자
+
+- 결정: 범위 한정을 해제하고, 이 브랜치에서 **모든 feature 모듈을 분리한 뒤 Navigation 3까지 마이그레이션**한다(Phase 2·3).
+  근거: 세 안의 비교가 끝났고 프로젝트 담당자가 이 방향을 선택했다. 비교 목적의 범위 제한은 더 이상 필요 없다.
+  날짜/작성자: 2026-08-05 / 프로젝트 리드
+
+- 결정: feature에 raw `NavController`를 넘기던 것을 **`Navigator` 래퍼로 교체**한다.
+  근거: Phase 1에서 feature의 `NavGraphBuilder` 확장에 `NavController`를 통째로 넘겼는데, 이는 안드로이드 공식 가이드([Encapsulate your navigation code](https://developer.android.com/guide/navigation/design/encapsulate))가 권장하는 형태가 아니다. 공식 가이드는 콜백을 넘기고 이동은 별도의 `NavController` 확장으로 캡슐화하라고 한다.
+
+  더 중요한 건 권한 범위다. `NavController`를 주면 feature가 `popUpTo`·`clearBackStack` 등 전역 백스택을 무엇이든 조작할 수 있다. Now in Android의 현행 코드는 대신 `Navigator`라는 좁은 객체를 넘기고, 그 안에 탑레벨 전환·서브스택 관리 같은 정책을 가둔다.
+
+      class Navigator(val state: NavigationState) {
+          fun navigate(key: NavKey) {
+              when (key) {
+                  state.currentTopLevelKey -> clearSubStack()
+                  in state.topLevelKeys -> goToTopLevel(key)
+                  else -> goToKey(key)
+              }
+          }
+          fun goBack() { ... }
+      }
+
+  feature가 할 수 있는 일이 `navigate`와 `goBack` 둘로 좁혀지고, 백스택 정책은 한 곳에 모인다.
+  날짜/작성자: 2026-08-05 / 이 계획 작성자
+
+- 결정: Navigation 3 마이그레이션 전에 **의존성 상향만 단독으로 수행**하는 스파이크 마일스톤(M9)을 둔다.
+  근거: `androidx.navigation3:navigation3-ui:1.0.0`은 Compose **1.9.5** 이상을 요구하고, `androidx.lifecycle:lifecycle-viewmodel-navigation3:2.10.0`은 lifecycle **2.10.0**을 끌고 온다. 현재 이 저장소는 Compose BOM `2024.09.00`(Compose 1.7.2), lifecycle `2.6.1`/`2.8.7`이다. Compose 1.7.2 → 1.10.x는 마이너 세 단계 점프이고 그 자체로 API 변경·경고 정리가 필요하다.
+
+  아키텍처 변경과 의존성 상향을 한 커밋에 섞으면 빌드가 깨졌을 때 원인을 가릴 수 없다. 상향만 먼저 하고 기존 코드가 그대로 통과하는 것을 확인한 뒤 Nav3로 넘어간다.
+  날짜/작성자: 2026-08-05 / 이 계획 작성자
+
+- 결정: Compose BOM은 `2026.03.00`(Compose 1.10.5)으로 올린다.
+  근거: Nav3가 요구하는 1.9.5를 넘기는 가장 최근 BOM이다. 1.9.x대에 맞춰 최소로만 올리는 선택도 있으나, 어차피 한 번 겪을 마이그레이션이라면 최신에서 겪는 편이 낫다. 문제가 생기면 `2025.12.00`(Compose 1.10.0)으로 낮춰 재시도한다.
+  날짜/작성자: 2026-08-05 / 이 계획 작성자
 
 ## Outcomes & Retrospective
 
@@ -121,6 +168,38 @@ Nevera는 Android 앱이다. 냉장고 속 식재료를 영수증 사진으로 �
 **M3**에서 실제 이득이 나온다. 세 소비자 모듈이 `api`를 의존 선언하고 직접 이동하게 한 뒤, `:app`에서 콜백 세 개를 지운다.
 
 **M4**는 규칙을 빌드가 강제하게 한다. `impl`이 다른 feature의 `impl`에 의존하면 빌드를 실패시킨다.
+
+### Phase 2 — 모든 모듈을 같은 모양으로
+
+**M5**는 `Navigator` 래퍼를 도입한다. `:core:navigation` 모듈을 만들고 `NavController`를 감싼 좁은 객체를 둔다. feature는 이제 `NavController` 대신 이것을 받는다. Phase 1에서 세 모듈에 넘긴 raw `NavController`를 여기서 걷어낸다.
+
+**M6·M7**은 나머지 feature를 `api`/`impl`로 나눈다. 절차는 M2와 같다. 순서는 옮길 것이 적은 쪽부터다 — `splash`(파일 8개), `auth`(28개), `main`(24개)를 M6에서, `mypage`(38개), `fridge`(25개), `ingredient`(47개)를 M7에서 한다. `sample`은 어떤 그래프에도 연결되어 있지 않은 죽은 모듈이라 건드리지 않는다.
+
+각 feature의 `api`에 무엇을 올릴지는 기준이 하나다. **다른 모듈이 그 이름을 쓰는가.** 쓰지 않으면 `impl`에 남긴다. 예를 들어 `:feature:mypage`의 `AppInfoRoute`는 마이페이지 안에서만 쓰이므로 `impl`에 남고, `MyPageGraphRoute`는 `:app`이 바텀 탭 정의에 쓰므로 `api`로 간다.
+
+**M8**은 `:app`의 조립 코드를 정리한다. 남아 있는 콜백 중 다른 feature를 목적지로 하는 것을 Navigator 호출로 바꾼다.
+
+### Phase 3 — Navigation 3
+
+Navigation 3은 Navigation Compose와 다른 라이브러리다. 개념이 바뀌므로 먼저 정의한다.
+
+**NavKey** 는 목적지 이름이다. Navigation 2의 Route에 해당하며 `androidx.navigation3.runtime.NavKey`를 구현한다.
+
+**백스택이 명시적인 리스트다.** Navigation 2에서는 `NavController`가 백스택을 감추고 `popUpTo` 같은 옵션으로 간접 조작했다. Navigation 3에서는 백스택이 `NavBackStack<NavKey>`라는 관찰 가능한 리스트이고, 코드가 직접 원소를 넣고 뺀다. 그래서 `saveState`/`restoreState` 같은 옵션이 없다 — 탭마다 별도의 리스트를 두고 그것을 갈아 끼우는 방식으로 같은 효과를 만든다.
+
+**entryProvider** 는 "이 NavKey에는 이 화면"을 등록하는 곳이다. Navigation 2의 `NavGraphBuilder`에 해당한다.
+
+**NavDisplay** 는 백스택을 화면으로 그리는 컴포저블이다. `NavHost`에 해당한다.
+
+**M9**는 아키텍처를 건드리지 않고 의존성만 올린다. Compose BOM을 `2026.03.00`으로, lifecycle을 `2.10.0`으로 올린 뒤 기존 코드가 그대로 빌드·테스트를 통과하는지 확인한다. 이 단계에서 깨지는 것은 전부 Compose·lifecycle의 API 변경 때문이며 Nav3와 무관하다. 원인을 섞지 않으려고 분리했다.
+
+**M10**은 목적지 이름과 백스택 상태를 Nav3 타입으로 바꾼다. 각 `api` 모듈의 Route가 `NavKey`를 구현하게 하고, `:core:navigation`에 `NavigationState`(탑레벨 스택 + 탭별 서브스택)와 그것을 조작하는 `Navigator`를 만든다.
+
+**M11**은 각 `impl` 모듈의 `NavGraphBuilder` 확장을 `EntryProviderScope<NavKey>` 확장으로 바꾼다. 이름도 `xxxScreen`에서 `xxxEntry`로 바꾼다.
+
+**M12**는 `:app`의 `NavHost`를 `NavDisplay`로 바꾼다. 여기서 가장 까다로운 것이 바텀 탭 상태 보존이다. 지금은 `popUpTo(HomeRoute) { saveState = true }` + `restoreState = true` 조합으로 처리하는데, Nav3에는 그런 옵션이 없다. 대신 탭마다 서브스택을 하나씩 두고 탑레벨 스택이 어느 서브스택을 보여줄지 고르는 구조로 만든다.
+
+**M13**은 딥링크를 옮긴다. 현재는 딥링크가 도착하면 `while (popBackStack())` 루프로 백스택을 손질하는데, Nav3에서는 백스택이 그냥 리스트이므로 원하는 상태를 직접 조립하면 된다. 이 부분은 Nav3가 명확히 더 단순해지는 지점이다.
 
 ## Concrete Steps
 
