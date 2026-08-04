@@ -18,7 +18,6 @@ import com.anddd.nevera.feature.ingredient.ocrcapture.navigation.navigateToIngre
 import com.anddd.nevera.feature.main.home.navigation.HomeRoute
 import com.anddd.nevera.feature.main.home.navigation.homeScreen
 import com.anddd.nevera.feature.mypage.navigation.myPageNavGraph
-import com.anddd.nevera.feature.notification.api.NotificationRoute
 import com.anddd.nevera.feature.notification.navigation.notificationScreen
 import com.anddd.nevera.feature.splash.main.navigation.SplashRoute
 import com.anddd.nevera.feature.splash.main.navigation.splashScreen
@@ -62,25 +61,21 @@ fun NeveraNavHost(
             }
         )
         homeScreen(
+            navController = navController,
             onNavigateToCamera = {
                 navController.navigateToIngredientCapture()
             },
             onNavigateToGallery = {
                 navController.navigateToIngredientCapture(openGallery = true)
-            },
-            onNavigateToNotification = {
-                navController.navigate(NotificationRoute) { launchSingleTop = true }
             },
         )
         fridgeScreen(
+            navController = navController,
             onNavigateToCamera = {
                 navController.navigateToIngredientCapture()
             },
             onNavigateToGallery = {
                 navController.navigateToIngredientCapture(openGallery = true)
-            },
-            onNavigateToNotification = {
-                navController.navigate(NotificationRoute) { launchSingleTop = true }
             },
             onNavigateToEditIngredient = { id ->
                 navController.navigate(EditFridgeIngredientRoute(id))
@@ -95,9 +90,6 @@ fun NeveraNavHost(
                 navController.navigate(AuthGraphRoute) {
                     popUpTo(HomeRoute) { inclusive = true }
                 }
-            },
-            onNavigateToNotification = {
-                navController.navigate(NotificationRoute) { launchSingleTop = true }
             },
         )
         ingredientNavGraph(

@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.anddd.nevera.feature.notification.api.NotificationRoute
 import com.anddd.nevera.feature.mypage.appinfo.AppInfoScreen
 import com.anddd.nevera.feature.mypage.main.MyPageScreen
 import com.anddd.nevera.feature.mypage.settingaccount.SettingAccountScreen
@@ -27,7 +28,6 @@ private data object SettingNotificationRoute
 fun NavGraphBuilder.myPageNavGraph(
     navController: NavController,
     onNavigateToLogin: () -> Unit,
-    onNavigateToNotification: () -> Unit,
 ) {
     navigation<MyPageGraphRoute>(startDestination = MyPageRoute) {
         composable<MyPageRoute> {
@@ -35,7 +35,9 @@ fun NavGraphBuilder.myPageNavGraph(
                 onNavigateToAppInfo = { navController.navigate(AppInfoRoute) },
                 onNavigateToAccountSetting = { navController.navigate(SettingAccountRoute) },
                 onNavigateToNotificationSetting = { navController.navigate(SettingNotificationRoute) },
-                onNavigateToNotification = onNavigateToNotification,
+                onNavigateToNotification = {
+                    navController.navigate(NotificationRoute) { launchSingleTop = true }
+                },
             )
         }
         composable<AppInfoRoute> {

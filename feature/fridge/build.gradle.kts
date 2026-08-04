@@ -8,5 +8,6 @@ android {
 
 dependencies {
     implementation(libs.coroutines.android)
+    implementation(project(":feature:notification:api"))
     implementation(project(":infra:permission"))
 }
