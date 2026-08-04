@@ -34,7 +34,7 @@
 
 **Phase 3 — Navigation 3 마이그레이션**
 
-- [ ] M9 (스파이크) 의존성 상향만 단독 수행: Compose BOM·lifecycle. 아키텍처 변경 없음
+- [x] (2026-08-05) M9 (스파이크) 의존성 상향만 단독 수행: Compose BOM·lifecycle. 아키텍처 변경 없음
 - [ ] M10 `NavKey`·`NavigationState`·`Navigator`를 Nav3 API로 교체
 - [ ] M11 feature의 `NavGraphBuilder` 확장을 `EntryProviderScope` 확장으로 교체
 - [ ] M12 `NavHost`를 `NavDisplay`로 교체하고 바텀 탭 상태 보존을 `subStacks`로 이전
@@ -50,6 +50,14 @@
 
 - 관찰: 디렉터리 이동은 `git mv`를 써야 이력이 보존된다.
   증거: `git mv feature/notification/src feature/notification/impl/src`로 옮긴 뒤 `git log --follow`가 이전 이력을 따라간다. 파일 탐색기로 옮기면 삭제+추가로 기록되어 이력이 끊긴다.
+
+- 관찰: Compose BOM을 올리자 **디자인시스템 전체가 깨졌다.** Nav3와 무관한 문제이며, 스파이크를 분리한 이유를 그대로 증명했다.
+  증거: `material3` 1.4부터 `material-icons-core`를 전이 의존으로 가져오지 않는다. 그동안 `androidx.compose.material.icons.Icons`가 material3를 통해 딸려오고 있었다.
+
+      e: .../NeveraFilledIconButton.kt:4:34 Unresolved reference 'icons'.
+      e: .../NeveraActionBottomSheet.kt:130:43 Unresolved reference 'Icons'.
+
+  BOM이 `material-icons-core`를 1.7.8로 고정해 두고 있으므로(deprecated되어 버전이 동결됨) 명시 선언만 추가해 해결했다. 이 상향을 Nav3 작업과 한 커밋에 넣었다면 원인을 가리기 어려웠을 것이다.
 
 - 관찰: `:app`도 `api`와 `impl` 양쪽에 의존해야 한다. `impl`만으로는 부족하다.
   증거: `:app`의 `NeveraNavHost.kt`는 그래프 등록 함수(`notificationScreen()`, impl에 있음)와 목적지 이름(`NotificationRoute`, api에 있음)을 둘 다 쓴다. `implementation`은 전이되지 않으므로 `impl`을 통해 `api`가 딸려오지 않는다. 두 줄 다 선언해야 한다.
