@@ -16,6 +16,7 @@ data class NeveraNavigationBarItem<T>(
     val selectedIcon: Painter,
     val unselectedIcon: Painter,
     val selected: Boolean,
+    val contentDescription: String,
 )
 
 @Composable
@@ -32,7 +33,7 @@ internal fun <T> NavigationBarItem(
     ) {
         Icon(
             painter = if (item.selected) item.selectedIcon else item.unselectedIcon,
-            contentDescription = null,
+            contentDescription = item.contentDescription,
             tint = Color.Unspecified,
             modifier = Modifier.size(NeveraNavigationBarDefault.iconSize),
         )
