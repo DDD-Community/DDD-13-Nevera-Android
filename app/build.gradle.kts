@@ -51,7 +51,8 @@ dependencies {
     implementation(project(":feature:auth"))
     implementation(project(":feature:main"))
     implementation(project(":feature:mypage"))
-    implementation(project(":feature:notification"))
+    implementation(project(":feature:notification:api"))
+    implementation(project(":feature:notification:impl"))
     implementation(project(":feature:ingredient"))
     implementation(project(":feature:fridge"))
 

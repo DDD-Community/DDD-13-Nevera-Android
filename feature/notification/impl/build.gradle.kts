@@ -7,6 +7,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":feature:notification:api"))
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.coroutines.android)
     implementation(libs.paging.compose)
