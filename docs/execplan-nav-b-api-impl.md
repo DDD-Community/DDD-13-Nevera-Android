@@ -27,9 +27,9 @@
 
 **Phase 2 — Now in Android 현행 구조에 맞춘다** (2026-08-05 추가, 아래 Decision Log 참조)
 
-- [ ] M5 `Navigator` 래퍼를 `:core:navigation`에 도입하고 raw `NavController` 전달을 걷어낸다
-- [ ] M6 `:feature:splash`, `:feature:auth`, `:feature:main` 을 api/impl로 분리
-- [ ] M7 `:feature:mypage`, `:feature:fridge`, `:feature:ingredient` 를 api/impl로 분리
+- [x] (2026-08-05) M5 `Navigator` 래퍼를 `:core:navigation`에 도입하고 raw `NavController` 전달을 걷어낸다
+- [x] (2026-08-05) M6 `:feature:splash`, `:feature:auth`, `:feature:main` 을 api/impl로 분리
+- [x] (2026-08-05) M7 `:feature:mypage`, `:feature:fridge`, `:feature:ingredient` 를 api/impl로 분리
 - [ ] M8 `:app`의 그래프 조립을 정리하고 남은 콜백을 Navigator 호출로 대체
 
 **Phase 3 — Navigation 3 마이그레이션**
