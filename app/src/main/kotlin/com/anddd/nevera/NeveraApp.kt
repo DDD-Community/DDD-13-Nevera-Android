@@ -7,6 +7,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavDestination
@@ -17,6 +18,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.anddd.nevera.core.designsystem.component.navigationbar.NeveraNavigationBar
+import com.anddd.nevera.core.navigation.Navigator
 import com.anddd.nevera.domain.model.deeplink.DeeplinkAction
 import com.anddd.nevera.feature.auth.main.google.GoogleAuthClient
 import com.anddd.nevera.feature.main.home.navigation.HomeRoute
@@ -34,6 +36,7 @@ fun NeveraApp(
     mainViewModel: MainViewModel = hiltViewModel(),
 ) {
     val navController = rememberNavController()
+    val navigator = remember(navController) { Navigator(navController) }
     val currentBackStack by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStack?.destination
     val topLevelDestinations = TopLevelDestination.entries
@@ -85,6 +88,7 @@ fun NeveraApp(
     ) { innerPadding ->
         NeveraNavHost(
             navController = navController,
+            navigator = navigator,
             googleAuthClient = googleAuthClient,
             onDeeplink = mainViewModel::dispatchDeeplink,
             modifier = Modifier.padding(innerPadding),

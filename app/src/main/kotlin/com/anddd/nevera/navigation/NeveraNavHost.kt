@@ -6,10 +6,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.anddd.nevera.core.navigation.Navigator
 import com.anddd.nevera.feature.auth.main.google.GoogleAuthClient
 import com.anddd.nevera.feature.auth.navigation.AuthGraphRoute
 import com.anddd.nevera.feature.auth.navigation.authNavGraph
-import com.anddd.nevera.feature.fridge.navigation.EditFridgeIngredientRoute
 import com.anddd.nevera.feature.fridge.navigation.editFridgeIngredientScreen
 import com.anddd.nevera.feature.fridge.navigation.fridgeScreen
 import com.anddd.nevera.feature.ingredient.main.navigation.IngredientGraphRoute
@@ -25,6 +25,7 @@ import com.anddd.nevera.feature.splash.main.navigation.splashScreen
 @Composable
 fun NeveraNavHost(
     navController: NavHostController,
+    navigator: Navigator,
     googleAuthClient: GoogleAuthClient,
     onDeeplink: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -61,7 +62,7 @@ fun NeveraNavHost(
             }
         )
         homeScreen(
-            navController = navController,
+            navigator = navigator,
             onNavigateToCamera = {
                 navController.navigateToIngredientCapture()
             },
@@ -70,22 +71,17 @@ fun NeveraNavHost(
             },
         )
         fridgeScreen(
-            navController = navController,
+            navigator = navigator,
             onNavigateToCamera = {
                 navController.navigateToIngredientCapture()
             },
             onNavigateToGallery = {
                 navController.navigateToIngredientCapture(openGallery = true)
             },
-            onNavigateToEditIngredient = { id ->
-                navController.navigate(EditFridgeIngredientRoute(id))
-            },
         )
-        editFridgeIngredientScreen(
-            onNavigateBack = { navController.popBackStack() },
-        )
+        editFridgeIngredientScreen(navigator = navigator)
         myPageNavGraph(
-            navController = navController,
+            navigator = navigator,
             onNavigateToLogin = {
                 navController.navigate(AuthGraphRoute) {
                     popUpTo(HomeRoute) { inclusive = true }

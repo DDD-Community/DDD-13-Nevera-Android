@@ -1,9 +1,9 @@
 package com.anddd.nevera.feature.mypage.navigation
 
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.anddd.nevera.core.navigation.Navigator
 import com.anddd.nevera.feature.notification.api.NotificationRoute
 import com.anddd.nevera.feature.mypage.appinfo.AppInfoScreen
 import com.anddd.nevera.feature.mypage.main.MyPageScreen
@@ -26,34 +26,32 @@ private data object SettingAccountRoute
 private data object SettingNotificationRoute
 
 fun NavGraphBuilder.myPageNavGraph(
-    navController: NavController,
+    navigator: Navigator,
     onNavigateToLogin: () -> Unit,
 ) {
     navigation<MyPageGraphRoute>(startDestination = MyPageRoute) {
         composable<MyPageRoute> {
             MyPageScreen(
-                onNavigateToAppInfo = { navController.navigate(AppInfoRoute) },
-                onNavigateToAccountSetting = { navController.navigate(SettingAccountRoute) },
-                onNavigateToNotificationSetting = { navController.navigate(SettingNotificationRoute) },
-                onNavigateToNotification = {
-                    navController.navigate(NotificationRoute) { launchSingleTop = true }
-                },
+                onNavigateToAppInfo = { navigator.navigate(AppInfoRoute) },
+                onNavigateToAccountSetting = { navigator.navigate(SettingAccountRoute) },
+                onNavigateToNotificationSetting = { navigator.navigate(SettingNotificationRoute) },
+                onNavigateToNotification = { navigator.navigate(NotificationRoute) },
             )
         }
         composable<AppInfoRoute> {
             AppInfoScreen(
-                onNavigateBack = { navController.popBackStack() },
+                onNavigateBack = { navigator.goBack() },
             )
         }
         composable<SettingAccountRoute> {
             SettingAccountScreen(
-                onNavigateBack = { navController.popBackStack() },
+                onNavigateBack = { navigator.goBack() },
                 onNavigateToLogin = onNavigateToLogin,
             )
         }
         composable<SettingNotificationRoute> {
             SettingNotificationScreen(
-                onNavigateBack = { navController.popBackStack() },
+                onNavigateBack = { navigator.goBack() },
             )
         }
     }
