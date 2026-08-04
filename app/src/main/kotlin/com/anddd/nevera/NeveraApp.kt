@@ -21,8 +21,8 @@ import com.anddd.nevera.core.designsystem.component.navigationbar.NeveraNavigati
 import com.anddd.nevera.core.navigation.Navigator
 import com.anddd.nevera.domain.model.deeplink.DeeplinkAction
 import com.anddd.nevera.feature.auth.main.google.GoogleAuthClient
-import com.anddd.nevera.feature.main.home.navigation.HomeRoute
-import com.anddd.nevera.feature.splash.main.navigation.SplashRoute
+import com.anddd.nevera.feature.main.api.HomeRoute
+import com.anddd.nevera.feature.splash.api.SplashRoute
 import com.anddd.nevera.navigation.NeveraNavHost
 import com.anddd.nevera.navigation.TopLevelDestination
 import com.anddd.nevera.navigation.toNavigationBarItem

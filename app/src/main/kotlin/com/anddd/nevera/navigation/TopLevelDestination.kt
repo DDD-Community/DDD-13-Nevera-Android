@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import com.anddd.nevera.core.designsystem.component.navigationbar.NeveraNavigationBarItem
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.feature.fridge.navigation.FridgeRoute
-import com.anddd.nevera.feature.main.home.navigation.HomeRoute
+import com.anddd.nevera.feature.main.api.HomeRoute
 import com.anddd.nevera.feature.mypage.navigation.MyPageGraphRoute
 import com.anddd.nevera.feature.mypage.navigation.MyPageRoute
 import kotlin.reflect.KClass
