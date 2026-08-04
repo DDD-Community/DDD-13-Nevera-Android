@@ -12,7 +12,7 @@ import com.anddd.nevera.feature.auth.api.AuthGraphRoute
 import com.anddd.nevera.feature.auth.navigation.authNavGraph
 import com.anddd.nevera.feature.fridge.navigation.editFridgeIngredientScreen
 import com.anddd.nevera.feature.fridge.navigation.fridgeScreen
-import com.anddd.nevera.feature.ingredient.main.navigation.IngredientGraphRoute
+import com.anddd.nevera.feature.ingredient.api.IngredientGraphRoute
 import com.anddd.nevera.feature.ingredient.main.navigation.ingredientNavGraph
 import com.anddd.nevera.feature.ingredient.ocrcapture.navigation.navigateToIngredientCapture
 import com.anddd.nevera.feature.main.api.HomeRoute
