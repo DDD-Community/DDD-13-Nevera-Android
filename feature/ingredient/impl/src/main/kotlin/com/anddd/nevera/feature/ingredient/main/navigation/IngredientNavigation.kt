@@ -1,27 +1,22 @@
 package com.anddd.nevera.feature.ingredient.main.navigation
 
 import android.net.Uri
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
-import androidx.navigation.navOptions
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
+import com.anddd.nevera.core.navigation.Navigator
+import com.anddd.nevera.core.navigation.replaceStep
 import com.anddd.nevera.feature.ingredient.api.IngredientGraphRoute
 import com.anddd.nevera.feature.ingredient.api.OcrCaptureRoute
 import com.anddd.nevera.feature.ingredient.main.IngredientScreen
 import com.anddd.nevera.feature.ingredient.ocrcapture.OcrCaptureScreen
-import com.anddd.nevera.feature.ingredient.ocrcapture.navigation.navigateToIngredientCapture
 import com.anddd.nevera.feature.ingredient.ocrerror.OcrErrorScreen
 import com.anddd.nevera.feature.ingredient.ocrerror.navigation.OcrErrorRoute
-import com.anddd.nevera.feature.ingredient.ocrerror.navigation.navigateToOcrError
 import com.anddd.nevera.feature.ingredient.photodetail.PhotoDetailScreen
 import com.anddd.nevera.feature.ingredient.photodetail.navigation.PhotoDetailRoute
-import com.anddd.nevera.feature.ingredient.photodetail.navigation.navigateToPhotoDetail
 import com.anddd.nevera.feature.ingredient.registersuccess.RegisterSuccessScreen
 import com.anddd.nevera.feature.ingredient.registersuccess.navigation.RegisterSuccessRoute
-import com.anddd.nevera.feature.ingredient.registersuccess.navigation.navigateToRegisterSuccess
 import kotlinx.serialization.Serializable
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
@@ -29,34 +24,20 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data class IngredientRoute(val imageUri: String)
 
-// ─── NavController 확장 ───────────────────────────────────────────────────────
-
-internal fun NavController.navigateToIngredient(
-    imageUri: Uri,
-    builder: NavOptionsBuilder.() -> Unit = {},
-) {
-    navigate(
-        route = IngredientRoute(imageUri.toString()),
-        navOptions = navOptions(builder)
-    )
-}
-
 // ─── 그래프 ────────────────────────────────────────────────────────────────────
 
 fun NavGraphBuilder.ingredientNavGraph(
-    navController: NavController,
+    navigator: Navigator,
     onNavigateToHome: () -> Unit,
 ) {
     navigation<IngredientGraphRoute>(startDestination = OcrCaptureRoute()) {
         composable<OcrCaptureRoute> {
             OcrCaptureScreen(
                 // X 버튼 → 이전 화면으로 복귀
-                onNavigateBack = { navController.popBackStack() },
-                // 촬영/갤러리 선택 완료 → IngredientScreen으로 이동, OcrCaptureScreen은 스택에서 제거
+                onNavigateBack = navigator::goBack,
+                // 촬영/갤러리 선택 완료 → 인식 결과로 진행. 촬영 단계로는 되돌아가지 않는다.
                 onNavigateToResult = { uri: Uri ->
-                    navController.navigateToIngredient(uri) {
-                        popUpTo<OcrCaptureRoute> { inclusive = true }
-                    }
+                    navigator.replaceStep<OcrCaptureRoute>(IngredientRoute(uri.toString()))
                 },
             )
         }
@@ -64,30 +45,24 @@ fun NavGraphBuilder.ingredientNavGraph(
         composable<IngredientRoute> {
             IngredientScreen(
                 // 뒤로가기 → 이전 화면으로 복귀
-                onNavigateBack = { navController.popBackStack() },
-                // OCR 인식 실패 → OcrErrorScreen으로 이동
-                onNavigateToError = { navController.navigateToOcrError() },
-                // 등록 완료 → RegisterSuccessScreen으로 이동, Ingredient 스택 제거
+                onNavigateBack = navigator::goBack,
+                // OCR 인식 실패 → 에러 화면
+                onNavigateToError = { navigator.navigate(OcrErrorRoute) },
+                // 등록 완료 → 완료 화면. 인식 결과로는 되돌아가지 않는다.
                 onNavigateToSuccess = { totalCost ->
-                    navController.navigateToRegisterSuccess(totalCost) {
-                        popUpTo<IngredientRoute> { inclusive = true }
-                    }
+                    navigator.replaceStep<IngredientRoute>(RegisterSuccessRoute(totalCost))
                 },
-                // 영수증 썸네일 탭 → PhotoDetailScreen으로 이동
+                // 영수증 썸네일 탭 → 사진 상세
                 onNavigateToPhotoDetail = { imageUri ->
-                    navController.navigateToPhotoDetail(imageUri)
+                    navigator.navigate(PhotoDetailRoute(imageUri))
                 },
             )
         }
 
         composable<OcrErrorRoute> {
             OcrErrorScreen(
-                // 다시 시도 → OcrCaptureScreen 복귀, Ingredient·OcrError 스택 제거
-                onRetry = {
-                    navController.navigateToIngredientCapture {
-                        popUpTo<IngredientRoute> { inclusive = true }
-                    }
-                },
+                // 다시 시도 → 촬영 화면으로. 실패한 인식 결과는 스택에서 제거한다.
+                onRetry = { navigator.replaceStep<IngredientRoute>(OcrCaptureRoute()) },
                 // X 버튼 → 홈 화면으로 이동
                 onClose = onNavigateToHome,
             )
@@ -106,7 +81,7 @@ fun NavGraphBuilder.ingredientNavGraph(
             val imageUri = backStackEntry.toRoute<PhotoDetailRoute>().imageUri
             PhotoDetailScreen(
                 imageUri = imageUri,
-                onClose = { navController.popBackStack() },
+                onClose = navigator::goBack,
             )
         }
     }

@@ -13,8 +13,8 @@ import com.anddd.nevera.feature.auth.navigation.authNavGraph
 import com.anddd.nevera.feature.fridge.navigation.editFridgeIngredientScreen
 import com.anddd.nevera.feature.fridge.navigation.fridgeScreen
 import com.anddd.nevera.feature.ingredient.api.IngredientGraphRoute
+import com.anddd.nevera.feature.ingredient.api.OcrCaptureRoute
 import com.anddd.nevera.feature.ingredient.main.navigation.ingredientNavGraph
-import com.anddd.nevera.feature.ingredient.ocrcapture.navigation.navigateToIngredientCapture
 import com.anddd.nevera.feature.main.api.HomeRoute
 import com.anddd.nevera.feature.main.home.navigation.homeScreen
 import com.anddd.nevera.feature.mypage.navigation.myPageNavGraph
@@ -54,7 +54,7 @@ fun NeveraNavHost(
         )
         authNavGraph(
             googleAuthClient = googleAuthClient,
-            navController = navController,
+            navigator = navigator,
             onNavigateToHome = {
                 navController.navigate(HomeRoute) {
                     popUpTo(AuthGraphRoute) { inclusive = true }
@@ -64,19 +64,19 @@ fun NeveraNavHost(
         homeScreen(
             navigator = navigator,
             onNavigateToCamera = {
-                navController.navigateToIngredientCapture()
+                navigator.navigate(OcrCaptureRoute())
             },
             onNavigateToGallery = {
-                navController.navigateToIngredientCapture(openGallery = true)
+                navigator.navigate(OcrCaptureRoute(openGallery = true))
             },
         )
         fridgeScreen(
             navigator = navigator,
             onNavigateToCamera = {
-                navController.navigateToIngredientCapture()
+                navigator.navigate(OcrCaptureRoute())
             },
             onNavigateToGallery = {
-                navController.navigateToIngredientCapture(openGallery = true)
+                navigator.navigate(OcrCaptureRoute(openGallery = true))
             },
         )
         editFridgeIngredientScreen(navigator = navigator)
@@ -89,7 +89,7 @@ fun NeveraNavHost(
             },
         )
         ingredientNavGraph(
-            navController = navController,
+            navigator = navigator,
             onNavigateToHome = {
                 navController.navigate(HomeRoute) {
                     popUpTo(IngredientGraphRoute) { inclusive = true }

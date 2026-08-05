@@ -1,9 +1,9 @@
 package com.anddd.nevera.feature.auth.navigation
 
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.anddd.nevera.core.navigation.Navigator
 import com.anddd.nevera.feature.auth.api.AuthGraphRoute
 import com.anddd.nevera.feature.auth.main.LoginScreen
 import com.anddd.nevera.feature.auth.main.google.GoogleAuthClient
@@ -18,7 +18,7 @@ internal data object SignupRoute
 
 fun NavGraphBuilder.authNavGraph(
     googleAuthClient: GoogleAuthClient,
-    navController: NavController,
+    navigator: Navigator,
     onNavigateToHome: () -> Unit,
 ) {
     navigation<AuthGraphRoute>(startDestination = LoginRoute) {
@@ -26,12 +26,12 @@ fun NavGraphBuilder.authNavGraph(
             LoginScreen(
                 googleAuthClient = googleAuthClient,
                 onNavigateToHome = onNavigateToHome,
-                onNavigateToSignup = { navController.navigate(SignupRoute) }
+                onNavigateToSignup = { navigator.navigate(SignupRoute) },
             )
         }
 
         composable<SignupRoute> {
-            SignupScreen(onNavigateToLogin = { navController.popBackStack() })
+            SignupScreen(onNavigateToLogin = navigator::goBack)
         }
     }
 }
