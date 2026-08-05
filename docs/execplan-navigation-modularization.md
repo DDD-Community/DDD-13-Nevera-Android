@@ -1,4 +1,4 @@
-# 안 B — feature 모듈을 api/impl로 분리해 화면 이동을 연결한다
+# Navigation 구조 개편 — feature api/impl 분리와 Navigation 3 전환
 
 이 ExecPlan은 살아있는 문서다. `Progress`, `Surprises & Discoveries`, `Decision Log`, `Outcomes & Retrospective` 섹션은 작업이 진행되는 동안 반드시 최신 상태로 유지해야 한다.
 
@@ -16,7 +16,7 @@
 
 사용자 눈에 보이는 동작은 변하지 않는다. 이건 내부 구조 변경이다. 그래서 "동작이 그대로인 것"과 "구조가 실제로 바뀐 것"을 둘 다 증명한다. 전자는 앱을 실행해 세 화면에서 알림 아이콘을 눌러 확인하고, 후자는 `./gradlew :feature:main:dependencies`에 알림 화면 구현 모듈이 나타나지 않는 것으로 확인한다.
 
-이 계획은 같은 목표를 다른 방식으로 구현한 두 계획(`nav/a-core-navigation`, `nav/c-di-registry` 브랜치)과 비교하기 위한 것이다. 세 브랜치 모두 **똑같은 범위**를 구현해 차이를 직접 비교할 수 있게 한다.
+이 계획은 원래 세 가지 모듈 구조안을 비교하기 위해 시작됐다. 비교는 끝났고 이 방식이 채택됐다. 다른 두 안(`:core:navigation` 단일 모듈, DI 그래프 레지스트리)은 더 이상 고려하지 않는다. 비교 과정과 탈락 근거는 `docs/navigation-approach-experiment-results.md`에 있다.
 
 ## Progress
 
