@@ -20,6 +20,7 @@ class NeveraFeatureApiPlugin : Plugin<Project> {
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
             pluginManager.apply("nevera.kotlin.jvm")
+            pluginManager.apply("nevera.quality")
             pluginManager.apply("org.jetbrains.kotlin.plugin.serialization")
 
             dependencies {

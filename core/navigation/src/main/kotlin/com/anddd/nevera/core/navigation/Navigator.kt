@@ -1,7 +1,6 @@
 package com.anddd.nevera.core.navigation
 
 import androidx.navigation.NavController
-import androidx.navigation.NavOptionsBuilder
 
 /**
  * feature가 화면 이동에 쓰는 좁은 통로.
@@ -41,15 +40,6 @@ class Navigator(
             popUpTo(clearUpTo) { inclusive = true }
             launchSingleTop = true
         }
-    }
-
-    /**
-     * :app이 정책을 직접 표현해야 하는 예외 상황용.
-     *
-     * feature 모듈에서는 쓰지 않는다. 바텀 탭 전환처럼 조립 지점만 아는 정책에 쓴다.
-     */
-    fun navigateWithOptions(destination: Any, builder: NavOptionsBuilder.() -> Unit) {
-        navController.navigate(destination, builder)
     }
 }
 

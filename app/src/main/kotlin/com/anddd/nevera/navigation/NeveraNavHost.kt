@@ -33,7 +33,7 @@ fun NeveraNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = SplashRoute,
+        startDestination = HomeRoute,  // TEMP
         modifier = modifier,
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None },
@@ -41,25 +41,13 @@ fun NeveraNavHost(
         popExitTransition = { ExitTransition.None },
     ) {
         splashScreen(
-            onNavigateToLogin = {
-                navController.navigate(AuthGraphRoute) {
-                    popUpTo(SplashRoute) { inclusive = true }
-                }
-            },
-            onNavigateToHome = {
-                navController.navigate(HomeRoute) {
-                    popUpTo(SplashRoute) { inclusive = true }
-                }
-            }
+            onNavigateToLogin = { navigator.replaceFlow(AuthGraphRoute, clearUpTo = SplashRoute) },
+            onNavigateToHome = { navigator.replaceFlow(HomeRoute, clearUpTo = SplashRoute) },
         )
         authNavGraph(
             googleAuthClient = googleAuthClient,
             navigator = navigator,
-            onNavigateToHome = {
-                navController.navigate(HomeRoute) {
-                    popUpTo(AuthGraphRoute) { inclusive = true }
-                }
-            }
+            onNavigateToHome = { navigator.replaceFlow(HomeRoute, clearUpTo = AuthGraphRoute) },
         )
         homeScreen(
             navigator = navigator,
@@ -82,19 +70,13 @@ fun NeveraNavHost(
         editFridgeIngredientScreen(navigator = navigator)
         myPageNavGraph(
             navigator = navigator,
-            onNavigateToLogin = {
-                navController.navigate(AuthGraphRoute) {
-                    popUpTo(HomeRoute) { inclusive = true }
-                }
-            },
+            onNavigateToLogin = { navigator.replaceFlow(AuthGraphRoute, clearUpTo = HomeRoute) },
         )
         ingredientNavGraph(
             navigator = navigator,
-            onNavigateToHome = {
-                navController.navigate(HomeRoute) {
-                    popUpTo(IngredientGraphRoute) { inclusive = true }
-                }
-            }
+            // NOTE: 냉장고 탭에서 시작한 경우 [Home, Fridge, Home]이 되는 문제가 남아 있다.
+            //       "홈으로 간다"인지 "왔던 곳으로 돌아간다"인지 제품 결정이 필요하다.
+            onNavigateToHome = { navigator.replaceFlow(HomeRoute, clearUpTo = IngredientGraphRoute) },
         )
         notificationScreen(
             onBack = { navController.popBackStack() },
