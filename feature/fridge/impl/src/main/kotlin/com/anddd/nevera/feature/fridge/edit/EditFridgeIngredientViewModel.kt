@@ -14,7 +14,7 @@ import com.anddd.nevera.feature.fridge.edit.model.EditFridgeIngredientIntent
 import com.anddd.nevera.feature.fridge.edit.model.EditFridgeIngredientMutation
 import com.anddd.nevera.feature.fridge.edit.model.EditFridgeIngredientSideEffect
 import com.anddd.nevera.feature.fridge.edit.model.EditFridgeIngredientUiState
-import com.anddd.nevera.feature.fridge.navigation.EditFridgeIngredientRoute
+import com.anddd.nevera.feature.fridge.api.EditFridgeIngredientRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.orbitmvi.orbit.syntax.Syntax
 import java.time.LocalDate

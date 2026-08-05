@@ -8,21 +8,16 @@ import androidx.navigation.toRoute
 import com.anddd.nevera.core.navigation.Navigator
 import com.anddd.nevera.core.navigation.replaceStep
 import com.anddd.nevera.feature.ingredient.api.IngredientGraphRoute
+import com.anddd.nevera.feature.ingredient.api.IngredientRoute
+import com.anddd.nevera.feature.ingredient.api.OcrErrorRoute
+import com.anddd.nevera.feature.ingredient.api.PhotoDetailRoute
+import com.anddd.nevera.feature.ingredient.api.RegisterSuccessRoute
 import com.anddd.nevera.feature.ingredient.api.OcrCaptureRoute
 import com.anddd.nevera.feature.ingredient.main.IngredientScreen
 import com.anddd.nevera.feature.ingredient.ocrcapture.OcrCaptureScreen
 import com.anddd.nevera.feature.ingredient.ocrerror.OcrErrorScreen
-import com.anddd.nevera.feature.ingredient.ocrerror.navigation.OcrErrorRoute
 import com.anddd.nevera.feature.ingredient.photodetail.PhotoDetailScreen
-import com.anddd.nevera.feature.ingredient.photodetail.navigation.PhotoDetailRoute
 import com.anddd.nevera.feature.ingredient.registersuccess.RegisterSuccessScreen
-import com.anddd.nevera.feature.ingredient.registersuccess.navigation.RegisterSuccessRoute
-import kotlinx.serialization.Serializable
-
-// ─── Routes ───────────────────────────────────────────────────────────────────
-
-@Serializable
-internal data class IngredientRoute(val imageUri: String)
 
 // ─── 그래프 ────────────────────────────────────────────────────────────────────
 

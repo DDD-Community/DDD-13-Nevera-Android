@@ -23,7 +23,7 @@ import com.anddd.nevera.feature.ingredient.main.model.IngredientPhase
 import com.anddd.nevera.feature.ingredient.main.model.IngredientSideEffect
 import com.anddd.nevera.feature.ingredient.main.model.IngredientUiModel
 import com.anddd.nevera.feature.ingredient.main.model.IngredientUiState
-import com.anddd.nevera.feature.ingredient.main.navigation.IngredientRoute
+import com.anddd.nevera.feature.ingredient.api.IngredientRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job

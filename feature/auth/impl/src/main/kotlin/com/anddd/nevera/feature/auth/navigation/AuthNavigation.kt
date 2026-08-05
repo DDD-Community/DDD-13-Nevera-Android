@@ -5,16 +5,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.anddd.nevera.core.navigation.Navigator
 import com.anddd.nevera.feature.auth.api.AuthGraphRoute
+import com.anddd.nevera.feature.auth.api.LoginRoute
+import com.anddd.nevera.feature.auth.api.SignupRoute
 import com.anddd.nevera.feature.auth.main.LoginScreen
 import com.anddd.nevera.feature.auth.main.google.GoogleAuthClient
 import com.anddd.nevera.feature.auth.signup.SignupScreen
-import kotlinx.serialization.Serializable
-
-@Serializable
-internal data object LoginRoute
-
-@Serializable
-internal data object SignupRoute
 
 fun NavGraphBuilder.authNavGraph(
     googleAuthClient: GoogleAuthClient,

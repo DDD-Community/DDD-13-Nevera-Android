@@ -5,22 +5,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.anddd.nevera.core.navigation.Navigator
 import com.anddd.nevera.feature.notification.api.NotificationRoute
+import com.anddd.nevera.feature.mypage.api.AppInfoRoute
 import com.anddd.nevera.feature.mypage.api.MyPageGraphRoute
 import com.anddd.nevera.feature.mypage.api.MyPageRoute
+import com.anddd.nevera.feature.mypage.api.SettingAccountRoute
+import com.anddd.nevera.feature.mypage.api.SettingNotificationRoute
 import com.anddd.nevera.feature.mypage.appinfo.AppInfoScreen
 import com.anddd.nevera.feature.mypage.main.MyPageScreen
 import com.anddd.nevera.feature.mypage.settingaccount.SettingAccountScreen
 import com.anddd.nevera.feature.mypage.settingnotification.SettingNotificationScreen
-import kotlinx.serialization.Serializable
-
-@Serializable
-private data object AppInfoRoute
-
-@Serializable
-private data object SettingAccountRoute
-
-@Serializable
-private data object SettingNotificationRoute
 
 fun NavGraphBuilder.myPageNavGraph(
     navigator: Navigator,

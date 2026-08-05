@@ -3,14 +3,11 @@ package com.anddd.nevera.feature.fridge.navigation
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.anddd.nevera.core.navigation.Navigator
+import com.anddd.nevera.feature.fridge.api.EditFridgeIngredientRoute
 import com.anddd.nevera.feature.fridge.api.FridgeRoute
 import com.anddd.nevera.feature.fridge.edit.EditFridgeIngredientScreen
 import com.anddd.nevera.feature.fridge.main.FridgeScreen
 import com.anddd.nevera.feature.notification.api.NotificationRoute
-import kotlinx.serialization.Serializable
-
-@Serializable
-data class EditFridgeIngredientRoute(val ingredientId: Long)
 
 fun NavGraphBuilder.fridgeScreen(
     navigator: Navigator,
