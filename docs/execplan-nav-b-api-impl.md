@@ -30,15 +30,17 @@
 - [x] (2026-08-05) M5 `Navigator` 래퍼를 `:core:navigation`에 도입하고 raw `NavController` 전달을 걷어낸다
 - [x] (2026-08-05) M6 `:feature:splash`, `:feature:auth`, `:feature:main` 을 api/impl로 분리
 - [x] (2026-08-05) M7 `:feature:mypage`, `:feature:fridge`, `:feature:ingredient` 를 api/impl로 분리
-- [ ] M8 `:app`의 그래프 조립을 정리하고 남은 콜백을 Navigator 호출로 대체
+- [x] (2026-08-05) M8 `:app`의 인라인 popUpTo 5곳을 이름 붙은 정책으로 교체 (인라인 popUpTo 0개, 115줄 → 85줄)
 
 **Phase 3 — Navigation 3 마이그레이션**
 
 - [x] (2026-08-05) M9 (스파이크) 의존성 상향만 단독 수행: Compose BOM·lifecycle. 아키텍처 변경 없음
-- [ ] M10 `NavKey`·`NavigationState`·`Navigator`를 Nav3 API로 교체
-- [ ] M11 feature의 `NavGraphBuilder` 확장을 `EntryProviderScope` 확장으로 교체
-- [ ] M12 `NavHost`를 `NavDisplay`로 교체하고 바텀 탭 상태 보존을 `subStacks`로 이전
-- [ ] M13 딥링크 경로를 Nav3 백스택 합성 방식으로 이전
+- [ ] M10 **모든 Route를 `api`로 이전**하고 `impl`의 Route 잔여를 0으로 만든다
+- [ ] M11 `NavKey`·`NavigationState`·`Navigator`를 Nav3 API로 교체
+- [ ] M12 feature의 `NavGraphBuilder` 확장을 `EntryProviderScope` 확장으로 교체
+- [ ] M13 **인증 이전 흐름(Splash·Auth)을 `NavDisplay` 밖으로 분리**
+- [ ] M14 `NavHost`를 `NavDisplay`로 교체하고 바텀 탭 상태 보존을 `subStacks`로 이전
+- [ ] M15 딥링크 경로를 Nav3 백스택 합성 방식으로 이전
 
 ## Surprises & Discoveries
 
@@ -108,6 +110,40 @@
 
   아키텍처 변경과 의존성 상향을 한 커밋에 섞으면 빌드가 깨졌을 때 원인을 가릴 수 없다. 상향만 먼저 하고 기존 코드가 그대로 통과하는 것을 확인한 뒤 Nav3로 넘어간다.
   날짜/작성자: 2026-08-05 / 이 계획 작성자
+
+- 결정: **모든 Route를 `api` 모듈에 둔다.** "다른 모듈이 참조하는가"라는 기준을 폐기한다(M10).
+  근거: 이 결정에 이르기까지 세 가지 안을 검토했다.
+
+  **(1) 현행 — 참조되는 것만 api.** 같은 성격의 Route가 참조 여부라는 우연한 사실에 따라 두 모듈로 흩어진다. 가시성도 네 가지가 섞여 있었다(`api public` 9, `impl internal` 6, `impl private` 3, `impl public` 1).
+
+  **(2) 진입점만 api, 흐름 내부는 impl+internal.** 작성 시점에 "밖에서 들어와도 되는 화면인가"를 판단해야 하는데, 이는 개발자가 알 수 없고 개발자의 결정도 아닌 기획 판단이다. 폐기했다.
+
+  **(3) 전부 api.** 채택.
+
+  결정적 근거는 **배경 지식이 없는 팀원의 목적지 파악 비용**이다. 특정 feature를 처음 만지는 사람이 "이 모듈에는 어떤 화면이 있는가"를 알려면 한 곳만 보면 된다. Route가 두 모듈에 흩어져 있으면 그 사람은 두 곳을 다 열어봐야 하고, 어느 쪽에 있는지 규칙도 알아야 한다. 유지보수 관점에서 이 비용이 아래에 적은 손실보다 크다.
+
+  **포기하는 것**: 흐름 중간으로 밖에서 진입하는 것을 컴파일러가 막지 못한다. 예를 들어 촬영을 거치지 않고 `IngredientRoute(imageUri = "...")`로 직접 가는 코드가 컴파일된다. 크래시나 데이터 손상은 아니며(OCR 실패 → 에러 화면), 설계 실수를 컴파일이 아니라 코드 리뷰에서 잡게 된다는 뜻이다.
+
+  **완화**: 각 `api` 모듈의 Route 파일에서 진입점과 흐름 내부 단계를 주석으로 구분해 표기한다. 강제력은 없지만, 한 파일에 모여 있으므로 "이 모듈에 어떤 화면이 있고 어디로 들어가는 게 정상인가"가 함께 읽힌다. 목적지 파악 비용을 낮춘다는 이 결정의 목적에도 부합한다.
+
+  **참고**: Now in Android도 모든 NavKey를 `api`에 둔다(api 5개 / impl 0개). 다만 NIA에는 다단계 흐름이 없어 "흐름 내부 단계"라는 개념 자체가 없으므로, 같은 선택이라도 근거는 다르다.
+  날짜/작성자: 2026-08-05 / 프로젝트 리드
+
+- 결정: **인증 이전 흐름(Splash·Auth)을 `NavDisplay` 밖으로 분리한다.**
+  근거: Now in Android의 `NavigationState`는 "모든 목적지는 탭이거나 탭 안에 있다"를 전제한다.
+
+      class NavigationState(
+          val startKey: NavKey,                             // 탭 중 하나라고 가정
+          val topLevelStack: NavBackStack<NavKey>,
+          val subStacks: Map<NavKey, NavBackStack<NavKey>>, // 모든 화면은 어느 탭엔가 속함
+      )
+
+  NIA에는 로그인이 없어서 이 전제가 성립한다. 우리 앱의 Splash·Auth는 탭도 아니고 탭에 속하지도 않으며 탭보다 먼저 온다. 이 모델에 얹히지 않는다.
+
+  두 선택지가 있었다. (a) Splash·Auth를 `NavDisplay` 밖의 별도 상태로 두고 인증 성공 후에 `NavDisplay`를 띄운다. (b) `NavigationState`에 "세션 이전 스택" 개념을 추가한다.
+
+  (a)를 택한다. **인증 게이트가 타입 수준에서 표현되어 "로그인하지 않은 상태로 탭 화면에 도달"하는 경로가 구조적으로 불가능해지기 때문이다.** 별도 진단에서 확인된 결함 — 로그아웃 상태에서 딥링크로 인증 벽을 넘을 수 있는 문제 — 가 코드 수정이 아니라 구조로 해소된다. (b)는 NIA 모델을 확장해야 하고, 인증 여부가 여전히 런타임 조건으로 남는다.
+  날짜/작성자: 2026-08-05 / 프로젝트 리드
 
 - 결정: Compose BOM은 `2026.03.00`(Compose 1.10.5)으로 올린다.
   근거: Nav3가 요구하는 1.9.5를 넘기는 가장 최근 BOM이다. 1.9.x대에 맞춰 최소로만 올리는 선택도 있으나, 어차피 한 번 겪을 마이그레이션이라면 최신에서 겪는 편이 낫다. 문제가 생기면 `2025.12.00`(Compose 1.10.0)으로 낮춰 재시도한다.
@@ -201,13 +237,35 @@ Navigation 3은 Navigation Compose와 다른 라이브러리다. 개념이 바�
 
 **M9**는 아키텍처를 건드리지 않고 의존성만 올린다. Compose BOM을 `2026.03.00`으로, lifecycle을 `2.10.0`으로 올린 뒤 기존 코드가 그대로 빌드·테스트를 통과하는지 확인한다. 이 단계에서 깨지는 것은 전부 Compose·lifecycle의 API 변경 때문이며 Nav3와 무관하다. 원인을 섞지 않으려고 분리했다.
 
-**M10**은 목적지 이름과 백스택 상태를 Nav3 타입으로 바꾼다. 각 `api` 모듈의 Route가 `NavKey`를 구현하게 하고, `:core:navigation`에 `NavigationState`(탑레벨 스택 + 탭별 서브스택)와 그것을 조작하는 `Navigator`를 만든다.
+**M10**은 `impl`에 남아 있는 Route 10개를 전부 `api`로 옮긴다. 옮긴 뒤 `impl`의 Route 개수는 0이 되고, 각 feature의 목적지 목록은 `api` 모듈의 파일 하나에서 전부 읽힌다.
 
-**M11**은 각 `impl` 모듈의 `NavGraphBuilder` 확장을 `EntryProviderScope<NavKey>` 확장으로 바꾼다. 이름도 `xxxScreen`에서 `xxxEntry`로 바꾼다.
+대상은 다음과 같다. `auth`의 `LoginRoute`·`SignupRoute`, `fridge`의 `EditFridgeIngredientRoute`, `ingredient`의 `IngredientRoute`·`OcrErrorRoute`·`RegisterSuccessRoute`·`PhotoDetailRoute`, `mypage`의 `AppInfoRoute`·`SettingAccountRoute`·`SettingNotificationRoute`.
 
-**M12**는 `:app`의 `NavHost`를 `NavDisplay`로 바꾼다. 여기서 가장 까다로운 것이 바텀 탭 상태 보존이다. 지금은 `popUpTo(HomeRoute) { saveState = true }` + `restoreState = true` 조합으로 처리하는데, Nav3에는 그런 옵션이 없다. 대신 탭마다 서브스택을 하나씩 두고 탑레벨 스택이 어느 서브스택을 보여줄지 고르는 구조로 만든다.
+`internal`과 `private` 수식어는 전부 제거된다. `api` 모듈의 Route는 다른 모듈이 봐야 하므로 `public`일 수밖에 없다.
 
-**M13**은 딥링크를 옮긴다. 현재는 딥링크가 도착하면 `while (popBackStack())` 루프로 백스택을 손질하는데, Nav3에서는 백스택이 그냥 리스트이므로 원하는 상태를 직접 조립하면 된다. 이 부분은 Nav3가 명확히 더 단순해지는 지점이다.
+각 `api` 파일에는 진입점과 흐름 내부 단계를 주석으로 구분해 적는다. 강제력은 없지만 목적지 목록과 함께 읽히므로, 처음 이 모듈을 만지는 사람이 "어디로 들어가는 게 정상인가"를 함께 파악할 수 있다.
+
+    // ── 진입점 ──
+    @Serializable data object IngredientGraphRoute
+    @Serializable data class OcrCaptureRoute(val openGallery: Boolean = false)
+
+    // ── 등록 흐름 내부 단계 (OcrCaptureRoute로 진입한다) ──
+    @Serializable data class IngredientRoute(val imageUri: String)
+    @Serializable data object OcrErrorRoute
+
+**M11**은 목적지 이름과 백스택 상태를 Nav3 타입으로 바꾼다. 각 `api` 모듈의 Route가 `NavKey`를 구현하게 하고, `:core:navigation`에 `NavigationState`(탑레벨 스택 + 탭별 서브스택)와 그것을 조작하는 `Navigator`를 만든다.
+
+이 시점에 탭 전환 정책이 `:app`에서 `Navigator` 안으로 들어온다. 지금 `NeveraApp.kt`에 있는 `popUpTo(HomeRoute) { saveState = true }` 블록이 사라지고, `Navigator.navigate()`가 목적지가 탭인지 아닌지를 스스로 분기한다.
+
+**M12**는 각 `impl` 모듈의 `NavGraphBuilder` 확장을 `EntryProviderScope<NavKey>` 확장으로 바꾼다. 이름도 `xxxScreen`에서 `xxxEntry`로 바꾼다.
+
+**M13**은 인증 이전 흐름을 분리한다. `MainActivity`가 세션 상태에 따라 두 갈래로 나뉜다. 인증 전이면 Splash·Auth 화면만 담은 작은 컴포저블을, 인증 후면 `NavDisplay`를 띄운다. 두 세계가 하나의 백스택을 공유하지 않으므로 **로그인하지 않은 상태에서 탭 화면에 도달하는 경로가 존재하지 않게 된다.**
+
+이때 딥링크는 인증 전에 도착할 수 있으므로 "보류된 딥링크"로 보관했다가 인증 성공 후 소비한다. 지금은 없는 동작인데, 있으면 "푸시로 열었더니 로그인이 필요했다 → 로그인 후 원래 가려던 곳으로 간다"는 정상적인 UX가 된다.
+
+**M14**는 `:app`의 `NavHost`를 `NavDisplay`로 바꾼다. 여기서 가장 까다로운 것이 바텀 탭 상태 보존이다. 지금은 `popUpTo(HomeRoute) { saveState = true }` + `restoreState = true` 조합으로 처리하는데, Nav3에는 그런 옵션이 없다. 대신 탭마다 서브스택을 하나씩 두고 탑레벨 스택이 어느 서브스택을 보여줄지 고르는 구조로 만든다. M13에서 Splash·Auth를 빼냈으므로 이 시점의 `NavigationState`는 NIA와 같은 전제 위에 설 수 있다.
+
+**M15**는 딥링크를 옮긴다. 현재는 딥링크가 도착하면 `while (popBackStack())` 루프로 백스택을 손질하는데, Nav3에서는 백스택이 그냥 리스트이므로 원하는 상태를 직접 조립하면 된다. 이 부분은 Nav3가 명확히 더 단순해지는 지점이다.
 
 ## Concrete Steps
 
