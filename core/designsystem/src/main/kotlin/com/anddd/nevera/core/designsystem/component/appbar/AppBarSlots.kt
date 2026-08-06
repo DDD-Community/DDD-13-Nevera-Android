@@ -16,6 +16,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.Dp
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
@@ -69,6 +70,7 @@ internal fun AppBarActionSlot(action: NeveraAppBarAction) {
                     painter = item.painter,
                     onClick = item.onClick,
                     contentDescription = item.contentDescription,
+                    tint = item.tint
                 )
             }
         }
@@ -93,6 +95,7 @@ private fun AppBarIconButton(
     painter: Painter,
     onClick: () -> Unit,
     contentDescription: String? = null,
+    tint: Color = NeveraTheme.colors.iconPrimary
 ) {
     CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
         IconButton(
@@ -103,7 +106,7 @@ private fun AppBarIconButton(
                 painter = painter,
                 contentDescription = contentDescription,
                 modifier = Modifier.size(AppBarDefault.iconSize),
-                tint = NeveraTheme.colors.iconPrimary
+                tint = tint
             )
         }
     }

@@ -38,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
+import com.anddd.nevera.core.designsystem.ui.theme.shadow.neveraShadow
 import com.anddd.nevera.feature.main.R
 import com.anddd.nevera.feature.main.home.model.HomeWishUiModel
 
@@ -108,6 +109,10 @@ private fun WishCard(
     Column(
         modifier = modifier
             .fillMaxWidth()
+            .neveraShadow(
+                layers = NeveraTheme.shadow.small,
+                cornerRadius = NeveraTheme.radius.medium,
+            )
             .background(NeveraTheme.colors.surfacePrimary)
             .border(BorderWidth, NeveraTheme.colors.borderNormal, cardShape)
             .clickable(

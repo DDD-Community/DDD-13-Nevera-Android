@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -18,6 +17,9 @@ import com.anddd.nevera.core.designsystem.component.appbar.NeveraAppBar
 import com.anddd.nevera.core.designsystem.component.appbar.NeveraAppBarNavigation
 import com.anddd.nevera.core.designsystem.component.button.NeveraButtonSize
 import com.anddd.nevera.core.designsystem.component.button.NeveraFilledButton
+import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextField
+import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextFieldConfig
+import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextFieldType
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.core.ui.component.field.CostFieldRow
 import com.anddd.nevera.core.ui.component.field.DropdownFieldRow
@@ -65,11 +67,15 @@ internal fun EditFridgeIngredientContent(
                 .padding(innerPadding)
                 .padding(vertical = 16.dp),
         ) {
-            Text(
-                text = uiState.name,
-                style = NeveraTheme.typography.headlineLarge,
-                color = NeveraTheme.colors.textPrimary,
-                modifier = Modifier.padding(horizontal = 16.dp),
+            NeveraTextField(
+                value = uiState.name,
+                onValueChange = { onIntent(EditFridgeIngredientIntent.UpdateName(it)) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                enabled = !uiState.isLoading,
+                useIcon = false,
+                config = NeveraTextFieldConfig(type = NeveraTextFieldType.Underline),
             )
 
             Spacer(modifier = Modifier.height(24.dp))

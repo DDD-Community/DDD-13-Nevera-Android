@@ -97,6 +97,17 @@ class NeveraColor(
 
     // Notification
     val notificationRed: Color,
+
+    // Category background
+    val categoryVeg: Color,
+    val categoryFruit: Color,
+    val categoryMeatEggs: Color,
+    val categorySea: Color,
+    val categoryDairy: Color,
+    val categorySauce: Color,
+    val categoryDrink: Color,
+    val categoryProcessed: Color,
+    val categoryEtc: Color,
 )
 
 internal val LightNeveraColors = NeveraColor(
@@ -190,6 +201,17 @@ internal val LightNeveraColors = NeveraColor(
 
     // Notification
     notificationRed = ColorPalette.red50,
+
+    // Category background
+    categoryVeg = ColorPalette.lime5,
+    categoryFruit = ColorPalette.orange5,
+    categoryMeatEggs = ColorPalette.red5,
+    categorySea = ColorPalette.blue5,
+    categoryDairy = ColorPalette.cyan5,
+    categorySauce = ColorPalette.purple5,
+    categoryDrink = ColorPalette.yellow5,
+    categoryProcessed = ColorPalette.green5,
+    categoryEtc = ColorPalette.gray5,
 )
 
 // TODO: Dark mode colors - pending design team's color palette
@@ -284,6 +306,17 @@ internal val DarkNeveraColors = NeveraColor(
 
     // Notification
     notificationRed = ColorPalette.red50,
+
+    // Category background
+    categoryVeg = ColorPalette.lime5,
+    categoryFruit = ColorPalette.orange5,
+    categoryMeatEggs = ColorPalette.red5,
+    categorySea = ColorPalette.blue5,
+    categoryDairy = ColorPalette.cyan5,
+    categorySauce = ColorPalette.purple5,
+    categoryDrink = ColorPalette.yellow5,
+    categoryProcessed = ColorPalette.green5,
+    categoryEtc = ColorPalette.gray5,
 )
 
 internal val LocalNeveraColors = staticCompositionLocalOf { LightNeveraColors }

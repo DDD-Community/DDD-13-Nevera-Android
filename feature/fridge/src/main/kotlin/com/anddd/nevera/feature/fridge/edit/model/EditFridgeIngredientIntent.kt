@@ -6,6 +6,7 @@ import com.anddd.nevera.domain.model.ingredient.StorageLocation
 import java.time.LocalDate
 
 sealed interface EditFridgeIngredientIntent : NeveraIntent {
+    data class UpdateName(val name: String) : EditFridgeIngredientIntent
     data class UpdateQuantity(val quantity: Int) : EditFridgeIngredientIntent
     data class UpdateCost(val cost: Int) : EditFridgeIngredientIntent
     data class UpdateCategory(val category: FoodCategory) : EditFridgeIngredientIntent

@@ -1,5 +1,6 @@
 package com.anddd.nevera.core.designsystem.component.appbar
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 
 /**
@@ -26,6 +27,7 @@ sealed interface NeveraAppBarAction {
             val painter: Painter,
             val contentDescription: String? = null,
             val onClick: () -> Unit,
+            val tint: Color = Color.Unspecified,
         )
 
         companion object {

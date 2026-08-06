@@ -22,15 +22,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
-import com.anddd.nevera.domain.model.ingredient.StorageLocation
-import com.anddd.nevera.feature.fridge.R
+import com.anddd.nevera.domain.model.ingredient.FoodCategory
 import com.anddd.nevera.domain.model.ingredient.IngredientSortOrder
-import com.anddd.nevera.feature.fridge.main.model.StorageLocationFilter
+import com.anddd.nevera.feature.fridge.R
+import com.anddd.nevera.feature.fridge.main.model.CategoryFilter
 
 @Composable
 internal fun FridgeIngredientListHeader(
     totalCount: Int,
-    selectedStorageFilter: StorageLocationFilter,
+    selectedCategoryFilter: CategoryFilter,
     selectedSortOrder: IngredientSortOrder,
     onSortOrderSelected: (IngredientSortOrder) -> Unit,
     modifier: Modifier = Modifier,
@@ -48,7 +48,7 @@ internal fun FridgeIngredientListHeader(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = "${stringResource(selectedStorageFilter.labelRes)} $totalCount",
+            text = "${stringResource(selectedCategoryFilter.labelRes)} $totalCount",
             style = NeveraTheme.typography.captionLarge,
             color = NeveraTheme.colors.textCaption,
             modifier = Modifier.weight(1f),
@@ -90,13 +90,19 @@ internal fun FridgeIngredientListHeader(
     }
 }
 
-private val StorageLocationFilter.labelRes: Int
+private val CategoryFilter.labelRes: Int
     get() = when (this) {
-        StorageLocationFilter.All -> R.string.fridge_filter_all
-        is StorageLocationFilter.Specific -> when (this.location) {
-            StorageLocation.Fridge -> R.string.fridge_filter_refrigerator
-            StorageLocation.Freezer -> R.string.fridge_filter_freezer
-            StorageLocation.Pantry -> R.string.fridge_filter_room_temp
+        CategoryFilter.All -> R.string.fridge_category_all
+        is CategoryFilter.Specific -> when (this.category) {
+            FoodCategory.Veg -> R.string.fridge_category_vegetable
+            FoodCategory.Fruit -> R.string.fridge_category_fruit
+            FoodCategory.MeatEggs -> R.string.fridge_category_meat_egg
+            FoodCategory.Sea -> R.string.fridge_category_seafood
+            FoodCategory.Dairy -> R.string.fridge_category_dairy
+            FoodCategory.Sauce -> R.string.fridge_category_sauce
+            FoodCategory.Drink -> R.string.fridge_category_beverage
+            FoodCategory.Processed -> R.string.fridge_category_processed
+            FoodCategory.Etc -> R.string.fridge_category_other
         }
     }
 
@@ -112,7 +118,7 @@ private fun FridgeIngredientListHeaderPreview() {
     NeveraTheme {
         FridgeIngredientListHeader(
             totalCount = 0,
-            selectedStorageFilter = StorageLocationFilter.All,
+            selectedCategoryFilter = CategoryFilter.All,
             selectedSortOrder = IngredientSortOrder.ExpiryDate,
             onSortOrderSelected = {},
         )

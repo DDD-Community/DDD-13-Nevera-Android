@@ -10,16 +10,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -147,7 +148,7 @@ private fun RecentIngredientSectionHeader(
             color = NeveraTheme.colors.textSecondary,
         )
         Box {
-            Image(
+            Icon(
                 painter = NeveraIcons.CircleHelp,
                 contentDescription = stringResource(R.string.home_ingredient_section_help_description),
                 modifier = Modifier
@@ -157,6 +158,7 @@ private fun RecentIngredientSectionHeader(
                         interactionSource = remember { MutableInteractionSource() },
                         onClick = { showTooltip = !showTooltip },
                     ),
+                tint = NeveraTheme.colors.iconCaption,
             )
             if (showTooltip) {
                 Popup(
