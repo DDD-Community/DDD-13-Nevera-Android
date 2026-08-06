@@ -7,9 +7,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.anddd.nevera.core.navigation.Navigator
-import com.anddd.nevera.feature.auth.main.google.GoogleAuthClient
-import com.anddd.nevera.feature.auth.api.AuthGraphRoute
-import com.anddd.nevera.feature.auth.navigation.authNavGraph
 import com.anddd.nevera.feature.fridge.navigation.editFridgeIngredientScreen
 import com.anddd.nevera.feature.fridge.navigation.fridgeScreen
 import com.anddd.nevera.feature.ingredient.api.IngredientGraphRoute
@@ -19,36 +16,26 @@ import com.anddd.nevera.feature.main.api.HomeRoute
 import com.anddd.nevera.feature.main.home.navigation.homeScreen
 import com.anddd.nevera.feature.mypage.navigation.myPageNavGraph
 import com.anddd.nevera.feature.notification.navigation.notificationScreen
-import com.anddd.nevera.feature.splash.api.SplashRoute
-import com.anddd.nevera.feature.splash.main.navigation.splashScreen
 
 @Composable
 fun NeveraNavHost(
     navController: NavHostController,
     navigator: Navigator,
-    googleAuthClient: GoogleAuthClient,
     onDeeplink: (String) -> Unit,
+    onSignedOut: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
     NavHost(
         navController = navController,
-        startDestination = HomeRoute,  // TEMP
+        // 인증 이후 그래프의 시작점. 스플래시·로그인은 PreSessionHost가 담당한다.
+        startDestination = HomeRoute,
         modifier = modifier,
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None },
         popEnterTransition = { EnterTransition.None },
         popExitTransition = { ExitTransition.None },
     ) {
-        splashScreen(
-            onNavigateToLogin = { navigator.replaceFlow(AuthGraphRoute, clearUpTo = SplashRoute) },
-            onNavigateToHome = { navigator.replaceFlow(HomeRoute, clearUpTo = SplashRoute) },
-        )
-        authNavGraph(
-            googleAuthClient = googleAuthClient,
-            navigator = navigator,
-            onNavigateToHome = { navigator.replaceFlow(HomeRoute, clearUpTo = AuthGraphRoute) },
-        )
         homeScreen(
             navigator = navigator,
             onNavigateToCamera = {
@@ -70,7 +57,7 @@ fun NeveraNavHost(
         editFridgeIngredientScreen(navigator = navigator)
         myPageNavGraph(
             navigator = navigator,
-            onNavigateToLogin = { navigator.replaceFlow(AuthGraphRoute, clearUpTo = HomeRoute) },
+            onNavigateToLogin = onSignedOut,
         )
         ingredientNavGraph(
             navigator = navigator,
