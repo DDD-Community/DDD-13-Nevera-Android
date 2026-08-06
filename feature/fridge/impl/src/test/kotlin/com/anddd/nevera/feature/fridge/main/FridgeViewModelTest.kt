@@ -10,7 +10,6 @@ import com.anddd.nevera.domain.model.ingredient.ProcessType
 import com.anddd.nevera.domain.model.ingredient.StorageLocation
 import com.anddd.nevera.domain.usecase.ingredient.GetFridgeIngredientsUseCase
 import com.anddd.nevera.domain.usecase.ingredient.ObserveFridgeIngredientsUseCase
-import com.anddd.nevera.domain.usecase.ingredient.ObserveIngredientFocusRequestUseCase
 import com.anddd.nevera.domain.usecase.ingredient.ProcessIngredientUseCase
 import com.anddd.nevera.domain.usecase.notification.MarkAllNotificationsAsReadUseCase
 import com.anddd.nevera.domain.usecase.notification.ObserveUnreadNotificationUseCase
@@ -53,7 +52,6 @@ class FridgeViewModelTest {
     private val getFridgeIngredients = mockk<GetFridgeIngredientsUseCase>()
     private val observeUnreadNotification = mockk<ObserveUnreadNotificationUseCase>()
     private val markAllNotificationsAsRead = mockk<MarkAllNotificationsAsReadUseCase>()
-    private val observeIngredientFocusRequest = mockk<ObserveIngredientFocusRequestUseCase>()
     private val observeFridgeIngredients = mockk<ObserveFridgeIngredientsUseCase>()
     private val processIngredient = mockk<ProcessIngredientUseCase>()
 
@@ -62,7 +60,6 @@ class FridgeViewModelTest {
         Dispatchers.setMain(StandardTestDispatcher())
 
         every { observeUnreadNotification() } returns emptyFlow()
-        every { observeIngredientFocusRequest() } returns emptyFlow()
         every { observeFridgeIngredients() } returns emptyFlow()
         coEvery { getFridgeIngredients(any(), any(), any()) } returns NeveraResult.Success(emptyList())
         coEvery { markAllNotificationsAsRead() } returns Unit
@@ -79,7 +76,6 @@ class FridgeViewModelTest {
         getFridgeIngredients = getFridgeIngredients,
         observeUnreadNotification = observeUnreadNotification,
         markAllNotificationsAsRead = markAllNotificationsAsRead,
-        observeIngredientFocusRequest = observeIngredientFocusRequest,
         observeFridgeIngredients = observeFridgeIngredients,
         processIngredient = processIngredient,
     )
@@ -315,15 +311,6 @@ class FridgeViewModelTest {
             containerHost.handleIntent(FridgeIntent.IngredientMoreClick(item))
 
             expectSideEffect(FridgeSideEffect.NavigateToEditIngredient(item.id))
-        }
-    }
-
-    @Test
-    fun `스크롤 처리가 끝나면 스크롤 목표를 지운다`() = runTest {
-        createViewModel().test(this, initialState = FridgeUiState(scrollTargetIndex = 3)) {
-            containerHost.handleIntent(FridgeIntent.ScrollHandled)
-
-            expectState { copy(scrollTargetIndex = null) }
         }
     }
 }

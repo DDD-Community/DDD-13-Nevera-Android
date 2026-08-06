@@ -17,9 +17,7 @@ import com.anddd.nevera.core.designsystem.component.navigationbar.NeveraNavigati
 import com.anddd.nevera.core.navigation.nav3.Nav3Navigator
 import com.anddd.nevera.core.navigation.nav3.rememberNavigationState
 import com.anddd.nevera.core.navigation.nav3.toEntries
-import com.anddd.nevera.domain.model.deeplink.DeeplinkAction
 import com.anddd.nevera.feature.auth.main.google.GoogleAuthClient
-import com.anddd.nevera.feature.fridge.api.FridgeRoute
 import com.anddd.nevera.feature.fridge.navigation.fridgeEntry
 import com.anddd.nevera.feature.ingredient.main.navigation.ingredientEntry
 import com.anddd.nevera.feature.main.api.HomeRoute
@@ -61,12 +59,11 @@ private fun AuthenticatedApp(mainViewModel: MainViewModel) {
     )
     val navigator = remember(navigationState) { Nav3Navigator(navigationState) }
 
-    // 딥링크는 항상 메인 그래프 위에서 소비된다. 백스택을 손질할 필요가 없다.
+    // 딥링크는 항상 메인 그래프 위에서 소비된다.
+    // 백스택이 리스트라 원하는 모양을 직접 조립하면 된다.
     LaunchedEffect(navigator) {
-        mainViewModel.sideEffect.collect { action ->
-            when (action) {
-                is DeeplinkAction.NavigateToIngredientDetail -> navigator.navigate(FridgeRoute)
-            }
+        mainViewModel.deeplinkTargets.collect { target ->
+            navigator.openDeeplink(tab = target.tab, stack = target.stack)
         }
     }
 

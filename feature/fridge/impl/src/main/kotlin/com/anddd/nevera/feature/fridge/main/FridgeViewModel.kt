@@ -8,7 +8,6 @@ import com.anddd.nevera.domain.model.ingredient.ProcessRatio
 import com.anddd.nevera.domain.model.ingredient.ProcessType
 import com.anddd.nevera.domain.usecase.ingredient.GetFridgeIngredientsUseCase
 import com.anddd.nevera.domain.usecase.ingredient.ObserveFridgeIngredientsUseCase
-import com.anddd.nevera.domain.usecase.ingredient.ObserveIngredientFocusRequestUseCase
 import com.anddd.nevera.domain.usecase.ingredient.ProcessIngredientUseCase
 import com.anddd.nevera.domain.usecase.notification.MarkAllNotificationsAsReadUseCase
 import com.anddd.nevera.domain.usecase.notification.ObserveUnreadNotificationUseCase
@@ -34,14 +33,12 @@ class FridgeViewModel @Inject constructor(
     private val getFridgeIngredients: GetFridgeIngredientsUseCase,
     private val observeUnreadNotification: ObserveUnreadNotificationUseCase,
     private val markAllNotificationsAsRead: MarkAllNotificationsAsReadUseCase,
-    private val observeIngredientFocusRequest: ObserveIngredientFocusRequestUseCase,
     private val observeFridgeIngredients: ObserveFridgeIngredientsUseCase,
     private val processIngredient: ProcessIngredientUseCase,
 ) : NeveraViewModel<FridgeUiState, FridgeSideEffect, FridgeIntent, FridgeMutation>(FridgeUiState()) {
 
     init {
         observeBadge()
-        observeFocusRequests()
         observeIngredients()
         intent { loadIngredients() }
     }
@@ -58,7 +55,6 @@ class FridgeViewModel @Inject constructor(
             is FridgeIntent.DisposeClick -> showDisposeBottomSheet(intent.item)
             is FridgeIntent.DisposeConfirm -> disposeIngredient(intent.item, intent.ratio)
             is FridgeIntent.IngredientMoreClick -> navigateToEditIngredient(intent.item)
-            FridgeIntent.ScrollHandled -> clearScrollTarget()
         }
     }
 
@@ -125,37 +121,13 @@ class FridgeViewModel @Inject constructor(
         }
     }
 
-    private fun observeFocusRequests() = intent {
-        observeIngredientFocusRequest().collect { ingredientId ->
-            focusIngredient(ingredientId)
-        }
-    }
 
-    private fun clearScrollTarget() = intent {
-        applyMutation(FridgeMutation.ClearScrollTarget)
-    }
 
     private fun navigateToNotification() = intent {
         markAllNotificationsAsRead()
         postSideEffect(FridgeSideEffect.NavigateToNotification)
     }
 
-    private fun focusIngredient(ingredientId: Long) = intent {
-        // 포커스 요청 도착 시점에 식재료 목록이 아직 로드되지 않았을 수 있으므로,
-        // 목록이 채워질 때까지 대기한 뒤 인덱스를 조회한다.
-        // 냉장고가 실제로 비어있는 경우 무한 대기로 코루틴이 누수되지 않도록 타임아웃을 둔다.
-        val ingredients = withTimeoutOrNull(FOCUS_WAIT_TIMEOUT_MS) {
-            container.stateFlow.first { it.ingredients.isNotEmpty() }
-        }?.ingredients.orEmpty()
-
-        val index = ingredients.indexOfFirst { it.id == ingredientId }
-        if (index >= 0) {
-            applyMutation(FridgeMutation.SetScrollTarget(index))
-        } else {
-            // TODO: 실 API 연동 시 추가 페이지 요청 후 재시도
-            Timber.w("포커스할 식재료를 찾을 수 없음: id=$ingredientId")
-        }
-    }
 
     private suspend fun Syntax<FridgeUiState, FridgeSideEffect>.loadIngredients() {
         applyMutation(FridgeMutation.Loading)
@@ -188,13 +160,10 @@ class FridgeViewModel @Inject constructor(
 
             is FridgeMutation.SelectSortOrder -> reduce { state.copy(selectedSortOrder = mutation.order) }
             is FridgeMutation.BadgeUpdated -> reduce { state.copy(hasUnreadNotification = mutation.hasUnread) }
-            is FridgeMutation.SetScrollTarget -> reduce { state.copy(scrollTargetIndex = mutation.index) }
-            FridgeMutation.ClearScrollTarget -> reduce { state.copy(scrollTargetIndex = null) }
         }
     }
 
     companion object {
-        private const val FOCUS_WAIT_TIMEOUT_MS = 5_000L
     }
 }
 

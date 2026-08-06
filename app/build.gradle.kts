@@ -78,6 +78,7 @@ dependencies {
     implementation(libs.hilt.work)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.timber)
+    testImplementation(libs.junit.jupiter.params)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)
 }

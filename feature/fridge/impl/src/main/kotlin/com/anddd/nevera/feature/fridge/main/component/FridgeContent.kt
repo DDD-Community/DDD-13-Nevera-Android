@@ -46,13 +46,6 @@ internal fun FridgeContent(
 ) {
     val listState = rememberLazyListState()
 
-    LaunchedEffect(uiState.scrollTargetIndex, uiState.ingredients) {
-        val index = uiState.scrollTargetIndex ?: return@LaunchedEffect
-        if (index < uiState.ingredients.size) {
-            listState.animateScrollToItem(FRIDGE_LIST_HEADER_ITEM_COUNT + index)
-        }
-        onIntent(FridgeIntent.ScrollHandled)
-    }
 
     Scaffold(
         modifier = modifier,

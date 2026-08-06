@@ -23,7 +23,5 @@ sealed interface FridgeMutation : NeveraMutation {
 
     data class BadgeUpdated(val hasUnread: Boolean) : FridgeMutation
 
-    data class SetScrollTarget(val index: Int) : FridgeMutation
 
-    data object ClearScrollTarget : FridgeMutation
 }

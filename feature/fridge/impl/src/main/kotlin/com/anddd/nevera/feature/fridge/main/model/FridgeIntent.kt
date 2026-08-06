@@ -25,5 +25,4 @@ sealed interface FridgeIntent : NeveraIntent {
 
     data class IngredientMoreClick(val item: FridgeIngredientUiModel) : FridgeIntent
 
-    data object ScrollHandled : FridgeIntent
 }

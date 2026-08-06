@@ -48,6 +48,23 @@ class Nav3Navigator(val state: NavigationState) {
         }
     }
 
+    /**
+     * 딥링크로 진입할 화면 스택을 통째로 조립한다.
+     *
+     * [tab]으로 전환한 뒤 그 탭의 스택을 [stack]으로 교체한다. 뒤로가기를 누르면
+     * 탭 루트로 돌아간다.
+     *
+     * Navigation 2에서는 이 동작을 while(popBackStack()) 루프로 백스택을 손질해
+     * 만들어야 했다. 백스택이 리스트인 Navigation 3에서는 원하는 모양을 직접 쓴다.
+     */
+    fun openDeeplink(tab: NavKey, stack: List<NavKey>) {
+        if (tab != state.currentTopLevelKey) goToTopLevel(tab)
+        state.currentSubStack.apply {
+            if (size > 1) subList(1, size).clear()
+            addAll(stack)
+        }
+    }
+
     /** 현재 탭의 화면 스택을 탭 루트만 남기고 비운다. */
     private fun clearSubStack() {
         state.currentSubStack.run { if (size > 1) subList(1, size).clear() }

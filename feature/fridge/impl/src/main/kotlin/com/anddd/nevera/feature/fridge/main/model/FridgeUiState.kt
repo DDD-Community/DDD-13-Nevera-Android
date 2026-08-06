@@ -16,7 +16,6 @@ data class FridgeUiState(
     val categoryFilters: ImmutableMap<StorageLocationFilter, CategoryFilter> = persistentMapOf(),
     val selectedSortOrder: IngredientSortOrder = IngredientSortOrder.ExpiryDate,
     val ingredients: ImmutableList<FridgeIngredientUiModel> = persistentListOf(),
-    val scrollTargetIndex: Int? = null,
 ) : NeveraState {
     val selectedCategoryFilter: CategoryFilter
         get() = categoryFilters[selectedStorageFilter] ?: CategoryFilter.All
