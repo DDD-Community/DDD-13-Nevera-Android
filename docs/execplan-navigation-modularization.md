@@ -39,7 +39,7 @@
 - [x] (2026-08-06) M11-1 모든 Route가 `NavKey`를 구현 (Nav2 동작 유지)
 - [x] (2026-08-06) M11-2 `NavigationState`·`Nav3Navigator` 병렬 구현 + 단위 테스트 10개
 - [ ] M12 feature의 `NavGraphBuilder` 확장을 `EntryProviderScope` 확장으로 교체
-- [ ] M13 **인증 이전 흐름(Splash·Auth)을 `NavDisplay` 밖으로 분리**
+- [x] (2026-08-06) M13 **인증 이전 흐름(Splash·Auth)을 메인 그래프 밖으로 분리** — P0-1(딥링크 인증 우회) 재현 불가 확인
 - [ ] M14 `NavHost`를 `NavDisplay`로 교체하고 바텀 탭 상태 보존을 `subStacks`로 이전
 - [ ] M15 딥링크 경로를 Nav3 백스택 합성 방식으로 이전
 
@@ -56,6 +56,12 @@
 
 - 관찰: `NavKey`는 멤버가 없는 마커 인터페이스라 **Navigation 2와 공존한다.**
   증거: Route 19개에 `: NavKey`를 붙인 뒤에도 기존 `NavHost`/`NavGraphBuilder` 경로가 그대로 빌드·테스트를 통과했다. 덕분에 Nav3 전환을 한 번에 하지 않고 쪼갤 수 있다.
+
+- 관찰: 인증 흐름 분리가 **P0-1(로그아웃 상태에서 딥링크로 인증 벽 통과)을 코드 수정 없이 없앴다.**
+  증거: 앱 데이터를 지운 뒤 `adb shell am start -a android.intent.action.VIEW -d "nevera://detail/1"` 로 콜드 스타트했다. 이전 구조에서는 로그인 화면 위에 홈과 냉장고가 쌓였다. 지금은 로그인 화면에 머문다. `SessionState`가 `Authenticated`가 아니면 메인 그래프가 컴포지션에 존재하지 않으므로, 넘어갈 대상 자체가 없다.
+
+- 관찰: 검증용 임시 변경이 커밋에 섞여 3개 커밋 동안 스플래시·로그인이 건너뛰어졌다.
+  증거: `git log -S"// TEMP"` 로 추적하니 `587b1db6`(M8)에서 `startDestination = HomeRoute // TEMP`가 커밋됐다. 에뮬레이터 검증 후 `git checkout`으로 되돌렸다고 판단했으나, 이후 `git add -A` 시점에 워킹트리에 남아 있었다. **검증용 변경을 워킹트리에 둔 채 `git add -A`를 하지 않는다.** M13에서 `HomeRoute`가 메인 그래프의 정당한 시작점이 되면서 해소됐다.
 
 - 관찰: `NavBackStack`은 **Compose 없이 직접 생성 가능**해서 백스택 로직을 순수 단위 테스트로 검증할 수 있다.
   증거: `NavBackStack<NavKey>(startKey)` 생성자를 그대로 쓴 테스트 10개가 `:core:navigation:testDebugUnitTest`에서 통과했다. `NavDisplay`를 붙이기 전에 탭 전환·상태 보존 로직을 먼저 고정할 수 있다는 뜻이다.
