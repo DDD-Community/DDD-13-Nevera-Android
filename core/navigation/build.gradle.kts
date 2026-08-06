@@ -8,4 +8,5 @@ android {
 
 dependencies {
     implementation(libs.navigation.compose)
+    api(libs.navigation3.runtime)
 }
