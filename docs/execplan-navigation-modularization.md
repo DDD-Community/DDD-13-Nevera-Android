@@ -36,7 +36,8 @@
 
 - [x] (2026-08-05) M9 (스파이크) 의존성 상향만 단독 수행: Compose BOM·lifecycle. 아키텍처 변경 없음
 - [ ] M10 **모든 Route를 `api`로 이전**하고 `impl`의 Route 잔여를 0으로 만든다
-- [ ] M11 `NavKey`·`NavigationState`·`Navigator`를 Nav3 API로 교체
+- [x] (2026-08-06) M11-1 모든 Route가 `NavKey`를 구현 (Nav2 동작 유지)
+- [x] (2026-08-06) M11-2 `NavigationState`·`Nav3Navigator` 병렬 구현 + 단위 테스트 10개
 - [ ] M12 feature의 `NavGraphBuilder` 확장을 `EntryProviderScope` 확장으로 교체
 - [ ] M13 **인증 이전 흐름(Splash·Auth)을 `NavDisplay` 밖으로 분리**
 - [ ] M14 `NavHost`를 `NavDisplay`로 교체하고 바텀 탭 상태 보존을 `subStacks`로 이전
@@ -49,6 +50,15 @@
 
 - 관찰: `api` 모듈이 순수 Kotlin이므로 **Compose 코드를 넣는 것이 물리적으로 불가능하다.** 이 모듈이 잡동사니 저장소가 되는 것을 규칙이 아니라 컴파일러가 막는다.
   증거: `api` 모듈에는 `androidx.compose.*`가 클래스패스에 없으므로 `@Composable`을 쓰면 컴파일되지 않는다.
+
+- 관찰: **순수 Kotlin(JVM) 모듈이 `NavKey`를 구현할 수 있다.** NIA는 `api` 모듈을 Android 라이브러리로 만들었지만 우리는 순수 Kotlin을 유지할 수 있다.
+  증거: `navigation3-runtime`은 KMP로 배포되어 `desktopApiElements-published`(platform=jvm) 변형을 갖는다. `nevera.feature.api`(순수 Kotlin)에 `api(libs.navigation3.runtime)`을 추가하고 Route에 `: NavKey`를 붙인 뒤 `:feature:notification:api:build`가 통과했다. 덕분에 "api 모듈에 Compose를 넣는 것이 물리적으로 불가능하다"는 이점을 Nav3 전환 후에도 유지한다.
+
+- 관찰: `NavKey`는 멤버가 없는 마커 인터페이스라 **Navigation 2와 공존한다.**
+  증거: Route 19개에 `: NavKey`를 붙인 뒤에도 기존 `NavHost`/`NavGraphBuilder` 경로가 그대로 빌드·테스트를 통과했다. 덕분에 Nav3 전환을 한 번에 하지 않고 쪼갤 수 있다.
+
+- 관찰: `NavBackStack`은 **Compose 없이 직접 생성 가능**해서 백스택 로직을 순수 단위 테스트로 검증할 수 있다.
+  증거: `NavBackStack<NavKey>(startKey)` 생성자를 그대로 쓴 테스트 10개가 `:core:navigation:testDebugUnitTest`에서 통과했다. `NavDisplay`를 붙이기 전에 탭 전환·상태 보존 로직을 먼저 고정할 수 있다는 뜻이다.
 
 - 관찰: 디렉터리 이동은 `git mv`를 써야 이력이 보존된다.
   증거: `git mv feature/notification/src feature/notification/impl/src`로 옮긴 뒤 `git log --follow`가 이전 이력을 따라간다. 파일 탐색기로 옮기면 삭제+추가로 기록되어 이력이 끊긴다.
