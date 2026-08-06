@@ -41,7 +41,7 @@
 - [x] (2026-08-06) M12 feature의 `NavGraphBuilder` 확장을 `EntryProviderScope` 확장으로 교체
 - [x] (2026-08-06) M13 **인증 이전 흐름(Splash·Auth)을 메인 그래프 밖으로 분리** — P0-1(딥링크 인증 우회) 재현 불가 확인
 - [x] (2026-08-06) M14 `NavHost`를 `NavDisplay`로 교체하고 바텀 탭 상태 보존을 `subStacks`로 이전 — 에뮬레이터에서 보존 동작 확인
-- [ ] M15 딥링크 경로를 Nav3 백스택 합성 방식으로 이전
+- [x] (2026-08-06) M15 딥링크 경로를 Nav3 백스택 합성 방식으로 이전 — domain 오염 5개 제거, 파싱 테스트 10개 추가
 
 ## Surprises & Discoveries
 
@@ -65,6 +65,12 @@
 
 - 관찰: **탭별 서브스택만으로 상태 보존이 된다.** Nav2의 `saveState`/`restoreState` 조합이 필요 없다.
   증거: 에뮬레이터에서 홈 → 알림 → 냉장고 탭 → 홈 탭 순으로 조작하니 알림 화면이 그대로 복원됐다. 코드에는 상태 보존을 위한 옵션이 한 줄도 없다. `NavigationState`의 `subStacks`가 탭마다 독립된 리스트를 갖기 때문이다.
+
+- 관찰: `android.net.Uri`를 쓰면 **딥링크 파싱을 순수 JVM 단위 테스트로 검증할 수 없다.**
+  증거: `DeeplinkResolver`를 `toUri()`로 구현했더니 유효한 입력에서도 `null`이 반환되어 테스트가 실패했다. 안드로이드 프레임워크 타입은 단위 테스트에서 스텁이라 동작하지 않는다. `java.net.URI` 기반 순수 Kotlin 파싱으로 바꾸니 무효 입력 8종을 포함한 테스트 10개가 통과했다. 조립 지점의 로직이라도 프레임워크 타입을 피하면 검증 가능해진다.
+
+- 관찰: 딥링크 백스택 합성이 **한 함수로 끝난다.** Nav2에서 `while (popBackStack())` 루프로 하던 일이다.
+  증거: `openDeeplink(tab, stack)`은 탭을 전환하고 서브스택을 원하는 모양으로 바꾸는 것이 전부다. 에뮬레이터 로그로 확인한 결과 `sub=[FridgeRoute, EditFridgeIngredientRoute(ingredientId=7)]`, `top=[HomeRoute, FridgeRoute]`로 정확히 조립됐다.
 
 - 관찰: 인증 흐름 분리가 **P0-1(로그아웃 상태에서 딥링크로 인증 벽 통과)을 코드 수정 없이 없앴다.**
   증거: 앱 데이터를 지운 뒤 `adb shell am start -a android.intent.action.VIEW -d "nevera://detail/1"` 로 콜드 스타트했다. 이전 구조에서는 로그인 화면 위에 홈과 냉장고가 쌓였다. 지금은 로그인 화면에 머문다. `SessionState`가 `Authenticated`가 아니면 메인 그래프가 컴포지션에 존재하지 않으므로, 넘어갈 대상 자체가 없다.
