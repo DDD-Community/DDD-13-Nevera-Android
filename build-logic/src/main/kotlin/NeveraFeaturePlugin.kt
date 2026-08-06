@@ -29,6 +29,7 @@ class NeveraFeaturePlugin : Plugin<Project> {
                 "implementation"(project(":core:ui"))
                 "implementation"(project(":core:mvi"))
                 "implementation"(project(":core:navigation"))
+                "implementation"(libs.findLibrary("navigation3-runtime").get())
                 "implementation"(project(":domain"))
 
                 "implementation"(libs.findLibrary("lifecycle-viewmodel-compose").get())

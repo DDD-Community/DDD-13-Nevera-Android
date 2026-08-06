@@ -1,21 +1,18 @@
 package com.anddd.nevera.feature.main.home.navigation
 
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
-import com.anddd.nevera.core.navigation.Navigator
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
+import com.anddd.nevera.core.navigation.nav3.Nav3Navigator
 import com.anddd.nevera.feature.main.api.HomeRoute
 import com.anddd.nevera.feature.main.home.HomeScreen
+import com.anddd.nevera.feature.ingredient.api.OcrCaptureRoute
 import com.anddd.nevera.feature.notification.api.NotificationRoute
 
-fun NavGraphBuilder.homeScreen(
-    navigator: Navigator,
-    onNavigateToCamera: () -> Unit,
-    onNavigateToGallery: () -> Unit,
-) {
-    composable<HomeRoute> {
+fun EntryProviderScope<NavKey>.homeEntry(navigator: Nav3Navigator) {
+    entry<HomeRoute> {
         HomeScreen(
-            onNavigateToCamera = onNavigateToCamera,
-            onNavigateToGallery = onNavigateToGallery,
+            onNavigateToCamera = { navigator.navigate(OcrCaptureRoute()) },
+            onNavigateToGallery = { navigator.navigate(OcrCaptureRoute(openGallery = true)) },
             onNavigateToNotification = { navigator.navigate(NotificationRoute) },
         )
     }

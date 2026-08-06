@@ -11,4 +11,5 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.coroutines.android)
     implementation(project(":feature:notification:api"))
+    implementation(project(":feature:ingredient:api"))
 }

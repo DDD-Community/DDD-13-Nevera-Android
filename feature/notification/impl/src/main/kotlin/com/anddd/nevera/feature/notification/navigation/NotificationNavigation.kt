@@ -1,17 +1,18 @@
 package com.anddd.nevera.feature.notification.navigation
 
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
+import com.anddd.nevera.core.navigation.nav3.Nav3Navigator
 import com.anddd.nevera.feature.notification.api.NotificationRoute
 import com.anddd.nevera.feature.notification.main.NotificationScreen
 
-fun NavGraphBuilder.notificationScreen(
-    onBack: () -> Unit,
-    onDeeplink: (deeplink: String) -> Unit = {},
+fun EntryProviderScope<NavKey>.notificationEntry(
+    navigator: Nav3Navigator,
+    onDeeplink: (String) -> Unit,
 ) {
-    composable<NotificationRoute> {
+    entry<NotificationRoute> {
         NotificationScreen(
-            onBack = onBack,
+            onBack = navigator::goBack,
             onDeeplink = onDeeplink,
         )
     }

@@ -1,36 +1,27 @@
 package com.anddd.nevera.feature.fridge.navigation
 
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
-import androidx.navigation.toRoute
-import com.anddd.nevera.core.navigation.Navigator
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
+import com.anddd.nevera.core.navigation.nav3.Nav3Navigator
 import com.anddd.nevera.feature.fridge.api.EditFridgeIngredientRoute
 import com.anddd.nevera.feature.fridge.api.FridgeRoute
 import com.anddd.nevera.feature.fridge.edit.EditFridgeIngredientScreen
 import com.anddd.nevera.feature.fridge.main.FridgeScreen
+import com.anddd.nevera.feature.ingredient.api.OcrCaptureRoute
 import com.anddd.nevera.feature.notification.api.NotificationRoute
 
-fun NavGraphBuilder.fridgeScreen(
-    navigator: Navigator,
-    onNavigateToCamera: () -> Unit,
-    onNavigateToGallery: () -> Unit,
-) {
-    composable<FridgeRoute> {
+fun EntryProviderScope<NavKey>.fridgeEntry(navigator: Nav3Navigator) {
+    entry<FridgeRoute> {
         FridgeScreen(
-            onNavigateToCamera = onNavigateToCamera,
-            onNavigateToGallery = onNavigateToGallery,
+            onNavigateToCamera = { navigator.navigate(OcrCaptureRoute()) },
+            onNavigateToGallery = { navigator.navigate(OcrCaptureRoute(openGallery = true)) },
             onNavigateToNotification = { navigator.navigate(NotificationRoute) },
             onNavigateToEditIngredient = { id -> navigator.navigate(EditFridgeIngredientRoute(id)) },
         )
     }
-}
-
-fun NavGraphBuilder.editFridgeIngredientScreen(
-    navigator: Navigator,
-) {
-    composable<EditFridgeIngredientRoute> { backStackEntry ->
+    entry<EditFridgeIngredientRoute> { key ->
         EditFridgeIngredientScreen(
-            ingredientId = backStackEntry.toRoute<EditFridgeIngredientRoute>().ingredientId,
+            ingredientId = key.ingredientId,
             onNavigateBack = navigator::goBack,
         )
     }

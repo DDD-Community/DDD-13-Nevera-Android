@@ -10,5 +10,6 @@ dependencies {
     implementation(project(":feature:fridge:api"))
     implementation(libs.coroutines.android)
     implementation(project(":feature:notification:api"))
+    implementation(project(":feature:ingredient:api"))
     implementation(project(":infra:permission"))
 }

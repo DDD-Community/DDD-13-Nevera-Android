@@ -1,5 +1,5 @@
 plugins {
-    id("nevera.android.library")
+    id("nevera.android.compose")
 }
 
 android {
@@ -9,4 +9,6 @@ android {
 dependencies {
     implementation(libs.navigation.compose)
     api(libs.navigation3.runtime)
+    implementation(libs.navigation3.ui)
+    implementation(libs.lifecycle.viewmodel.navigation3)
 }

@@ -11,23 +11,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.ui.NavDisplay
 import com.anddd.nevera.core.designsystem.component.navigationbar.NeveraNavigationBar
-import com.anddd.nevera.core.navigation.Navigator
+import com.anddd.nevera.core.navigation.nav3.Nav3Navigator
+import com.anddd.nevera.core.navigation.nav3.rememberNavigationState
+import com.anddd.nevera.core.navigation.nav3.toEntries
 import com.anddd.nevera.domain.model.deeplink.DeeplinkAction
 import com.anddd.nevera.feature.auth.main.google.GoogleAuthClient
+import com.anddd.nevera.feature.fridge.api.FridgeRoute
+import com.anddd.nevera.feature.fridge.navigation.fridgeEntry
+import com.anddd.nevera.feature.ingredient.main.navigation.ingredientEntry
 import com.anddd.nevera.feature.main.api.HomeRoute
-import com.anddd.nevera.navigation.NeveraNavHost
+import com.anddd.nevera.feature.main.home.navigation.homeEntry
+import com.anddd.nevera.feature.mypage.navigation.myPageEntry
+import com.anddd.nevera.feature.notification.navigation.notificationEntry
 import com.anddd.nevera.navigation.PreSessionHost
 import com.anddd.nevera.navigation.TopLevelDestination
 import com.anddd.nevera.navigation.toNavigationBarItem
-import kotlin.reflect.KClass
-
 
 @Composable
 fun NeveraApp(
@@ -53,70 +54,51 @@ fun NeveraApp(
 
 @Composable
 private fun AuthenticatedApp(mainViewModel: MainViewModel) {
-    val navController = rememberNavController()
-    val navigator = remember(navController) { Navigator(navController) }
-    val currentBackStack by navController.currentBackStackEntryAsState()
-    val currentDestination = currentBackStack?.destination
     val topLevelDestinations = TopLevelDestination.entries
+    val navigationState = rememberNavigationState(
+        startKey = HomeRoute,
+        topLevelKeys = topLevelDestinations.map { it.key }.toSet(),
+    )
+    val navigator = remember(navigationState) { Nav3Navigator(navigationState) }
 
-    // 인증 이후에만 이 컴포저블이 존재하므로, 딥링크는 항상 메인 그래프 위에서 소비된다.
-    // 스플래시 종료를 기다리거나 백스택을 손질할 필요가 없어졌다.
-    LaunchedEffect(Unit) {
+    // 딥링크는 항상 메인 그래프 위에서 소비된다. 백스택을 손질할 필요가 없다.
+    LaunchedEffect(navigator) {
         mainViewModel.sideEffect.collect { action ->
             when (action) {
-                is DeeplinkAction.NavigateToIngredientDetail ->
-                    navController.navigate(TopLevelDestination.Fridge.route) {
-                        popUpTo(navController.graph.findStartDestination().id) { saveState = true }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
+                is DeeplinkAction.NavigateToIngredientDetail -> navigator.navigate(FridgeRoute)
             }
         }
     }
 
-    val isTopLevel = topLevelDestinations.any { destination ->
-        currentDestination.matchesRoute(destination.screenRouteClass)
+    val currentTopLevelKey = navigationState.currentTopLevelKey
+    // 탭 루트에 있을 때만 바텀바를 보여준다.
+    val isAtTabRoot = navigationState.currentKey == currentTopLevelKey
+
+    val entryProvider = entryProvider {
+        homeEntry(navigator)
+        fridgeEntry(navigator)
+        myPageEntry(navigator, onSignedOut = mainViewModel::onSignedOut)
+        notificationEntry(navigator, onDeeplink = mainViewModel::dispatchDeeplink)
+        ingredientEntry(navigator, onExitFlow = { navigator.navigate(HomeRoute) })
     }
 
     Scaffold(
         contentWindowInsets = WindowInsets.navigationBars,
         bottomBar = {
-            if (isTopLevel) {
+            if (isAtTabRoot) {
                 NeveraNavigationBar(
                     items = topLevelDestinations.map { destination ->
-                        destination.toNavigationBarItem(
-                            selected = currentDestination?.hierarchy?.any {
-                                it.hasRoute(destination.routeClass)
-                            } == true,
-                        )
+                        destination.toNavigationBarItem(selected = destination.key == currentTopLevelKey)
                     },
-                    onItemClick = { destination ->
-                        navController.navigate(destination.route) {
-                            // 이제 그래프의 시작 목적지가 실제 백스택 루트와 일치하므로
-                            // HomeRoute를 하드코딩하지 않아도 된다.
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
+                    onItemClick = { destination -> navigator.navigate(destination.key) },
                 )
             }
         },
     ) { innerPadding ->
-        NeveraNavHost(
-            navController = navController,
-            navigator = navigator,
-            onDeeplink = mainViewModel::dispatchDeeplink,
-            onSignedOut = mainViewModel::onSignedOut,
+        NavDisplay(
+            entries = navigationState.toEntries(entryProvider),
+            onBack = { navigator.goBack() },
             modifier = Modifier.padding(innerPadding),
         )
     }
 }
-
-
-private fun NavDestination?.matchesRoute(routeClass: KClass<*>): Boolean {
-    return this?.hasRoute(routeClass) == true
-}
-

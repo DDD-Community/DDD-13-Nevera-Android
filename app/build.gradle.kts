@@ -72,6 +72,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.navigation.compose)
+    implementation(libs.navigation3.runtime)
+    implementation(libs.navigation3.ui)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.hilt.work)
     implementation(libs.hilt.navigation.compose)
