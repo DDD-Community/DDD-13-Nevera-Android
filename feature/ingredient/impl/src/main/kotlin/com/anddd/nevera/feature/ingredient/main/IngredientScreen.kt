@@ -24,11 +24,15 @@ import org.orbitmvi.orbit.compose.collectSideEffect
  */
 @Composable
 fun IngredientScreen(
+    imageUri: String,
+
     onNavigateBack: () -> Unit,
     onNavigateToError: () -> Unit,
     onNavigateToSuccess: (totalCost: Int) -> Unit,
     onNavigateToPhotoDetail: (imageUri: String) -> Unit,
-    viewModel: IngredientViewModel = hiltViewModel(),
+    viewModel: IngredientViewModel = hiltViewModel<IngredientViewModel, IngredientViewModel.Factory>(
+        key = imageUri,
+    ) { factory -> factory.create(imageUri) },
 ) {
     val uiState = viewModel.collectAsState().value
     val context = LocalContext.current

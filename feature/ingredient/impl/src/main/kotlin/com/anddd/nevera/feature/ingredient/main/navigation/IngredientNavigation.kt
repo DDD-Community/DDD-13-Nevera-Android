@@ -26,8 +26,9 @@ fun NavGraphBuilder.ingredientNavGraph(
     onNavigateToHome: () -> Unit,
 ) {
     navigation<IngredientGraphRoute>(startDestination = OcrCaptureRoute()) {
-        composable<OcrCaptureRoute> {
+        composable<OcrCaptureRoute> { backStackEntry ->
             OcrCaptureScreen(
+                openGallery = backStackEntry.toRoute<OcrCaptureRoute>().openGallery,
                 // X 버튼 → 이전 화면으로 복귀
                 onNavigateBack = navigator::goBack,
                 // 촬영/갤러리 선택 완료 → 인식 결과로 진행. 촬영 단계로는 되돌아가지 않는다.
@@ -37,8 +38,9 @@ fun NavGraphBuilder.ingredientNavGraph(
             )
         }
 
-        composable<IngredientRoute> {
+        composable<IngredientRoute> { backStackEntry ->
             IngredientScreen(
+                imageUri = backStackEntry.toRoute<IngredientRoute>().imageUri,
                 // 뒤로가기 → 이전 화면으로 복귀
                 onNavigateBack = navigator::goBack,
                 // OCR 인식 실패 → 에러 화면

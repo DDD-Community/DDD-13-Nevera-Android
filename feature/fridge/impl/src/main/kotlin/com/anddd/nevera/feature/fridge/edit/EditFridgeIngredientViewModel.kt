@@ -1,7 +1,5 @@
 package com.anddd.nevera.feature.fridge.edit
 
-import androidx.lifecycle.SavedStateHandle
-import androidx.navigation.toRoute
 import com.anddd.nevera.core.common.onFailure
 import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.core.mvi.NeveraViewModel
@@ -14,22 +12,21 @@ import com.anddd.nevera.feature.fridge.edit.model.EditFridgeIngredientIntent
 import com.anddd.nevera.feature.fridge.edit.model.EditFridgeIngredientMutation
 import com.anddd.nevera.feature.fridge.edit.model.EditFridgeIngredientSideEffect
 import com.anddd.nevera.feature.fridge.edit.model.EditFridgeIngredientUiState
-import com.anddd.nevera.feature.fridge.api.EditFridgeIngredientRoute
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.orbitmvi.orbit.syntax.Syntax
 import java.time.LocalDate
-import javax.inject.Inject
 
-@HiltViewModel
-class EditFridgeIngredientViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+@HiltViewModel(assistedFactory = EditFridgeIngredientViewModel.Factory::class)
+class EditFridgeIngredientViewModel @AssistedInject constructor(
+    @Assisted private val ingredientId: Long,
     private val getFridgeIngredientById: GetFridgeIngredientByIdUseCase,
     private val editIngredient: EditIngredientUseCase,
 ) : NeveraViewModel<EditFridgeIngredientUiState, EditFridgeIngredientSideEffect, EditFridgeIngredientIntent, EditFridgeIngredientMutation>(
     EditFridgeIngredientUiState()
 ) {
-
-    private val ingredientId: Long = savedStateHandle.toRoute<EditFridgeIngredientRoute>().ingredientId
 
     init {
         intent { loadIngredient() }
@@ -141,4 +138,16 @@ class EditFridgeIngredientViewModel @Inject constructor(
             is EditFridgeIngredientMutation.ExpiryDateUpdated -> reduce { state.copy(expiryDate = mutation.date) }
         }
     }
+
+    /**
+     * Route 인자를 생성 시점에 주입한다.
+     *
+     * Navigation 3에는 NavBackStackEntry가 없어 SavedStateHandle로 Route를 읽을 수 없다.
+     * 목적지 인자는 화면을 만드는 쪽이 명시적으로 넘긴다.
+     */
+    @AssistedFactory
+    interface Factory {
+        fun create(ingredientId: Long): EditFridgeIngredientViewModel
+    }
+
 }

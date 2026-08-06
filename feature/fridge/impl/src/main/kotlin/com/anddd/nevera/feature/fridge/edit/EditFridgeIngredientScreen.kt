@@ -19,8 +19,12 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun EditFridgeIngredientScreen(
+    ingredientId: Long,
+
     onNavigateBack: () -> Unit,
-    viewModel: EditFridgeIngredientViewModel = hiltViewModel(),
+    viewModel: EditFridgeIngredientViewModel = hiltViewModel<EditFridgeIngredientViewModel, EditFridgeIngredientViewModel.Factory>(
+        key = ingredientId.toString(),
+    ) { factory -> factory.create(ingredientId) },
 ) {
     val uiState by viewModel.collectAsState()
     val context = LocalContext.current

@@ -2,6 +2,7 @@ package com.anddd.nevera.feature.fridge.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.anddd.nevera.core.navigation.Navigator
 import com.anddd.nevera.feature.fridge.api.EditFridgeIngredientRoute
 import com.anddd.nevera.feature.fridge.api.FridgeRoute
@@ -27,7 +28,10 @@ fun NavGraphBuilder.fridgeScreen(
 fun NavGraphBuilder.editFridgeIngredientScreen(
     navigator: Navigator,
 ) {
-    composable<EditFridgeIngredientRoute> {
-        EditFridgeIngredientScreen(onNavigateBack = navigator::goBack)
+    composable<EditFridgeIngredientRoute> { backStackEntry ->
+        EditFridgeIngredientScreen(
+            ingredientId = backStackEntry.toRoute<EditFridgeIngredientRoute>().ingredientId,
+            onNavigateBack = navigator::goBack,
+        )
     }
 }

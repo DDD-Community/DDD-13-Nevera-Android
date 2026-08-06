@@ -1,7 +1,5 @@
 package com.anddd.nevera.feature.ingredient.main
 
-import androidx.lifecycle.SavedStateHandle
-import androidx.navigation.toRoute
 import com.anddd.nevera.core.common.onFailure
 import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.core.mvi.NeveraViewModel
@@ -23,23 +21,23 @@ import com.anddd.nevera.feature.ingredient.main.model.IngredientPhase
 import com.anddd.nevera.feature.ingredient.main.model.IngredientSideEffect
 import com.anddd.nevera.feature.ingredient.main.model.IngredientUiModel
 import com.anddd.nevera.feature.ingredient.main.model.IngredientUiState
-import com.anddd.nevera.feature.ingredient.api.IngredientRoute
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job
 import org.orbitmvi.orbit.syntax.Syntax
-import javax.inject.Inject
 
-@HiltViewModel
-class IngredientViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+@HiltViewModel(assistedFactory = IngredientViewModel.Factory::class)
+class IngredientViewModel @AssistedInject constructor(
+    @Assisted private val imageUri: String,
     private val ocrScanner: OcrScanner,
     private val registerIngredientsUseCase: RegisterIngredientsUseCase,
 ) : NeveraViewModel<IngredientUiState, IngredientSideEffect, IngredientIntent, IngredientMutation>(
     IngredientUiState()
 ) {
 
-    private val imageUri: String = savedStateHandle.toRoute<IngredientRoute>().imageUri
 
     private var scanJob: Job? = null
 
@@ -172,4 +170,16 @@ class IngredientViewModel @Inject constructor(
             ClearScrollTarget -> reduce { state.copy(scrollTargetIndex = null) }
         }
     }
+
+    /**
+     * Route 인자를 생성 시점에 주입한다.
+     *
+     * Navigation 3에는 NavBackStackEntry가 없어 SavedStateHandle로 Route를 읽을 수 없다.
+     * 목적지 인자는 화면을 만드는 쪽이 명시적으로 넘긴다.
+     */
+    @AssistedFactory
+    interface Factory {
+        fun create(imageUri: String): IngredientViewModel
+    }
+
 }

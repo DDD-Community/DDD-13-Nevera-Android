@@ -27,9 +27,13 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun OcrCaptureScreen(
+    openGallery: Boolean,
+
     onNavigateBack: () -> Unit,
     onNavigateToResult: (Uri) -> Unit,
-    viewModel: OcrCaptureViewModel = hiltViewModel(),
+    viewModel: OcrCaptureViewModel = hiltViewModel<OcrCaptureViewModel, OcrCaptureViewModel.Factory>(
+        key = openGallery.toString(),
+    ) { factory -> factory.create(openGallery) },
 ) {
     val context = LocalContext.current
     val uiState = viewModel.collectAsState().value
