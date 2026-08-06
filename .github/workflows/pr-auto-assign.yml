@@ -6,6 +6,8 @@ on:
 
 jobs:
   auto-assign:
+    # fork에는 AUTO_ASSIGN_PAT이 없어 실행되면 반드시 실패한다
+    if: github.repository == 'DDD-Community/DDD-13-Nevera-Android'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write

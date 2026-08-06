@@ -45,6 +45,8 @@ hiltWork = "1.2.0"
 paging = "3.5.0"
 
 kotlinxCollectionsImmutable = "0.5.0"
+detekt = "1.23.8"
+assertj = "3.26.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -109,6 +111,7 @@ androidx-camera-view = { group = "androidx.camera", name = "camera-view", versio
 orbit-core = { group = "org.orbit-mvi", name = "orbit-core", version.ref = "orbitMvi" }
 orbit-viewmodel = { group = "org.orbit-mvi", name = "orbit-viewmodel", version.ref = "orbitMvi" }
 orbit-compose = { group = "org.orbit-mvi", name = "orbit-compose", version.ref = "orbitMvi" }
+orbit-test = { group = "org.orbit-mvi", name = "orbit-test", version.ref = "orbitMvi" }
 
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashscreen" }
@@ -123,6 +126,12 @@ androidx-media3-ui = { group = "androidx.media3", name = "media3-ui", version.re
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "ksp" }
+detekt-gradlePlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
+
+# Detekt custom rule 작성용
+detekt-api = { group = "io.gitlab.arturbosch.detekt", name = "detekt-api", version.ref = "detekt" }
+detekt-test = { group = "io.gitlab.arturbosch.detekt", name = "detekt-test", version.ref = "detekt" }
+assertj-core = { group = "org.assertj", name = "assertj-core", version.ref = "assertj" }
 
 kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinxCollectionsImmutable" }
 

@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.anddd.nevera.feature.sample.main.component.SampleContent
-import com.anddd.nevera.feature.sample.main.model.SampleIntent
 import com.anddd.nevera.feature.sample.main.model.SampleSideEffect
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -25,7 +24,7 @@ fun SampleScreen(
     }
 
     SampleContent(
-        count = state.count,
-        onButtonClick = { viewModel.handleIntent(SampleIntent.ClickButton) },
+        uiState = state,
+        onIntent = viewModel::handleIntent,
     )
 }

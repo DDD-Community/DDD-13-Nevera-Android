@@ -12,4 +12,6 @@ sealed interface IngredientMutation : NeveraMutation {
     data object EmptyItemAdded : IngredientMutation
     data object RegisterStarted : IngredientMutation
     data object RegisterFailed : IngredientMutation
+    data class SetScrollTarget(val index: Int) : IngredientMutation
+    data object ClearScrollTarget : IngredientMutation
 }

@@ -62,10 +62,7 @@ fun LoginScreen(
 
     Box {
         LoginContent(
-            email = uiState.email,
-            password = uiState.password,
-            emailValidation = uiState.emailValidation,
-            passwordValidation = uiState.passwordValidation,
+            uiState = uiState,
             onIntent = viewModel::handleIntent,
         )
         if (uiState.isLoading) {

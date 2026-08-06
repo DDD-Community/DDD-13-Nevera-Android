@@ -1,6 +1,5 @@
 package com.anddd.nevera.feature.auth.signup
 
-import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
@@ -21,27 +20,31 @@ fun SignupScreen(
     val context = LocalContext.current
     val uiState = viewModel.collectAsState().value
 
+    fun showToast(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
     viewModel.collectSideEffect { effect ->
         when (effect) {
             SignupSideEffect.MoveToLoginScreen -> onNavigateToLogin()
             is SignupSideEffect.EmailRequestDuplicateEmail ->
-                context.showToast(effect.message ?: context.getString(R.string.signup_toast_duplicate_email))
+                showToast(effect.message ?: context.getString(R.string.signup_toast_duplicate_email))
             is SignupSideEffect.EmailRequestMailSendError ->
-                context.showToast(effect.message ?: context.getString(R.string.signup_toast_mail_send_error))
+                showToast(effect.message ?: context.getString(R.string.signup_toast_mail_send_error))
             is SignupSideEffect.EmailRequestNetworkError ->
-                context.showToast(effect.message ?: context.getString(R.string.signup_toast_network_error))
+                showToast(effect.message ?: context.getString(R.string.signup_toast_network_error))
             is SignupSideEffect.EmailVerifyNotFound ->
-                context.showToast(effect.message ?: context.getString(R.string.signup_toast_verify_not_found))
+                showToast(effect.message ?: context.getString(R.string.signup_toast_verify_not_found))
             SignupSideEffect.SignupEmailNotVerified ->
-                context.showToast(context.getString(R.string.signup_toast_email_not_verified))
+                showToast(context.getString(R.string.signup_toast_email_not_verified))
             is SignupSideEffect.SignupUnverifiedEmail ->
-                context.showToast(effect.message ?: context.getString(R.string.signup_toast_unverified_email))
+                showToast(effect.message ?: context.getString(R.string.signup_toast_unverified_email))
             is SignupSideEffect.SignupAuthNotFound ->
-                context.showToast(effect.message ?: context.getString(R.string.signup_toast_verify_not_found))
+                showToast(effect.message ?: context.getString(R.string.signup_toast_verify_not_found))
             SignupSideEffect.SignupServerError ->
-                context.showToast(context.getString(R.string.signup_toast_signup_failed))
+                showToast(context.getString(R.string.signup_toast_signup_failed))
             SignupSideEffect.TimerExpired ->
-                context.showToast(context.getString(R.string.signup_toast_timer_expired))
+                showToast(context.getString(R.string.signup_toast_timer_expired))
         }
     }
 
@@ -54,8 +57,4 @@ fun SignupScreen(
             LoadingContent()
         }
     }
-}
-
-private fun Context.showToast(message: String) {
-    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }

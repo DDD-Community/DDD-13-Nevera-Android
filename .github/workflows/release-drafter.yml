@@ -8,6 +8,8 @@ on:
 
 jobs:
   update_release_draft:
+    # fork에 별도 draft release가 쌓이면 CD의 릴리스 노트 조회 결과가 upstream과 달라진다
+    if: github.repository == 'DDD-Community/DDD-13-Nevera-Android'
     runs-on: ubuntu-latest
     permissions:
       contents: write

@@ -54,7 +54,7 @@ internal fun MyPageContent(
                 .padding(innerPadding),
         ) {
             Column {
-                ProfileContent(profile = uiState.profile)
+                ProfileCard(profile = uiState.profile)
 
                 Box(
                     modifier = Modifier
@@ -63,7 +63,7 @@ internal fun MyPageContent(
                         .height(NeveraTheme.spacing.gap8)
                 )
 
-                SettingsContent(
+                SettingsList(
                     settingItems = uiState.settingItems,
                     onClick = { type -> onIntent(MyPageIntent.SettingItemClicked(type)) }
                 )

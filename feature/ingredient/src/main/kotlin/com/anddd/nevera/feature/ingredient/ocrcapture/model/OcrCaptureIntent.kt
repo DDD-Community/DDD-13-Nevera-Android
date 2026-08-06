@@ -11,4 +11,9 @@ sealed interface OcrCaptureIntent : NeveraIntent {
     data object SwapCamera : OcrCaptureIntent
     data class SelectImage(val uri: Uri) : OcrCaptureIntent
     data object OpenCameraSettings : OcrCaptureIntent
+    data object DismissPermissionDialog : OcrCaptureIntent
+    data class CameraPermissionUpdated(
+        val hasPermission: Boolean,
+        val isDenied: Boolean,
+    ) : OcrCaptureIntent
 }

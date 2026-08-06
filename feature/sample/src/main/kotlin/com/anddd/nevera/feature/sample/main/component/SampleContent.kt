@@ -12,11 +12,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
+import com.anddd.nevera.feature.sample.main.model.SampleIntent
+import com.anddd.nevera.feature.sample.main.model.SampleUiState
 
 @Composable
 internal fun SampleContent(
-    count: Int,
-    onButtonClick: () -> Unit,
+    uiState: SampleUiState,
+    onIntent: (SampleIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -24,9 +26,9 @@ internal fun SampleContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Text(text = "count: $count")
+        Text(text = "count: ${uiState.count}")
         Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap16))
-        Button(onClick = onButtonClick) {
+        Button(onClick = { onIntent(SampleIntent.ClickButton) }) {
             Text(text = "클릭")
         }
     }
@@ -37,8 +39,8 @@ internal fun SampleContent(
 private fun SampleContentPreview() {
     NeveraTheme {
         SampleContent(
-            count = 0,
-            onButtonClick = {},
+            uiState = SampleUiState(count = 0),
+            onIntent = {},
         )
     }
 }

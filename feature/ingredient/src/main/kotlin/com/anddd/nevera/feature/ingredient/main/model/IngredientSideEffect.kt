@@ -8,6 +8,5 @@ sealed interface IngredientSideEffect : NeveraSideEffect {
     /** 등록 실패 Toast — 실제 메시지 문자열은 UI에서 stringResource로 참조 */
     data object ShowRegisterFailedToast : IngredientSideEffect
     data object NavigateBack : IngredientSideEffect
-    data class ScrollToNewItem(val itemsCount: Int) : IngredientSideEffect
     data class NavigateToPhotoDetail(val imageUri: String) : IngredientSideEffect
 }

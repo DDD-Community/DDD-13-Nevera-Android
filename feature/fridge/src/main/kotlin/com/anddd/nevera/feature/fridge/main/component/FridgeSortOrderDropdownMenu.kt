@@ -69,7 +69,7 @@ internal fun FridgeSortOrderDropdownMenu(
         onDismissRequest = onDismissRequest,
         properties = PopupProperties(dismissOnClickOutside = true),
     ) {
-        FridgeSortOrderDropdownMenuContent(
+        FridgeSortOrderMenuBody(
             selectedSortOrder = selectedSortOrder,
             onSortOrderSelected = onSortOrderSelected,
         )
@@ -77,7 +77,7 @@ internal fun FridgeSortOrderDropdownMenu(
 }
 
 @Composable
-private fun FridgeSortOrderDropdownMenuContent(
+private fun FridgeSortOrderMenuBody(
     selectedSortOrder: IngredientSortOrder,
     onSortOrderSelected: (IngredientSortOrder) -> Unit,
 ) {
@@ -145,7 +145,7 @@ private fun FridgeSortOrderDropdownMenuItem(
 @Composable
 private fun FridgeSortOrderDropdownMenuContentPreview() {
     NeveraTheme {
-        FridgeSortOrderDropdownMenuContent(
+        FridgeSortOrderMenuBody(
             selectedSortOrder = IngredientSortOrder.ExpiryDate,
             onSortOrderSelected = {},
         )

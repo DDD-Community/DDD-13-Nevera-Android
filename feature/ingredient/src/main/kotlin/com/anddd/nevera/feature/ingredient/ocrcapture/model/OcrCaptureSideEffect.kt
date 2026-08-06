@@ -9,4 +9,5 @@ sealed interface OcrCaptureSideEffect : NeveraSideEffect {
     data object OpenCameraSettings : OcrCaptureSideEffect
     data object LaunchPhotoPicker : OcrCaptureSideEffect
     data object ShowCaptureError : OcrCaptureSideEffect
+    data object ClearPermissionDenied : OcrCaptureSideEffect
 }
