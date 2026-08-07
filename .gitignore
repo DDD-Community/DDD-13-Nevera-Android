@@ -63,3 +63,5 @@ Thumbs.db
 # ======================
 .claude/hooks/.state/
 .claude/worktrees/
+# 리뷰 요청 문서 (PR 본문으로만 사용, git 추적 제외)
+docs/nav-b-review-request.md
