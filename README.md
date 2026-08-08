@@ -68,7 +68,7 @@
 
 ### 모듈 구조
 
-```
+```text
 Nevera
 ├── app                     애플리케이션 진입점 · 네비게이션 그래프 조립
 ├── build-logic             Convention Plugin 11종 (includeBuild — 별도 빌드)
@@ -122,7 +122,7 @@ Orbit이 제공하는 `reduce` · `postSideEffect`가 `Syntax` 스코프 안에�
 
 그 위에 `Intent → Mutation → State` 흐름을 강제하는 [`NeveraViewModel`](core/mvi/src/main/kotlin/com/anddd/nevera/core/mvi/NeveraViewModel.kt)을 정의해, 모든 feature ViewModel이 `handleIntent` · `applyMutation` 두 메서드만 구현하면 되도록 보일러플레이트를 제거했습니다.
 
-```
+```text
 Screen
   └─ Intent ──→ handleIntent (비즈니스 로직)
                     ├─ postSideEffect ──────────────────→ SideEffect → Screen
@@ -147,12 +147,12 @@ Screen
 | `NeveraViewModelInheritanceRule` | feature 모듈의 ViewModel은 반드시 `NeveraViewModel`을 상속한다 |
 | [`ReduceOutsideApplyMutationRule`](quality/detekt-rules/src/main/kotlin/com/anddd/nevera/quality/mvi/rules/ReduceOutsideApplyMutationRule.kt) | `reduce { }`는 `applyMutation()` 내부에서만 호출한다 |
 | `SealedInterfaceContractRule` | `*Intent` · `*Mutation` · `*SideEffect`는 반드시 `sealed interface`로 선언한다 |
-| `ContentComposableParameterRule` | `*Content`의 파라미터는 `*UiState` · 함수 타입 · `Modifier`만 허용한다 |
+| `ContentComposableParameterRule` | `*Content`의 파라미터는 `*UiState` · 함수 타입 · `Modifier` · `LazyPagingItems`만 허용한다 |
 | `ScreenDelegatesToContentRule` | `*Screen`은 같은 접두사의 `*Content`를 호출해 렌더링을 위임한다 |
 | `ScreenNoScaffoldRule` | `*Screen`에서 `Scaffold`를 직접 호출하지 않는다. 레이아웃 뼈대는 `*Content`가 담당한다 |
 | `ViewModelAccessOnlyInScreenRule` | ViewModel 주입·상태 구독(`hiltViewModel`, `collectAsState` 등)은 `*Screen`에서만 한다 |
 | `ToastOutsideScreenRule` | `Toast`는 `*Screen`의 SideEffect 처리부에서만 띄운다 |
-| `Material3AppBarRule` | `Scaffold`의 `topBar`에 Material3 기본 AppBar 대신 `NeveraAppBar` 계열을 사용한다 |
+| `Material3AppBarRule` | Material3 기본 AppBar 5종(`TopAppBar` · `CenterAlignedTopAppBar` · `Small`/`Medium`/`LargeTopAppBar`)을 어디서도 호출하지 않는다. `NeveraAppBar` 계열을 쓴다 |
 
 ```kotlin
 // ❌ ReduceOutsideApplyMutationRule 위반 — detekt 실패
@@ -245,7 +245,7 @@ scripts/android/run-designsystem-compose-tests.sh
 | **[개발 자동화](docs/aiagent/skills/dev-automation.md)** (4종) | `/create-feature-module` · `/implement-compose-preview` · `/recommend-commit-message` · `/sync-develop` |
 | **[PR / CI](docs/aiagent/skills/pr-ci.md)** (3종) | `/create-pr` · `/pr-auto-assign` · `/ci-android` |
 | **[디자인 시스템](docs/aiagent/skills/design-system.md)** (4종) | `/design-system-color` · `/design-system-typography` · `/design-system-spacing` · `/design-system-shape` |
-| **테스트** (1종) | `/run-designsystem-compose-ui-test` |
+| **[테스트](docs/aiagent/skills/testing.md)** (1종) | `/run-designsystem-compose-ui-test` |
 
 각 스킬의 동작 방식과 트리거 조건은 [📖 AI Agent 가이드](docs/aiagent/README.md)에 정리되어 있습니다.
 
@@ -256,4 +256,4 @@ scripts/android/run-designsystem-compose-tests.sh
 | [`check-appbar`](docs/aiagent/hooks/check-appbar.md) | `.kt` 편집 직후 (`PostToolUse`) | `Scaffold`의 `topBar`에 Nevera AppBar를 썼는지 검사하고 위반 시 경고 |
 | [`check-detekt`](docs/aiagent/hooks/check-detekt.md) | 응답 종료 시 (`Stop`) | 변경된 `.kt`가 있으면 `detekt`를 실행하고, 실패하면 종료를 막아 계속 고치게 함 |
 
-`check-detekt`는 에이전트가 스스로 수정하도록 종료를 차단하되, **연속 재시도 3회 상한**을 둬 무한 루프를 막습니다. 카운터는 detekt 실행 **전에** 기록해 훅 타임아웃(300초)으로 프로세스가 강제 종료돼도 횟수가 보존되게 했고, detekt 출력은 셸 보간 없이 임시 파일로 넘겨 커맨드 인젝션을 차단합니다.
+`check-detekt`는 에이전트가 스스로 수정하도록 종료를 차단하되, **연속 3회마다 한 번은 반드시 통과시켜** 제어권이 사람에게 돌아오게 합니다. 카운터는 detekt 실행 **전에** 기록해 훅 타임아웃(300초)으로 프로세스가 강제 종료돼도 횟수가 보존되게 했고, detekt 출력은 셸 보간 없이 임시 파일로 넘겨 커맨드 인젝션을 차단합니다.

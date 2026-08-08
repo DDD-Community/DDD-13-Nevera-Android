@@ -21,7 +21,7 @@
 | | [`/design-system-typography`](skills/design-system.md#design-system-typography) | 타이포그래피 토큰 선택 가이드 | 📖 참조 |
 | | [`/design-system-spacing`](skills/design-system.md#design-system-spacing) | 스페이싱 토큰 및 패딩/갭 가이드 | 📖 참조 |
 | | [`/design-system-shape`](skills/design-system.md#design-system-shape) | Corner radius 토큰 선택 가이드 | 📖 참조 |
-| **테스트** | `/run-designsystem-compose-ui-test` | `core:designsystem` Compose UI 계측 테스트 실행 | 🛠️ 실행 |
+| **[테스트](skills/testing.md)** | [`/run-designsystem-compose-ui-test`](skills/testing.md#run-designsystem-compose-ui-test) | `core:designsystem` Compose UI 계측 테스트 실행 | 🛠️ 실행 |
 
 > 🛠️ **실행** — `/스킬명` 직접 호출 또는 자연어로 트리거하면 코드 생성·액션을 즉시 실행합니다.  
 > 📖 **참조** — `/스킬명` 직접 호출 불가. 관련 질문·요청 시 Claude Code가 자동으로 참조해 답변에 반영합니다.
