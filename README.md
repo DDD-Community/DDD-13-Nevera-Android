@@ -186,16 +186,18 @@ private fun onRefreshClicked() = intent {
 
 | 대상 | 도구 | 파일 | 테스트 | CI |
 |------|------|------|--------|----|
-| **`data`** — Repository 구현 · 응답 매핑 | JUnit5, MockK, coroutines-test | 14 | 148 | ✅ |
-| **`domain`** — UseCase · 도메인 모델 | JUnit5, MockK | 8 | 64 | ✅ |
+| **`data`** — Repository 구현 · 응답 매핑 | JUnit5, coroutines-test, 수제 Fake | 14 | 148 | ✅ |
+| **`domain`** — UseCase · 도메인 모델 | JUnit5, coroutines-test, 수제 Fake | 8 | 64 | ✅ |
 | **`feature`** — ViewModel (auth · main · fridge · mypage) | JUnit5, MockK, orbit-test | 4 | 64 | ✅ |
 | **`quality:detekt-rules`** — 커스텀 룰 | Detekt test 유틸 | 9 | 47 | ✅ |
-| **`infra`** — 알림 · 권한 (단위) | JUnit5, MockK | 3 | 26 | ✅ |
+| **`infra`** — 알림 · 권한 (단위) | JUnit5, MockK, coroutines-test | 3 | 26 | ✅ |
 | **`core:designsystem` · `infra:permission`** — 계측 테스트 | Compose ui-test-junit4 | 16 | 52 | 로컬 |
 
-테스트는 도메인 규칙과 응답 매핑에 집중시켰습니다. `data`(148개)의 대부분은 서버 응답 → 도메인 모델 변환과 에러 코드 매핑이고, feature 레이어는 ViewModel의 Intent → State 전이만 `orbit-test`로 검증합니다. ViewModel이 의존하는 UseCase는 인터페이스가 아니라 클래스라 손으로 대역을 만들 수 없어 MockK를 쓰고, 그 아래 Repository 계약은 `domain` 테스트가 이미 검증하므로 중복해서 내려가지 않습니다.
+테스트는 도메인 규칙과 응답 매핑에 집중시켰습니다. `data`(148개)의 대부분은 서버 응답 → 도메인 모델 변환과 에러 코드 매핑이고, feature 레이어는 ViewModel의 Intent → State 전이만 `orbit-test`로 검증합니다.
 
-테스트 의존성은 `NeveraTestUnitPlugin` · `NeveraTestAndroidPlugin` Convention Plugin으로 묶어, 모듈마다 개별 선언하지 않습니다.
+**대역 방식이 레이어마다 다릅니다.** `domain`·`data`는 Repository가 인터페이스로 정의돼 있어 손으로 쓴 Fake(`FakeFcmTokenProvider` 등)를 쓰고, 모킹 라이브러리를 아예 들이지 않았습니다. 반면 feature의 ViewModel이 의존하는 UseCase는 인터페이스가 아니라 클래스라 대역을 직접 만들 수 없어 MockK를 씁니다. 그 아래 Repository 계약은 `domain` 테스트가 이미 검증하므로 중복해서 내려가지 않습니다.
+
+공통 실행 설정과 기본 의존성만 Convention Plugin이 제공합니다. `NeveraTestUnitPlugin`은 JUnit5(+`useJUnitPlatform()`), `NeveraTestAndroidPlugin`은 androidx-junit·espresso까지입니다. `coroutines-test`나 MockK처럼 모듈마다 필요 여부가 갈리는 의존성은 각 모듈이 직접 선언하고, feature 모듈만 `NeveraFeaturePlugin`이 `orbit-test`·`coroutines-test`·MockK를 함께 넣어 줍니다.
 
 **CI가 게이트하는 건 JVM 단위 테스트 349개입니다.** 계측 테스트 52개는 에뮬레이터가 필요해 CI에서 제외했습니다. 에뮬레이터 부팅 비용을 매 PR에 물리는 대신 디자인 시스템 변경 시 수동 실행으로 두었고, CI 편입은 실행 시간을 측정한 뒤 결정할 문제로 남겨 두었습니다.
 
