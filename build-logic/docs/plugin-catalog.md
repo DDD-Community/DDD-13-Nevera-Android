@@ -14,7 +14,8 @@
 | `nevera.android.library` | Android library 모듈 기본 구성 | `nevera.test.android` |
 | `nevera.android.compose` | Compose Android library 구성 | `nevera.android.library` |
 | `nevera.android.hilt` | Hilt + KSP 구성 | 없음 |
-| `nevera.feature` | feature 모듈 공통 구성 | `nevera.android.compose`, `nevera.android.hilt` |
+| `nevera.quality` | Detekt + `quality:detekt-rules` 커스텀 룰 등록 | 없음 |
+| `nevera.feature` | feature 모듈 공통 구성 | `nevera.android.compose`, `nevera.android.hilt`, `nevera.quality`, `kotlin.plugin.serialization` |
 | `nevera.android.application` | app 모듈 공통 구성 | `nevera.android.hilt`, `nevera.test.android` |
 
 ## Plugin별 상세
@@ -112,15 +113,30 @@ Feature 화면 모듈 전용 조합 plugin입니다.
 
 - `nevera.android.compose` 적용
 - `nevera.android.hilt` 적용
+- `nevera.quality` 적용
+- `org.jetbrains.kotlin.plugin.serialization` 적용
+- `buildFeatures { buildConfig = true }`
 - `implementation(project(":core:common"))`
 - `implementation(project(":core:designsystem"))`
 - `implementation(project(":core:ui"))`
+- `implementation(project(":core:mvi"))`
 - `implementation(project(":domain"))`
 - `implementation(lifecycle-viewmodel-compose)`
 - `implementation(hilt-navigation-compose)`
 - `implementation(coil-compose)`
 - `implementation(coil-network-okhttp)`
 - `implementation(timber)`
+- `implementation(kotlinx-collections-immutable)`
+- `testImplementation(orbit-test)` · `testImplementation(coroutines-test)` · `testImplementation(mockk)`
+
+### `nevera.quality`
+
+Detekt 정적 분석을 붙이는 plugin입니다. `nevera.feature`가 내부에서 적용하므로 feature 모듈은 따로 선언하지 않습니다.
+
+- `io.gitlab.arturbosch.detekt` 적용
+- 설정 파일: `config/detekt/detekt.yml` (root 기준)
+- `buildUponDefaultConfig = true`, `parallel = true`
+- `detektPlugins(project(":quality:detekt-rules"))` — 프로젝트 커스텀 룰 9종 등록
 
 ### `nevera.android.application`
 
