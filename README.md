@@ -149,9 +149,9 @@ Screen
 | `SealedInterfaceContractRule` | `*Intent` · `*Mutation` · `*SideEffect`는 반드시 `sealed interface`로 선언한다 |
 | `ContentComposableParameterRule` | `*Content`의 파라미터는 `*UiState` · 함수 타입 · `Modifier` · `LazyPagingItems`만 허용한다 |
 | `ScreenDelegatesToContentRule` | `*Screen`은 같은 접두사의 `*Content`를 호출해 렌더링을 위임한다 |
-| `ScreenNoScaffoldRule` | `*Screen`에서 `Scaffold`를 직접 호출하지 않는다. 레이아웃 뼈대는 `*Content`가 담당한다 |
-| `ViewModelAccessOnlyInScreenRule` | ViewModel 주입·상태 구독(`hiltViewModel`, `collectAsState` 등)은 `*Screen`에서만 한다 |
-| `ToastOutsideScreenRule` | `Toast`는 `*Screen`의 SideEffect 처리부에서만 띄운다 |
+| `ScreenNoScaffoldRule` | `*Screen.kt` **파일 어디에서도** `Scaffold`를 호출하지 않는다. private 하위 컴포저블로 숨기는 우회까지 막는다 |
+| `ViewModelAccessOnlyInScreenRule` | ViewModel 주입·상태 구독(`hiltViewModel`, `collectAsState` 등)은 `*Screen`과 `@Preview` 함수에서만 한다 |
+| `ToastOutsideScreenRule` | `Toast.makeText`는 이름이 `Screen`으로 끝나는 Composable 안에서만 호출한다 |
 | `Material3AppBarRule` | Material3 기본 AppBar 5종(`TopAppBar` · `CenterAlignedTopAppBar` · `Small`/`Medium`/`LargeTopAppBar`)을 어디서도 호출하지 않는다. `NeveraAppBar` 계열을 쓴다 |
 
 ```kotlin
@@ -167,6 +167,8 @@ private fun onRefreshClicked() = intent {
 ```
 
 각 룰은 대응하는 테스트 파일과 1:1로 짝을 이룹니다.
+
+위 표는 룰이 **실제로 강제하는 범위**를 적은 것이고, 프로젝트 컨벤션은 그보다 좁은 경우가 있습니다. 예를 들어 `Toast`는 이름이 `Screen`으로 끝나는 Composable 안이기만 하면 detekt를 통과하지만, 컨벤션은 SideEffect 처리부에서 띄우기를 요구합니다. 이렇게 룰이 닿지 않는 간격은 코드 리뷰가 담당합니다. 컨벤션 전문은 [CLAUDE.md](CLAUDE.md)에 있습니다.
 
 ### 스타일이 아니라 아키텍처만 검사한다
 
@@ -195,10 +197,18 @@ private fun onRefreshClicked() = intent {
 
 테스트 의존성은 `NeveraTestUnitPlugin` · `NeveraTestAndroidPlugin` Convention Plugin으로 묶어, 모듈마다 개별 선언하지 않습니다.
 
-**CI가 게이트하는 건 JVM 단위 테스트 349개입니다.** `core:designsystem`의 Compose UI 테스트를 포함한 계측 테스트 52개는 에뮬레이터가 필요해, 현재는 아래 스크립트로 로컬에서 실행합니다. 에뮬레이터 부팅 비용을 매 PR에 물리는 대신 디자인 시스템 변경 시 수동 실행으로 두었고, CI 편입은 실행 시간을 측정한 뒤 결정할 문제로 남겨 두었습니다.
+**CI가 게이트하는 건 JVM 단위 테스트 349개입니다.** 계측 테스트 52개는 에뮬레이터가 필요해 CI에서 제외했습니다. 에뮬레이터 부팅 비용을 매 PR에 물리는 대신 디자인 시스템 변경 시 수동 실행으로 두었고, CI 편입은 실행 시간을 측정한 뒤 결정할 문제로 남겨 두었습니다.
+
+이 중 `core:designsystem`의 50개는 에뮬레이터 준비·부팅 대기·정리까지 처리하는 스크립트로 실행합니다.
 
 ```bash
 scripts/android/run-designsystem-compose-tests.sh
+```
+
+이 스크립트는 `:core:designsystem:connectedDebugAndroidTest`만 실행합니다. `infra:permission`의 계측 테스트 2개는 범위 밖이라 따로 돌려야 합니다.
+
+```bash
+./gradlew :infra:permission:connectedDebugAndroidTest
 ```
 
 설계 배경은 [테스트 기반 구축 기록](docs/execplan-test-foundation.md)과 [디자인 시스템 Compose 테스트 기록](docs/execplan-designsystem-compose-tests.md)에 정리되어 있습니다.
@@ -256,4 +266,4 @@ scripts/android/run-designsystem-compose-tests.sh
 | [`check-appbar`](docs/aiagent/hooks/check-appbar.md) | `.kt` 편집 직후 (`PostToolUse`) | `Scaffold`의 `topBar`에 Nevera AppBar를 썼는지 검사하고 위반 시 경고 |
 | [`check-detekt`](docs/aiagent/hooks/check-detekt.md) | 응답 종료 시 (`Stop`) | 변경된 `.kt`가 있으면 `detekt`를 실행하고, 실패하면 종료를 막아 계속 고치게 함 |
 
-`check-detekt`는 에이전트가 스스로 수정하도록 종료를 차단하되, **연속 3회마다 한 번은 반드시 통과시켜** 제어권이 사람에게 돌아오게 합니다. 카운터는 detekt 실행 **전에** 기록해 훅 타임아웃(300초)으로 프로세스가 강제 종료돼도 횟수가 보존되게 했고, detekt 출력은 셸 보간 없이 임시 파일로 넘겨 커맨드 인젝션을 차단합니다.
+`check-detekt`는 에이전트가 스스로 수정하도록 종료를 차단하되, **연속 3회마다 한 번은 반드시 통과시켜** 제어권이 사람에게 돌아오게 합니다. 카운터는 detekt 실행 **전에** 기록해 훅 타임아웃(300초)으로 프로세스가 강제 종료돼도 횟수가 보존되게 했고, detekt 출력은 임시 파일에 쓰고 Python에는 **출력 내용이 아니라 파일 경로와 재시도 횟수만** 인자로 넘겨, 셸 보간을 거치지 않게 해 커맨드 인젝션을 차단합니다.
