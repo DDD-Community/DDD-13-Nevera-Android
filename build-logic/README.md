@@ -14,8 +14,9 @@ Nevera 프로젝트의 Gradle Convention Plugin 모음입니다.
 | `nevera.android.library` | Android library 기본 구성 | `nevera.test.android` |
 | `nevera.android.compose` | Compose Android library 구성 | `nevera.android.library` |
 | `nevera.android.hilt` | Hilt + KSP 구성 | — |
-| `nevera.feature` | Feature 화면 모듈 공통 구성 | `nevera.android.compose`, `nevera.android.hilt` |
+| `nevera.feature` | Feature 화면 모듈 공통 구성 | `nevera.android.compose`, `nevera.android.hilt`, `nevera.quality`, `kotlin.plugin.serialization` |
 | `nevera.android.application` | App 모듈 공통 구성 | `nevera.android.hilt`, `nevera.test.android` |
+| `nevera.quality` | Detekt 적용 + `quality:detekt-rules` 커스텀 룰 등록 | — |
 
 ## 빠른 선택표
 
@@ -28,7 +29,7 @@ Nevera 프로젝트의 Gradle Convention Plugin 모음입니다.
 | Feature 화면 모듈 | `nevera.feature` |
 | App 진입 모듈 | `nevera.android.application` |
 
-관심사 plugin(`nevera.network`, `nevera.firebase`)은 위 base plugin에 추가 조합합니다.
+관심사 plugin(`nevera.network`, `nevera.firebase`)은 위 base plugin에 추가 조합합니다. `nevera.quality`는 `nevera.feature`가 내부에서 자동 적용하므로 feature 모듈에서 따로 선언하지 않습니다.
 
 ## 상세 문서
 

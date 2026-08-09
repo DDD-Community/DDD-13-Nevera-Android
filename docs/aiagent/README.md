@@ -21,6 +21,7 @@
 | | [`/design-system-typography`](skills/design-system.md#design-system-typography) | 타이포그래피 토큰 선택 가이드 | 📖 참조 |
 | | [`/design-system-spacing`](skills/design-system.md#design-system-spacing) | 스페이싱 토큰 및 패딩/갭 가이드 | 📖 참조 |
 | | [`/design-system-shape`](skills/design-system.md#design-system-shape) | Corner radius 토큰 선택 가이드 | 📖 참조 |
+| **[테스트](skills/testing.md)** | [`/run-designsystem-compose-ui-test`](skills/testing.md#run-designsystem-compose-ui-test) | `core:designsystem` Compose UI 계측 테스트 실행 | 🛠️ 실행 |
 
 > 🛠️ **실행** — `/스킬명` 직접 호출 또는 자연어로 트리거하면 코드 생성·액션을 즉시 실행합니다.  
 > 📖 **참조** — `/스킬명` 직접 호출 불가. 관련 질문·요청 시 Claude Code가 자동으로 참조해 답변에 반영합니다.
@@ -33,7 +34,8 @@
 
 | 훅 | 트리거 | 목적 |
 |----|--------|------|
-| [`check-appbar`](hooks/check-appbar.md) | `.kt` 파일 편집 직후 | `Scaffold`의 `topBar`에 Nevera AppBar 사용 여부 검증 |
+| [`check-appbar`](hooks/check-appbar.md) | `.kt` 파일 편집 직후 (`PostToolUse`) | `Scaffold`의 `topBar`에 Nevera AppBar 사용 여부 검증 |
+| [`check-detekt`](hooks/check-detekt.md) | 응답 종료 시 (`Stop`) | 변경된 `.kt`가 있으면 `detekt` 실행, 실패 시 종료를 막아 계속 수정하게 함 |
 
 ---
 
