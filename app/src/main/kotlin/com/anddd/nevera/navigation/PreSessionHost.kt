@@ -2,12 +2,13 @@ package com.anddd.nevera.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.rememberNavController
-import com.anddd.nevera.core.navigation.Navigator
-import com.anddd.nevera.feature.auth.api.AuthGraphRoute
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
+import com.anddd.nevera.feature.auth.api.LoginRoute
+import com.anddd.nevera.feature.auth.api.SignupRoute
 import com.anddd.nevera.feature.auth.main.google.GoogleAuthClient
-import com.anddd.nevera.feature.auth.navigation.authNavGraph
+import com.anddd.nevera.feature.auth.navigation.authEntry
 import com.anddd.nevera.feature.splash.main.SplashScreen
 
 /**
@@ -32,18 +33,24 @@ fun PreSessionHost(
         return
     }
 
-    val navController = rememberNavController()
-    val navigator = Navigator(navController)
-
-    NavHost(
-        navController = navController,
-        startDestination = AuthGraphRoute,
-        modifier = modifier,
-    ) {
-        authNavGraph(
-            googleAuthClient = googleAuthClient,
-            navigator = navigator,
-            onNavigateToHome = onAuthenticated,
-        )
+    val backStack = rememberNavBackStack(LoginRoute)
+    val onBack = {
+        if (backStack.size > 1) {
+            backStack.removeLastOrNull()
+        }
     }
+
+    NavDisplay(
+        backStack = backStack,
+        modifier = modifier,
+        onBack = onBack,
+        entryProvider = entryProvider {
+            authEntry(
+                googleAuthClient = googleAuthClient,
+                onNavigateToSignup = { backStack.add(SignupRoute) },
+                onNavigateBack = onBack,
+                onNavigateToHome = onAuthenticated,
+            )
+        },
+    )
 }
