@@ -15,7 +15,6 @@ retrofit = "2.11.0"
 okhttp = "4.12.0"
 room = "2.7.1"
 coroutines = "1.9.0"
-navigationCompose = "2.8.9"
 navigation3 = "1.0.0"
 lifecycleViewmodelNavigation3 = "2.10.0"
 lifecycleViewmodelCompose = "2.10.0"
@@ -88,7 +87,6 @@ paging-compose = { group = "androidx.paging", name = "paging-compose", version.r
 coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 navigation3-runtime = { group = "androidx.navigation3", name = "navigation3-runtime", version.ref = "navigation3" }
 navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "navigation3" }
 lifecycle-viewmodel-navigation3 = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-navigation3", version.ref = "lifecycleViewmodelNavigation3" }

@@ -5,10 +5,6 @@ import kotlinx.serialization.Serializable
 
 // ── 진입점 ────────────────────────────────────────────────────────────────────
 
-/** 식재료 등록 흐름의 진입점. */
-@Serializable
-data object IngredientGraphRoute : NavKey
-
 /**
  * 영수증 촬영 화면. 홈과 냉장고가 목적지로 삼는다.
  *
