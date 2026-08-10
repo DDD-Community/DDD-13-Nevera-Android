@@ -3,6 +3,7 @@ package com.anddd.nevera.feature.ingredient.main
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.anddd.nevera.feature.ingredient.R
 import com.anddd.nevera.feature.ingredient.main.component.IngredientContent
@@ -37,6 +38,9 @@ fun IngredientScreen(
     val uiState = viewModel.collectAsState().value
     val context = LocalContext.current
 
+    // stringResource는 @Composable이라 collectSideEffect 람다 안에서 호출할 수 없다.
+    val registerFailedMessage = stringResource(R.string.ingredient_register_failed)
+
     viewModel.collectSideEffect { effect ->
         when (effect) {
             IngredientSideEffect.NavigateToOcrError -> onNavigateToError()
@@ -45,7 +49,7 @@ fun IngredientScreen(
             IngredientSideEffect.ShowRegisterFailedToast -> {
                 Toast.makeText(
                     context,
-                    context.getString(R.string.ingredient_register_failed),
+                    registerFailedMessage,
                     Toast.LENGTH_SHORT,
                 ).show()
             }

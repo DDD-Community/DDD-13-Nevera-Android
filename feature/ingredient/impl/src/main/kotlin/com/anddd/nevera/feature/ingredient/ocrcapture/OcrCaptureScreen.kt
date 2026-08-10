@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.platform.LocalView
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.anddd.nevera.feature.ingredient.R
@@ -65,6 +66,9 @@ fun OcrCaptureScreen(
         }
     }
 
+    // stringResource는 @Composable이라 collectSideEffect 람다 안에서 호출할 수 없다.
+    val captureErrorMessage = stringResource(R.string.ocr_capture_error)
+
     viewModel.collectSideEffect { effect ->
         when (effect) {
             OcrCaptureSideEffect.NavigateBack -> onNavigateBack()
@@ -78,7 +82,7 @@ fun OcrCaptureScreen(
                     PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                 )
             OcrCaptureSideEffect.ShowCaptureError ->
-                Toast.makeText(context, context.getString(R.string.ocr_capture_error), Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, captureErrorMessage, Toast.LENGTH_SHORT).show()
             OcrCaptureSideEffect.ClearPermissionDenied -> cameraPermissionState.clearDenied()
         }
     }

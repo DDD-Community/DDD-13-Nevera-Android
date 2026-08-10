@@ -39,6 +39,12 @@ fun SettingNotificationScreen(
         viewModel.handleIntent(SettingNotificationIntent.LoadSettings(isPermissionGranted))
     }
 
+    // stringResource는 @Composable이라 collectSideEffect 람다 안에서 호출할 수 없다.
+    val loadAlarmTimeError = stringResource(MyPageR.string.setting_notification_load_alarm_time_error)
+    val updateAlarmTimeError = stringResource(MyPageR.string.setting_notification_update_alarm_time_error)
+    val updateEnabledError =
+        stringResource(MyPageR.string.setting_notification_update_notification_enabled_error)
+
     viewModel.collectSideEffect { effect ->
         when (effect) {
             SettingNotificationSideEffect.NavigateBack -> onNavigateBack()
@@ -54,7 +60,7 @@ fun SettingNotificationScreen(
             SettingNotificationSideEffect.ShowLoadAlarmTimeError -> {
                 Toast.makeText(
                     context,
-                    context.getString(MyPageR.string.setting_notification_load_alarm_time_error),
+                    loadAlarmTimeError,
                     Toast.LENGTH_SHORT,
                 ).show()
             }
@@ -62,7 +68,7 @@ fun SettingNotificationScreen(
             SettingNotificationSideEffect.ShowUpdateAlarmTimeError -> {
                 Toast.makeText(
                     context,
-                    context.getString(MyPageR.string.setting_notification_update_alarm_time_error),
+                    updateAlarmTimeError,
                     Toast.LENGTH_SHORT,
                 ).show()
             }
@@ -70,7 +76,7 @@ fun SettingNotificationScreen(
             SettingNotificationSideEffect.ShowUpdateNotificationEnabledError -> {
                 Toast.makeText(
                     context,
-                    context.getString(MyPageR.string.setting_notification_update_notification_enabled_error),
+                    updateEnabledError,
                     Toast.LENGTH_SHORT,
                 ).show()
             }
