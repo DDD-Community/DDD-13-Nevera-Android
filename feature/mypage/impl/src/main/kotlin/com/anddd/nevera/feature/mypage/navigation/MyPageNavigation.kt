@@ -2,7 +2,7 @@ package com.anddd.nevera.feature.mypage.navigation
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.anddd.nevera.core.navigation.nav3.Nav3Navigator
+import com.anddd.nevera.core.navigation.Navigator
 import com.anddd.nevera.feature.mypage.api.AppInfoRoute
 import com.anddd.nevera.feature.mypage.api.MyPageRoute
 import com.anddd.nevera.feature.mypage.api.SettingAccountRoute
@@ -18,7 +18,7 @@ import com.anddd.nevera.feature.notification.api.NotificationRoute
  * "어느 탭에 속하는가"는 NavigationState의 서브스택이 결정한다.
  */
 fun EntryProviderScope<NavKey>.myPageEntry(
-    navigator: Nav3Navigator,
+    navigator: Navigator,
     onSignedOut: () -> Unit,
 ) {
     entry<MyPageRoute> {

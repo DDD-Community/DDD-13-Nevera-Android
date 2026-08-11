@@ -3,8 +3,8 @@ package com.anddd.nevera.feature.ingredient.main.navigation
 import android.net.Uri
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.anddd.nevera.core.navigation.nav3.Nav3Navigator
-import com.anddd.nevera.core.navigation.nav3.replaceStep
+import com.anddd.nevera.core.navigation.Navigator
+import com.anddd.nevera.core.navigation.replaceStep
 import com.anddd.nevera.feature.ingredient.api.IngredientRoute
 import com.anddd.nevera.feature.ingredient.api.OcrCaptureRoute
 import com.anddd.nevera.feature.ingredient.api.OcrErrorRoute
@@ -22,7 +22,7 @@ import com.anddd.nevera.feature.ingredient.registersuccess.RegisterSuccessScreen
  * @param onExitFlow 흐름을 벗어난다. 어디로 나갈지는 조립 지점이 정한다.
  */
 fun EntryProviderScope<NavKey>.ingredientEntry(
-    navigator: Nav3Navigator,
+    navigator: Navigator,
     onExitFlow: () -> Unit,
 ) {
     entry<OcrCaptureRoute> { key ->

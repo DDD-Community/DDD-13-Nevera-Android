@@ -14,9 +14,9 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.anddd.nevera.core.designsystem.component.navigationbar.NeveraNavigationBar
-import com.anddd.nevera.core.navigation.nav3.Nav3Navigator
-import com.anddd.nevera.core.navigation.nav3.rememberNavigationState
-import com.anddd.nevera.core.navigation.nav3.toEntries
+import com.anddd.nevera.core.navigation.Navigator
+import com.anddd.nevera.core.navigation.rememberNavigationState
+import com.anddd.nevera.core.navigation.toEntries
 import com.anddd.nevera.feature.auth.main.google.GoogleAuthClient
 import com.anddd.nevera.feature.fridge.navigation.fridgeEntry
 import com.anddd.nevera.feature.ingredient.main.navigation.ingredientEntry
@@ -57,7 +57,7 @@ private fun AuthenticatedApp(mainViewModel: MainViewModel) {
         startKey = HomeRoute,
         topLevelKeys = topLevelDestinations.map { it.key }.toSet(),
     )
-    val navigator = remember(navigationState) { Nav3Navigator(navigationState) }
+    val navigator = remember(navigationState) { Navigator(navigationState) }
 
     // 딥링크는 항상 메인 그래프 위에서 소비된다.
     // 백스택이 리스트라 원하는 모양을 직접 조립하면 된다.

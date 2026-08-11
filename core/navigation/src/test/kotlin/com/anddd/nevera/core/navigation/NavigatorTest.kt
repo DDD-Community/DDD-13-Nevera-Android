@@ -1,4 +1,4 @@
-package com.anddd.nevera.core.navigation.nav3
+package com.anddd.nevera.core.navigation
 
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
@@ -14,10 +14,10 @@ private data object NotificationScreen : NavKey
 private data class CaptureScreen(val openGallery: Boolean = false) : NavKey
 private data class ResultScreen(val imageUri: String) : NavKey
 
-class Nav3NavigatorTest {
+class NavigatorTest {
 
     private lateinit var state: NavigationState
-    private lateinit var navigator: Nav3Navigator
+    private lateinit var navigator: Navigator
 
     @BeforeEach
     fun setUp() {
@@ -27,7 +27,7 @@ class Nav3NavigatorTest {
             topLevelStack = NavBackStack(HomeTab),
             subStacks = tabs.associateWith { NavBackStack(it) },
         )
-        navigator = Nav3Navigator(state)
+        navigator = Navigator(state)
     }
 
     @Test
@@ -46,7 +46,7 @@ class Nav3NavigatorTest {
         navigator.navigate(FridgeTab)
 
         assertEquals(FridgeTab, state.currentTopLevelKey)
-        // 홈 탭의 스택은 그대로 남아 있다 — Nav2의 saveState/restoreState가 필요 없다
+        // 탭을 옮겨도 떠날 때의 화면이 그대로 남는다
         assertEquals(listOf(HomeTab, NotificationScreen), state.subStacks[HomeTab]?.toList())
     }
 
