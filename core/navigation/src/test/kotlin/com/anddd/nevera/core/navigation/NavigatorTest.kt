@@ -7,9 +7,9 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 
-private data object HomeTab : NavKey
-private data object FridgeTab : NavKey
-private data object MyPageTab : NavKey
+private data object HomeRoot : NavKey
+private data object FridgeRoot : NavKey
+private data object MyPageRoot : NavKey
 private data object NotificationScreen : NavKey
 private data class CaptureScreen(val openGallery: Boolean = false) : NavKey
 private data class ResultScreen(val imageUri: String) : NavKey
@@ -21,42 +21,42 @@ class NavigatorTest {
 
     @BeforeEach
     fun setUp() {
-        val tabs = listOf(HomeTab, FridgeTab, MyPageTab)
+        val roots = listOf(HomeRoot, FridgeRoot, MyPageRoot)
         state = NavigationState(
-            startKey = HomeTab,
-            topLevelStack = NavBackStack(HomeTab),
-            subStacks = tabs.associateWith { NavBackStack(it) },
+            startRootKey = HomeRoot,
+            rootHistory = NavBackStack(HomeRoot),
+            stacksByRoot = roots.associateWith { NavBackStack(it) },
         )
         navigator = Navigator(state)
     }
 
     @Test
-    @DisplayName("탭이 아닌 목적지는 현재 탭의 스택에 쌓인다")
-    fun navigateToNonTopLevel() {
+    @DisplayName("루트가 아닌 목적지는 현재 스택에 쌓인다")
+    fun navigateToNonRoot() {
         navigator.navigate(NotificationScreen)
 
-        assertEquals(HomeTab, state.currentTopLevelKey)
-        assertEquals(listOf(HomeTab, NotificationScreen), state.currentSubStack.toList())
+        assertEquals(HomeRoot, state.currentRootKey)
+        assertEquals(listOf(HomeRoot, NotificationScreen), state.currentStack.toList())
     }
 
     @Test
-    @DisplayName("다른 탭으로 이동하면 탭이 전환되고 이전 탭의 스택은 보존된다")
-    fun navigateToOtherTabPreservesStack() {
+    @DisplayName("다른 루트로 이동하면 스택이 바뀌고 떠나온 스택은 보존된다")
+    fun navigateToOtherRootPreservesStack() {
         navigator.navigate(NotificationScreen)
-        navigator.navigate(FridgeTab)
+        navigator.navigate(FridgeRoot)
 
-        assertEquals(FridgeTab, state.currentTopLevelKey)
-        // 탭을 옮겨도 떠날 때의 화면이 그대로 남는다
-        assertEquals(listOf(HomeTab, NotificationScreen), state.subStacks[HomeTab]?.toList())
+        assertEquals(FridgeRoot, state.currentRootKey)
+        // 떠나온 스택은 손대지 않으므로 떠날 때의 화면이 그대로 남는다
+        assertEquals(listOf(HomeRoot, NotificationScreen), state.stacksByRoot[HomeRoot]?.toList())
     }
 
     @Test
-    @DisplayName("현재 탭을 다시 선택하면 그 탭의 루트로 돌아간다")
-    fun reselectingCurrentTabClearsSubStack() {
+    @DisplayName("현재 루트를 다시 선택하면 그 스택이 루트만 남기고 비워진다")
+    fun reselectingCurrentRootClearsStack() {
         navigator.navigate(NotificationScreen)
-        navigator.navigate(HomeTab)
+        navigator.navigate(HomeRoot)
 
-        assertEquals(listOf(HomeTab), state.currentSubStack.toList())
+        assertEquals(listOf(HomeRoot), state.currentStack.toList())
     }
 
     @Test
@@ -65,36 +65,36 @@ class NavigatorTest {
         navigator.navigate(NotificationScreen)
         navigator.navigate(NotificationScreen)
 
-        assertEquals(listOf(HomeTab, NotificationScreen), state.currentSubStack.toList())
+        assertEquals(listOf(HomeRoot, NotificationScreen), state.currentStack.toList())
     }
 
     @Test
-    @DisplayName("시작 탭으로 돌아가면 탭 방문 이력이 비워진다")
-    fun returningToStartTabClearsTopLevelHistory() {
-        navigator.navigate(FridgeTab)
-        navigator.navigate(MyPageTab)
-        navigator.navigate(HomeTab)
+    @DisplayName("시작 루트로 돌아가면 루트 방문 이력이 비워진다")
+    fun returningToStartRootClearsHistory() {
+        navigator.navigate(FridgeRoot)
+        navigator.navigate(MyPageRoot)
+        navigator.navigate(HomeRoot)
 
-        assertEquals(listOf(HomeTab), state.topLevelStack.toList())
+        assertEquals(listOf(HomeRoot), state.rootHistory.toList())
     }
 
     @Test
-    @DisplayName("뒤로가기는 현재 탭의 화면을 먼저 걷어낸다")
-    fun goBackPopsSubStackFirst() {
+    @DisplayName("뒤로가기는 현재 스택의 화면을 먼저 걷어낸다")
+    fun goBackPopsCurrentStackFirst() {
         navigator.navigate(NotificationScreen)
         navigator.goBack()
 
-        assertEquals(listOf(HomeTab), state.currentSubStack.toList())
-        assertEquals(HomeTab, state.currentTopLevelKey)
+        assertEquals(listOf(HomeRoot), state.currentStack.toList())
+        assertEquals(HomeRoot, state.currentRootKey)
     }
 
     @Test
-    @DisplayName("탭 루트에서 뒤로가면 이전 탭으로 돌아간다")
-    fun goBackFromTabRootReturnsToPreviousTab() {
-        navigator.navigate(FridgeTab)
+    @DisplayName("루트에서 뒤로가면 이전에 있던 루트로 돌아간다")
+    fun goBackFromRootReturnsToPreviousRoot() {
+        navigator.navigate(FridgeRoot)
         navigator.goBack()
 
-        assertEquals(HomeTab, state.currentTopLevelKey)
+        assertEquals(HomeRoot, state.currentRootKey)
     }
 
     @Test
@@ -102,8 +102,8 @@ class NavigatorTest {
     fun goBackAtStartIsNoOp() {
         navigator.goBack()
 
-        assertEquals(listOf(HomeTab), state.topLevelStack.toList())
-        assertEquals(HomeTab, state.currentKey)
+        assertEquals(listOf(HomeRoot), state.rootHistory.toList())
+        assertEquals(HomeRoot, state.currentKey)
     }
 
     @Test
@@ -113,7 +113,7 @@ class NavigatorTest {
         navigator.replaceStep<CaptureScreen>(ResultScreen("content://photo"))
 
         // 촬영 단계가 사라져 뒤로가기로 돌아갈 수 없다
-        assertEquals(listOf(HomeTab, ResultScreen("content://photo")), state.currentSubStack.toList())
+        assertEquals(listOf(HomeRoot, ResultScreen("content://photo")), state.currentStack.toList())
     }
 
     @Test
@@ -123,6 +123,6 @@ class NavigatorTest {
         navigator.replaceStep<CaptureScreen>(ResultScreen("content://photo"))
         navigator.goBack()
 
-        assertEquals(listOf(HomeTab), state.currentSubStack.toList())
+        assertEquals(listOf(HomeRoot), state.currentStack.toList())
     }
 }

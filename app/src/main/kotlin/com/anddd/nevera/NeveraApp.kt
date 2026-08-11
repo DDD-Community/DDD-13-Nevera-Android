@@ -35,7 +35,7 @@ fun NeveraApp(
 ) {
     val sessionState by mainViewModel.sessionState.collectAsState()
 
-    // 인증 이전에는 메인 그래프가 아예 존재하지 않는다.
+    // 인증 이전에는 앱 본문이 아예 존재하지 않는다.
     // 로그인하지 않은 상태로 홈·냉장고에 도달하는 경로가 코드에 없다.
     if (sessionState !is SessionState.Authenticated) {
         PreSessionHost(
@@ -54,20 +54,19 @@ fun NeveraApp(
 private fun AuthenticatedApp(mainViewModel: MainViewModel) {
     val topLevelDestinations = TopLevelDestination.entries
     val navigationState = rememberNavigationState(
-        startKey = HomeRoute,
-        topLevelKeys = topLevelDestinations.map { it.key }.toSet(),
+        startRootKey = HomeRoute,
+        rootKeys = topLevelDestinations.map { it.key }.toSet(),
     )
     val navigator = remember(navigationState) { Navigator(navigationState) }
 
-    // 딥링크는 항상 메인 그래프 위에서 소비된다.
-    // 백스택이 리스트라 원하는 모양을 직접 조립하면 된다.
+    // 딥링크는 항상 앱 본문 위에서 소비된다. 인증 이전에는 이 코드가 실행되지 않는다.
     LaunchedEffect(navigator) {
         mainViewModel.deeplinkTargets.collect { target ->
-            navigator.openDeeplink(tab = target.tab, stack = target.stack)
+            navigator.openDeeplink(root = target.tab, stack = target.stack)
         }
     }
 
-    val currentTopLevelKey = navigationState.currentTopLevelKey
+    val currentTopLevelKey = navigationState.currentRootKey
     // 탭 루트에 있을 때만 바텀바를 보여준다.
     val isAtTabRoot = navigationState.currentKey == currentTopLevelKey
 
