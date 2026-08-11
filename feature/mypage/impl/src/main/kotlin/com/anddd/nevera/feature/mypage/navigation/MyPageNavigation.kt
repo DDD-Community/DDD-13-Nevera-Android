@@ -14,8 +14,8 @@ import com.anddd.nevera.feature.mypage.settingnotification.SettingNotificationSc
 import com.anddd.nevera.feature.notification.api.NotificationRoute
 
 /**
- * Navigation 3에는 중첩 그래프가 없다. 목적지를 평평하게 등록하고,
- * "어느 탭에 속하는가"는 NavigationState의 서브스택이 결정한다.
+ * 목적지를 평평하게 등록한다. "어느 스택에 속하는가"는 이동한 시점의
+ * NavigationState가 결정하므로 여기서 묶어 둘 것이 없다.
  */
 fun EntryProviderScope<NavKey>.myPageEntry(
     navigator: Navigator,

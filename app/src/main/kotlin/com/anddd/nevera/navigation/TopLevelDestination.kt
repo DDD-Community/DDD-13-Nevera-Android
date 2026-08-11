@@ -9,12 +9,7 @@ import com.anddd.nevera.feature.fridge.api.FridgeRoute
 import com.anddd.nevera.feature.main.api.HomeRoute
 import com.anddd.nevera.feature.mypage.api.MyPageRoute
 
-/**
- * 바텀 탭.
- *
- * Navigation 3에서는 중첩 그래프가 없으므로 "그래프 route"와 "화면 route"를
- * 따로 둘 필요가 없다. 탭 하나가 곧 목적지 하나다.
- */
+/** 바텀 탭. 탭 하나가 곧 목적지 하나이며, core:navigation에는 스택의 루트로 전달된다. */
 enum class TopLevelDestination(val key: NavKey, val label: String) {
     Home(HomeRoute, "홈"),
     Fridge(FridgeRoute, "냉장고"),

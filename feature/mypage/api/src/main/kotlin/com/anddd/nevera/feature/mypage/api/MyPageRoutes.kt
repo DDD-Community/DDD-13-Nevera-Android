@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 // ── 진입점 ────────────────────────────────────────────────────────────────────
 
-/** 마이페이지 첫 화면. 바텀 탭이다. */
+/** 마이페이지 첫 화면. 자기 스택의 루트다. */
 @Serializable
 data object MyPageRoute : NavKey
 

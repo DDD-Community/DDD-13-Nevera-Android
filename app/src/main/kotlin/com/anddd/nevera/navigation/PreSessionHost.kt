@@ -12,10 +12,10 @@ import com.anddd.nevera.feature.auth.navigation.authEntry
 import com.anddd.nevera.feature.splash.main.SplashScreen
 
 /**
- * 인증 이전 화면들. 메인 그래프와 백스택을 공유하지 않는다.
+ * 인증 이전 화면들. 앱 본문과 백스택을 공유하지 않는다.
  *
- * 여기서 홈·냉장고 같은 메인 목적지로 가는 길은 **존재하지 않는다**.
- * 인증이 끝나면 [onAuthenticated]로 알리고, :app이 메인 그래프로 통째로 갈아 끼운다.
+ * 여기서 홈·냉장고 같은 본문 목적지로 가는 길은 **존재하지 않는다**.
+ * 인증이 끝나면 [onAuthenticated]로 알리고, :app이 앱 본문으로 통째로 갈아 끼운다.
  */
 @Composable
 fun PreSessionHost(
