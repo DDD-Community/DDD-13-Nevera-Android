@@ -3,7 +3,6 @@ package com.anddd.nevera.navigation
 import com.anddd.nevera.feature.fridge.api.EditFridgeIngredientRoute
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
@@ -17,8 +16,7 @@ class DeeplinkResolverTest {
     private val resolver = DeeplinkResolver()
 
     @Test
-    @DisplayName("식재료 상세 딥링크는 냉장고 탭 위에 상세 화면을 얹는다")
-    fun resolvesIngredientDetail() {
+    fun `식재료 상세 딥링크는 냉장고 탭 위에 상세 화면을 얹는다`() {
         val target = resolver.resolve("nevera://detail/101")
 
         assertEquals(TopLevelDestination.Fridge, target?.root)
@@ -26,8 +24,7 @@ class DeeplinkResolverTest {
     }
 
     @Test
-    @DisplayName("쿼리 파라미터가 붙어도 식별자를 읽는다")
-    fun resolvesWithQueryParameter() {
+    fun `쿼리 파라미터가 붙어도 식별자를 읽는다`() {
         val target = resolver.resolve("nevera://detail/101?from=push")
 
         assertEquals(listOf(EditFridgeIngredientRoute(101L)), target?.stack)
@@ -46,7 +43,7 @@ class DeeplinkResolverTest {
             "",
         ],
     )
-    fun returnsNullForInvalidInput(deeplink: String) {
+    fun `해석할 수 없는 딥링크는 아무 화면도 열지 않는다`(deeplink: String) {
         assertNull(resolver.resolve(deeplink))
     }
 }

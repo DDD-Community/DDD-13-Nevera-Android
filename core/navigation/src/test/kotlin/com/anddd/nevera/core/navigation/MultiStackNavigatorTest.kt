@@ -3,7 +3,6 @@ package com.anddd.nevera.core.navigation
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 
@@ -31,8 +30,7 @@ class MultiStackNavigatorTest {
     }
 
     @Test
-    @DisplayName("루트가 아닌 목적지는 현재 스택에 쌓인다")
-    fun navigateToNonRoot() {
+    fun `루트가 아닌 목적지는 현재 스택에 쌓인다`() {
         navigator.navigate(NotificationScreen)
 
         assertEquals(HomeRoot, state.currentRootKey)
@@ -40,8 +38,7 @@ class MultiStackNavigatorTest {
     }
 
     @Test
-    @DisplayName("다른 루트로 이동하면 스택이 바뀌고 떠나온 스택은 보존된다")
-    fun navigateToOtherRootPreservesStack() {
+    fun `다른 루트로 이동하면 스택이 바뀌고 떠나온 스택은 보존된다`() {
         navigator.navigate(NotificationScreen)
         navigator.navigate(FridgeRoot)
 
@@ -51,8 +48,7 @@ class MultiStackNavigatorTest {
     }
 
     @Test
-    @DisplayName("현재 루트를 다시 선택하면 그 스택이 루트만 남기고 비워진다")
-    fun reselectingCurrentRootClearsStack() {
+    fun `현재 루트를 다시 선택하면 그 스택이 루트만 남기고 비워진다`() {
         navigator.navigate(NotificationScreen)
         navigator.navigate(HomeRoot)
 
@@ -60,8 +56,7 @@ class MultiStackNavigatorTest {
     }
 
     @Test
-    @DisplayName("같은 목적지로 연달아 이동해도 중복 생성되지 않는다")
-    fun navigateSameKeyTwiceDoesNotDuplicate() {
+    fun `같은 목적지로 연달아 이동해도 중복 생성되지 않는다`() {
         navigator.navigate(NotificationScreen)
         navigator.navigate(NotificationScreen)
 
@@ -69,8 +64,7 @@ class MultiStackNavigatorTest {
     }
 
     @Test
-    @DisplayName("시작 루트로 돌아가면 루트 방문 이력이 비워진다")
-    fun returningToStartRootClearsHistory() {
+    fun `시작 루트로 돌아가면 루트 방문 이력이 비워진다`() {
         navigator.navigate(FridgeRoot)
         navigator.navigate(MyPageRoot)
         navigator.navigate(HomeRoot)
@@ -79,8 +73,7 @@ class MultiStackNavigatorTest {
     }
 
     @Test
-    @DisplayName("뒤로가기는 현재 스택의 화면을 먼저 걷어낸다")
-    fun goBackPopsCurrentStackFirst() {
+    fun `뒤로가기는 현재 스택의 화면을 먼저 걷어낸다`() {
         navigator.navigate(NotificationScreen)
         navigator.goBack()
 
@@ -89,8 +82,7 @@ class MultiStackNavigatorTest {
     }
 
     @Test
-    @DisplayName("루트에서 뒤로가면 이전에 있던 루트로 돌아간다")
-    fun goBackFromRootReturnsToPreviousRoot() {
+    fun `루트에서 뒤로가면 이전에 있던 루트로 돌아간다`() {
         navigator.navigate(FridgeRoot)
         navigator.goBack()
 
@@ -98,8 +90,7 @@ class MultiStackNavigatorTest {
     }
 
     @Test
-    @DisplayName("시작 화면에서 뒤로가면 아무 일도 일어나지 않는다")
-    fun goBackAtStartIsNoOp() {
+    fun `시작 화면에서 뒤로가면 아무 일도 일어나지 않는다`() {
         navigator.goBack()
 
         assertEquals(listOf(HomeRoot), state.rootHistory.toList())
@@ -107,8 +98,7 @@ class MultiStackNavigatorTest {
     }
 
     @Test
-    @DisplayName("replaceStep은 인자가 달라도 같은 타입의 단계를 제거한다")
-    fun replaceStepRemovesSameTypeRegardlessOfArguments() {
+    fun `replaceStep은 인자가 달라도 같은 타입의 단계를 제거한다`() {
         navigator.navigate(CaptureScreen(openGallery = true))
         navigator.replaceStep<CaptureScreen>(ResultScreen("content://photo"))
 
@@ -117,8 +107,7 @@ class MultiStackNavigatorTest {
     }
 
     @Test
-    @DisplayName("replaceStep 이후 뒤로가면 흐름 진입 이전으로 나간다")
-    fun goBackAfterReplaceStepExitsFlow() {
+    fun `replaceStep 이후 뒤로가면 흐름 진입 이전으로 나간다`() {
         navigator.navigate(CaptureScreen())
         navigator.replaceStep<CaptureScreen>(ResultScreen("content://photo"))
         navigator.goBack()
