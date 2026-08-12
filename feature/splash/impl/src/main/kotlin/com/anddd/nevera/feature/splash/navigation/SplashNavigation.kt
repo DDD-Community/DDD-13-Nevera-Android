@@ -3,7 +3,7 @@ package com.anddd.nevera.feature.splash.navigation
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.anddd.nevera.core.navigation.Navigator
-import com.anddd.nevera.core.navigation.replaceStep
+import com.anddd.nevera.core.navigation.replace
 import com.anddd.nevera.feature.auth.api.LoginRoute
 import com.anddd.nevera.feature.splash.api.SplashRoute
 import com.anddd.nevera.feature.splash.main.SplashScreen
@@ -24,7 +24,7 @@ fun EntryProviderScope<NavKey>.splashEntry(
             // 미인증이면 로그인으로. 확인이 끝난 화면이라 되돌아갈 이유가 없다.
             onNavigateToLogin = {
                 onAuthChecked(false)
-                navigator.replaceStep<SplashRoute>(LoginRoute)
+                navigator.replace<SplashRoute>(LoginRoute)
             },
         )
     }

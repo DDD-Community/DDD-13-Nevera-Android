@@ -63,16 +63,16 @@ class SingleStackNavigatorTest {
     }
 
     @Test
-    fun `replaceStep은 그 단계를 지우고 새 화면을 얹는다`() {
+    fun `replace는 그 타입을 지우고 새 화면을 얹는다`() {
         navigator.navigate(LoginScreen)
-        navigator.replaceStep<LoginScreen>(SignupScreen)
+        navigator.replace<LoginScreen>(SignupScreen)
 
         assertEquals(listOf(SplashScreen, SignupScreen), backStack.toList())
     }
 
     @Test
     fun `스플래시를 로그인으로 교체하면 뒤로가기로 스플래시에 돌아갈 수 없다`() {
-        navigator.replaceStep<SplashScreen>(LoginScreen)
+        navigator.replace<SplashScreen>(LoginScreen)
         navigator.goBack()
 
         assertEquals(listOf(LoginScreen), backStack.toList())

@@ -4,7 +4,7 @@ import android.net.Uri
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.anddd.nevera.core.navigation.Navigator
-import com.anddd.nevera.core.navigation.replaceStep
+import com.anddd.nevera.core.navigation.replace
 import com.anddd.nevera.feature.ingredient.api.IngredientRoute
 import com.anddd.nevera.feature.ingredient.api.OcrCaptureRoute
 import com.anddd.nevera.feature.ingredient.api.OcrErrorRoute
@@ -32,7 +32,7 @@ fun EntryProviderScope<NavKey>.ingredientEntry(
             onNavigateBack = navigator::goBack,
             // 촬영 완료 → 인식 결과로 진행. 촬영 단계로는 되돌아가지 않는다.
             onNavigateToResult = { uri: Uri ->
-                navigator.replaceStep<OcrCaptureRoute>(IngredientRoute(uri.toString()))
+                navigator.replace<OcrCaptureRoute>(IngredientRoute(uri.toString()))
             },
         )
     }
@@ -44,7 +44,7 @@ fun EntryProviderScope<NavKey>.ingredientEntry(
             onNavigateToError = { navigator.navigate(OcrErrorRoute) },
             // 등록 완료 → 완료 화면. 인식 결과로는 되돌아가지 않는다.
             onNavigateToSuccess = { totalCost ->
-                navigator.replaceStep<IngredientRoute>(RegisterSuccessRoute(totalCost))
+                navigator.replace<IngredientRoute>(RegisterSuccessRoute(totalCost))
             },
             onNavigateToPhotoDetail = { imageUri -> navigator.navigate(PhotoDetailRoute(imageUri)) },
         )
@@ -53,7 +53,7 @@ fun EntryProviderScope<NavKey>.ingredientEntry(
     entry<OcrErrorRoute> {
         OcrErrorScreen(
             // 다시 시도 → 촬영 화면으로. 실패한 인식 결과는 스택에서 제거한다.
-            onRetry = { navigator.replaceStep<IngredientRoute>(OcrCaptureRoute()) },
+            onRetry = { navigator.replace<IngredientRoute>(OcrCaptureRoute()) },
             onClose = onExitFlow,
         )
     }

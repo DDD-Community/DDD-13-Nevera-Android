@@ -46,11 +46,11 @@ abstract class Navigator {
     }
 
     /**
-     * [replaceStep]의 구현. 공개 인라인 함수의 본문이 호출해야 해 바이너리에는 열려 있지만
+     * [replace]의 구현. 공개 인라인 함수의 본문이 호출해야 해 바이너리에는 열려 있지만
      * 소스에서 직접 부르지 않는다.
      */
     @PublishedApi
-    internal fun replaceStep(replaced: Class<out NavKey>, key: NavKey) {
+    internal fun replace(replaced: Class<out NavKey>, key: NavKey) {
         currentStack.apply {
             removeAll { replaced.isInstance(it) }
             add(key)
@@ -64,6 +64,6 @@ abstract class Navigator {
  * 지울 대상을 인스턴스가 아니라 타입으로 받는다. 같은 화면이 인자만 달리해 스택에 있을 때
  * 인스턴스로 지우면 나머지가 남기 때문이다.
  */
-inline fun <reified T : NavKey> Navigator.replaceStep(key: NavKey) {
-    replaceStep(T::class.java, key)
+inline fun <reified T : NavKey> Navigator.replace(key: NavKey) {
+    replace(T::class.java, key)
 }

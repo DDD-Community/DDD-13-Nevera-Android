@@ -98,18 +98,18 @@ class MultiStackNavigatorTest {
     }
 
     @Test
-    fun `replaceStep은 인자가 달라도 같은 타입의 단계를 제거한다`() {
+    fun `replace는 인자가 달라도 같은 타입을 모두 제거한다`() {
         navigator.navigate(CaptureScreen(openGallery = true))
-        navigator.replaceStep<CaptureScreen>(ResultScreen("content://photo"))
+        navigator.replace<CaptureScreen>(ResultScreen("content://photo"))
 
-        // 촬영 단계가 사라져 뒤로가기로 돌아갈 수 없다
+        // 인자가 다른 CaptureScreen이 남지 않아 뒤로가기로 돌아갈 수 없다
         assertEquals(listOf(HomeRoot, ResultScreen("content://photo")), state.currentStack.toList())
     }
 
     @Test
-    fun `replaceStep 이후 뒤로가면 흐름 진입 이전으로 나간다`() {
+    fun `replace 이후 뒤로가면 흐름 진입 이전으로 나간다`() {
         navigator.navigate(CaptureScreen())
-        navigator.replaceStep<CaptureScreen>(ResultScreen("content://photo"))
+        navigator.replace<CaptureScreen>(ResultScreen("content://photo"))
         navigator.goBack()
 
         assertEquals(listOf(HomeRoot), state.currentStack.toList())
