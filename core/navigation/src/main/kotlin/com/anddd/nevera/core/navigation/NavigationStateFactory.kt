@@ -36,7 +36,6 @@ fun rememberNavigationState(
  * 두 층의 스택을 NavDisplay가 그릴 수 있는 하나의 목록으로 펼친다.
  *
  * 스택마다 별도의 데코레이터를 붙여, 화면 상태와 ViewModel이 스택 단위로 유지되게 한다.
- * 스택별 상태 보존은 이 데코레이터 배치가 담당한다.
  */
 @Composable
 fun NavigationState.toEntries(

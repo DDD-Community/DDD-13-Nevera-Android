@@ -4,9 +4,9 @@ import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 
 /**
- * 루트마다 스택 하나를 두는 흐름의 이동 통로. 앱 본문에 쓴다.
+ * 루트가 여럿인 흐름의 이동 통로. 루트마다 스택을 하나씩 둔다.
  *
- * 루트 전환 정책이 [navigate] 안에 있어서 조립 지점이 규칙을 따로 들고 있을 필요가 없다.
+ * 루트 전환과 루트 재선택 정책이 [navigate] 안에 있어서, 호출부는 목적지만 넘기면 된다.
  */
 class MultiStackNavigator(private val state: NavigationState) : Navigator() {
 

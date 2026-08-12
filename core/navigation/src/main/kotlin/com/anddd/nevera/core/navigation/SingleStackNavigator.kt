@@ -4,7 +4,7 @@ import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 
 /**
- * 스택 하나짜리 흐름의 이동 통로. 스플래시 → 로그인 → 회원가입처럼 갈래가 없는 흐름에 쓴다.
+ * 스택 하나짜리 흐름의 이동 통로. 갈래가 없는 선형 흐름에 쓴다.
  *
  * 루트를 여러 개 두지 않으므로 [MultiStackNavigator]가 가진 루트 전환·루트 재선택 개념이
  * 없다. 스택의 첫 원소가 곧 루트이고, 뒤로가기는 거기서 멈춘다.
