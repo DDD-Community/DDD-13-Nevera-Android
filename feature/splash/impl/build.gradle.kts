@@ -7,4 +7,6 @@ android {
 }
 
 dependencies {
+    implementation(project(":feature:splash:api"))
+    implementation(project(":feature:auth:api"))
 }

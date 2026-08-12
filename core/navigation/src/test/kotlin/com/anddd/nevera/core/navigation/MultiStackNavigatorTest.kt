@@ -14,10 +14,10 @@ private data object NotificationScreen : NavKey
 private data class CaptureScreen(val openGallery: Boolean = false) : NavKey
 private data class ResultScreen(val imageUri: String) : NavKey
 
-class NavigatorTest {
+class MultiStackNavigatorTest {
 
     private lateinit var state: NavigationState
-    private lateinit var navigator: Navigator
+    private lateinit var navigator: MultiStackNavigator
 
     @BeforeEach
     fun setUp() {
@@ -27,7 +27,7 @@ class NavigatorTest {
             rootHistory = NavBackStack(HomeRoot),
             stacksByRoot = roots.associateWith { NavBackStack(it) },
         )
-        navigator = Navigator(state)
+        navigator = MultiStackNavigator(state)
     }
 
     @Test

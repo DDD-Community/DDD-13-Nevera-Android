@@ -48,6 +48,7 @@ dependencies {
     implementation(project(":core:network"))
     implementation(project(":infra:notification"))
 
+    implementation(project(":feature:splash:api"))
     implementation(project(":feature:splash:impl"))
     implementation(project(":feature:auth:api"))
     implementation(project(":feature:auth:impl"))

@@ -1,7 +1,6 @@
 package com.anddd.nevera.navigation
 
 import com.anddd.nevera.feature.fridge.api.EditFridgeIngredientRoute
-import com.anddd.nevera.feature.fridge.api.FridgeRoute
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.DisplayName
@@ -22,7 +21,7 @@ class DeeplinkResolverTest {
     fun resolvesIngredientDetail() {
         val target = resolver.resolve("nevera://detail/101")
 
-        assertEquals(FridgeRoute, target?.tab)
+        assertEquals(TopLevelDestination.Fridge, target?.root)
         assertEquals(listOf(EditFridgeIngredientRoute(101L)), target?.stack)
     }
 

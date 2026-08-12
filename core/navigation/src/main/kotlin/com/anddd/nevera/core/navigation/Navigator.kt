@@ -1,55 +1,41 @@
 package com.anddd.nevera.core.navigation
 
+import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 
 /**
  * feature가 화면 이동에 쓰는 좁은 통로.
  *
- * [NavigationState]를 그대로 넘기지 않는 이유는 권한 범위 때문이다. 백스택은 가변
- * 리스트라, 넘기는 순간 feature가 어떤 화면이든 지우고 끼워 넣을 수 있다. 그러면
- * "어떤 화면에서 나가면 스택이 어떻게 되는가"라는 정책이 모듈마다 흩어진다.
+ * 백스택을 그대로 넘기지 않는 이유는 권한 범위 때문이다. 백스택은 가변 리스트라, 넘기는
+ * 순간 feature가 어떤 화면이든 지우고 끼워 넣을 수 있다. 그러면 "어떤 화면에서 나가면
+ * 스택이 어떻게 되는가"라는 정책이 모듈마다 흩어진다.
  *
  * 그래서 이 통로는 백스택 조작을 **이름 붙은 정책**으로만 노출한다. 새 정책이 필요하면
  * 여기에 이름을 붙여 추가하고, 호출부에서 스택을 직접 조립하지 않는다.
  *
- * 루트 전환 정책도 [navigate] 안에 있다. 조립 지점인 :app이 전환 규칙을 따로 들고
- * 있을 필요가 없다.
+ * 구현체는 스택을 몇 개 다루는지로 갈린다. [SingleStackNavigator]는 하나,
+ * [MultiStackNavigator]는 루트마다 하나씩이다. 그 차이는 [navigate]와 [goBack]에만 나타나고,
+ * 나머지 연산은 [currentStack] 하나만 알면 되므로 여기서 공유한다.
  */
-class Navigator(private val state: NavigationState) {
+abstract class Navigator {
+
+    /** 지금 화면을 쌓고 걷어내는 대상. 무엇을 현재 스택으로 볼지는 구현체가 정한다. */
+    protected abstract val currentStack: NavBackStack<NavKey>
+
+    /** 목적지로 이동한다. 이동의 의미는 구현체가 정한다. */
+    abstract fun navigate(key: NavKey)
+
+    /** 이전 화면으로 돌아간다. 더 돌아갈 곳이 없으면 아무 일도 하지 않는다. */
+    abstract fun goBack()
 
     /**
-     * 목적지로 이동한다.
+     * 현재 스택의 루트는 남기고 그 위를 [stack]으로 통째로 바꾼다.
      *
-     * 목적지가 현재 스택의 루트면 그 스택을 루트만 남기고 비우고(루트 재선택),
-     * 다른 루트면 그 루트의 스택으로 옮기고,
-     * 그 외에는 현재 스택 위에 화면을 쌓는다.
+     * 여러 화면을 한 번에 얹어야 하는 진입에 쓴다. 뒤로가기를 누르면 루트로 돌아가므로,
+     * 어떤 상태에서 호출하든 도착점이 같아진다.
      */
-    fun navigate(key: NavKey) {
-        when (key) {
-            state.currentRootKey -> clearStack()
-            in state.rootKeys -> goToRoot(key)
-            else -> goToKey(key)
-        }
-    }
-
-    /** 이전 화면으로 돌아간다. 시작 화면에서는 아무 일도 하지 않는다. */
-    fun goBack() {
-        when (state.currentKey) {
-            state.startRootKey -> Unit
-            state.currentRootKey -> state.rootHistory.removeLastOrNull()
-            else -> state.currentStack.removeLastOrNull()
-        }
-    }
-
-    /**
-     * 딥링크로 진입할 화면 스택을 통째로 조립한다.
-     *
-     * [root]의 스택으로 옮긴 뒤 그 스택을 [stack]으로 교체한다. 딥링크가 앱을 어느
-     * 상태에서 열든 뒤로가기의 도착점이 루트로 같아진다.
-     */
-    fun openDeeplink(root: NavKey, stack: List<NavKey>) {
-        if (root != state.currentRootKey) goToRoot(root)
-        state.currentStack.apply {
+    fun replaceStack(stack: List<NavKey>) {
+        currentStack.apply {
             if (size > 1) subList(1, size).clear()
             addAll(stack)
         }
@@ -61,29 +47,8 @@ class Navigator(private val state: NavigationState) {
      */
     @PublishedApi
     internal fun replaceStep(replaced: Class<out NavKey>, key: NavKey) {
-        state.currentStack.apply {
+        currentStack.apply {
             removeAll { replaced.isInstance(it) }
-            add(key)
-        }
-    }
-
-    /** 현재 스택을 루트만 남기고 비운다. */
-    private fun clearStack() {
-        state.currentStack.run { if (size > 1) subList(1, size).clear() }
-    }
-
-    /** 현재 스택 안에서 이동한다. 이미 스택에 있으면 중복 없이 맨 뒤로 옮긴다. */
-    private fun goToKey(key: NavKey) {
-        state.currentStack.apply {
-            remove(key)
-            add(key)
-        }
-    }
-
-    /** 다른 루트의 스택으로 옮긴다. 시작 루트로 가면 방문 이력을 비운다. */
-    private fun goToRoot(key: NavKey) {
-        state.rootHistory.apply {
-            if (key == state.startRootKey) clear() else remove(key)
             add(key)
         }
     }

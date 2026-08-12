@@ -14,7 +14,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.anddd.nevera.core.designsystem.component.navigationbar.NeveraNavigationBar
-import com.anddd.nevera.core.navigation.Navigator
+import com.anddd.nevera.core.navigation.MultiStackNavigator
 import com.anddd.nevera.core.navigation.rememberNavigationState
 import com.anddd.nevera.core.navigation.toEntries
 import com.anddd.nevera.feature.auth.main.google.GoogleAuthClient
@@ -26,6 +26,7 @@ import com.anddd.nevera.feature.mypage.navigation.myPageEntry
 import com.anddd.nevera.feature.notification.navigation.notificationEntry
 import com.anddd.nevera.navigation.PreSessionHost
 import com.anddd.nevera.navigation.TopLevelDestination
+import com.anddd.nevera.navigation.openDeeplink
 import com.anddd.nevera.navigation.toNavigationBarItem
 
 @Composable
@@ -57,12 +58,12 @@ private fun AuthenticatedApp(mainViewModel: MainViewModel) {
         startRootKey = HomeRoute,
         rootKeys = topLevelDestinations.map { it.key }.toSet(),
     )
-    val navigator = remember(navigationState) { Navigator(navigationState) }
+    val navigator = remember(navigationState) { MultiStackNavigator(navigationState) }
 
     // 딥링크는 항상 앱 본문 위에서 소비된다. 인증 이전에는 이 코드가 실행되지 않는다.
     LaunchedEffect(navigator) {
         mainViewModel.deeplinkTargets.collect { target ->
-            navigator.openDeeplink(root = target.tab, stack = target.stack)
+            navigator.openDeeplink(target)
         }
     }
 

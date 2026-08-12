@@ -12,11 +12,14 @@ import javax.inject.Inject
  * domain이 아니라 :app이 소유한다. URL 스킴 해석은 비즈니스 규칙이 아니라
  * 조립 지점의 관심사이고, 목적지 이름을 아는 것도 조립 지점뿐이다.
  *
- * @property tab 어느 탭 위에 열 것인가
- * @property stack 탭 루트 위에 쌓을 화면들
+ * [root]를 [TopLevelDestination]으로 두면 딥링크가 스택의 루트가 아닌 곳을 가리키는 일이
+ * 타입 수준에서 불가능해진다. 루트가 아닌 키를 넘기면 백스택이 조용히 어긋난다.
+ *
+ * @property root 어느 스택 위에 열 것인가
+ * @property stack 루트 위에 쌓을 화면들
  */
 data class DeeplinkTarget(
-    val tab: NavKey,
+    val root: TopLevelDestination,
     val stack: List<NavKey>,
 )
 
@@ -33,7 +36,7 @@ class DeeplinkResolver @Inject constructor() {
                 ?.toLongOrNull()
                 ?.let { id ->
                     DeeplinkTarget(
-                        tab = FridgeRoute,
+                        root = TopLevelDestination.Fridge,
                         stack = listOf(EditFridgeIngredientRoute(id)),
                     )
                 }
