@@ -1,36 +1,13 @@
 package com.anddd.nevera.core.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberDecoratedNavEntries
-import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
-
-/**
- * 루트마다 화면 스택을 하나씩 가진 [NavigationState]를 만든다.
- *
- * 각 스택은 rememberNavBackStack으로 만들어 프로세스 사망 후에도 복원된다.
- */
-@Composable
-fun rememberNavigationState(
-    startRootKey: NavKey,
-    rootKeys: Set<NavKey>,
-): NavigationState {
-    val rootHistory = rememberNavBackStack(startRootKey)
-    val stacksByRoot = rootKeys.associateWith { key -> rememberNavBackStack(key) }
-    return remember(startRootKey, rootKeys) {
-        NavigationState(
-            startRootKey = startRootKey,
-            rootHistory = rootHistory,
-            stacksByRoot = stacksByRoot,
-        )
-    }
-}
 
 /**
  * 두 층의 스택을 NavDisplay가 그릴 수 있는 하나의 목록으로 펼친다.

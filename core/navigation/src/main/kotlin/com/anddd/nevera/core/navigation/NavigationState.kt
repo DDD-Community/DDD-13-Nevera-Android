@@ -1,7 +1,10 @@
 package com.anddd.nevera.core.navigation
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.rememberNavBackStack
 
 /**
  * 루트가 여럿인 흐름의 백스택 상태.
@@ -37,4 +40,25 @@ class NavigationState(
 
     /** 현재 보이는 화면. */
     val currentKey: NavKey get() = currentStack.last()
+}
+
+/**
+ * 루트마다 화면 스택을 하나씩 가진 [NavigationState]를 만든다.
+ *
+ * 각 스택은 rememberNavBackStack으로 만들어 프로세스 사망 후에도 복원된다.
+ */
+@Composable
+fun rememberNavigationState(
+    startRootKey: NavKey,
+    rootKeys: Set<NavKey>,
+): NavigationState {
+    val rootHistory = rememberNavBackStack(startRootKey)
+    val stacksByRoot = rootKeys.associateWith { key -> rememberNavBackStack(key) }
+    return remember(startRootKey, rootKeys) {
+        NavigationState(
+            startRootKey = startRootKey,
+            rootHistory = rootHistory,
+            stacksByRoot = stacksByRoot,
+        )
+    }
 }
