@@ -16,6 +16,8 @@ local.properties
 .gradle/
 **/build/
 gradle-app.setting
+# Kotlin 컴파일러 크래시 덤프. 로컬 빌드 산출물이다
+.kotlin/
 !gradle/wrapper/gradle-wrapper.jar
 !gradle/wrapper/gradle-wrapper.properties
 
