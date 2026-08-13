@@ -12,6 +12,7 @@ private data object MyPageRoot : NavKey
 private data object NotificationScreen : NavKey
 private data class CaptureScreen(val openGallery: Boolean = false) : NavKey
 private data class ResultScreen(val imageUri: String) : NavKey
+private data class SuccessScreen(val totalCost: Int) : NavKey
 
 class MultiStackNavigatorTest {
 
@@ -113,5 +114,51 @@ class MultiStackNavigatorTest {
         navigator.goBack()
 
         assertEquals(listOf(HomeRoot), state.currentStack.toList())
+    }
+
+    @Test
+    fun `시작 루트가 아닌 스택에서 연 흐름을 벗어나도 그 스택에 화면이 남지 않는다`() {
+        // 냉장고 탭에서 촬영 → 인식 결과 → 등록 완료까지 진행한다
+        navigator.navigate(FridgeRoot)
+        navigator.navigate(CaptureScreen())
+        navigator.replace<CaptureScreen>(ResultScreen("content://photo"))
+        navigator.replace<ResultScreen>(SuccessScreen(totalCost = 12_000))
+
+        // 닫기 → 흐름을 벗어난다
+        exitIngredientFlow()
+
+        // 흐름을 벗어난 뒤 냉장고 스택에는 루트만 남아야 한다
+        assertEquals(listOf(FridgeRoot), state.stacksByRoot[FridgeRoot]?.toList())
+    }
+
+    @Test
+    fun `흐름을 벗어난 뒤 그 탭을 다시 선택해도 완료 화면으로 돌아가지 않는다`() {
+        navigator.navigate(FridgeRoot)
+        navigator.navigate(CaptureScreen())
+        navigator.replace<CaptureScreen>(ResultScreen("content://photo"))
+        navigator.replace<ResultScreen>(SuccessScreen(totalCost = 12_000))
+        exitIngredientFlow()
+
+        // 나중에 냉장고 탭을 다시 누른다
+        navigator.navigate(FridgeRoot)
+
+        assertEquals(FridgeRoot, state.currentKey)
+    }
+
+    @Test
+    fun `시작 루트에서 연 흐름을 벗어나면 그 스택이 루트만 남기고 비워진다`() {
+        navigator.navigate(CaptureScreen())
+        navigator.replace<CaptureScreen>(ResultScreen("content://photo"))
+        navigator.replace<ResultScreen>(SuccessScreen(totalCost = 12_000))
+
+        exitIngredientFlow()
+
+        assertEquals(listOf(HomeRoot), state.stacksByRoot[HomeRoot]?.toList())
+        assertEquals(HomeRoot, state.currentKey)
+    }
+
+    /** :app의 ingredientEntry(onExitFlow = ...) 배선을 그대로 흉내낸다. */
+    private fun exitIngredientFlow() {
+        navigator.replaceStack(emptyList())
     }
 }

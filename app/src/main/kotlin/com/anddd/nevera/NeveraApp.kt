@@ -76,7 +76,9 @@ private fun AuthenticatedApp(mainViewModel: MainViewModel) {
         fridgeEntry(navigator)
         myPageEntry(navigator, onSignedOut = mainViewModel::onSignedOut)
         notificationEntry(navigator, onDeeplink = mainViewModel::dispatchDeeplink)
-        ingredientEntry(navigator, onExitFlow = { navigator.navigate(HomeRoute) })
+        // 흐름을 연 스택을 루트만 남기고 되감는다. 어느 탭에서 열었든 그 탭으로 나가고,
+        // 떠나온 스택에 완료 화면이 남지 않는다.
+        ingredientEntry(navigator, onExitFlow = { navigator.replaceStack(emptyList()) })
     }
 
     Scaffold(
