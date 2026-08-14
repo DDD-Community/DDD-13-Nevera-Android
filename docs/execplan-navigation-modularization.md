@@ -1,0 +1,599 @@
+# Navigation 구조 개편 — feature api/impl 분리와 Navigation 3 전환
+
+이 ExecPlan은 살아있는 문서다. `Progress`, `Surprises & Discoveries`, `Decision Log`, `Outcomes & Retrospective` 섹션은 작업이 진행되는 동안 반드시 최신 상태로 유지해야 한다.
+
+이 문서는 저장소 루트의 `PLANS.md`가 정의한 ExecPlan 요건에 따라 작성되고 유지된다.
+
+브랜치: `nav/b-api-impl`
+
+## Purpose / Big Picture
+
+이 앱에서 홈 화면 우상단의 알림 아이콘을 누르면 알림 목록 화면으로 간다. 그런데 홈 화면을 담고 있는 모듈은 알림 화면이 존재한다는 사실조차 모른다. 대신 최상위 모듈인 `:app`이 "알림으로 가라"는 함수를 만들어 홈에게 넘겨준다. 알림으로 가는 길이 필요한 화면이 홈·냉장고·마이페이지 세 곳이라, `:app`은 같은 함수를 세 번 만들어 세 곳에 넘긴다.
+
+이 작업이 끝나면 세 화면이 각각 알림 목적지의 이름을 직접 알고 스스로 이동한다. `:app`은 그 세 함수를 더 이상 만들지 않는다.
+
+그게 가능하려면 "알림 화면의 목적지 이름"이 알림 화면 구현과 분리되어야 한다. 이 계획은 알림 모듈 자체를 두 개로 쪼갠다. 이름만 담은 아주 작은 모듈(`:feature:notification:api`)과 화면 구현을 담은 모듈(`:feature:notification:impl`)이다. 다른 화면은 `api`만 의존 선언한다. 알림 화면 UI가 바뀌어도 남의 모듈에는 영향이 없고, **의존을 선언하지 않은 모듈은 알림 목적지의 이름조차 볼 수 없다.**
+
+사용자 눈에 보이는 동작은 변하지 않는다. 이건 내부 구조 변경이다. 그래서 "동작이 그대로인 것"과 "구조가 실제로 바뀐 것"을 둘 다 증명한다. 전자는 앱을 실행해 세 화면에서 알림 아이콘을 눌러 확인하고, 후자는 `./gradlew :feature:main:dependencies`에 알림 화면 구현 모듈이 나타나지 않는 것으로 확인한다.
+
+이 계획은 원래 세 가지 모듈 구조안을 비교하기 위해 시작됐다. 비교는 끝났고 이 방식이 채택됐다. 다른 두 안(`:core:navigation` 단일 모듈, DI 그래프 레지스트리)은 더 이상 고려하지 않는다. 비교 과정과 탈락 근거는 `docs/navigation-approach-experiment-results.md`에 있다.
+
+## Progress
+
+- [x] (2026-08-04) M1 `nevera.feature.api` convention plugin 작성 및 등록
+- [x] (2026-08-04) M2 `:feature:notification`을 `api`/`impl`로 분리 (콜백 방식은 유지)
+- [x] (2026-08-04) M3 홈·냉장고·마이페이지를 직접 이동으로 전환, `:app` 콜백 3개 제거
+- [x] (2026-08-04) M4 impl 간 의존을 빌드가 거부하도록 검사 추가
+
+**Phase 2 — Now in Android 현행 구조에 맞춘다** (2026-08-05 추가, 아래 Decision Log 참조)
+
+- [x] (2026-08-05) M5 `Navigator` 래퍼를 `:core:navigation`에 도입하고 raw `NavController` 전달을 걷어낸다
+- [x] (2026-08-05) M6 `:feature:splash`, `:feature:auth`, `:feature:main` 을 api/impl로 분리
+- [x] (2026-08-05) M7 `:feature:mypage`, `:feature:fridge`, `:feature:ingredient` 를 api/impl로 분리
+- [x] (2026-08-05) M8 `:app`의 인라인 popUpTo 5곳을 이름 붙은 정책으로 교체 (인라인 popUpTo 0개, 115줄 → 85줄)
+
+**Phase 3 — Navigation 3 마이그레이션**
+
+- [x] (2026-08-05) M9 (스파이크) 의존성 상향만 단독 수행: Compose BOM·lifecycle. 아키텍처 변경 없음
+- [x] (2026-08-06) M10 **모든 Route를 `api`로 이전**하고 `impl`의 Route 잔여를 0으로 만든다
+- [x] (2026-08-06) M11-1 모든 Route가 `NavKey`를 구현 (Nav2 동작 유지)
+- [x] (2026-08-06) M11-2 `NavigationState`·`Nav3Navigator` 병렬 구현 + 단위 테스트 10개
+- [x] (2026-08-06) M12 feature의 `NavGraphBuilder` 확장을 `EntryProviderScope` 확장으로 교체
+- [x] (2026-08-06) M13 **인증 이전 흐름(Splash·Auth)을 메인 그래프 밖으로 분리** — P0-1(딥링크 인증 우회) 재현 불가 확인
+- [x] (2026-08-06) M14 `NavHost`를 `NavDisplay`로 교체하고 바텀 탭 상태 보존을 `subStacks`로 이전 — 에뮬레이터에서 보존 동작 확인
+- [x] (2026-08-06) M15 딥링크 경로를 Nav3 백스택 합성 방식으로 이전 — domain 오염 5개 제거, 파싱 테스트 10개 추가
+
+**Phase 4 — Nav2 잔여 제거**
+
+- [x] (2026-08-08) 현재 잔여 확인: 실제 런타임에서 `Navigator`를 쓰는 곳은 인증 전 `PreSessionHost`와 `authNavGraph`뿐이다. 인증 후 메인 그래프는 이미 `Nav3Navigator`다
+- [x] (2026-08-09) M16 인증 전 Auth 흐름을 별도 Nav3 스택으로 전환했다. `PreSessionHost`의 `rememberNavController()`/`NavHost`와 `AuthNavigation.kt`의 `NavGraphBuilder` DSL을 제거했다
+- [x] (2026-08-09) M17 `core/navigation/Navigator.kt`와 `navigation-compose` 직접 의존을 삭제했다. `hilt-navigation-compose`는 `hiltViewModel()` 용도로 유지했다
+- [x] (2026-08-09) M18 스플래시·샘플 모듈의 죽은 Navigation Compose DSL을 삭제했다. `app/core/feature` 기준 Nav2 import 검색 결과는 0건이다
+
+## Surprises & Discoveries
+
+- 관찰: `api` 모듈을 **순수 Kotlin(JVM) 모듈로 만들 수 있다.** Navigation의 타입 안전 라우팅이 비-Android 모듈의 `@Serializable` 클래스를 문제없이 처리한다.
+  증거: `feature/notification/api/build.gradle.kts`가 `nevera.kotlin.jvm`만 적용하고 Android 플러그인을 쓰지 않는데 `./gradlew :app:assembleDebug`가 통과했다. 이 모듈의 의존성은 `kotlinx-serialization-json` 하나뿐이다. 이건 안 A와의 중요한 차이다 — 안 A의 `:core:navigation`은 `NavController`를 참조해야 해서 Android 라이브러리일 수밖에 없다.
+
+- 관찰: `api` 모듈이 순수 Kotlin이므로 **Compose 코드를 넣는 것이 물리적으로 불가능하다.** 이 모듈이 잡동사니 저장소가 되는 것을 규칙이 아니라 컴파일러가 막는다.
+  증거: `api` 모듈에는 `androidx.compose.*`가 클래스패스에 없으므로 `@Composable`을 쓰면 컴파일되지 않는다.
+
+- 관찰: **순수 Kotlin(JVM) 모듈이 `NavKey`를 구현할 수 있다.** NIA는 `api` 모듈을 Android 라이브러리로 만들었지만 우리는 순수 Kotlin을 유지할 수 있다.
+  증거: `navigation3-runtime`은 KMP로 배포되어 `desktopApiElements-published`(platform=jvm) 변형을 갖는다. `nevera.feature.api`(순수 Kotlin)에 `api(libs.navigation3.runtime)`을 추가하고 Route에 `: NavKey`를 붙인 뒤 `:feature:notification:api:build`가 통과했다. 덕분에 "api 모듈에 Compose를 넣는 것이 물리적으로 불가능하다"는 이점을 Nav3 전환 후에도 유지한다.
+
+- 관찰: `NavKey`는 멤버가 없는 마커 인터페이스라 **Navigation 2와 공존한다.**
+  증거: Route 19개에 `: NavKey`를 붙인 뒤에도 기존 `NavHost`/`NavGraphBuilder` 경로가 그대로 빌드·테스트를 통과했다. 덕분에 Nav3 전환을 한 번에 하지 않고 쪼갤 수 있다.
+
+- 관찰: Nav3에는 `NavBackStackEntry`가 없어 **`savedStateHandle.toRoute<T>()`를 쓸 수 없다.** Route 인자 수신 방식을 바꿔야 한다.
+  증거: NIA의 `TopicViewModel`은 `@HiltViewModel(assistedFactory = ...)` + `@Assisted topicId`로 인자를 받는다. 우리도 `EditFridgeIngredientViewModel`·`IngredientViewModel`·`OcrCaptureViewModel` 셋을 같은 방식으로 바꿨다. 이 변경은 Nav2에서도 동작하므로 `NavDisplay` 전환 전에 따로 커밋해 원인을 분리했다.
+
+- 관찰: `entry`는 top-level 함수가 아니라 **`EntryProviderScope`의 멤버**다.
+  증거: `import androidx.navigation3.runtime.entry`를 넣으면 `Unresolved reference 'entry'`가 난다. `javap`로 확인하니 `EntryProviderScope<T>.entry(...)` 멤버 함수였다. 수신 객체 스코프 안에서 import 없이 쓴다.
+
+- 관찰: **탭별 서브스택만으로 상태 보존이 된다.** Nav2의 `saveState`/`restoreState` 조합이 필요 없다.
+  증거: 에뮬레이터에서 홈 → 알림 → 냉장고 탭 → 홈 탭 순으로 조작하니 알림 화면이 그대로 복원됐다. 코드에는 상태 보존을 위한 옵션이 한 줄도 없다. `NavigationState`의 `subStacks`가 탭마다 독립된 리스트를 갖기 때문이다.
+
+- 관찰: `android.net.Uri`를 쓰면 **딥링크 파싱을 순수 JVM 단위 테스트로 검증할 수 없다.**
+  증거: `DeeplinkResolver`를 `toUri()`로 구현했더니 유효한 입력에서도 `null`이 반환되어 테스트가 실패했다. 안드로이드 프레임워크 타입은 단위 테스트에서 스텁이라 동작하지 않는다. `java.net.URI` 기반 순수 Kotlin 파싱으로 바꾸니 무효 입력 8종을 포함한 테스트 10개가 통과했다. 조립 지점의 로직이라도 프레임워크 타입을 피하면 검증 가능해진다.
+
+- 관찰: 딥링크 백스택 합성이 **한 함수로 끝난다.** Nav2에서 `while (popBackStack())` 루프로 하던 일이다.
+  증거: `openDeeplink(tab, stack)`은 탭을 전환하고 서브스택을 원하는 모양으로 바꾸는 것이 전부다. 에뮬레이터 로그로 확인한 결과 `sub=[FridgeRoute, EditFridgeIngredientRoute(ingredientId=7)]`, `top=[HomeRoute, FridgeRoute]`로 정확히 조립됐다.
+
+- 관찰: 인증 흐름 분리가 **P0-1(로그아웃 상태에서 딥링크로 인증 벽 통과)을 코드 수정 없이 없앴다.**
+  증거: 앱 데이터를 지운 뒤 `adb shell am start -a android.intent.action.VIEW -d "nevera://detail/1"` 로 콜드 스타트했다. 이전 구조에서는 로그인 화면 위에 홈과 냉장고가 쌓였다. 지금은 로그인 화면에 머문다. `SessionState`가 `Authenticated`가 아니면 메인 그래프가 컴포지션에 존재하지 않으므로, 넘어갈 대상 자체가 없다.
+
+- 관찰: M13의 "인증 이전 흐름을 메인 그래프 밖으로 분리"는 Nav3 전환 완료가 아니라 **Nav3 메인 그래프를 가능하게 만든 중간 상태**였다.
+  증거: `app/src/main/kotlin/com/anddd/nevera/navigation/PreSessionHost.kt`는 여전히 `rememberNavController()`와 `NavHost`를 만들고 `Navigator(navController)`를 `authNavGraph`에 넘긴다. `feature/auth/impl/src/main/kotlin/com/anddd/nevera/feature/auth/navigation/AuthNavigation.kt`도 `NavGraphBuilder`, `navigation<AuthGraphRoute>`, `composable<LoginRoute>`를 사용한다. 반면 `app/src/main/kotlin/com/anddd/nevera/NeveraApp.kt`의 인증 후 분기는 `rememberNavigationState(...)`, `Nav3Navigator`, `NavDisplay`를 사용한다.
+
+- 관찰: 현재 `Nav3Navigator`는 **탭 기반 앱 본문용**이다. 인증 전 흐름에 그대로 재사용하면 모델의 의미가 흐려진다.
+  증거: `NavigationState`는 `topLevelStack`과 `subStacks`를 갖고, 주석도 "인증 이전 화면(스플래시·로그인)은 이 상태에 포함하지 않는다"고 적는다. `Nav3Navigator.navigate()`는 목적지가 현재 탭인지, 다른 탭인지, 현재 탭 안의 화면인지 세 경우를 구분한다. 로그인 → 회원가입처럼 탭이 없는 선형 흐름에는 이 세 분기가 필요하지 않다.
+
+- 관찰: Nav2 런타임 의존을 완전히 지우려면 `Navigator.kt` 삭제만으로는 부족하다. **호출부와 빌드 의존을 함께 제거**해야 한다.
+  증거: `rg "rememberNavController|NavHost\\(|NavGraphBuilder|androidx.navigation.compose|com.anddd.nevera.core.navigation.Navigator"` 결과가 `PreSessionHost.kt`, `AuthNavigation.kt`, `SplashNavigation.kt`, `SampleNavigation.kt`, `core/navigation/Navigator.kt`, `core/navigation/build.gradle.kts`, `app/build.gradle.kts`에 남아 있다. 앱에서 실제로 호출되는 것은 `PreSessionHost.kt`와 `AuthNavigation.kt`이고, `SplashNavigation.kt`와 `SampleNavigation.kt`는 현재 앱 그래프에 연결되지 않은 잔여 DSL이다.
+
+- 관찰: 검증용 임시 변경이 커밋에 섞여 3개 커밋 동안 스플래시·로그인이 건너뛰어졌다.
+  증거: `git log -S"// TEMP"` 로 추적하니 `587b1db6`(M8)에서 `startDestination = HomeRoute // TEMP`가 커밋됐다. 에뮬레이터 검증 후 `git checkout`으로 되돌렸다고 판단했으나, 이후 `git add -A` 시점에 워킹트리에 남아 있었다. **검증용 변경을 워킹트리에 둔 채 `git add -A`를 하지 않는다.** M13에서 `HomeRoute`가 메인 그래프의 정당한 시작점이 되면서 해소됐다.
+
+- 관찰: `NavBackStack`은 **Compose 없이 직접 생성 가능**해서 백스택 로직을 순수 단위 테스트로 검증할 수 있다.
+  증거: `NavBackStack<NavKey>(startKey)` 생성자를 그대로 쓴 테스트 10개가 `:core:navigation:testDebugUnitTest`에서 통과했다. `NavDisplay`를 붙이기 전에 탭 전환·상태 보존 로직을 먼저 고정할 수 있다는 뜻이다.
+
+- 관찰: 디렉터리 이동은 `git mv`를 써야 이력이 보존된다.
+  증거: `git mv feature/notification/src feature/notification/impl/src`로 옮긴 뒤 `git log --follow`가 이전 이력을 따라간다. 파일 탐색기로 옮기면 삭제+추가로 기록되어 이력이 끊긴다.
+
+- 관찰: Compose BOM을 올리자 **디자인시스템 전체가 깨졌다.** Nav3와 무관한 문제이며, 스파이크를 분리한 이유를 그대로 증명했다.
+  증거: `material3` 1.4부터 `material-icons-core`를 전이 의존으로 가져오지 않는다. 그동안 `androidx.compose.material.icons.Icons`가 material3를 통해 딸려오고 있었다.
+
+      e: .../NeveraFilledIconButton.kt:4:34 Unresolved reference 'icons'.
+      e: .../NeveraActionBottomSheet.kt:130:43 Unresolved reference 'Icons'.
+
+  BOM이 `material-icons-core`를 1.7.8로 고정해 두고 있으므로(deprecated되어 버전이 동결됨) 명시 선언만 추가해 해결했다. 이 상향을 Nav3 작업과 한 커밋에 넣었다면 원인을 가리기 어려웠을 것이다.
+
+- 관찰: `:app`도 `api`와 `impl` 양쪽에 의존해야 한다. `impl`만으로는 부족하다.
+  증거: M4 당시 `:app`의 `NeveraNavHost.kt`는 그래프 등록 함수(`notificationScreen()`, impl에 있음)와 목적지 이름(`NotificationRoute`, api에 있음)을 둘 다 썼다. 지금은 `NeveraNavHost.kt`가 삭제되고 `NeveraApp.kt`의 `entryProvider` 블록이 같은 조립 역할을 한다. 원리는 그대로다. `implementation`은 전이되지 않으므로 `impl`을 통해 `api`가 딸려오지 않는다. 두 줄 다 선언해야 한다.
+
+## Decision Log
+
+- 결정: `api` 모듈을 순수 Kotlin(JVM) 모듈로 만든다.
+  근거: `api`에는 `@Serializable` 데이터 클래스만 들어간다. Android 의존성이 없으면 빌드가 빠르고, UI 코드를 실수로 넣는 것이 컴파일 단계에서 막힌다. 이 저장소에는 이미 `:domain`과 `:core:common`이 `nevera.kotlin.jvm`으로 운영되는 선례가 있다. 실현 가능성은 M2에서 확인했다.
+  날짜/작성자: 2026-08-04 / 이 계획 작성자
+
+- 결정: `api` 모듈에 `navigateToXxx` 같은 `NavController` 확장 함수를 두지 않는다. Route 클래스만 둔다.
+  근거: `NavController`와 `NavOptionsBuilder`는 `androidx.navigation`(AAR)에 있어 순수 Kotlin 모듈에서 참조할 수 없다. 확장 함수를 두려면 `api`를 Android 라이브러리로 만들어야 하는데, 그러면 순수 Kotlin의 이점(빠른 빌드, UI 차단)을 전부 잃는다. 호출부가 `navController.navigate(NotificationRoute)`를 직접 쓰는 것으로 충분하다.
+  날짜/작성자: 2026-08-04 / 이 계획 작성자
+
+- 결정: `api`의 패키지를 `…feature.notification.api`로 하고, `impl`의 그래프 코드는 `…feature.notification.navigation`에 남긴다.
+  근거: 두 모듈이 같은 패키지 이름을 나눠 갖는 상황(split package)을 피한다. 자바와 안드로이드에서 금지는 아니지만 IDE의 자동 완성과 코드 탐색이 혼란스러워진다.
+  날짜/작성자: 2026-08-04 / 이 계획 작성자
+
+- 결정: 비교 대상 세 브랜치의 구현 범위를 "알림 화면으로 가는 경로"로 한정한다.
+  근거: 여덟 개 feature를 전부 마이그레이션하면 브랜치마다 수백 개 파일이 바뀌어 비교가 불가능해진다. 소비자가 세 곳으로 가장 많은 알림 경로 하나만 세 방식으로 구현하면, 같은 요구에 대한 세 가지 답을 나란히 놓고 볼 수 있다.
+  날짜/작성자: 2026-08-04 / 이 계획 작성자
+
+- 결정: 범위 한정을 해제하고, 이 브랜치에서 **모든 feature 모듈을 분리한 뒤 Navigation 3까지 마이그레이션**한다(Phase 2·3).
+  근거: 세 안의 비교가 끝났고 프로젝트 담당자가 이 방향을 선택했다. 비교 목적의 범위 제한은 더 이상 필요 없다.
+  날짜/작성자: 2026-08-05 / 프로젝트 리드
+
+- 결정: feature에 raw `NavController`를 넘기던 것을 **`Navigator` 래퍼로 교체**한다.
+  근거: Phase 1에서 feature의 `NavGraphBuilder` 확장에 `NavController`를 통째로 넘겼는데, 이는 안드로이드 공식 가이드([Encapsulate your navigation code](https://developer.android.com/guide/navigation/design/encapsulate))가 권장하는 형태가 아니다. 공식 가이드는 콜백을 넘기고 이동은 별도의 `NavController` 확장으로 캡슐화하라고 한다.
+
+  더 중요한 건 권한 범위다. `NavController`를 주면 feature가 `popUpTo`·`clearBackStack` 등 전역 백스택을 무엇이든 조작할 수 있다. Now in Android의 현행 코드는 대신 `Navigator`라는 좁은 객체를 넘기고, 그 안에 탑레벨 전환·서브스택 관리 같은 정책을 가둔다.
+
+      class Navigator(val state: NavigationState) {
+          fun navigate(key: NavKey) {
+              when (key) {
+                  state.currentTopLevelKey -> clearSubStack()
+                  in state.topLevelKeys -> goToTopLevel(key)
+                  else -> goToKey(key)
+              }
+          }
+          fun goBack() { ... }
+      }
+
+  feature가 할 수 있는 일이 `navigate`와 `goBack` 둘로 좁혀지고, 백스택 정책은 한 곳에 모인다.
+  날짜/작성자: 2026-08-05 / 이 계획 작성자
+
+- 결정: Navigation 3 마이그레이션 전에 **의존성 상향만 단독으로 수행**하는 스파이크 마일스톤(M9)을 둔다.
+  근거: `androidx.navigation3:navigation3-ui:1.0.0`은 Compose **1.9.5** 이상을 요구하고, `androidx.lifecycle:lifecycle-viewmodel-navigation3:2.10.0`은 lifecycle **2.10.0**을 끌고 온다. 현재 이 저장소는 Compose BOM `2024.09.00`(Compose 1.7.2), lifecycle `2.6.1`/`2.8.7`이다. Compose 1.7.2 → 1.10.x는 마이너 세 단계 점프이고 그 자체로 API 변경·경고 정리가 필요하다.
+
+  아키텍처 변경과 의존성 상향을 한 커밋에 섞으면 빌드가 깨졌을 때 원인을 가릴 수 없다. 상향만 먼저 하고 기존 코드가 그대로 통과하는 것을 확인한 뒤 Nav3로 넘어간다.
+  날짜/작성자: 2026-08-05 / 이 계획 작성자
+
+- 결정: **모든 Route를 `api` 모듈에 둔다.** "다른 모듈이 참조하는가"라는 기준을 폐기한다(M10).
+  근거: 이 결정에 이르기까지 세 가지 안을 검토했다.
+
+  **(1) 현행 — 참조되는 것만 api.** 같은 성격의 Route가 참조 여부라는 우연한 사실에 따라 두 모듈로 흩어진다. 가시성도 네 가지가 섞여 있었다(`api public` 9, `impl internal` 6, `impl private` 3, `impl public` 1).
+
+  **(2) 진입점만 api, 흐름 내부는 impl+internal.** 작성 시점에 "밖에서 들어와도 되는 화면인가"를 판단해야 하는데, 이는 개발자가 알 수 없고 개발자의 결정도 아닌 기획 판단이다. 폐기했다.
+
+  **(3) 전부 api.** 채택.
+
+  결정적 근거는 **배경 지식이 없는 팀원의 목적지 파악 비용**이다. 특정 feature를 처음 만지는 사람이 "이 모듈에는 어떤 화면이 있는가"를 알려면 한 곳만 보면 된다. Route가 두 모듈에 흩어져 있으면 그 사람은 두 곳을 다 열어봐야 하고, 어느 쪽에 있는지 규칙도 알아야 한다. 유지보수 관점에서 이 비용이 아래에 적은 손실보다 크다.
+
+  **포기하는 것**: 흐름 중간으로 밖에서 진입하는 것을 컴파일러가 막지 못한다. 예를 들어 촬영을 거치지 않고 `IngredientRoute(imageUri = "...")`로 직접 가는 코드가 컴파일된다. 크래시나 데이터 손상은 아니며(OCR 실패 → 에러 화면), 설계 실수를 컴파일이 아니라 코드 리뷰에서 잡게 된다는 뜻이다.
+
+  **완화**: 각 `api` 모듈의 Route 파일에서 진입점과 흐름 내부 단계를 주석으로 구분해 표기한다. 강제력은 없지만, 한 파일에 모여 있으므로 "이 모듈에 어떤 화면이 있고 어디로 들어가는 게 정상인가"가 함께 읽힌다. 목적지 파악 비용을 낮춘다는 이 결정의 목적에도 부합한다.
+
+  **참고**: Now in Android도 모든 NavKey를 `api`에 둔다(api 5개 / impl 0개). 다만 NIA에는 다단계 흐름이 없어 "흐름 내부 단계"라는 개념 자체가 없으므로, 같은 선택이라도 근거는 다르다.
+  날짜/작성자: 2026-08-05 / 프로젝트 리드
+
+- 결정: **인증 이전 흐름(Splash·Auth)을 `NavDisplay` 밖으로 분리한다.**
+  근거: Now in Android의 `NavigationState`는 "모든 목적지는 탭이거나 탭 안에 있다"를 전제한다.
+
+      class NavigationState(
+          val startKey: NavKey,                             // 탭 중 하나라고 가정
+          val topLevelStack: NavBackStack<NavKey>,
+          val subStacks: Map<NavKey, NavBackStack<NavKey>>, // 모든 화면은 어느 탭엔가 속함
+      )
+
+  NIA에는 로그인이 없어서 이 전제가 성립한다. 우리 앱의 Splash·Auth는 탭도 아니고 탭에 속하지도 않으며 탭보다 먼저 온다. 이 모델에 얹히지 않는다.
+
+  두 선택지가 있었다. (a) Splash·Auth를 `NavDisplay` 밖의 별도 상태로 두고 인증 성공 후에 `NavDisplay`를 띄운다. (b) `NavigationState`에 "세션 이전 스택" 개념을 추가한다.
+
+  (a)를 택한다. **인증 게이트가 타입 수준에서 표현되어 "로그인하지 않은 상태로 탭 화면에 도달"하는 경로가 구조적으로 불가능해지기 때문이다.** 별도 진단에서 확인된 결함 — 로그아웃 상태에서 딥링크로 인증 벽을 넘을 수 있는 문제 — 가 코드 수정이 아니라 구조로 해소된다. (b)는 NIA 모델을 확장해야 하고, 인증 여부가 여전히 런타임 조건으로 남는다.
+  날짜/작성자: 2026-08-05 / 프로젝트 리드
+
+- 결정: 남은 인증 전 Auth 흐름은 메인 `NavigationState`에 얹지 않고 **별도 단일 스택 Nav3 호스트**로 마이그레이션한다(M16).
+  근거: 인증 전 화면은 탭도 아니고 탭 내부 화면도 아니다. `Nav3Navigator`가 가진 탭 재선택, 탭 전환, 탭별 서브스택 보존 정책은 로그인 → 회원가입 흐름에는 과하다. `PreSessionHost` 안에서 `rememberNavBackStack(LoginRoute)`로 작은 백스택을 만들고 `NavDisplay`를 직접 그리면, 인증 게이트 분리라는 M13의 장점은 유지하면서 Nav2 `NavController`를 제거할 수 있다. 인증 성공은 여전히 네비게이션 목적지 이동이 아니라 `onAuthenticated()` 콜백으로 세션 상태를 바꾸고, `NeveraApp`이 인증 후 메인 `NavDisplay`를 새로 띄우게 한다.
+  날짜/작성자: 2026-08-08 / 이 계획 작성자
+
+- 결정: `core/navigation/Navigator.kt` 삭제는 M16 이후로 미룬다.
+  근거: 지금 삭제하면 `PreSessionHost.kt`와 `AuthNavigation.kt`가 즉시 컴파일되지 않는다. 먼저 인증 전 흐름을 Nav3로 바꿔 실제 참조를 0으로 만든 뒤 파일과 `core:navigation`의 `navigation-compose` 의존을 삭제한다. 이 순서면 각 커밋이 컴파일 가능한 상태를 유지한다.
+  날짜/작성자: 2026-08-08 / 이 계획 작성자
+
+- 결정: Compose BOM은 `2026.03.00`(Compose 1.10.5)으로 올린다.
+  근거: Nav3가 요구하는 1.9.5를 넘기는 가장 최근 BOM이다. 1.9.x대에 맞춰 최소로만 올리는 선택도 있으나, 어차피 한 번 겪을 마이그레이션이라면 최신에서 겪는 편이 낫다. 문제가 생기면 `2025.12.00`(Compose 1.10.0)으로 낮춰 재시도한다.
+  날짜/작성자: 2026-08-05 / 이 계획 작성자
+
+## Outcomes & Retrospective
+
+M15까지 완료. 원래 목표였던 "`:app`이 알림 콜백을 만들지 않는다"와 "의존을 선언한 모듈만 목적지 이름을 본다"는 M4에서 달성했다. 이후 Phase 2·3에서 모든 주요 feature를 api/impl로 나누고, 인증 후 메인 그래프를 Navigation 3의 `NavDisplay`와 `Nav3Navigator`로 전환했다.
+
+`api` 모듈은 파일 두 개(`build.gradle.kts`와 Route 하나)로 끝났다. 예상보다 훨씬 작다. 순수 Kotlin으로 만들 수 있다는 것이 이 방식의 가장 큰 수확이다 — Route를 담는 그릇이 Android를 전혀 모르는 상태로 유지되므로, 시간이 지나도 이 모듈이 커질 방법이 없다.
+
+빌드 검사(M4)는 실제로 동작한다. 일부러 `impl` 의존을 넣으면 대안을 알려주는 메시지와 함께 빌드가 멈춘다.
+
+Nav3 전환의 큰 수확은 백스택 정책이 명시적인 리스트로 바뀐 것이다. 탭별 상태 보존은 `NavigationState.subStacks`가 맡고, 딥링크는 `Nav3Navigator.openDeeplink(tab, stack)`이 원하는 백스택 모양을 직접 쓴다. Navigation 2의 `popUpTo`, `saveState`, `restoreState`, `while(popBackStack())` 같은 간접 조작은 인증 후 메인 흐름에서 사라졌다.
+
+2026-08-09에 Phase 4도 완료했다. `PreSessionHost`는 이제 `rememberNavBackStack(LoginRoute)`와 `NavDisplay`로 인증 전 스택을 직접 그리고, `AuthNavigation.kt`는 `EntryProviderScope<NavKey>.authEntry(...)`를 제공한다. `core/navigation/Navigator.kt`는 삭제됐고, `app`과 `core:navigation`의 `implementation(libs.navigation.compose)` 직접 의존도 제거됐다. 연결되지 않은 `SplashNavigation.kt`와 `SampleNavigation.kt`도 삭제했다.
+
+아쉬운 점은 셋이다. 첫째, 디렉터리 이동이 들어가서 diff가 크고 되돌리기가 번거롭다. 둘째, `:app`이 `api`와 `impl` 양쪽을 선언해야 해서 빌드 파일이 길어진다. 셋째, M13 이후 문서가 "Nav3 전환 완료"처럼 읽히는 동안 실제 코드에는 인증 전 Nav2 섬이 남았다. 앞으로는 마일스톤 완료 문장에 "무엇이 아직 남았는가"를 같이 적는다.
+
+배운 점: 이 방식의 실제 비용은 모듈 개수가 아니라 **첫 마이그레이션의 절차와 잔여 경로 추적**이다. `rg "NavGraphBuilder|NavHost\\(|rememberNavController|core.navigation.Navigator"` 같은 정적 검사를 수용 기준에 넣어야 완료 여부가 문서와 코드 사이에서 어긋나지 않는다.
+
+## Context and Orientation
+
+### 이 저장소
+
+Nevera는 Android 앱이다. 냉장고 속 식재료를 영수증 사진으로 등록하고 관리한다. Gradle 멀티모듈 구조이고 모듈 목록은 저장소 루트의 `settings.gradle.kts`에 있다. 작업 시작 시점에 20개다.
+
+화면을 담는 모듈은 `feature/` 아래에 여덟 개 있다. `splash`, `auth`, `main`, `mypage`, `notification`, `sample`, `ingredient`, `fridge`다. `main`이라는 모듈이 담고 있는 화면 이름은 "홈"이다. 모듈 이름과 화면 이름이 다르다.
+
+최상위 모듈은 `app`이다. 화면들을 하나의 흐름으로 연결하는 코드가 여기 있다.
+
+### 화면 이동이 동작하는 방식
+
+이 앱은 Jetpack Compose와 Navigation Compose를 쓴다. 알아야 할 개념은 셋이다.
+
+**Route(목적지 이름)** 는 `@Serializable`이 붙은 코틀린 클래스다. 문자열 경로 대신 클래스를 쓰므로 오타가 컴파일 에러로 잡힌다.
+
+**NavGraphBuilder 확장 함수** 는 "이 Route에 도착하면 이 화면을 그려라"를 등록한다.
+
+**NavController** 는 실제 이동을 실행하는 객체다.
+
+작업 전에는 이 셋을 `:app`의 `app/src/main/kotlin/com/anddd/nevera/navigation/NeveraNavHost.kt`가 조립했다. M12·M14 이후 이 파일은 삭제됐고, 현재는 `app/src/main/kotlin/com/anddd/nevera/NeveraApp.kt`가 `entryProvider`와 `NavDisplay`를 조립한다.
+
+### 작업 전 상태
+
+`NeveraNavHost.kt`에 다음 코드가 홈·냉장고·마이페이지 각각에 대해 세 번 반복되어 있었다.
+
+    onNavigateToNotification = {
+        navController.navigate(NotificationRoute) { launchSingleTop = true }
+    },
+
+`feature:main`(홈)이 `NotificationRoute`를 직접 쓰지 못한 이유는 `:feature:notification`에 의존하지 않기 때문이다. 의존하면 알림 화면 UI 구현 전체(12개 파일)를 끌어오게 되므로 하지 않는 것이다.
+
+`feature/main/build.gradle.kts`에는 `implementation(project(":feature:notification"))`이라는 선언이 있었으나 소스 어디에서도 그 패키지를 import 하지 않았다. 누군가 직접 의존을 시도했다가 방식을 바꾸고 선언만 남긴 것으로 보인다. **규칙이 없으면 다음 사람은 이 선언을 보고 해도 되는 것으로 읽는다.** 이 작업의 M4가 그런 선언을 빌드 단계에서 막는다.
+
+### 모듈이 만들어지는 방식
+
+각 feature 모듈의 `build.gradle.kts`는 짧다. `nevera.feature`라는 이 저장소가 직접 만든 Gradle 플러그인이 공통 설정을 넣어 주기 때문이다. 플러그인 소스는 `build-logic/src/main/kotlin/NeveraFeaturePlugin.kt`에 있고, 등록은 `build-logic/build.gradle.kts`의 `gradlePlugin` 블록에서 한다.
+
+순수 Kotlin 모듈용 플러그인도 이미 있다. `nevera.kotlin.jvm`이고 소스는 `build-logic/src/main/kotlin/NeveraKotlinJvmPlugin.kt`다. `:domain`과 `:core:common`이 이걸 쓴다.
+
+## Plan of Work
+
+네 마일스톤으로 나눈다. 각 마일스톤 끝에서 `./gradlew :app:assembleDebug`가 통과해야 한다.
+
+**M1**은 `api` 모듈들이 공통으로 쓸 Gradle 플러그인을 만든다. 하는 일은 코틀린 JVM 플러그인과 직렬화 플러그인을 켜는 것뿐이다. Compose도 Hilt도 넣지 않는다 — **넣지 않는 것이 이 모듈의 존재 이유다.**
+
+**M2**는 알림 모듈을 `api`와 `impl`로 쪼갠다. 이 시점에는 `:app`과 다른 feature의 코드를 바꾸지 않는다. 콜백 방식이 그대로 유지되므로 구조만 바뀌고 동작은 완전히 같다. 문제가 생기면 원인이 "모듈 분리" 하나로 좁혀진다.
+
+**M3**에서 실제 이득이 나온다. 세 소비자 모듈이 `api`를 의존 선언하고 직접 이동하게 한 뒤, `:app`에서 콜백 세 개를 지운다.
+
+**M4**는 규칙을 빌드가 강제하게 한다. `impl`이 다른 feature의 `impl`에 의존하면 빌드를 실패시킨다.
+
+### Phase 2 — 모든 모듈을 같은 모양으로
+
+**M5**는 `Navigator` 래퍼를 도입한다. `:core:navigation` 모듈을 만들고 `NavController`를 감싼 좁은 객체를 둔다. feature는 이제 `NavController` 대신 이것을 받는다. Phase 1에서 세 모듈에 넘긴 raw `NavController`를 여기서 걷어낸다.
+
+**M6·M7**은 나머지 feature를 `api`/`impl`로 나눈다. 절차는 M2와 같다. 순서는 옮길 것이 적은 쪽부터다 — `splash`(파일 8개), `auth`(28개), `main`(24개)를 M6에서, `mypage`(38개), `fridge`(25개), `ingredient`(47개)를 M7에서 한다. `sample`은 어떤 그래프에도 연결되어 있지 않은 죽은 모듈이라 건드리지 않는다.
+
+M6·M7을 처음 계획할 때는 각 feature의 `api`에 무엇을 올릴지 기준이 하나였다. **다른 모듈이 그 이름을 쓰는가.** 쓰지 않으면 `impl`에 남긴다는 기준이었다. 이 기준은 M10에서 폐기됐다. 현재 기준은 모든 Route를 해당 feature의 `api` 모듈에 두는 것이다. 목적지 목록을 한 파일에서 읽게 하려는 선택이고, 자세한 이유는 Decision Log의 "모든 Route를 `api` 모듈에 둔다" 항목에 있다.
+
+**M8**은 `:app`의 조립 코드를 정리한다. 남아 있는 콜백 중 다른 feature를 목적지로 하는 것을 Navigator 호출로 바꾼다.
+
+### Phase 3 — Navigation 3
+
+Navigation 3은 Navigation Compose와 다른 라이브러리다. 개념이 바뀌므로 먼저 정의한다.
+
+**NavKey** 는 목적지 이름이다. Navigation 2의 Route에 해당하며 `androidx.navigation3.runtime.NavKey`를 구현한다.
+
+**백스택이 명시적인 리스트다.** Navigation 2에서는 `NavController`가 백스택을 감추고 `popUpTo` 같은 옵션으로 간접 조작했다. Navigation 3에서는 백스택이 `NavBackStack<NavKey>`라는 관찰 가능한 리스트이고, 코드가 직접 원소를 넣고 뺀다. 그래서 `saveState`/`restoreState` 같은 옵션이 없다 — 탭마다 별도의 리스트를 두고 그것을 갈아 끼우는 방식으로 같은 효과를 만든다.
+
+**entryProvider** 는 "이 NavKey에는 이 화면"을 등록하는 곳이다. Navigation 2의 `NavGraphBuilder`에 해당한다.
+
+**NavDisplay** 는 백스택을 화면으로 그리는 컴포저블이다. `NavHost`에 해당한다.
+
+**M9**는 아키텍처를 건드리지 않고 의존성만 올린다. Compose BOM을 `2026.03.00`으로, lifecycle을 `2.10.0`으로 올린 뒤 기존 코드가 그대로 빌드·테스트를 통과하는지 확인한다. 이 단계에서 깨지는 것은 전부 Compose·lifecycle의 API 변경 때문이며 Nav3와 무관하다. 원인을 섞지 않으려고 분리했다.
+
+**M10**은 `impl`에 남아 있는 Route 10개를 전부 `api`로 옮긴다. 옮긴 뒤 `impl`의 Route 개수는 0이 되고, 각 feature의 목적지 목록은 `api` 모듈의 파일 하나에서 전부 읽힌다.
+
+대상은 다음과 같다. `auth`의 `LoginRoute`·`SignupRoute`, `fridge`의 `EditFridgeIngredientRoute`, `ingredient`의 `IngredientRoute`·`OcrErrorRoute`·`RegisterSuccessRoute`·`PhotoDetailRoute`, `mypage`의 `AppInfoRoute`·`SettingAccountRoute`·`SettingNotificationRoute`.
+
+`internal`과 `private` 수식어는 전부 제거된다. `api` 모듈의 Route는 다른 모듈이 봐야 하므로 `public`일 수밖에 없다.
+
+각 `api` 파일에는 진입점과 흐름 내부 단계를 주석으로 구분해 적는다. 강제력은 없지만 목적지 목록과 함께 읽히므로, 처음 이 모듈을 만지는 사람이 "어디로 들어가는 게 정상인가"를 함께 파악할 수 있다.
+
+    // ── 진입점 ──
+    @Serializable data object IngredientGraphRoute
+    @Serializable data class OcrCaptureRoute(val openGallery: Boolean = false)
+
+    // ── 등록 흐름 내부 단계 (OcrCaptureRoute로 진입한다) ──
+    @Serializable data class IngredientRoute(val imageUri: String)
+    @Serializable data object OcrErrorRoute
+
+**M11**은 목적지 이름과 백스택 상태를 Nav3 타입으로 바꾼다. 각 `api` 모듈의 Route가 `NavKey`를 구현하게 하고, `:core:navigation`에 `NavigationState`(탑레벨 스택 + 탭별 서브스택)와 그것을 조작하는 `Nav3Navigator`를 만든다.
+
+이 시점에 탭 전환 정책이 `:app`에서 `Nav3Navigator` 안으로 들어온다. 지금 `NeveraApp.kt`에 있는 `popUpTo(HomeRoute) { saveState = true }` 블록이 사라지고, `Nav3Navigator.navigate()`가 목적지가 탭인지 아닌지를 스스로 분기한다.
+
+**M12**는 각 `impl` 모듈의 `NavGraphBuilder` 확장을 `EntryProviderScope<NavKey>` 확장으로 바꾼다. 이름도 `xxxScreen`에서 `xxxEntry`로 바꾼다.
+
+**M13**은 인증 이전 흐름을 분리한다. `MainActivity`가 세션 상태에 따라 두 갈래로 나뉜다. 인증 전이면 Splash·Auth 화면만 담은 작은 컴포저블을, 인증 후면 `NavDisplay`를 띄운다. 두 세계가 하나의 백스택을 공유하지 않으므로 **로그인하지 않은 상태에서 탭 화면에 도달하는 경로가 존재하지 않게 된다.**
+
+이때 딥링크는 인증 전에 도착할 수 있으므로 "보류된 딥링크"로 보관했다가 인증 성공 후 소비한다. 지금은 없는 동작인데, 있으면 "푸시로 열었더니 로그인이 필요했다 → 로그인 후 원래 가려던 곳으로 간다"는 정상적인 UX가 된다.
+
+**M14**는 `:app`의 `NavHost`를 `NavDisplay`로 바꾼다. 여기서 가장 까다로운 것이 바텀 탭 상태 보존이다. 지금은 `popUpTo(HomeRoute) { saveState = true }` + `restoreState = true` 조합으로 처리하는데, Nav3에는 그런 옵션이 없다. 대신 탭마다 서브스택을 하나씩 두고 탑레벨 스택이 어느 서브스택을 보여줄지 고르는 구조로 만든다. M13에서 Splash·Auth를 빼냈으므로 이 시점의 `NavigationState`는 NIA와 같은 전제 위에 설 수 있다.
+
+**M15**는 딥링크를 옮긴다. 현재는 딥링크가 도착하면 `while (popBackStack())` 루프로 백스택을 손질하는데, Nav3에서는 백스택이 그냥 리스트이므로 원하는 상태를 직접 조립하면 된다. 이 부분은 Nav3가 명확히 더 단순해지는 지점이다.
+
+### Phase 4 — Nav2 잔여 제거
+
+M15 이후의 현재 상태는 "앱 본문은 Nav3, 인증 전 Auth 흐름은 Nav2"다. 이 상태도 컴파일되고 동작하지만, `Navigator.kt`와 `navigation-compose`를 삭제할 수 없으므로 Navigation 3 마이그레이션 완료라고 부르기에는 이르다.
+
+**M16**은 인증 전 Auth 흐름만 별도 단일 스택 Nav3 호스트로 바꾼다. `PreSessionHost`에서 `rememberNavController()`와 `NavHost`를 제거하고, `rememberNavBackStack(LoginRoute)` 또는 같은 의미의 작은 `NavBackStack<NavKey>`를 만든다. 이 스택은 탭을 모르고 `LoginRoute`와 `SignupRoute`만 담는다. `NavDisplay`의 `entryProvider`에는 `LoginRoute`와 `SignupRoute` 두 entry를 등록한다. 로그인 성공은 목적지 이동이 아니라 지금처럼 `onAuthenticated()`를 호출해 세션 상태를 바꾼다. 회원가입 이동은 스택에 `SignupRoute`를 추가하고, 회원가입에서 로그인으로 돌아가기는 스택에서 마지막 원소를 제거한다.
+
+`feature/auth/impl/src/main/kotlin/com/anddd/nevera/feature/auth/navigation/AuthNavigation.kt`는 `NavGraphBuilder` 확장이 아니라 Auth 전용 entry 등록 함수로 바꾼다. 예를 들어 `fun EntryProviderScope<NavKey>.authEntry(...)` 형태로 만들거나, Auth 흐름이 두 화면뿐이면 `PreSessionHost` 안에 직접 등록해도 된다. 선호는 전자다. 다른 feature가 이미 `homeEntry`, `fridgeEntry`, `ingredientEntry`처럼 entry 등록 함수를 제공하고 있으므로 같은 모양이 더 읽기 쉽다.
+
+**M17**은 실제 참조가 0이 된 뒤 `core/navigation/src/main/kotlin/com/anddd/nevera/core/navigation/Navigator.kt`를 삭제한다. 이어서 `core/navigation/build.gradle.kts`의 `implementation(libs.navigation.compose)`를 제거한다. `app/build.gradle.kts`의 `implementation(libs.navigation.compose)`도 더 이상 직접 import가 없으면 제거한다. `hilt-navigation-compose`는 `hiltViewModel()` 호출 때문에 필요할 수 있으므로 `androidx.navigation.compose` 삭제와 별개로 판단한다.
+
+**M18**은 앱 런타임에 연결되지 않은 `feature/splash/impl/.../SplashNavigation.kt`와 `feature/sample/.../SampleNavigation.kt`의 Nav2 DSL 잔여를 정리한다. 둘 다 현재 앱 그래프에서 호출되지 않는다. 완전 삭제하거나 Nav3 entry 형태로 바꿀 수 있다. 앱에 연결되지 않은 샘플 모듈은 삭제 여부가 별도 제품 결정이므로, 이 계획에서는 최소 변경으로 Nav2 import만 없애는 쪽을 기본으로 삼는다.
+
+## Concrete Steps
+
+모든 명령은 워크트리 루트 `/Users/juhyeok/AndroidStudioProjects/Nevera-Android`에서 실행한다.
+
+### M1 — convention plugin
+
+`build-logic/src/main/kotlin/NeveraFeatureApiPlugin.kt`를 만들고, `build-logic/build.gradle.kts`의 `gradlePlugin` 블록에 `nevera.feature.api`로 등록한다.
+
+    ./gradlew :build-logic:build
+
+### M2 — 알림 모듈 분리
+
+    mkdir -p feature/notification/impl
+    git mv feature/notification/src feature/notification/impl/src
+    git mv feature/notification/build.gradle.kts feature/notification/impl/build.gradle.kts
+    mkdir -p feature/notification/api/src/main/kotlin/com/anddd/nevera/feature/notification/api
+
+`settings.gradle.kts`에서 `include(":feature:notification")`을 두 줄로 바꾸고, `app/build.gradle.kts`의 의존도 두 줄로 바꾼다.
+
+    ./gradlew :app:assembleDebug
+
+### M3 — 직접 이동 전환
+
+세 소비자의 `build.gradle.kts`에 `implementation(project(":feature:notification:api"))`를 넣고, 각 navigation 파일을 고친 뒤 `:app`에서 콜백을 지운다.
+
+    ./gradlew :app:assembleDebug
+
+### M4 — 빌드 검사
+
+`NeveraFeaturePlugin.kt`에 구성 시점 검사를 넣는다. 일부러 위반해서 동작을 확인한다.
+
+### M16 — 인증 전 Auth 흐름을 Nav3로 전환
+
+먼저 현재 남은 Nav2 호출부를 확인한다.
+
+    rg "rememberNavController|NavHost\(|NavGraphBuilder|androidx.navigation.compose|com.anddd.nevera.core.navigation.Navigator" app core feature
+
+작업 시작 시점의 중요한 출력은 다음과 같아야 한다. 줄 번호는 달라질 수 있다.
+
+    app/src/main/kotlin/com/anddd/nevera/navigation/PreSessionHost.kt:import androidx.navigation.compose.NavHost
+    app/src/main/kotlin/com/anddd/nevera/navigation/PreSessionHost.kt:import androidx.navigation.compose.rememberNavController
+    app/src/main/kotlin/com/anddd/nevera/navigation/PreSessionHost.kt:import com.anddd.nevera.core.navigation.Navigator
+    feature/auth/impl/src/main/kotlin/com/anddd/nevera/feature/auth/navigation/AuthNavigation.kt:import androidx.navigation.NavGraphBuilder
+    feature/auth/impl/src/main/kotlin/com/anddd/nevera/feature/auth/navigation/AuthNavigation.kt:import androidx.navigation.compose.composable
+
+`feature/auth/impl/src/main/kotlin/com/anddd/nevera/feature/auth/navigation/AuthNavigation.kt`를 `EntryProviderScope<NavKey>` 기반으로 바꾼다. 함수 이름은 `authEntry`로 둔다. `navigation<AuthGraphRoute>` 중첩 그래프는 Nav3에 없으므로 제거하고, `LoginRoute`와 `SignupRoute`를 평평하게 등록한다. `AuthGraphRoute`는 더 이상 런타임 시작 목적지로 쓰지 않지만, 외부 문서와 이전 이력을 위해 당장 삭제하지 않는다.
+
+`app/src/main/kotlin/com/anddd/nevera/navigation/PreSessionHost.kt`를 바꾼다. `rememberNavController()`와 `NavHost`를 제거한다. `isChecking`일 때 `SplashScreen`을 직접 그리는 구조는 유지한다. `isChecking`이 false이면 `rememberNavBackStack(LoginRoute)`로 인증 전 백스택을 만들고 `NavDisplay`를 그린다. `onBack`은 백스택 크기가 1보다 클 때만 마지막 원소를 제거한다. 로그인 화면에서 회원가입으로 갈 때는 `SignupRoute`를 추가한다. 회원가입에서 로그인으로 돌아갈 때는 같은 `onBack` 정책을 호출한다.
+
+M16이 끝나면 다음 명령이 통과해야 한다.
+
+    ./gradlew :feature:auth:impl:compileDebugKotlin :app:compileDebugKotlin
+
+### M17 — 기존 Navigator와 Navigation Compose 의존 삭제
+
+M16이 통과한 뒤 참조가 사라졌는지 확인한다.
+
+    rg "com.anddd.nevera.core.navigation.Navigator|Navigator\(" app core feature
+
+기대 결과는 `core/navigation/src/main/kotlin/com/anddd/nevera/core/navigation/Navigator.kt` 안의 자기 선언만 남거나 아무것도 나오지 않는 것이다. 아무 호출부도 없으면 `Navigator.kt`를 삭제한다.
+
+그 다음 의존을 줄인다. `core/navigation/build.gradle.kts`에서 `implementation(libs.navigation.compose)`를 제거한다. `app/build.gradle.kts`에서 `implementation(libs.navigation.compose)`가 더 이상 필요 없는지 확인하고 제거한다. `hilt-navigation-compose`는 다른 파일에서 `hiltViewModel()`을 쓰면 남긴다.
+
+M17이 끝나면 다음 정적 검사가 통과해야 한다.
+
+    rg "androidx.navigation.compose|androidx.navigation.NavGraphBuilder|androidx.navigation.NavController" app core feature
+
+기대 결과는 앱 런타임 경로에서는 0건이다. 이 시점에 `feature/splash/impl`이나 `feature/sample`만 남아 있으면 M18로 넘긴다.
+
+### M18 — 죽은 Nav2 DSL 정리
+
+`feature/splash/impl/src/main/kotlin/com/anddd/nevera/feature/splash/main/navigation/SplashNavigation.kt`와 `feature/sample/src/main/kotlin/com/anddd/nevera/feature/sample/main/navigation/SampleNavigation.kt`는 현재 `NeveraApp`에서 호출되지 않는다. 앱에 연결된 런타임 경로가 아니므로 M16과 분리한다.
+
+최소 변경은 두 파일을 삭제하는 것이다. 삭제하기 전에 호출자가 없는지 확인한다.
+
+    rg "splashScreen\(|sampleScreen\(" app feature
+
+호출자가 없으면 파일을 삭제하고 빌드한다. 호출자가 있으면 해당 호출자를 Nav3 entry 방식으로 먼저 바꾼다.
+
+    ./gradlew :app:compileDebugKotlin
+
+## Validation and Acceptance
+
+**현재 기준의 Nav3 마이그레이션 완료 조건.** M16~M18까지 끝난 뒤 다음 명령이 모두 통과해야 한다.
+
+    ./gradlew :core:navigation:testDebugUnitTest :feature:auth:impl:compileDebugKotlin :app:compileDebugKotlin
+
+Navigation Compose 2 런타임 경로가 남아 있지 않아야 한다.
+
+    rg "rememberNavController|NavHost\(|NavGraphBuilder|androidx.navigation.compose|com.anddd.nevera.core.navigation.Navigator" app core feature
+
+기대 결과는 0건이다. 단, 삭제하지 않기로 별도 결정한 샘플 모듈 같은 비연결 코드가 남는다면 그 이유를 `Decision Log`에 추가하고 `Progress`에 남은 항목으로 적는다. `core/navigation/src/main/kotlin/com/anddd/nevera/core/navigation/Navigator.kt` 파일은 없어야 한다.
+
+인증 전 동작도 그대로여야 한다. 앱 데이터를 지운 상태에서 앱을 시작하면 스플래시 확인 이후 로그인 화면이 나온다. 로그인 화면에서 회원가입으로 이동할 수 있고, 뒤로가기로 로그인 화면에 돌아온다. 로그인 성공 시에는 auth 백스택 안에서 홈으로 navigate하지 않고 `SessionState.Authenticated` 전환으로 인증 후 메인 `NavDisplay`가 나타난다.
+
+인증 우회 방지는 유지되어야 한다. 앱 데이터를 지운 뒤 다음 명령으로 딥링크 콜드 스타트를 실행한다.
+
+    adb shell pm clear com.anddd.nevera
+    adb shell am start -a android.intent.action.VIEW -d "nevera://detail/1"
+
+기대 결과는 로그인 화면에 머무는 것이다. 홈이나 냉장고 화면이 로그인 화면 위에 쌓이면 실패다.
+
+**빌드와 테스트가 통과한다.**
+
+    ./gradlew :app:assembleDebug
+    ./gradlew testDebugUnitTest :domain:test :core:common:test :quality:detekt-rules:test
+    ./gradlew detekt
+
+Phase 1만 수행할 때는 테스트 코드를 건드리지 않으므로 통과 테스트 개수가 변경 전과 같아야 했다. Phase 3 이후에는 `Nav3NavigatorTest`와 `DeeplinkResolverTest`가 추가됐으므로, 테스트 개수는 늘어나는 것이 정상이다.
+
+**구조가 바뀌었다.** 이게 핵심 수용 기준이다.
+
+    ./gradlew :feature:main:dependencies --configuration debugCompileClasspath | grep notification
+
+기대 출력은 api 모듈만 나타나는 것이다.
+
+    +--- project :feature:notification:api
+
+`:feature:notification:impl`이 이 목록에 나타나면 실패다. 홈 모듈이 여전히 알림 화면 구현을 끌어오고 있다는 뜻이다.
+
+    rg "onNavigateToNotification" app feature core
+
+변경 전에는 `NeveraNavHost.kt`에서 3건이 나왔다. 현재 기준으로는 0건이어야 한다.
+
+**규칙이 강제된다.** `feature/main/build.gradle.kts`에 일부러 `implementation(project(":feature:notification:impl"))`을 넣고 빌드하면, 대안을 알려주는 메시지와 함께 실패해야 한다. 확인 후 그 줄을 지운다.
+
+**동작이 그대로다.** 앱을 설치해 홈·냉장고·마이페이지 세 곳의 알림 아이콘을 각각 눌러 알림 목록이 뜨고 뒤로가기로 돌아오는지 확인한다.
+
+## Idempotence and Recovery
+
+각 마일스톤은 커밋으로 구분되어 있으므로 `git revert`로 하나씩 되돌릴 수 있다. 특히 M2의 디렉터리 이동은 `git mv`로 수행했을 때만 깨끗하게 되돌아가므로, 파일 탐색기나 IDE의 드래그로 옮기지 않는다.
+
+빌드가 이상하게 실패하면 모듈 구조 변경 후 흔히 생기는 Gradle 캐시 문제일 수 있다.
+
+    ./gradlew --stop
+    rm -rf .gradle build
+    ./gradlew :app:assembleDebug
+
+별도 worktree에서 이 계획을 수행했고 그 worktree 전체를 버리려면 저장소 루트에서 다음을 실행한다. 현재 작업 디렉터리인 `/Users/juhyeok/AndroidStudioProjects/Nevera-Android` 자체에서 실행하면 안 된다.
+
+    git worktree remove <worktree-path>
+
+## Artifacts and Notes
+
+M4의 빌드 검사가 실제로 동작하는 것을 확인한 출력이다.
+
+    * What went wrong:
+    A problem occurred configuring project ':feature:main'.
+    > feature impl 모듈은 다른 feature의 impl에 의존할 수 없습니다.
+        위반: :feature:main → :feature:notification:impl
+        대안: :feature:notification:api 를 사용하세요.
+        근거: docs/execplan-navigation-modularization.md
+
+새로 만든 `api` 모듈은 파일 두 개다.
+
+    feature/notification/api/build.gradle.kts
+    feature/notification/api/src/main/kotlin/com/anddd/nevera/feature/notification/api/NotificationRoute.kt
+
+Nav3 마이그레이션 이력을 확인할 때 기준이 된 커밋은 다음이다.
+
+    380e1d0b feat: 모든 Route가 Navigation 3의 NavKey를 구현한다 (M11-1)
+    36529a68 feat: Nav3 NavigationState·Navigator를 병렬 구현하고 테스트로 검증 (M11-2)
+    a8778169 refactor: 인증 이전 흐름을 메인 그래프에서 분리해 인증 게이트를 구조로 만든다 (M13)
+    73ac426b feat: Navigation 3으로 전환한다 — NavDisplay와 EntryProvider (M12+M14)
+    97d62d72 refactor: 딥링크를 Nav3 백스택 합성으로 옮기고 domain 오염을 제거한다 (M15)
+
+2026-08-08에 잔여 Nav2 경로를 확인한 명령은 다음이다.
+
+    rg "rememberNavController|NavHost\(|NavGraphBuilder|androidx.navigation.compose|com.anddd.nevera.core.navigation.Navigator" app core feature
+
+이 명령은 `PreSessionHost.kt`, `AuthNavigation.kt`, 연결되지 않은 `SplashNavigation.kt`와 `SampleNavigation.kt`, 그리고 `Navigator.kt`와 Gradle 의존 선언을 보여준다. 그래서 Phase 4를 추가했다.
+
+2026-08-09에 Phase 4 완료를 확인한 명령은 다음이다.
+
+    rg "rememberNavController|NavHost\(|NavGraphBuilder|androidx.navigation.compose|com.anddd.nevera.core.navigation.Navigator|androidx.navigation.NavController" app core feature
+
+출력은 없었다. 이어서 다음 빌드를 실행했다.
+
+    ./gradlew :core:navigation:testDebugUnitTest :feature:auth:impl:compileDebugKotlin :feature:sample:compileDebugKotlin :app:compileDebugKotlin
+
+결과는 `BUILD SUCCESSFUL`이었다. `:feature:sample:compileDebugKotlin`을 포함한 이유는 연결되지 않은 `SampleNavigation.kt`를 삭제했기 때문이다.
+
+## Interfaces and Dependencies
+
+현재 Nav3 전환 이후 핵심 인터페이스는 다음이다.
+
+`core/navigation/src/main/kotlin/com/anddd/nevera/core/navigation/nav3/NavigationState.kt`의 `NavigationState`는 인증 후 메인 앱의 백스택 상태다. `startKey`는 시작 탭이고, `topLevelStack`은 방문한 탭의 순서이며, `subStacks`는 탭마다 보존되는 화면 스택이다. 이 타입은 인증 전 Splash·Auth를 포함하지 않는다.
+
+`core/navigation/src/main/kotlin/com/anddd/nevera/core/navigation/nav3/Nav3Navigator.kt`의 `Nav3Navigator`는 인증 후 메인 앱의 이동 정책이다. `navigate(key)`는 탭 재선택, 탭 전환, 현재 탭 내부 이동을 한 함수에서 구분한다. `goBack()`은 현재 탭 내부 화면을 먼저 제거하고, 탭 루트라면 이전 탭으로 돌아간다. `openDeeplink(tab, stack)`은 딥링크가 원하는 탭과 서브스택을 직접 조립한다.
+
+M16에서 추가하거나 바꿀 인터페이스는 Auth 전용이다. 권장 시그니처는 다음과 같다.
+
+    fun EntryProviderScope<NavKey>.authEntry(
+        googleAuthClient: GoogleAuthClient,
+        onNavigateToSignup: () -> Unit,
+        onNavigateBack: () -> Unit,
+        onNavigateToHome: () -> Unit,
+    )
+
+여기서 `onNavigateToHome`은 이름이 과거 호환을 위해 남아 있더라도 실제 의미는 "인증 성공을 앱 루트에 알린다"다. Auth 스택이 `HomeRoute`를 직접 알거나 메인 `NavigationState`를 직접 조작하면 안 된다.
+
+M17 이후 없어져야 하는 인터페이스는 `core/navigation/src/main/kotlin/com/anddd/nevera/core/navigation/Navigator.kt`의 `Navigator`다. 이것은 Navigation 2의 `NavController` 래퍼였고, Nav3 전환이 끝나면 더 이상 존재하지 않는다.
+
+새 Gradle 플러그인은 하나다. id는 `nevera.feature.api`, 구현 클래스는 `com.anddd.nevera.buildlogic.NeveraFeatureApiPlugin`이다. 적용하는 것은 `nevera.kotlin.jvm`과 `org.jetbrains.kotlin.plugin.serialization` 둘뿐이고, 의존성은 `kotlinx-serialization-json` 하나다.
+
+Phase 1에서 새로 만든 Gradle 모듈은 `:feature:notification:api`였다. 기존 `:feature:notification`은 `:feature:notification:impl`로 경로가 바뀌었다. 현재는 같은 방식이 `splash`, `auth`, `main`, `mypage`, `notification`, `ingredient`, `fridge`에 적용되어 있고, `feature/sample`만 단일 모듈로 남아 있다. `settings.gradle.kts` 기준 현재 전체 모듈 수는 28개다.
+
+Phase 1의 `notification` 예시에서 `api` 모듈이 처음 노출한 것은 `com.anddd.nevera.feature.notification.api.NotificationRoute` 하나였다. 현재는 각 feature의 `api` 모듈이 그 feature의 모든 Route를 노출하고, 모든 Route는 `NavKey`를 구현한다.
+
+Phase 1 당시 바뀐 공개 함수 시그니처는 셋이었다.
+
+    fun NavGraphBuilder.homeScreen(
+        navController: NavController,
+        onNavigateToCamera: () -> Unit,
+        onNavigateToGallery: () -> Unit,
+    )
+
+    fun NavGraphBuilder.fridgeScreen(
+        navController: NavController,
+        onNavigateToCamera: () -> Unit,
+        onNavigateToGallery: () -> Unit,
+        onNavigateToEditIngredient: (Long) -> Unit,
+    )
+
+    fun NavGraphBuilder.myPageNavGraph(
+        navController: NavController,
+        onNavigateToLogin: () -> Unit,
+    )
+
+세 함수 모두 `onNavigateToNotification` 파라미터가 사라졌다.
+
+Phase 3 이후 현재 공개 네비게이션 조립 함수는 `NavGraphBuilder` 확장이 아니라 `EntryProviderScope<NavKey>` 확장이다. 대표 시그니처는 다음과 같다.
+
+    fun EntryProviderScope<NavKey>.homeEntry(navigator: Nav3Navigator)
+
+    fun EntryProviderScope<NavKey>.fridgeEntry(navigator: Nav3Navigator)
+
+    fun EntryProviderScope<NavKey>.myPageEntry(
+        navigator: Nav3Navigator,
+        onSignedOut: () -> Unit,
+    )
+
+    fun EntryProviderScope<NavKey>.notificationEntry(
+        navigator: Nav3Navigator,
+        onDeeplink: (String) -> Unit,
+    )
+
+    fun EntryProviderScope<NavKey>.ingredientEntry(
+        navigator: Nav3Navigator,
+        onExitFlow: () -> Unit,
+    )
+
+M16 이후 Auth도 이 모양을 따라 `authEntry`를 제공한다. 모든 `*Screen` 컴포저블의 시그니처는 가능하면 바꾸지 않는다. ViewModel, UiState, Intent, SideEffect 등 화면 내부 구조도 건드리지 않는다.
+
+## Change Notes
+
+2026-08-08 문서 갱신: 코드와 커밋 이력을 다시 확인해 M10을 완료로 바로잡고, M16~M18을 추가했다. 핵심 변경 이유는 M13 이후 문서가 Nav3 전환 완료처럼 읽혔지만 실제 코드에는 인증 전 `PreSessionHost`와 `authNavGraph`의 Navigation Compose 2 경로가 남아 있었기 때문이다. 이번 갱신은 남은 작업, 결정 근거, 검증 명령을 문서 안에 남겨 다음 작업자가 이 파일만 보고 이어서 마이그레이션할 수 있게 만든다.
+
+2026-08-09 문서 갱신: M16~M18 구현 완료 후 Progress와 Artifacts를 실제 결과에 맞췄다. 인증 전 Auth 흐름은 별도 Nav3 back stack으로 전환됐고, 기존 `Navigator.kt`와 죽은 Nav2 DSL 파일들은 삭제됐다.

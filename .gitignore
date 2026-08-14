@@ -18,6 +18,8 @@ local.properties
 gradle-app.setting
 !gradle/wrapper/gradle-wrapper.jar
 !gradle/wrapper/gradle-wrapper.properties
+# Kotlin 컴파일러 크래시 덤프
+.kotlin/
 
 # ======================
 # IntelliJ / Android Studio

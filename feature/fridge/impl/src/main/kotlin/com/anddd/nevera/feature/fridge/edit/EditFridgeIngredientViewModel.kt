@@ -1,0 +1,153 @@
+package com.anddd.nevera.feature.fridge.edit
+
+import com.anddd.nevera.core.common.onFailure
+import com.anddd.nevera.core.common.onSuccess
+import com.anddd.nevera.core.mvi.NeveraViewModel
+import com.anddd.nevera.domain.model.ingredient.EditIngredientInput
+import com.anddd.nevera.domain.model.ingredient.FoodCategory
+import com.anddd.nevera.domain.model.ingredient.StorageLocation
+import com.anddd.nevera.domain.usecase.ingredient.EditIngredientUseCase
+import com.anddd.nevera.domain.usecase.ingredient.GetFridgeIngredientByIdUseCase
+import com.anddd.nevera.feature.fridge.edit.model.EditFridgeIngredientIntent
+import com.anddd.nevera.feature.fridge.edit.model.EditFridgeIngredientMutation
+import com.anddd.nevera.feature.fridge.edit.model.EditFridgeIngredientSideEffect
+import com.anddd.nevera.feature.fridge.edit.model.EditFridgeIngredientUiState
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
+import org.orbitmvi.orbit.syntax.Syntax
+import java.time.LocalDate
+
+@HiltViewModel(assistedFactory = EditFridgeIngredientViewModel.Factory::class)
+class EditFridgeIngredientViewModel @AssistedInject constructor(
+    @Assisted private val ingredientId: Long,
+    private val getFridgeIngredientById: GetFridgeIngredientByIdUseCase,
+    private val editIngredient: EditIngredientUseCase,
+) : NeveraViewModel<EditFridgeIngredientUiState, EditFridgeIngredientSideEffect, EditFridgeIngredientIntent, EditFridgeIngredientMutation>(
+    EditFridgeIngredientUiState()
+) {
+
+    init {
+        intent { loadIngredient() }
+    }
+
+    override fun handleIntent(intent: EditFridgeIngredientIntent) {
+        when (intent) {
+            is EditFridgeIngredientIntent.UpdateName -> onUpdateName(intent.name)
+            is EditFridgeIngredientIntent.UpdateQuantity -> onUpdateQuantity(intent.quantity)
+            is EditFridgeIngredientIntent.UpdateCost -> onUpdateCost(intent.cost)
+            is EditFridgeIngredientIntent.UpdateCategory -> onUpdateCategory(intent.category)
+            is EditFridgeIngredientIntent.UpdateStorageLocation -> onUpdateStorageLocation(intent.location)
+            is EditFridgeIngredientIntent.UpdateExpiryDate -> onUpdateExpiryDate(intent.date)
+            EditFridgeIngredientIntent.ConfirmClick -> onConfirmClick()
+            EditFridgeIngredientIntent.CloseClick -> intent { postSideEffect(EditFridgeIngredientSideEffect.NavigateBack) }
+            EditFridgeIngredientIntent.CategoryFieldClick -> intent { postSideEffect(EditFridgeIngredientSideEffect.ShowCategorySheet) }
+            EditFridgeIngredientIntent.StorageLocationFieldClick -> intent { postSideEffect(EditFridgeIngredientSideEffect.ShowStorageLocationSheet) }
+            EditFridgeIngredientIntent.ExpiryDateFieldClick -> intent { postSideEffect(EditFridgeIngredientSideEffect.ShowDatePicker) }
+        }
+    }
+
+    private suspend fun Syntax<EditFridgeIngredientUiState, EditFridgeIngredientSideEffect>.loadIngredient() {
+        applyMutation(EditFridgeIngredientMutation.Loading)
+        getFridgeIngredientById(ingredientId)
+            .onSuccess { ingredient ->
+                applyMutation(
+                    EditFridgeIngredientMutation.Loaded(
+                        name = ingredient.name,
+                        quantity = ingredient.quantity,
+                        cost = ingredient.cost,
+                        category = ingredient.category,
+                        storageLocation = ingredient.storageLocation,
+                        expiryDate = ingredient.expiryDate,
+                    )
+                )
+            }
+            .onFailure {
+                postSideEffect(EditFridgeIngredientSideEffect.NavigateBack)
+            }
+    }
+
+    private fun onUpdateName(name: String) = intent {
+        applyMutation(EditFridgeIngredientMutation.NameUpdated(name))
+    }
+
+    private fun onUpdateQuantity(quantity: Int) = intent {
+        applyMutation(EditFridgeIngredientMutation.QuantityUpdated(quantity))
+    }
+
+    private fun onUpdateCost(cost: Int) = intent {
+        applyMutation(EditFridgeIngredientMutation.CostUpdated(cost))
+    }
+
+    private fun onUpdateCategory(category: FoodCategory) = intent {
+        applyMutation(EditFridgeIngredientMutation.CategoryUpdated(category))
+    }
+
+    private fun onUpdateStorageLocation(location: StorageLocation) = intent {
+        applyMutation(EditFridgeIngredientMutation.StorageLocationUpdated(location))
+    }
+
+    private fun onUpdateExpiryDate(date: LocalDate) = intent {
+        applyMutation(EditFridgeIngredientMutation.ExpiryDateUpdated(date))
+    }
+
+    private fun onConfirmClick() = intent {
+        applyMutation(EditFridgeIngredientMutation.Loading)
+        val input = EditIngredientInput(
+            name = state.name,
+            category = state.category,
+            location = state.storageLocation,
+            quantity = state.quantity,
+            expiryDate = state.expiryDate,
+            cost = state.cost,
+        )
+        editIngredient(ingredientId, input)
+            .onSuccess {
+                applyMutation(EditFridgeIngredientMutation.UpdateComplete)
+                postSideEffect(EditFridgeIngredientSideEffect.NavigateBack)
+            }
+            .onFailure {
+                applyMutation(EditFridgeIngredientMutation.UpdateComplete)
+                postSideEffect(EditFridgeIngredientSideEffect.ShowUpdateFailedToast)
+            }
+    }
+
+    override suspend fun Syntax<EditFridgeIngredientUiState, EditFridgeIngredientSideEffect>.applyMutation(
+        mutation: EditFridgeIngredientMutation,
+    ) {
+        when (mutation) {
+            EditFridgeIngredientMutation.Loading -> reduce { state.copy(isLoading = true) }
+            EditFridgeIngredientMutation.UpdateComplete -> reduce { state.copy(isLoading = false) }
+            is EditFridgeIngredientMutation.Loaded -> reduce {
+                state.copy(
+                    isLoading = false,
+                    name = mutation.name,
+                    quantity = mutation.quantity,
+                    cost = mutation.cost,
+                    category = mutation.category,
+                    storageLocation = mutation.storageLocation,
+                    expiryDate = mutation.expiryDate,
+                )
+            }
+            is EditFridgeIngredientMutation.NameUpdated -> reduce { state.copy(name = mutation.name) }
+            is EditFridgeIngredientMutation.QuantityUpdated -> reduce { state.copy(quantity = mutation.quantity) }
+            is EditFridgeIngredientMutation.CostUpdated -> reduce { state.copy(cost = mutation.cost) }
+            is EditFridgeIngredientMutation.CategoryUpdated -> reduce { state.copy(category = mutation.category) }
+            is EditFridgeIngredientMutation.StorageLocationUpdated -> reduce { state.copy(storageLocation = mutation.location) }
+            is EditFridgeIngredientMutation.ExpiryDateUpdated -> reduce { state.copy(expiryDate = mutation.date) }
+        }
+    }
+
+    /**
+     * Route 인자를 생성 시점에 주입한다.
+     *
+     * NavEntry는 목적지 인자를 SavedStateHandle에 심지 않으므로, 화면을 만드는 쪽이
+     * 명시적으로 넘긴다.
+     */
+    @AssistedFactory
+    interface Factory {
+        fun create(ingredientId: Long): EditFridgeIngredientViewModel
+    }
+
+}

@@ -49,6 +49,10 @@ gradlePlugin {
             id = "nevera.feature"
             implementationClass = "com.anddd.nevera.buildlogic.NeveraFeaturePlugin"
         }
+        register("neveraFeatureApi") {
+            id = "nevera.feature.api"
+            implementationClass = "com.anddd.nevera.buildlogic.NeveraFeatureApiPlugin"
+        }
         register("neveraAndroidApplication") {
             id = "nevera.android.application"
             implementationClass = "com.anddd.nevera.buildlogic.NeveraAndroidApplicationPlugin"

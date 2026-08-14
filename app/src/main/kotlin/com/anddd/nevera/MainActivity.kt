@@ -24,7 +24,11 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        handleIntent(intent)
+        // 최초 생성에서만 처리한다. 화면 회전처럼 Activity가 다시 만들어지는 경우에도
+        // getIntent()는 최초의 딥링크 intent를 그대로 돌려주므로, 조건 없이 처리하면
+        // 사용자가 그 사이 옮겨 둔 화면을 딥링크가 다시 덮어쓴다.
+        // 실행 중 도착하는 새 딥링크는 onNewIntent로 들어오므로 이 조건과 무관하다.
+        if (savedInstanceState == null) handleIntent(intent)
         setContent {
             NeveraTheme {
                 NeveraApp(googleAuthClient = googleAuthClient)
