@@ -25,6 +25,7 @@ import com.anddd.nevera.feature.main.home.navigation.homeEntry
 import com.anddd.nevera.feature.mypage.navigation.myPageEntry
 import com.anddd.nevera.feature.notification.navigation.notificationEntry
 import com.anddd.nevera.navigation.PreSessionHost
+import com.anddd.nevera.navigation.TabRootMetadata
 import com.anddd.nevera.navigation.TopLevelDestination
 import com.anddd.nevera.navigation.openDeeplink
 import com.anddd.nevera.navigation.toNavigationBarItem
@@ -95,7 +96,7 @@ private fun AuthenticatedApp(mainViewModel: MainViewModel) {
         },
     ) { innerPadding ->
         NavDisplay(
-            entries = navigationState.toEntries(entryProvider),
+            entries = navigationState.toEntries(entryProvider, rootMetadata = TabRootMetadata),
             onBack = { navigator.goBack() },
             modifier = Modifier.padding(innerPadding),
         )
