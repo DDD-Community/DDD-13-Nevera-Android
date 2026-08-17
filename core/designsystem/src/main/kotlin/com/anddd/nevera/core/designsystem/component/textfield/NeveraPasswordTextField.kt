@@ -16,6 +16,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.password
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -119,7 +121,7 @@ fun NeveraPasswordTextField(
     NeveraBaseTextField(
         textFieldValue = value,
         onTextFieldValueChange = onValueChange,
-        modifier = modifier,
+        modifier = modifier.semantics { password() },
         enabled = enabled,
         useIcon = useIcon,
         visualTransformation = visualTransformation,
